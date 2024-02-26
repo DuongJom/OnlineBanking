@@ -1,8 +1,4 @@
-from models import database
-
-db = database.Database().get_db()
-
-class Account():
+class Account:
     def __init__(self, email, password):
         self.email = email
         self.password = password
