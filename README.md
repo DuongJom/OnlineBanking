@@ -2,6 +2,7 @@
 Dự án sử dụng các công nghệ sau:
 - Back-end side: Flask, MongoDB
 - Front-end: HTML, JavaScript, Tailwind CSS, JQuery
+- Tham khảo cách config Tailwind CSS cho project: https://flowbite.com/docs/getting-started/flask/
 
 <b>Chức năng của hệ thống:</b>
 - Chức năng chung:
