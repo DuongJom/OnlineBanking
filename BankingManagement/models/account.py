@@ -1,8 +1,10 @@
 from datetime import datetime
 from  werkzeug.security import generate_password_hash
+from base import BaseModel
 
-class Account:
-    def __init__(self,  AccountNumber, Branch, AccountOwner, Username, Password, LoginMethod, TransferMethod, Serice,CreatedBy, ModifiedDate, ModifiedBy):
+class Account(BaseModel):
+    def __init__(self,  AccountNumber, Branch, AccountOwner, Username, 
+                 Password, LoginMethod, TransferMethod, Service):
        self.AccountNumber = AccountNumber
        self.Branch = Branch
        self.AccountOwner = AccountOwner
@@ -10,13 +12,7 @@ class Account:
        self.Password = generate_password_hash(Password)
        self.LoginMethod = LoginMethod or []
        self.TransferMethod = TransferMethod or []
-       self.Service = Serice or []
-       self.CreatedDate = datetime.utcnow()
-       self.CreatedBy = None
-       self.ModifiedDate = None
-       self.ModifiedBy = None
-
-
+       self.Service = Service or []
 
     def to_json(self):
         return {
