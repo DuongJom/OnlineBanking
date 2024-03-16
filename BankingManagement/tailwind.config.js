@@ -5,7 +5,17 @@ module.exports = {
     "./static/src/**/*.js"
   ],
   theme: {
-    extend: {},
+    extend: {
+      height: {
+        '500px': '500px',
+      },
+      width: {
+        '500px' : '500px',
+      },
+      colors: {
+        'btn_color' : '#A1FB8E'
+      }
+    },
   },
   plugins: [],
 }

@@ -1,15 +1,34 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, session, Response, jsonify, url_for 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from models import account, database
+from controllers.home_controller import home_blueprint
 
 db = database.Database().get_db()
+
 collection = db['accounts']
 account_blueprint = Blueprint('account', __name__)
 
 @account_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        pass
-    return render_template('login.html')
+        username = request.form.get("username")
+        password = request.form.get("password")        
+
+
+        account = collection.find_one({"Username": username})  
+        print(account)
+        if account:
+
+            if check_password_hash(account["Password"], password):
+                return jsonify({'message': 'Login successful'})
+            else:
+                return jsonify({'message': 'Invalid username or password'})
+        else:
+            return jsonify({"message": "account is not found"})
+    elif request.method == "GET" :
+        return render_template('login.html')
+    
 
 @account_blueprint.route('/logout', methods=['POST'])
 def logout():

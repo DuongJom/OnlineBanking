@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-        <title>Login</title>
-    </head>
-    <body>
-        <div>This is login page of application.</div>
-    </body>
-</html>
+{% extends "layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block content %}
+<div class="container flex justify-center items-center h-screen">
+    <form class="shadow-2xl h-96 w-96 flex items-center flex-col justify-evenly" id="login_form">
+        <h2><strong>LOGIN</strong></h2>
+        <h3 id="alert"></h3>
+        <input type="text" id="username" name="username" placeholder="Username "class="rounded items-center border border-black text-center">
+        <input type="password" id="password" name="password" placeholder="Password" class="rounded items-center border border-black text-center">
+        <button type="submit" class="bg-btn_color w-20 h-12 border rounded-3xl">login</button>
+    </form>
+</div>
+
+
+<script>
+    const login_form = document.getElementById("login_form");
+    login_form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const form = new FormData(login_form)
+
+        fetch('/login', {
+            method: "POST",
+            body: form
+        })
+        .then(response => response.json())
+        .then(data => {
+           if(data.message == "Login successful") {
+                window.location.href = "/"; 
+           }else {
+                const alert = document.getElementById("alert");
+                alert.innerHTML = data.message;
+                setTimeout(()=>{
+                    alert.innerHTML = "";
+                }, 2000)
+           }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }) 
+</script>
+{% endblock %}border 
