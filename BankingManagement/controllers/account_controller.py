@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import (Blueprint, render_template, request, redirect, url_for, flash)
 from models import account, database
 
 db = database.Database().get_db()
@@ -18,10 +18,31 @@ def logout():
 @account_blueprint.route('/register', methods=['GET','POST'])
 def register():
     if request.method == 'POST':
-        try:
-            acc = account.Account(email="admin123@gmail.com", password="admin123@")
+        # get the data from post request
+        email = request.form['email']
+        print(email)
+        password = request.form['password']
+        confirmPassword = request.form['confirmPassword']
+
+        # check if user input email and password or not
+        error = None
+        if not email:
+            error = 'email is required.'
+        elif not password:
+            error = 'Password is required.'
+        elif password != confirmPassword:
+            error = 'Confirmation password does not match'
+        # check if email already exist
+        existEmail = collection.find_one({"email": email})
+        print(existEmail)
+        if existEmail != None:
+            error = f"Email {email} is already registered." 
+        # insert the document to the collection if there is no error
+        if error is None:
+            acc = account.Account(email=email, password=password)
             collection.insert_one(acc.to_json())
-            return redirect('/login')
-        except:
-            return
+            return redirect(url_for("account.login"))
+                
+        flash(error)
     return render_template('register.html')
+
