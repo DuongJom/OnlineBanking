@@ -11,6 +11,8 @@ module.exports = {
       },
       width: {
         '500px' : '500px',
+        '350px' : '300px',
+        '150px' : '150px'
       },
       colors: {
         'btn_color' : '#A1FB8E'

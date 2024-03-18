@@ -1,6 +1,6 @@
 from datetime import datetime
 from  werkzeug.security import generate_password_hash
-from base import BaseModel
+from models.base import BaseModel
 
 class Account(BaseModel):
     def __init__(self,  AccountNumber, Branch, AccountOwner, Username, 
@@ -23,21 +23,3 @@ class Account(BaseModel):
             "Username" : self.Username,
             "Password" : self.Password,
         }
-    
-
-
-
-    # - Account:
-	# + AccountId: ObjectId
-	# + AccountNumber: string
-	# + Branch: Branch
-	# + AccountOwner: User
-	# + Username: string
-	# + Password: string
-	# + LoginMethod: LoginMethod[]
-	# + TransferMethod: TransferMethod[]
-	# + Service: Service[]
-	# + CreatedDate: datetime
-	# + CreatedBy: User
-	# + ModifiedDate: datetime
-	# + ModifiedBy: User

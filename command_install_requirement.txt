@@ -1,0 +1,3 @@
+Werkzeug
+functools
+bson
