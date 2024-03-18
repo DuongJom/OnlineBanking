@@ -11,13 +11,17 @@
     <form class="shadow-2xl h-96 w-96 flex items-center flex-col justify-evenly" id="login_form">
         <h2><strong>LOGIN</strong></h2>
         <h3 id="alert"></h3>
-        <input type="text" id="username" name="username" placeholder="Username" class="w-350px h-9 rounded items-center border border-black text-center">
-        <input type="password" id="password" name="password" placeholder="Password" class="w-350px h-9 rounded items-center border border-black text-center">
-        <button type="submit" class=" bg-btn_color hover:bg-white hover:border-btn_color w-150px h-12 border rounded-3xl text-white hover:text-btn_color">
+        <input type="text" id="username" name="username" placeholder="Username" 
+            class="w-350px h-9 rounded items-center border border-black text-center">
+        <input type="password" id="password" name="password" placeholder="Password" 
+            class="w-350px h-9 rounded items-center border border-black text-center">
+        <button type="submit" 
+            class=" bg-btn_color hover:bg-white hover:border-btn_color w-150px h-12 border rounded-3xl
+             text-white hover:text-btn_color">
             Submit
         </button>
     </form>
 </div>
 
-<script src="{{ url_for('static', filename='scripts/login.js') }}"></script>
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}
