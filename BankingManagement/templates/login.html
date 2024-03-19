@@ -1,10 +1,25 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-        <title>Login</title>
-    </head>
-    <body>
-        <div>This is login page of application.</div>
-    </body>
-</html>
+{% extends "layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block content %}
+
+<div class="container flex justify-center items-center h-screen flex-col">
+    <h1 class="text-btn_color mb-8 text-2xl">ONLINE BANKING</h1>
+    <form class="shadow-2xl h-96 w-96 flex items-center flex-col justify-evenly" id="login_form" method="post" action="/login">
+        <h2 class="text-btn_color"><strong>LOGIN</strong></h2>
+        <h3 id="alert">{{message}}</h3>
+        <input type="text" id="username" name="username" placeholder="Username" autocomplete="off"
+            class="w-350px h-9 rounded items-center border border-black text-center">
+        <input type="password" id="password" name="password" placeholder="Password" 
+            class="w-350px h-9 rounded items-center border border-black text-center">
+        <button type="submit" 
+            class=" bg-btn_color hover:bg-white hover:border-btn_color w-150px h-12 border-2 rounded-3xl
+             text-white hover:text-btn_color">
+            Submit
+        </button>
+    </form>
+</div>
+{% endblock %}

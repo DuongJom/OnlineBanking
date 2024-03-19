@@ -1,0 +1,3 @@
+pip install Werkzeug
+pip install functools
+pip install bson
