@@ -23,22 +23,6 @@ def login():
                 return redirect("/")
             return render_template("login.html", message = messages['invalid_information'])
 
-        return render_template("login.html", message = messages['cannot_find_account'])
+        return render_template("login.html", message = messages['invalid_information'])
     elif request.method == "GET" :
         return render_template('login.html')
-    
-
-@account_blueprint.route('/logout', methods=['POST'])
-def logout():
-    pass
-
-@account_blueprint.route('/register', methods=['GET','POST'])
-def register():
-    if request.method == 'POST':
-        try:
-            acc = account.Account(email="admin123@gmail.com", password="admin123@")
-            collection.insert_one(acc.to_json())
-            return redirect('/login')
-        except:
-            return
-    return render_template('register.html')
