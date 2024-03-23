@@ -1,0 +1,13 @@
+python -m pip install pymongo
+
+python -m pip install Flask
+
+npx tailwindcss -i ./static/src/input.css -o ./static/dist/css/main.css --watch
+
+npm install @tailwindcss/forms
+
+//reset password
+pip install flask-mail
+
+//install JWT
+pip install PyJWT

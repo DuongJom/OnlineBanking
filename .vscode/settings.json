@@ -1,0 +1,5 @@
+{
+  "prettier.endOfLine": "lf",
+  "prettier.printWidth": 90,
+  "prettier.bracketSameLine": true
+}
