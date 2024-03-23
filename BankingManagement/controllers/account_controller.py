@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, session
 from werkzeug.security import check_password_hash
 
-from models import account, database
+from models import database
 from message import messages
 
 db = database.Database().get_db()
@@ -15,14 +15,15 @@ def login():
         session.clear()
         username = request.form.get("username")
         password = request.form.get("password") 
-        account = collection.find_one({"Username": username})  
+        acc = collection.find_one({"Username": username})  
 
-        if account:
-            if check_password_hash(account["Password"], password):
-                session["userId"] = str(account["_id"])
-                return redirect("/")
+        if acc is None:
             return render_template("login.html", message = messages['invalid_information'])
-
-        return render_template("login.html", message = messages['invalid_information'])
+        elif not check_password_hash(acc["Password"], password):
+            return render_template("login.html", message = messages['invalid_information'])
+        
+        session["userId"] = str(acc["_id"])
+        return redirect("/")
+        
     elif request.method == "GET" :
         return render_template('login.html')
