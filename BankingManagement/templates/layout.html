@@ -10,12 +10,11 @@
     <nav class="bg-gray-800">
       <div class="mx-auto max-w-7xl flex h-16 px-4 sm:px-6 lg:px-8 justify-between">
         <div class="flex items-center">
-          <div class="flex-shrink-1 rounded-full bg-gray-800 p-1 text-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-            <svg aria-hidden="true" id="Layer_1" fill="none" stroke-width="1.5" stroke="currentColor" class="h-6 w-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1">
-              <path
-                d="m0 21h24v3h-24zm24-12.9v1.9h-3v6h2v3h-22v-3h2v-6h-3v-1.9a3.408 3.408 0 0 1 1.777-3l8.59-4.684a3.4 3.4 0 0 1 3.266 0l8.591 4.684a3.409 3.409 0 0 1 1.776 3zm-19.438-1.1h14.875l-7.237-3.95a.4.4 0 0 0 -.39 0zm6.438 3v6h2v-6zm-5 6h2v-6h-2zm12-6h-2v6h2z"
-              />
-            </svg>
+          <div
+            class="w-12 h-12 p-1 
+            focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
+            focus:ring-offset-gray-800">
+            <img width="50px" height="50px" src="../static/img/bank.png"/>   
           </div>
 
           {% if session["user_id"] %}
@@ -33,14 +32,13 @@
 
         <div class="hidden md:block">
           <div class="flex items-center mt-4">
-            <button type="button" class="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-                />
-              </svg>
+            <button
+              type="button"
+              class="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white 
+              focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
+              focus:ring-offset-gray-800">
+              <img width="50px" height="50px" src="../static/img/notification.png" 
+              alt="notification bell"/>
             </button>
           </div>
         </div>
@@ -48,15 +46,19 @@
         {% else %}
         <div class="ml-8 flex items-baseline space-x-4">
           <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-          <a href="/login" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Login</a>
-          <a href="/register" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Register</a>
+          <a href="/login" class="text-gray-300 hover:bg-gray-700 hover:text-white 
+          rounded-md px-3 py-2 text-sm font-medium" 
+          aria-current="page">Login</a>
+          <a href="/register" class="text-gray-300 hover:bg-gray-700 hover:text-white 
+          rounded-md px-3 py-2 text-sm font-medium">Register</a>
         </div>
         {% endif %}
       </div>
     </nav>
 
     {% for message in get_flashed_messages() %}
-    <div class="flex w-full justify-center bg-red-400 px-3 py-1.5 text-sm font-semibold leading-7 text-white">{{ message }}</div>
+    <div class="flex w-full justify-center bg-red-400 px-3 py-1.5 text-sm 
+    font-semibold leading-7 text-white">{{ message }}</div>
     {% endfor %} {% block content %}{% endblock %}
   </body>
 </html>
