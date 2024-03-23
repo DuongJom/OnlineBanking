@@ -24,4 +24,4 @@ class Account(BaseModel):
             "TransferMethod": self.TransferMethod,
             "Service": self.Service
         }
-    
+                                    

@@ -1,1 +1,6 @@
+python -m pip install Flask  
+npm install -D tailwindcss 
 npm install @tailwindcss/forms
+npx tailwindcss -i ./static/src/input.css -o ./static/dist/css/main.css --watch
+
+pip install pymongo #pymongo==4.6.2

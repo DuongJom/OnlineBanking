@@ -6,18 +6,17 @@
     <link rel="stylesheet" href="{{url_for('static',filename='dist/css/main.css')}}" type="text/css" />
     <title>{% block title %}{% endblock %}</title>
   </head>
-  <body class="h-full">
-    <nav class="bg-gray-800">
+  <body class="h-full bg-gray-100">
+    {% if session["user_id"] %}
+    <nav class="bg-gray-600">
       <div class="mx-auto max-w-7xl flex h-16 px-4 sm:px-6 lg:px-8 justify-between">
         <div class="flex items-center">
-          <div
-            class="w-12 h-12 p-1 
+          <div class="w-12 h-12 p-1 
             focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
             focus:ring-offset-gray-800">
             <img width="50px" height="50px" src="../static/img/bank.png"/>   
           </div>
 
-          {% if session["user_id"] %}
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-4">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
@@ -42,19 +41,26 @@
             </button>
           </div>
         </div>
-
-        {% else %}
-        <div class="ml-8 flex items-baseline space-x-4">
-          <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-          <a href="/login" class="text-gray-300 hover:bg-gray-700 hover:text-white 
-          rounded-md px-3 py-2 text-sm font-medium" 
-          aria-current="page">Login</a>
-          <a href="/register" class="text-gray-300 hover:bg-gray-700 hover:text-white 
-          rounded-md px-3 py-2 text-sm font-medium">Register</a>
-        </div>
-        {% endif %}
       </div>
     </nav>
+      
+    {% else %}
+    <nav class="bg-gray-600 flex justify-end">
+      <div class="mr-3 flex items-center h-16 px-4 sm:px-6 lg:px-8">
+        <div class="w-12 h-12 p-1 
+          focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
+          focus:ring-offset-gray-800">
+          <img width="50px" height="50px" src="../static/img/bank.png"/>   
+        </div>
+        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+        <a href="/login" class="text-gray-300 hover:bg-gray-700 hover:text-white 
+        rounded-md px-3 py-2 text-sm font-medium" 
+        aria-current="page">Login</a>
+        <a href="/register" class="text-gray-300 hover:bg-gray-700 hover:text-white 
+        rounded-md px-3 py-2 text-sm font-medium">Register</a>
+      </div>
+    </nav>
+    {% endif %}
 
     {% for message in get_flashed_messages() %}
     <div class="flex w-full justify-center bg-red-400 px-3 py-1.5 text-sm 

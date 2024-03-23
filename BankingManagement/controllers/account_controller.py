@@ -14,6 +14,12 @@ def register():
         username = request.form['username']
         password = request.form['password']
         confirmPassword = request.form['confirmPassword']
+        accountNumber = None
+        branch = None
+        accountOwner = None
+        loginMethod = None
+        transferMethod = None
+        service = None
 
         # check if user input email and password or not
         error = None
@@ -25,18 +31,21 @@ def register():
             error = 'Password is required.'
         elif password != confirmPassword:
             error = 'Confirmation password does not match'
-        # check if email already exist
+
+        # check if email or username already exist
         existEmail = collection.find_one({"email": email})
         existUsername = collection.find_one({"Username": username})
-        if existEmail:
-            error = f"Email {email} is already registered." 
         if existUsername:
             error = f"Username {username} is already registered." 
+        elif existEmail:
+            error = f"Email {email} is already registered." 
+
         # insert the document to the collection if there is no error
         if error is None:
-            acc = account.Account(email,password,username)
+            acc = account.Account(email, username, password, accountNumber, 
+                                  branch, accountOwner, loginMethod, transferMethod, service)
             collection.insert_one(acc.to_json())
-            return redirect(url_for("account.login"))
+            return redirect(url_for("account.register"))
                 
         flash(error)
     return render_template('register.html')
