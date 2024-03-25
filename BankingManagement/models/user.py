@@ -24,7 +24,7 @@ class User(BaseModel):
         return {
             "Name": self.Name,
             "Sex": self.Sex,
-            "Address": self.Address.to_json(),
+            "Address": self.Address,
             "Phone": self.Phone,
             "Email": self.Email,
             "Card": list_to_json(self.Card)

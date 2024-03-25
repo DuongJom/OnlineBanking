@@ -16,9 +16,9 @@ class Account(BaseModel):
     def to_json(self):
         return {
             "AccountNumber": self.AccountNumber,
-            "Branch": self.Branch.to_json(),
-            "AccountOwner": self.AccountOwner.to_json(),
-            "UserName": self.UserName,
+            "Branch": self.Branch,
+            "AccountOwner": self.AccountOwner,
+            "UserName": self.Username,
             "Password": self.Password,
             "TransferMethod": list_to_json(self.TransferMethod),
             "LoginMethod": list_to_json(self.LoginMethod),

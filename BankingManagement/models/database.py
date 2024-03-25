@@ -6,7 +6,6 @@ class Database:
         # Create a new client and connect to the server
         self.client = MongoClient(uri)
         self.db = self.client['online-banking']
-        self.client.admin.command('ping')
 
     def get_db(self):
         return self.db

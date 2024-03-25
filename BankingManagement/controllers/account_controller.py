@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
-from models import account, database
+from models import account, user, database
 
 db = database.Database().get_db()
-collection = db['accounts']
+account_collection = db['accounts']
+user_collection = db['users']
 account_blueprint = Blueprint('account', __name__)
 
 @account_blueprint.route('/register', methods=['GET','POST'])
@@ -14,12 +15,16 @@ def register():
         username = request.form['username']
         password = request.form['password']
         confirmPassword = request.form['confirmPassword']
-        accountNumber = None
-        branch = None
-        accountOwner = None
-        loginMethod = None
-        transferMethod = None
-        service = None
+        accountNumber = ' '
+        branch = ' '
+        accountOwner = ' '
+        loginMethod = [ ]
+        transferMethod = [ ]
+        service = [ ]
+        Sex=' '
+        Address=' '
+        Phone=' '
+        Card=[ ]
 
         # check if user input email and password or not
         error = None
@@ -33,8 +38,8 @@ def register():
             error = 'Confirmation password does not match'
 
         # check if email or username already exist
-        existEmail = collection.find_one({"email": email})
-        existUsername = collection.find_one({"Username": username})
+        existUsername = account_collection.find_one({"Username": username})
+        existEmail = user_collection.find_one({"Email": email})
         if existUsername:
             error = f"Username {username} is already registered." 
         elif existEmail:
@@ -42,9 +47,11 @@ def register():
 
         # insert the document to the collection if there is no error
         if error is None:
-            acc = account.Account(email, username, password, accountNumber, 
-                                  branch, accountOwner, loginMethod, transferMethod, service)
-            collection.insert_one(acc.to_json())
+            acc = account.Account(accountNumber, branch, accountOwner, username, password, 
+                                  loginMethod, transferMethod, service)
+            client = user.User(username, Sex, Address, Phone, email, Card)
+            account_collection.insert_one(acc.to_json())
+            user_collection.insert_one(client.to_json())
             return redirect(url_for("account.register"))
                 
         flash(error)
