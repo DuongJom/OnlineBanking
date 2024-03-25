@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, session
+from flask import flash, Blueprint, render_template, request, redirect, session, url_for, current_app
 from werkzeug.security import check_password_hash
 
 from models import database
@@ -15,15 +15,22 @@ def login():
         session.clear()
         username = request.form.get("username")
         password = request.form.get("password") 
-        acc = collection.find_one({"Username": username})  
+        remember_me = request.form.get("remember_me")
+        acc = collection.find_one({"Username": username}) 
 
         if acc is None:
-            return render_template("login.html", message = messages['invalid_information'])
+            flash(messages["invalid_information"])
+            return redirect(url_for('account.login')) 
         elif not check_password_hash(acc["Password"], password):
-            return render_template("login.html", message = messages['invalid_information'])
-        
-        session["userId"] = str(acc["_id"])
-        return redirect("/")
-        
-    elif request.method == "GET" :
-        return render_template('login.html')
+            flash(messages['invalid_information'])
+            return redirect(url_for('account.login'))
+        else:
+            if remember_me:
+                session.permanent = True
+                current_app.config['PERMANENT_SESSION_LIFETIME'] = 1209600  # 2 weeks in seconds
+                session["userId"] = str(acc["_id"])
+            else:
+                session.permanent = False
+                session["userId"] = str(acc["_id"])
+            return redirect("/")
+    return render_template('login.html')

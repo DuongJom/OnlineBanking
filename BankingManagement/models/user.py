@@ -1,7 +1,7 @@
-from base import BaseModel
+from models.base import BaseModel
 
 class User(BaseModel):
-    def __init__(self, Name, Sex, Address, Phone, Email, CardID):
+    def __init__(self, Name=None, Sex=None, Address=None, Phone=None, Email=None, CardID=None):
         self.Name = Name
         self.Sex = Sex
         self.Address = Address
@@ -11,7 +11,6 @@ class User(BaseModel):
 
     def to_json(self):
         return {
-            "UserId" : self.UserId,
             "Name" : self.Name,
             "Sex" : self.Sex,
             "Address" : self.Address,
