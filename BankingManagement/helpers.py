@@ -9,3 +9,10 @@ def login_required(f):
             return redirect("/login")
         return f(*args, **kwargs)
     return decorated_function
+
+def list_to_json(objList):
+        objs = []
+        if objList is not None:
+            for obj in objList:
+                objs.append(obj.to_json())
+        return objs
