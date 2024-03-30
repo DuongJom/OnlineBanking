@@ -1,4 +1,5 @@
 from models.base import BaseModel
+from helpers import list_to_json
 
 class User(BaseModel):
     def __init__(self, Name, Sex, Address, Phone, Email, Card):
@@ -9,14 +10,6 @@ class User(BaseModel):
         self.Phone = Phone
         self.Email = Email
         self.Card = Card or []
-
-    def __cards_to_json(cardList):
-        cards = []
-        if cardList is not None:
-            for card in cardList:
-                cards.append(card.to_json())
-        return cards
-
     
     def to_json(self):
         return {

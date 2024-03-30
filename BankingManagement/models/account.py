@@ -1,6 +1,7 @@
 from  werkzeug.security import generate_password_hash
 from models.base import BaseModel
 from helpers import list_to_json
+
 class Account(BaseModel):
     def __init__(self, AccountNumber, Branch, AccountOwner, Username, Password,
                  LoginMethod, TransferMethod, Service):
@@ -23,8 +24,8 @@ class Account(BaseModel):
             "Password": self.Password,
             "TransferMethod": list_to_json(self.TransferMethod),
             "LoginMethod": list_to_json(self.LoginMethod),
-            "Service": list_to_json(self.Service)
-          "CreatedDate" : self.CreatedDate,
+            "Service": list_to_json(self.Service),
+            "CreatedDate" : self.CreatedDate,
             "CreatedBy" : self.CreatedBy,
             "ModifiedDate" : self.ModifiedDate,
             "ModifiedBy" : self.ModifiedBy
