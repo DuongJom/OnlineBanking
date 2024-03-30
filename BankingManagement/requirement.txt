@@ -11,3 +11,6 @@ pip install flask-mail
 
 //install JWT
 pip install PyJWT
+
+//install flask-wtf
+pip install Flask-WTF

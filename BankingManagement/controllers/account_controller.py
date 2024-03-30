@@ -1,6 +1,7 @@
-from flask import Blueprint, session, render_template, request, redirect, url_for, flash
-
-from models import account, database, email
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from werkzeug.security import generate_password_hash
+from models import account, database
+from util.security import ts, send_email
 
 db = database.Database().get_db()
 collection = db['accounts']
@@ -40,22 +41,44 @@ def logout():
     session.clear()
     return redirect(url_for("account.login"))
 
-@account_blueprint.route('/reset_password', methods=['GET', 'POST'])
-def resetPassword():
+@account_blueprint.route('/login', methods=['GET', 'POST'])
+def login():
+    return render_template('login.html')
+
+@account_blueprint.route('/reset_email', methods=['GET', 'POST'])
+def reset_email():
     if request.method == 'POST':
         user_email = request.form.get('email')
-
         # verify if user exist, send reset password page to the user's email
-        user = collection.find_one({'Email': user_email})
+        user = collection.find_one({'email': user_email})
         if user:
-            email.send_email(user)
+            subject = "Password reset"
+            # dumps convert python object to JSON string
+            token = ts.dumps(user_email, salt='recover-key')
+            recover_url = url_for('account.reset_with_token',token=token, _external=True)
+            html = render_template('email/activate.html',recover_url=recover_url)
+            send_email(user_email, subject, html)
+        else:
+            flash('User not exist')
+            return render_template('reset_email.html')
+        return redirect(url_for('account.reset_email'))
+    return render_template('reset_email.html')
 
-        return redirect(url_for("account.login"))
 
-    return render_template('reset_password.html')
+@account_blueprint.route('/reset_with_token/<token>', methods=["GET", "POST"])
+def reset_with_token(token):
+    try:
+       email=ts.loads(token, salt='recover_key',  max_age=86400)
+    except:
+        flash('Token expired')
+        return redirect(url_for('account.login'))
 
-@account_blueprint.route('/reset_password/<token>', methods=['GET', 'POST'])
-def reset_verified(token):
     if request.method == 'POST':
-        password = request.form['password']
-        confirmPassword = request.form['confirmPassword']
+        password = generate_password_hash(request.form.get('password'))# SERVER ERROR HERE
+        collection.find_one_and_update(
+            {'email': email},
+            {'$set':
+                {'password': password}
+            },upsert=False
+        ) 
+        return redirect(url_for('account.login'))
