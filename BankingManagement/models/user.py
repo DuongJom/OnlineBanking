@@ -1,5 +1,4 @@
 from models.base import BaseModel
-from helpers import list_to_json
 
 class User(BaseModel):
     def __init__(self, Name, Sex, Address, Phone, Email, Card):
@@ -26,5 +25,9 @@ class User(BaseModel):
             "Address": self.Address.to_json(),
             "Phone": self.Phone,
             "Email": self.Email,
-            "Card": list_to_json(self.Card)
+            "Card": list_to_json(self.Card),
+            "CreatedDate" : self.CreatedDate,
+            "CreatedBy" : self.CreatedBy,
+            "ModifiedDate" : self.ModifiedDate,
+            "ModifiedBy" : self.ModifiedBy
         }

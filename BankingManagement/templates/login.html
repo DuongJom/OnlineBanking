@@ -1,10 +1,68 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-        <title>Login</title>
-    </head>
-    <body>
-        <div>This is login page of application.</div>
-    </body>
-</html>
+{% extends "layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block content %}
+
+<div class="h-screen w-screen bg-bg-color flex items-center justify-center sm:p-12">
+
+    <div class="flex flex-col lg:flex-row bg-bg-color2 rounded-xl items-center justify-center">
+        <div class="flex h-full items-center rounded-lg bg">
+            <div class="h-auto w-full">
+                <img src="../static/img/login.jpg" alt="loginImage" class="rounded-tl-xl rounded-bl-xl h-full w-full"/>
+            </div>
+        </div>
+    
+        <div class="md:w-96 w-full flex flex-col items-center justify-center">
+            <div class="w-full">
+                <div class="mb-5 h-12 font-sans w-full text-center">
+                    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">Login</h2>
+                </div>   
+            
+                <div class="text-center text-red-600">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}                      
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            
+                <div class="w-full flex justify-center items-center">
+                    <form method="post" action="/login" class="leading-10 w-3/4">
+                        <label for="username" class="text-white">Username</label>
+                        <div>
+                            <input type="text" id="username" name="username" placeholder="Username" autocomplete="off" required
+                            class="w-full rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500">
+                        </div>
+            
+                        <label for="password" class="text-white">Password</label>     
+                        <div>
+                            <input type="password" id="password" name="password" placeholder="Password" required 
+                            class="w-full rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500">
+                        </div>
+                  
+                        <div>
+                            <input name="remember_me" id="remember_me" type="checkbox" class="rounded-full"/>
+                            <label for="remember_me" class="text-white">Remember me</label>               
+                        </div>
+                        
+                        <div>   
+                            <button type="submit" class="w-full rounded-lg bg-purple-500 text-white
+                             hover:bg-hover-btn-bg-color">
+                                Login
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>         
+        </div>
+    
+    </div>  
+</div>
+{% endblock %}
+
