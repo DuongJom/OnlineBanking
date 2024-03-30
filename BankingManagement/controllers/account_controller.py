@@ -27,7 +27,7 @@ def login():
         else:
             if remember_me:
                 session.permanent = True
-                current_app.config['PERMANENT_SESSION_LIFETIME'] = 1209600  # 2 weeks in seconds
+                current_app.config['PERMANENT_SESSION_LIFETIME'] = 1209600 
                 session["userId"] = str(acc["_id"])
             else:
                 session.permanent = False
