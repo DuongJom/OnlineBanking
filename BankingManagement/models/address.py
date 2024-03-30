@@ -1,19 +1,14 @@
+import json
 from models.base import BaseModel
-
+from models.datetimeEncoder import DateTimeEncoder
 class Address(BaseModel):
     def __init__(self, **kwargs):
         super().__init__()
-        self.Street = kwargs["Street"]
-        self.City = kwargs["City"]
-        self.Ward = kwargs["Ward"]
-        self.Country = kwargs["Country"]
-        self.District = kwargs["District"]
+        self.Street = kwargs["street"] if "street" in kwargs.keys() else None
+        self.City = kwargs["city"] if "city" in kwargs.keys() else None
+        self.Ward = kwargs["ward"] if "ward" in kwargs.keys() else None
+        self.Country = kwargs["country"] if "country" in kwargs.keys() else None
+        self.District = kwargs["district"] if "district" in kwargs.keys() else None
 
     def to_json(self):
-        return {
-            "Street": self.Street,
-            "City": self.City,
-            "District": self.District,
-            "Ward": self.Ward,
-            "Country": self.Country
-        }
+        return json.dumps(self.__dict__, cls=DateTimeEncoder)
