@@ -1,6 +1,7 @@
 import json
 from  werkzeug.security import generate_password_hash
 from models.base import BaseModel
+from models.datetimeEncoder import DateTimeEncoder
 
 class Account(BaseModel):
     def __init__(self, **kwargs):
@@ -15,4 +16,4 @@ class Account(BaseModel):
         self.Service = kwargs["service"] if "service" in kwargs.keys() else []
     
     def to_json(self):
-        return json.dumps(self.__dict__)
+        return json.dumps(self.__dict__, cls=DateTimeEncoder)

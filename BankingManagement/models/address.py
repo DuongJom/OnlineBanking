@@ -1,6 +1,7 @@
 import json
 from models.base import BaseModel
 from models.datetimeEncoder import DateTimeEncoder
+
 class Address(BaseModel):
     def __init__(self, **kwargs):
         super().__init__()
