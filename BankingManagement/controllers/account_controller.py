@@ -2,6 +2,7 @@ from flask import flash, Blueprint, render_template, request, redirect, session,
 from werkzeug.security import check_password_hash
 
 from models import database
+from models.user import User
 from message import messages
 
 db = database.Database().get_db()

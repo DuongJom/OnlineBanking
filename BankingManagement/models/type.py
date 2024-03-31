@@ -1,11 +1,12 @@
 import json
 from models.base import BaseModel
 from models.datetimeEncoder import DateTimeEncoder
-class Branch(BaseModel):
+
+class Type(BaseModel):
     def __init__(self, **kwargs):
         super().__init__()
-        self.BranchName = kwargs["branchName"] if "branchName" in kwargs.keys() else None
-        self.Address = kwargs["address"] if "address" in kwargs.keys() else None
+        self.TypeName = kwargs["typeName"] if "typeName" in kwargs.keys() else None
+        self.TypeValue = kwargs["typeValue"] if "typeValue" in kwargs.keys() else None
 
     def to_json(self):
         return json.dumps(self.__dict__, cls=DateTimeEncoder)
