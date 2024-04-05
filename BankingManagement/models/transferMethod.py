@@ -1,11 +1,11 @@
+import json
 from models.base import BaseModel
+from models.datetimeEncoder import DateTimeEncoder
 
 class TransferMethod(BaseModel):
-    def __init__(self, MethodName):
+    def __init__(self, **kwargs):
         super().__init__()
-        self.MethodName = MethodName
+        self.MethodName = kwargs["methodName"] if "methodName" in kwargs.keys() else None
 
     def to_json(self):
-        return {
-            "MethodName": self.MethodName
-        }
+        return json.dumps(self.__dict__, cls=DateTimeEncoder)

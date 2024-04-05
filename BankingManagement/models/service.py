@@ -1,17 +1,15 @@
+import json
 from models.base import BaseModel
-from helpers import list_to_json
+from models.datetimeEncoder import DateTimeEncoder
 
 class Service(BaseModel):
-    def __init__(self, ServiceName):
+    def __init__(self, **kwargs):
         super().__init__()
-        self.ServiceName = ServiceName
-        self.ServiceInfos = []
+        self.ServiceName = kwargs["serviceName"] if "serviceName" in kwargs.keys() else None
+        self.ServiceInfos = kwargs["serviceInfo"] if "serviceInfo" in kwargs.keys() else []
 
     def add_service_info(self, serviceInfo):
         self.ServiceInfos.append(serviceInfo)
 
     def to_json(self):
-        return {
-            "ServiceName": self.ServiceName,
-            "ServiceInfos": list_to_json(self.ServiceInfos)
-        }
+        return json.dumps(self.__dict__, cls=DateTimeEncoder)
