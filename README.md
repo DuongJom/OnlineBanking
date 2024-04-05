@@ -56,10 +56,10 @@ Dự án sử dụng các công nghệ sau:
 	+ UserId: ObjectId
 	+ Name: string
 	+ Sex: bit
-	+ Address: string
+	+ Address: Address
 	+ Phone: string
 	+ Email: string
-	+ CardID: string
+	+ Card: Card
 	+ CreatedDate: datetime
 	+ CreatedBy: User
 	+ ModifiedDate: datetime

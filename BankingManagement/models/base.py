@@ -1,8 +1,8 @@
-from datetime import datetime as dt
+from datetime import datetime
 
 class BaseModel:
     def __init__(self):
-        self.CreatedDate = dt.now()
+        self.CreatedDate = datetime.now()
         self.CreatedBy = None
-        self.ModifiedDate = dt.now()
+        self.ModifiedDate = datetime.now()
         self.ModifiedBy = None

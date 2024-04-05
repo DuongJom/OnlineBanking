@@ -1,30 +1,16 @@
+import json
 from models.base import BaseModel
-from helpers import list_to_json
+from models.datetimeEncoder import DateTimeEncoder
 
 class User(BaseModel):
-    def __init__(self, Name, Sex, Address, Phone, Email, Card):
+    def __init__(self, **kwargs):
         super().__init__()
-        self.Name = Name
-        self.Sex = Sex
-        self.Address = Address
-        self.Phone = Phone
-        self.Email = Email
-        self.Card = Card or []
-
-    def __cards_to_json(cardList):
-        cards = []
-        if cardList is not None:
-            for card in cardList:
-                cards.append(card.to_json())
-        return cards
-
+        self.Name = kwargs["name"] if "name" in kwargs.keys() else None
+        self.Sex = kwargs["sex"] if "sex" in kwargs.keys() else 0
+        self.Address = kwargs["address"] if "address" in kwargs.keys() else None
+        self.Phone = kwargs["phone"] if "phone" in kwargs.keys() else None
+        self.Email = kwargs["email"] if "email" in kwargs.keys() else None
+        self.Card = kwargs["card"] if "card" in kwargs.keys() else []
     
     def to_json(self):
-        return {
-            "Name": self.Name,
-            "Sex": self.Sex,
-            "Address": self.Address.to_json(),
-            "Phone": self.Phone,
-            "Email": self.Email,
-            "Card": list_to_json(self.Card)
-        }
+        return json.dumps(self.__dict__, cls=DateTimeEncoder)
