@@ -3,8 +3,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models import account, user, database
 
 db = database.Database().get_db()
-account_collection = db['accounts']
-user_collection = db['users']
+accounts = db['accounts']
+users = db['users']
 account_blueprint = Blueprint('account', __name__)
 
 @account_blueprint.route('/register', methods=['GET','POST'])
@@ -38,8 +38,8 @@ def register():
             error = 'Confirmation password does not match'
 
         # check if email or username already exist
-        existUsername = account_collection.find_one({"Username": username})
-        existEmail = user_collection.find_one({"Email": email})
+        existUsername = accounts.find_one({"Username": username})
+        existEmail = users.find_one({"Email": email})
         if existUsername:
             error = f"Username {username} is already registered." 
         elif existEmail:
@@ -50,8 +50,8 @@ def register():
             new_account = account.Account(AccountNumber=accountNumber, Branch=branch, AccountOwner=accountOwner, Username=username, Password=password, 
                                   TransferMethod=[transferMethod], LoginMethod=[loginMethod], Service=[service])
             new_user = user.User(Name=accountOwner, Sex=sex, Address=address, Phone=phone, Email=email, Card=card)
-            account_collection.insert_one(new_account.to_json())
-            user_collection.insert_one(new_user.to_json())
+            accounts.insert_one(new_account.to_json())
+            users.insert_one(new_user.to_json())
             return redirect(url_for("account.register"))
                 
         flash(error)
