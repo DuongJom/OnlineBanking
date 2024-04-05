@@ -11,27 +11,27 @@ account_blueprint = Blueprint('account', __name__)
 def register():
     if request.method == 'POST':
         # get the data from post request
-        email = request.form['email']
-        username = request.form['username']
-        password = request.form['password']
+        email = request.form['Email']
+        username = request.form['Username']
+        password = request.form['Password']
         confirmPassword = request.form['confirmPassword']
-        accountNumber = ' '
-        branch = ' '
-        accountOwner = ' '
-        loginMethod = [ ]
-        transferMethod = [ ]
-        service = [ ]
-        Sex=' '
-        Address=' '
-        Phone=' '
-        Card=[ ]
+        accountNumber = ''
+        branch = request.form['Branch']
+        accountOwner = request.form['AccountOwner']
+        loginMethod = request.form['LoginMethod']
+        transferMethod = request.form['TransferMethod']
+        service = request.form['Service']
+        sex = request.form['Sex']
+        address = request.form['Address']
+        phone = request.form['Phone']
+        card = request.form['Card']
 
         # check if user input email and password or not
         error = None
         if not email:
-            error = 'email is required.'
+            error = 'Email is required.'
         elif not username:
-            error = 'username is required.'
+            error = 'Username is required.'
         elif not password:
             error = 'Password is required.'
         elif password != confirmPassword:
@@ -47,11 +47,11 @@ def register():
 
         # insert the document to the collection if there is no error
         if error is None:
-            acc = account.Account(accountNumber, branch, accountOwner, username, password, 
-                                  loginMethod, transferMethod, service)
-            client = user.User(username, Sex, Address, Phone, email, Card)
-            account_collection.insert_one(acc.to_json())
-            user_collection.insert_one(client.to_json())
+            new_account = account.Account(AccountNumber=accountNumber, Branch=branch, AccountOwner=accountOwner, Username=username, Password=password, 
+                                  TransferMethod=[transferMethod], LoginMethod=[loginMethod], Service=[service])
+            new_user = user.User(Name=accountOwner, Sex=sex, Address=address, Phone=phone, Email=email, Card=card)
+            account_collection.insert_one(new_account.to_json())
+            user_collection.insert_one(new_user.to_json())
             return redirect(url_for("account.register"))
                 
         flash(error)
