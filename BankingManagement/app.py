@@ -10,7 +10,6 @@ app = Flask(__name__)
 
 app.secret_key = os.getenv('SECRET_KEY')
 
-
 app.register_blueprint(account_controller.account_blueprint)
 app.register_blueprint(home_controller.home_blueprint)
     
