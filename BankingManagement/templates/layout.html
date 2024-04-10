@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}" type="text/css" />
     <title>{% block title %}{% endblock %}</title>
   </head>
-  <body class="h-full bg-gray-100">
+  <body class="overflow-y-hidden bg-gray-100">
     {% if session["user_id"] %}
     <nav class="bg-gray-600 fixed w-full z-20 top-0 start-0">
       <div class="mx-auto max-w-7xl flex h-16 px-4 sm:px-6 lg:px-8 justify-between">

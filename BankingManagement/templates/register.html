@@ -18,14 +18,14 @@
 		<div class="w-1/2 sm:w-full mt-6 ">
 			<div class="flex items-center">
 				<label
-				for="Username"
+				for="username"
 				class="label_field">Username
 				</label>
 			</div>
 			<div class="mt-2">
 				<input
-					id="Username"
-					name="Username"
+					id="username"
+					name="username"
 					type="text"
 					autocomplete="off"
 					required
@@ -36,19 +36,33 @@
 		<div class="w-1/2 sm:w-full">
 			<div class="flex items-center">
 				<label
-					for="Email"
-					class="label_field">Email address
+					for="fullName"
+					class="label_field">Full Name
 				</label>
 			</div>
 			<div class="mt-2">
 				<input
-					id="Email"
-					name="Email"
-					type="email"
+					id="fullName"
+					name="fullName"
+					type="text"
 					autocomplete="off"
 					required
 					class="input_field" />
 			</div>
+		</div>
+
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label for="branch" class="label_field">Branch
+				</label>
+			</div>
+			<select id="branch" name="branch" class="select_field">
+				<option selected value="-1">Choose a branch</option>
+				{% for branch in branch_list %}
+				<option value="{{branch._id}}">{{branch.BranchName}}</option>
+				{% endfor %}
+			</select>
 		</div>
 
 		<div class="w-1/2 sm:w-full">
@@ -61,12 +75,40 @@
 			<div class="mt-2">
 				<input
 					id="password"
-					name="Password"
+					name="password"
 					type="password"
 					autocomplete="off"
 					required
 					class="input_field" />
 			</div>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label
+					for="address"
+					class="label_field">Address
+				</label>
+			</div>
+			<div class="mt-2">
+				<input
+					id="address"
+					name="address"
+					type="text"
+					autocomplete="off"
+					required
+					class="input_field" />
+			</div>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<label for="transferMethod" class="label_field">Transfer Method</label>
+			<select id="transferMethod" name="transferMethod" class="select_field">
+				<option selected value="-1">Choose a Transfer Method</option>
+				{% for transferMethod in transferMethod_list %}
+				<option value="{{transferMethod._id}}">{{transferMethod.MethodName}}</option>
+				{% endfor %}
+			</select>
 		</div>
 
 		<div class="w-1/2 sm:w-full">
@@ -90,15 +132,44 @@
 		<div class="w-1/2 sm:w-full">
 			<div class="flex items-center">
 				<label
-					for="AccountOwner"
-					class="label_field">Your fullname as in passport
+					for="phone"
+					class="label_field">Phone Number
 				</label>
 			</div>
 			<div class="mt-2">
 				<input
-					id="AccountOwner"
-					name="AccountOwner"
+					id="phone"
+					name="phone"
 					type="text"
+					autocomplete="off"
+					required
+					class="input_field" />
+			</div>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<label for="loginMethod" class="label_field">Login Method</label>
+			<select id="loginMethod" name="loginMethod" class="select_field">
+				<option selected  value="-1">Choose a Login Method</option>
+				{% for loginMethod in loginMethod_list %}
+				<option value="{{loginMethod._id}}">{{loginMethod.MethodName}}</option>
+				{% endfor %}
+				
+			</select>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label
+					for="email"
+					class="label_field">Email
+				</label>
+			</div>
+			<div class="mt-2">
+				<input
+					id="email"
+					name="email"
+					type="email"
 					autocomplete="off"
 					required
 					class="input_field" />
@@ -110,129 +181,81 @@
 				<p class="label_field">Sex
 				</p>
 			</div>
-			<div class="mt-2 flex flex-row justify-between px-4 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6">
+			<div class="mt-2 flex justify-between px-2 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6">
 				<div class="flex items-center">
 					<input
-						id="Male"
-						name="Sex"
+						id="male"
+						name="sex"
 						type="radio"
-						value="Male"
+						value="1"
 						class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-400 rounded-full focus:ring-blue-500" />
-					<label for="Male" class="ms-2 text-sm font-medium text-gray-900">Male</label>
+					<label for="male" class="ms-2 text-sm font-medium text-gray-900">Male</label>
 				</div>
 				<div class="flex items-center">
 					<input
-						id="Female"
-						name="Sex"
+						id="female"
+						name="sex"
 						type="radio"
-						value="Female"
+						value="2"
 						class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-400 rounded-full focus:ring-blue-500" />
-					<label for="Female" class="ms-2 text-sm font-medium text-gray-900">Female</label>
+					<label for="female" class="ms-2 text-sm font-medium text-gray-900">Female</label>
+				</div>
+				<div class="flex items-center">
+					<input
+						id="others"
+						name="sex"
+						type="radio"
+						value="0"
+						class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-400 rounded-full focus:ring-blue-500" />
+					<label for="others" class="ms-2 text-sm font-medium text-gray-900">Others</label>
 				</div>
 			</div>
 		</div>
 
 		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label
-					for="Phone"
-					class="label_field">Phone number
-				</label>
-			</div>
-			<div class="mt-2">
-				<input
-					id="Phone"
-					name="Phone"
-					type="text"
-					autocomplete="off"
-					required
-					class="input_field" />
-			</div>
+			<label for="service" class="label_field">Service</label>
+			<select id="service" name="service" class="select_field">
+				<option selected value="-1">Choose a Service</option>
+				{% for service in service_list %}
+				<option value="{{service._id}}">{{service.ServiceName}}</option>
+				{% endfor %}
+			</select>
 		</div>
 
 		<div class="w-1/2 sm:w-full">
 			<div class="flex items-center">
 				<label
-					for="Address"
-					class="label_field">Your address
+					for="card"
+					class="label_field">Card
 				</label>
 			</div>
 			<div class="mt-2">
 				<input
-					id="Address"
-					name="Address"
+					id="card"
+					name="card"
 					type="text"
 					autocomplete="off"
-					required
-					class="input_field" />
-			</div>
-		</div>
-
-		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label
-					for="Card"
-					class="label_field">Your card
-				</label>
-			</div>
-			<div class="mt-2">
+					value="{{card_infor.cardNumber}}"
+					readonly
+					class="input_field text-gray-400 " />
 				<input
-					id="Card"
-					name="Card"
+					id="accountNumber"
+					name="accountNumber"
 					type="text"
 					autocomplete="off"
-					required
-					class="input_field" />
+					hidden
+					value="{{card_infor.accountNumber}}"
+					 />
+				<input
+					id="cvvNumber"
+					name="cvvNumber"
+					type="text"
+					autocomplete="off"
+					hidden
+					value="{{card_infor.cvvNumber}}"
+					 />
 			</div>
 		</div>
-
-		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label for="Branch" class="label_field">Select the branch
-				</label>
-			</div>
-			<select id="Branch" name="Branch" class="select_field">
-				<option selected>Choose a branch</option>
-				<option value="Branch 1">Branch 1</option>
-				<option value="Branch 2">Branch 2</option>
-				<option value="Branch 3">Branch 3</option>
-				<option value="Branch 4">Branch 4</option>
-			</select>
-		</div>
-
-		<div class="w-1/2 sm:w-full">
-			<label for="LoginMethod" class="label_field">Select the Login method</label>
-			<select id="LoginMethod" name="LoginMethod" class="select_field">
-				<option selected>Choose a LoginMethod</option>
-				<option value="LoginMethod 1">LoginMethod 1</option>
-				<option value="LoginMethod 2">LoginMethod 2</option>
-				<option value="LoginMethod 3">LoginMethod 3</option>
-				<option value="LoginMethod 4">LoginMethod 4</option>
-			</select>
-		</div>
-
-		<div class="w-1/2 sm:w-full">
-			<label for="TransferMethod" class="label_field">Select the Transfer Method</label>
-			<select id="TransferMethod" name="TransferMethod" class="select_field">
-				<option selected>Choose a TransferMethod</option>
-				<option value="TransferMethod 1">TransferMethod 1</option>
-				<option value="TransferMethod 2">TransferMethod 2</option>
-				<option value="TransferMethod 3">TransferMethod 3</option>
-				<option value="TransferMethod 4">TransferMethod 4</option>
-			</select>
-		</div>
-
-		<div class="w-1/2 sm:w-full">
-			<label for="Service" class="label_field">Select the Service</label>
-			<select id="Service" name="Service" class="select_field">
-				<option selected>Choose a Service</option>
-				<option value="Service 1">Service 1</option>
-				<option value="Service 2">Service 2</option>
-				<option value="Service 3">Service 3</option>
-				<option value="Service 4">Service 4</option>
-			</select>
-		</div>
-
 
 		<div class="sm:col-end-4 justify-self-end">
 			<button
