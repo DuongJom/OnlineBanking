@@ -7,6 +7,7 @@ from controllers import home_controller, account_controller
 load_dotenv()
 
 app = Flask(__name__)
+
 app.secret_key = os.getenv('SECRET_KEY')
 
 app.register_blueprint(account_controller.account_blueprint)

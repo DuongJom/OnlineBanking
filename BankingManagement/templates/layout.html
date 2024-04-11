@@ -1,12 +1,21 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-        <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
-        <title>{% block title %}{% endblock %}</title>
-    </head>
-    <body>
-        {% block content %}{% endblock %}
-    </body>
+<html class="h-full bg-white">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}" type="text/css" />
+    <title>{% block title %}{% endblock %}</title>
+  </head>
+  <body class="overflow-y-hidden">
+    {% include 'header.html' %}
+
+    {% for message in get_flashed_messages() %}
+    <div class="flex w-full justify-center bg-red-400 px-3 py-1.5 text-sm 
+    font-semibold leading-7 text-white">{{ message }}</div>
+    {% endfor %} 
+    
+    {% block content %}{% endblock %}
+
+    {% include 'footer.html' %}
+  </body>
 </html>
