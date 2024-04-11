@@ -41,36 +41,39 @@ def register():
         # check if email or username already exist, using .format() to format error message
         existUsername = accounts.find_one({"Username": username})
         existEmail = users.find_one({"Email": email})
+
         if existUsername:
             error = messages['username_existed'].format(username) 
         elif existEmail:
             error = messages['email_existed'].format(email) 
+        
+        if error:
+            flash(error)
+        
+        # get the date and expiry date of new card, insert new card into database
+        today = datetime.date.today()
+        cardExp = today.month,int(str(today.year+3)[2:])
 
         # insert the document to the collection if there is no error
-        if error is None:
-            # get the date and expiry date of new card, insert new card into database
-            today = datetime.date.today()
-            cardExp = today.month,int(str(today.year+3)[2:])
-            new_card = model_card.Card(cardNumber=card, cvv=cvvNumber, expiredDate=cardExp, issuanceDate=today)
-            cards.insert_one(new_card.to_json())
+        new_card = model_card.Card(cardNumber=card, cvv=cvvNumber, expiredDate=cardExp, issuanceDate=today)
+        cards.insert_one(new_card.to_json())
 
-            # insert new user into database
-            new_user = user.User(name=fullName, sex=sex, address=address, phone=phone, email=email, card=new_card)
-            users.insert_one(new_user.to_json())
+        # insert new user into database
+        new_user = user.User(name=fullName, sex=sex, address=address, phone=phone, email=email, card=new_card)
+        users.insert_one(new_user.to_json())
 
-            # insert new account into database
-            new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user, 
-                                          username=username, password=password, role=0, transferMethod=[transferMethod], 
-                                          loginMethod=[loginMethod], service=[service])
-            accounts.insert_one(new_account.to_json())
-            return redirect(url_for("account.register"))
-                
-        flash(error)
+        # insert new account into database
+        new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user, 
+                                        username=username, password=password, role=0, transferMethod=[transferMethod], 
+                                        loginMethod=[loginMethod], service=[service])
+        accounts.insert_one(new_account.to_json())
+        return redirect(url_for("account.register"))
+    
     elif request.method == 'GET':
         branch_list = branches.find()
         loginMethod_list = loginMethods.find()
         transferMethod_list = transferMethods.find()
         service_list = services.find()
-        card_infor = issueNewCard()
+        card_info = issueNewCard()
         return render_template('register.html', branch_list=branch_list, loginMethod_list=loginMethod_list,
-                               transferMethod_list=transferMethod_list, service_list=service_list, card_infor=card_infor)
+                               transferMethod_list=transferMethod_list, service_list=service_list, card_info=card_info)

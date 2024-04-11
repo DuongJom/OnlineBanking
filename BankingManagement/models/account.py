@@ -18,7 +18,3 @@ class Account(BaseModel):
     
     def to_json(self):
         return json.dumps(self.__dict__, cls=DateTimeEncoder)
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/Register-feature

@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% block title %} Register {% endblock %} 
+{% block title %} Register - Banking System {% endblock %} 
 {% block content %}
 <div class="flex mt-20 flex-col px-6 py-10 lg:px-8">
 	<div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -14,8 +14,8 @@
 	</div>
 
 <!-- <div class="mt-10 w-full sm:mx-auto sm:w-full sm:max-w-sm"> -->
-	<form class="sm:grid sm:grid-cols-3 sm:content-start sm:gap-x-6 sm:justify-center flex flex-col items-center space-y-6" action="/register" method="POST">
-		<div class="w-1/2 sm:w-full mt-6 ">
+	<form class="sm:grid sm:grid-cols-3 sm:content-start sm:gap-x-6 sm:justify-center flex flex-col items-center" action="/register" method="POST">
+		<div class="w-1/2 sm:w-full">
 			<div class="flex items-center">
 				<label
 				for="username"
@@ -235,7 +235,7 @@
 					name="card"
 					type="text"
 					autocomplete="off"
-					value="{{card_infor.cardNumber}}"
+					value="{{card_info.cardNumber}}"
 					readonly
 					class="input_field text-gray-400 " />
 				<input
@@ -244,7 +244,7 @@
 					type="text"
 					autocomplete="off"
 					hidden
-					value="{{card_infor.accountNumber}}"
+					value="{{card_info.accountNumber}}"
 					 />
 				<input
 					id="cvvNumber"
@@ -252,7 +252,7 @@
 					type="text"
 					autocomplete="off"
 					hidden
-					value="{{card_infor.cvvNumber}}"
+					value="{{card_info.cvvNumber}}"
 					 />
 			</div>
 		</div>
