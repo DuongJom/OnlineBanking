@@ -9,7 +9,8 @@ module.exports = {
       colors:{
         'bg-color' : '#2C3244',
         'bg-color2' : "#323A4E",
-        'hover-btn-bg-color' : '#D28FFF'
+        'hover-btn-bg-color' : '#D28FFF',
+        'hover-profile-color' : '#C1C7C6',
       },
       width:{
         '500px' : '500px',
