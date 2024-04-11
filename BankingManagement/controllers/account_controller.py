@@ -1,5 +1,6 @@
 import datetime
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
+from werkzeug.security import check_password_hash
 from models import account, user, card as model_card , database
 from message import messages
 from helpers import issueNewCard
@@ -13,6 +14,34 @@ transferMethods = db['transferMethods']
 loginMethods = db['loginMethods']
 services = db['services']
 account_blueprint = Blueprint('account', __name__)
+
+@account_blueprint.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        session.clear()
+        username = request.form.get("username")
+        password = request.form.get("password") 
+        remember_me = request.form.get("remember_me")
+        acc = accounts.find_one({"Username": username}) 
+
+        if acc is None:
+            flash(messages["invalid_information"])
+            return redirect(url_for('account.login'))
+        
+        if not check_password_hash(acc["Password"], password):
+            flash(messages['invalid_information'])
+            return redirect(url_for('account.login'))
+        
+        if remember_me:
+            session.permanent = True
+            current_app.config['PERMANENT_SESSION_LIFETIME'] = 1209600  # 2 weeks in seconds
+            session["userId"] = str(acc["_id"])
+        else:
+            session.permanent = False
+            session["userId"] = str(acc["_id"])
+        return redirect("/")
+                
+    return render_template('login.html')
 
 @account_blueprint.route('/register', methods=['GET','POST'])
 def register():
