@@ -1,14 +1,22 @@
-from flask import flash, Blueprint, render_template, request, redirect, session, url_for, current_app
-from werkzeug.security import check_password_hash, generate_password_hash
+import datetime
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
+from werkzeug.security import check_password_hash
 import json
 
-from models import database, user, account
+from models import account, user, card as model_card , database
 from message import messages
+from helpers import issueNewCard
 
 db = database.Database().get_db()
-
 accounts = db['accounts']
 users = db['users']
+
+branches = db['branches']
+cards = db['cards']
+transferMethods = db['transferMethods']
+loginMethods = db['loginMethods']
+services = db['services']
+
 account_blueprint = Blueprint('account', __name__)
 
 @account_blueprint.route('/login', methods=['GET', 'POST'])
@@ -41,33 +49,68 @@ def login():
                 
     return render_template('login.html')
 
-# @account_blueprint.route('/create', methods=['GET', 'POST'])
-# def create():
-#     if request.method == 'POST':
-#         # create user
-#         Name = "Dang Huu Hieu"
-#         Sex = 0
-#         Phone = "0523370115"
-#         Email = "huuhieu01@gmail.com"
-#         Card = "083564571234"
-#         Address =  "Thu Duc, Ho Chi Minh"
+@account_blueprint.route('/register', methods=['GET','POST'])
+def register():
+    if request.method == 'POST':
+        # get the data from post request
+        username = request.form['username']
+        fullName = request.form['fullName']
+        branch = request.form['branch']
+        password = request.form['password']
+        address = request.form['address']
+        transferMethod = request.form['transferMethod']
+        confirmPassword = request.form['confirmPassword']
+        phone = request.form['phone']
+        loginMethod = request.form['loginMethod']
+        email = request.form['email']
+        sex = request.form['sex']
+        service = request.form['service']
+        card = request.form['card']
+        accountNumber = request.form['accountNumber']
+        cvvNumber = request.form['cvvNumber']
 
-#         u = user.User(name=Name, sex=Sex, phone=Phone, email=Email, card=Card, address=Address)
+        # check if user input email and password or not, get error message from message.py
+        error = None
+        if password != confirmPassword:
+            error = messages['password_not_matched']
 
-#         user_document = json.loads(u.to_json()) 
-#         users.insert_one(user_document)
+        # check if email or username already exist, using .format() to format error message
+        existUsername = accounts.find_one({"Username": username})
+        existEmail = users.find_one({"Email": email})
 
-#         AccountNumber = "6454649416421005"
-#         Branch = "Ho Chi Minh"
-#         AccountOwner = json.loads(u.to_json())
-#         Username = "HuuHieu"
-#         Password = request.form.get('hehe')
+        if existUsername:
+            error = messages['username_existed'].format(username) 
+        elif existEmail:
+            error = messages['email_existed'].format(email) 
+        
+        if error:
+            flash(error)
+        
+        # get the date and expiry date of new card, insert new card into database
+        today = datetime.date.today()
+        cardExp = today.month,int(str(today.year+3)[2:])
 
-#         a = account.Account(accountNumber=AccountNumber, branch=Branch, user=AccountOwner, username=Username, password=Password) 
+        # insert the document to the collection if there is no error
+        new_card = model_card.Card(cardNumber=card, cvv=cvvNumber, expiredDate=cardExp, issuanceDate=today)
+        cards.insert_one(new_card.to_json())
 
-#         acc_doc = json.loads(a.to_json())
-#         accounts.insert_one(acc_doc)
+        # insert new user into database
+        new_user = user.User(name=fullName, sex=sex, address=address, phone=phone, email=email, card=new_card)
+        users.insert_one(new_user.to_json())
 
-#         return redirect('/create')
+        # insert new account into database
+        new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user, 
+                                        username=username, password=password, role=0, transferMethod=[transferMethod], 
+                                        loginMethod=[loginMethod], service=[service])
+        accounts.insert_one(new_account.to_json())
+        return redirect(url_for("account.register"))
+    
+    elif request.method == 'GET':
+        branch_list = branches.find()
+        loginMethod_list = loginMethods.find()
+        transferMethod_list = transferMethods.find()
+        service_list = services.find()
+        card_info = issueNewCard()
+        return render_template('register.html', branch_list=branch_list, loginMethod_list=loginMethod_list,
+                               transferMethod_list=transferMethod_list, service_list=service_list, card_info=card_info)
 
-#     return render_template("viewProfile.html")

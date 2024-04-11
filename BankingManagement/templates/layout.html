@@ -62,6 +62,7 @@
     </nav>
     {% endif %}
 
+
     {% for message in get_flashed_messages() %}
     <div class="flex w-full justify-center bg-red-400 px-3 py-1.5 text-sm 
     font-semibold leading-7 text-white">{{ message }}</div>
@@ -69,4 +70,6 @@
     
     {% block content %}{% endblock %}
   </body>
+
 </html>
+
