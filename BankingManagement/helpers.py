@@ -1,3 +1,4 @@
+import random
 from flask import redirect, session
 from functools import wraps
 
@@ -16,3 +17,12 @@ def list_to_json(objList):
             for obj in objList:
                 objs.append(obj.to_json())
         return objs
+
+def issueNewCard():
+            cardNum = str(random.randint(10**13,(10**14)-1))
+            accountNum = str(random.randint(10**13,(10**14)-1))
+            cvvNum = str(random.randint(100,999))
+            return {'cardNumber':cardNum, 
+                    'cvvNumber': cvvNum,
+                    'accountNumber': accountNum}
+        
