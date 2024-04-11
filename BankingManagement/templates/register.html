@@ -1,0 +1,270 @@
+{% extends 'layout.html' %}
+{% block title %} Register - Banking System {% endblock %} 
+{% block content %}
+<div class="flex mt-20 flex-col px-6 py-10 lg:px-8">
+	<div class="sm:mx-auto sm:w-full sm:max-w-sm">
+		<img
+			class="mx-auto h-10 w-auto"
+			src="../static/img/bank.png"
+			alt="Company" />
+		<h2
+			class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+			Register for an account
+		</h2>
+	</div>
+
+<!-- <div class="mt-10 w-full sm:mx-auto sm:w-full sm:max-w-sm"> -->
+	<form class="sm:grid sm:grid-cols-3 sm:content-start sm:gap-x-6 sm:justify-center flex flex-col items-center" action="/register" method="POST">
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label
+				for="username"
+				class="label_field">Username
+				</label>
+			</div>
+			<div class="mt-2">
+				<input
+					id="username"
+					name="username"
+					type="text"
+					autocomplete="off"
+					required
+					class="input_field" />
+			</div>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label
+					for="fullName"
+					class="label_field">Full Name
+				</label>
+			</div>
+			<div class="mt-2">
+				<input
+					id="fullName"
+					name="fullName"
+					type="text"
+					autocomplete="off"
+					required
+					class="input_field" />
+			</div>
+		</div>
+
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label for="branch" class="label_field">Branch
+				</label>
+			</div>
+			<select id="branch" name="branch" class="select_field">
+				<option selected value="-1">Choose a branch</option>
+				{% for branch in branch_list %}
+				<option value="{{branch._id}}">{{branch.BranchName}}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label
+					for="password"
+					class="label_field">Password
+				</label>
+			</div>
+			<div class="mt-2">
+				<input
+					id="password"
+					name="password"
+					type="password"
+					autocomplete="off"
+					required
+					class="input_field" />
+			</div>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label
+					for="address"
+					class="label_field">Address
+				</label>
+			</div>
+			<div class="mt-2">
+				<input
+					id="address"
+					name="address"
+					type="text"
+					autocomplete="off"
+					required
+					class="input_field" />
+			</div>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<label for="transferMethod" class="label_field">Transfer Method</label>
+			<select id="transferMethod" name="transferMethod" class="select_field">
+				<option selected value="-1">Choose a Transfer Method</option>
+				{% for transferMethod in transferMethod_list %}
+				<option value="{{transferMethod._id}}">{{transferMethod.MethodName}}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label
+					for="confirmPassword"
+					class="label_field">Confirmation Password
+				</label>
+			</div>
+			<div class="mt-2">
+				<input
+					id="confirmPassword"
+					name="confirmPassword"
+					type="password"
+					autocomplete="off"
+					required
+					class="input_field" />
+			</div>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label
+					for="phone"
+					class="label_field">Phone Number
+				</label>
+			</div>
+			<div class="mt-2">
+				<input
+					id="phone"
+					name="phone"
+					type="text"
+					autocomplete="off"
+					required
+					class="input_field" />
+			</div>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<label for="loginMethod" class="label_field">Login Method</label>
+			<select id="loginMethod" name="loginMethod" class="select_field">
+				<option selected  value="-1">Choose a Login Method</option>
+				{% for loginMethod in loginMethod_list %}
+				<option value="{{loginMethod._id}}">{{loginMethod.MethodName}}</option>
+				{% endfor %}
+				
+			</select>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label
+					for="email"
+					class="label_field">Email
+				</label>
+			</div>
+			<div class="mt-2">
+				<input
+					id="email"
+					name="email"
+					type="email"
+					autocomplete="off"
+					required
+					class="input_field" />
+			</div>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<p class="label_field">Sex
+				</p>
+			</div>
+			<div class="mt-2 flex justify-between px-2 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6">
+				<div class="flex items-center">
+					<input
+						id="male"
+						name="sex"
+						type="radio"
+						value="1"
+						class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-400 rounded-full focus:ring-blue-500" />
+					<label for="male" class="ms-2 text-sm font-medium text-gray-900">Male</label>
+				</div>
+				<div class="flex items-center">
+					<input
+						id="female"
+						name="sex"
+						type="radio"
+						value="2"
+						class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-400 rounded-full focus:ring-blue-500" />
+					<label for="female" class="ms-2 text-sm font-medium text-gray-900">Female</label>
+				</div>
+				<div class="flex items-center">
+					<input
+						id="others"
+						name="sex"
+						type="radio"
+						value="0"
+						class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-400 rounded-full focus:ring-blue-500" />
+					<label for="others" class="ms-2 text-sm font-medium text-gray-900">Others</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<label for="service" class="label_field">Service</label>
+			<select id="service" name="service" class="select_field">
+				<option selected value="-1">Choose a Service</option>
+				{% for service in service_list %}
+				<option value="{{service._id}}">{{service.ServiceName}}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="w-1/2 sm:w-full">
+			<div class="flex items-center">
+				<label
+					for="card"
+					class="label_field">Card
+				</label>
+			</div>
+			<div class="mt-2">
+				<input
+					id="card"
+					name="card"
+					type="text"
+					autocomplete="off"
+					value="{{card_info.cardNumber}}"
+					readonly
+					class="input_field text-gray-400 " />
+				<input
+					id="accountNumber"
+					name="accountNumber"
+					type="text"
+					autocomplete="off"
+					hidden
+					value="{{card_info.accountNumber}}"
+					 />
+				<input
+					id="cvvNumber"
+					name="cvvNumber"
+					type="text"
+					autocomplete="off"
+					hidden
+					value="{{card_info.cvvNumber}}"
+					 />
+			</div>
+		</div>
+
+		<div class="sm:col-end-4 justify-self-end">
+			<button
+				type="submit"
+				class="w-32 h-10 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 
+				focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Register
+			</button>
+		</div>
+	</form>
+	<!-- </div> -->
+</div>
+{% endblock %}
