@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models import account, user, card as model_card , database
 from message import messages
 from helpers import issueNewCard
+
 db = database.Database().get_db()
 accounts = db['accounts']
 users = db['users']
