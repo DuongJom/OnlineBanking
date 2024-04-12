@@ -82,7 +82,7 @@ def register():
         
         # get the date and expiry date of new card, insert new card into database
         today = datetime.date.today()
-        cardExp = today.month,int(str(today.year+3)[2:])
+        cardExp = today + datetime.timedelta(days=365 * 3)
 
         # insert the document to the collection if there is no error
         new_card = model_card.Card(cardNumber=card, cvv=cvvNumber, expiredDate=cardExp, issuanceDate=today)
@@ -97,7 +97,7 @@ def register():
                                         username=username, password=password, role=0, transferMethod=[transferMethod], 
                                         loginMethod=[loginMethod], service=[service])
         accounts.insert_one(new_account.to_json())
-        return redirect(url_for("account.register"))
+        return redirect(url_for("account.login"))
     
     elif request.method == 'GET':
         branch_list = branches.find()
