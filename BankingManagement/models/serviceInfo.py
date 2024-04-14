@@ -9,4 +9,4 @@ class ServiceInfo(BaseModel):
         self.TotalAmount = kwargs["totalAmount"] if "totalAmount" in kwargs.keys() else 0
 
     def to_json(self):
-        return json.dumps(self.__dict__, cls=DateTimeEncoder)
+        return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

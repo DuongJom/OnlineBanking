@@ -1,4 +1,5 @@
 import datetime
+import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 from werkzeug.security import check_password_hash
 from models import account, user, card as model_card , database
@@ -79,13 +80,9 @@ def register():
         
         if error:
             flash(error)
-        
-        # get the date and expiry date of new card, insert new card into database
-        today = datetime.date.today()
-        cardExp = today + datetime.timedelta(days=365 * 3)
 
         # insert the document to the collection if there is no error
-        new_card = model_card.Card(cardNumber=card, cvv=cvvNumber, expiredDate=cardExp, issuanceDate=today)
+        new_card = model_card.Card(cardNumber=card, cvv=cvvNumber)
         cards.insert_one(new_card.to_json())
 
         # insert new user into database

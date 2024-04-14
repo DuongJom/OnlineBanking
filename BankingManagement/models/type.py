@@ -9,4 +9,4 @@ class Type(BaseModel):
         self.TypeValue = kwargs["typeValue"] if "typeValue" in kwargs.keys() else None
 
     def to_json(self):
-        return json.dumps(self.__dict__, cls=DateTimeEncoder)
+        return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

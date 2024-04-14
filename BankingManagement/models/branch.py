@@ -9,4 +9,4 @@ class Branch(BaseModel):
         self.Address = kwargs["address"] if "address" in kwargs.keys() else None
 
     def to_json(self):
-        return json.dumps(self.__dict__, cls=DateTimeEncoder)
+        return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

@@ -12,4 +12,4 @@ class Service(BaseModel):
         self.ServiceInfos.append(serviceInfo)
 
     def to_json(self):
-        return json.dumps(self.__dict__, cls=DateTimeEncoder)
+        return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))
