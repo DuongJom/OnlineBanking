@@ -1,10 +1,9 @@
-import datetime
-import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 from werkzeug.security import check_password_hash
 from models import account, user, card as model_card , database
 from message import messages
 from helpers import issueNewCard
+from  SysEnum import RoleEnum
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -14,6 +13,7 @@ cards = db['cards']
 transferMethods = db['transferMethods']
 loginMethods = db['loginMethods']
 services = db['services']
+
 account_blueprint = Blueprint('account', __name__)
 
 @account_blueprint.route('/login', methods=['GET', 'POST'])
@@ -40,7 +40,13 @@ def login():
         else:
             session.permanent = False
             session["userId"] = str(acc["_id"])
-        return redirect("/")
+        
+        if acc["role"] == RoleEnum.USER:
+            return redirect("/")
+        elif acc["role"] == RoleEnum.EMPLOYEE:
+            return redirect("/employee/")
+        else:
+            return redirect("/admin/")
                 
     return render_template('login.html')
 
@@ -50,16 +56,16 @@ def register():
         # get the data from post request
         username = request.form['username']
         fullName = request.form['fullName']
-        branch = request.form['branch']
+        branch_id = request.form['branch']
         password = request.form['password']
         address = request.form['address']
-        transferMethod = request.form['transferMethod']
+        transferMethod_id = request.form['transferMethod']
         confirmPassword = request.form['confirmPassword']
         phone = request.form['phone']
-        loginMethod = request.form['loginMethod']
+        loginMethod_id = request.form['loginMethod']
         email = request.form['email']
         sex = request.form['sex']
-        service = request.form['service']
+        service_id = request.form['service']
         card = request.form['card']
         accountNumber = request.form['accountNumber']
         cvvNumber = request.form['cvvNumber']
@@ -80,6 +86,7 @@ def register():
         
         if error:
             flash(error)
+            return redirect(url_for("account.register"))
 
         # insert the document to the collection if there is no error
         new_card = model_card.Card(cardNumber=card, cvv=cvvNumber)
@@ -89,9 +96,16 @@ def register():
         new_user = user.User(name=fullName, sex=sex, address=address, phone=phone, email=email, card=new_card)
         users.insert_one(new_user.to_json())
 
+        # get data from database
+        branch = branches.find_one({"_id": branch_id})
+        transferMethod = transferMethods.find_one({"_id": transferMethod_id})
+        loginMethod = loginMethods.find_one({"_id": loginMethod_id})
+        service = service.find_one({"_id": service_id})
+
         # insert new account into database
         new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user, 
-                                        username=username, password=password, role=0, transferMethod=[transferMethod], 
+                                        username=username, password=password, role=RoleEnum.USER, 
+                                        transferMethod=[transferMethod], 
                                         loginMethod=[loginMethod], service=[service])
         accounts.insert_one(new_account.to_json())
         return redirect(url_for("account.login"))

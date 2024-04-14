@@ -2,7 +2,6 @@ import random
 from flask import redirect, session
 from functools import wraps
 
-
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -11,18 +10,13 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-def list_to_json(objList):
-        objs = []
-        if objList is not None:
-            for obj in objList:
-                objs.append(obj.to_json())
-        return objs
-
 def issueNewCard():
-            cardNum = str(random.randint(10**13,(10**14)-1))
-            accountNum = str(random.randint(10**13,(10**14)-1))
-            cvvNum = str(random.randint(100,999))
-            return {'cardNumber':cardNum, 
-                    'cvvNumber': cvvNum,
-                    'accountNumber': accountNum}
+    cardNum = str(random.randint(10**13,(10**14)-1))
+    accountNum = str(random.randint(10**13,(10**14)-1))
+    cvvNum = str(random.randint(100,999))
+    return {
+        'cardNumber':cardNum, 
+        'cvvNumber': cvvNum,
+        'accountNumber': accountNum
+    }
         
