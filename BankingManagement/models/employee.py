@@ -17,6 +17,6 @@ class Employee(BaseModel):
         self.Salary = kwargs["salary"] if "salary" in kwargs.keys() else None
     
     def to_json(self):
-        return json.dumps(self.__dict__, cls=DateTimeEncoder)
+        return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))
 
 

@@ -13,4 +13,4 @@ class User(BaseModel):
         self.Card = kwargs["card"] if "card" in kwargs.keys() else []
     
     def to_json(self):
-        return json.dumps(self.__dict__, cls=DateTimeEncoder)
+        return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))
