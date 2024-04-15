@@ -10,7 +10,7 @@
     }
 
     .label_field {
-        @apply block text-sm font-medium leading-6 text-gray-900
+        @apply block mt-3 text-sm font-medium leading-6 text-gray-900
     }
     
     .select_field {
