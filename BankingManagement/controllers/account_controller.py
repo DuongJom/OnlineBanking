@@ -103,7 +103,7 @@ def register():
         service = service.find_one({"_id": service_id})
 
         # insert new account into database
-        new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user, 
+        new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user.to_json(), 
                                         username=username, password=password, role=RoleEnum.USER, 
                                         transferMethod=[transferMethod], 
                                         loginMethod=[loginMethod], service=[service])
