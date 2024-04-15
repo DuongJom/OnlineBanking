@@ -34,7 +34,6 @@ def login():
             return redirect(url_for('account.login'))
         
         if not check_password_hash(acc["Password"], password):
-            print("Sai mật khẩu")
             flash(messages['invalid_information'])
             return redirect(url_for('account.login'))
         
@@ -92,6 +91,7 @@ def register():
 
         # insert the document to the collection if there is no error
         new_card = model_card.Card(cardNumber=card, cvv=cvvNumber, expiredDate=cardExp, issuanceDate=today)
+        print(new_card.to_json())
         cards.insert_one(new_card.to_json())
 
         # insert new user into database

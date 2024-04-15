@@ -33,7 +33,7 @@ Dự án sử dụng các công nghệ sau:
 - Quản trị viên:
 	+ Quản lý tài khoản
 	+ Quản lý người dùng
-	+ Quản lý nhân viên
+	+ Quản lý nhân viên                                                                    
 	+ Quản lý chi nhánh/PGD
 
 <b>Database:</b>
