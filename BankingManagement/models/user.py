@@ -1,17 +1,24 @@
+import json
 import os
 import jwt
 from time import time
-from base import BaseModel
-class User(BaseModel):
-    def __init__(self, Name, Sex, Address, Phone, Email, CardID):
-        self.Name = Name
-        self.Sex = Sex
-        self.Address = Address
-        self.Phone = Phone
-        self.Email = Email
-        self.CardID = CardID
+from models.base import BaseModel
+from models.datetimeEncoder import DateTimeEncoder
 
-    #  send the user an email that contains the JWT associated with their account
+class User(BaseModel):
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.Name = kwargs["name"] if "name" in kwargs.keys() else None
+        self.Sex = kwargs["sex"] if "sex" in kwargs.keys() else 0
+        self.Address = kwargs["address"] if "address" in kwargs.keys() else None
+        self.Phone = kwargs["phone"] if "phone" in kwargs.keys() else None
+        self.Email = kwargs["email"] if "email" in kwargs.keys() else None
+        self.Card = kwargs["card"] if "card" in kwargs.keys() else []
+    
+    def to_json(self):
+        return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))
+    
+    #send the user an email that contains the JWT associated with their account
     def get_reset_token(self, expires=500):
         return jwt.encode({'reset_password': self.username,
                            'exp':    time() + expires},
@@ -26,12 +33,3 @@ class User(BaseModel):
             return
         return User
     
-    def to_json(self):
-        return {
-            "Name": self.Name,
-            "Sex":self.Sex,
-            "Address": self.Address,
-            "Phone":self.Phone,
-            "Email":self.Email,
-            "CardID":self.CardID
-        }

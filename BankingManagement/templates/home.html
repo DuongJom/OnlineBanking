@@ -5,8 +5,11 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="bg-sky-500">Index</h1>
-    <p>
+    {% include "header.html" %}
+    <h1 class="bg-red-800">Index</h1>
+    <p class="text-emerald-500">
         This is home page.
     </p>
+    <p>{{user_login.Username}} is login</p>
+    {% include "footer.html" %}
 {% endblock %}
