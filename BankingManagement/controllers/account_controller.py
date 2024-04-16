@@ -1,11 +1,13 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, Response
 from werkzeug.security import check_password_hash
 import json
+from bson import ObjectId
 
 from models import account, user, card as model_card , database
 from message import messages
 from helpers import issueNewCard
-from  SysEnum import RoleEnum
+from SysEnum import RoleEnum
+from helpers import login_required
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -31,11 +33,11 @@ def login():
 
         if acc is None:
             flash(messages["invalid_information"])
-            return redirect(url_for('account.login'))
+            return render_template("login.html")
         
         if not check_password_hash(acc["Password"], password):
             flash(messages['invalid_information'])
-            return redirect(url_for('account.login'))
+            return render_template("login.html")
         
         if remember_me:
             session.permanent = True
@@ -44,14 +46,14 @@ def login():
         else:
             session.permanent = False
             session["userId"] = str(acc["_id"])
-        
-        if acc["role"] == RoleEnum.USER:
-            return redirect("/")
-        elif acc["role"] == RoleEnum.EMPLOYEE:
-            return redirect("/employee/")
-        else:
-            return redirect("/admin/")
-                
+
+        if acc["Role"] == RoleEnum.USER.value:
+            return redirect(url_for("home.index"))
+        elif acc["Role"] == RoleEnum.EMPLOYEE.value:
+            return redirect(url_for("employee"))
+        elif acc["Role"] == RoleEnum.ADMIN.value:
+            return redirect(url_for("admin"))
+    session.clear()
     return render_template('login.html')
 
 @account_blueprint.route('/register', methods=['GET','POST'])
@@ -99,17 +101,17 @@ def register():
         cards.insert_one(new_card.to_json())
 
         # insert new user into database
-        new_user = user.User(name=fullName, sex=sex, address=address, phone=phone, email=email, card=new_card)
+        new_user = user.User(name=fullName, sex=sex, address=address, phone=phone, email=email, card=new_card.to_json())
         users.insert_one(new_user.to_json())
 
         # get data from database
         branch = branches.find_one({"_id": branch_id})
         transferMethod = transferMethods.find_one({"_id": transferMethod_id})
         loginMethod = loginMethods.find_one({"_id": loginMethod_id})
-        service = service.find_one({"_id": service_id})
+        service = services.find_one({"_id": service_id})
 
         # insert new account into database
-        new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user, 
+        new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user.to_json(), 
                                         username=username, password=password, role=RoleEnum.USER, 
                                         transferMethod=[transferMethod], 
                                         loginMethod=[loginMethod], service=[service])
@@ -124,4 +126,27 @@ def register():
         card_info = issueNewCard()
         return render_template('register.html', branch_list=branch_list, loginMethod_list=loginMethod_list,
                                transferMethod_list=transferMethod_list, service_list=service_list, card_info=card_info)
+    
+@account_blueprint.route('/viewprofile',  methods=['GET', 'POST'])
+@login_required
+def viewprofile():
+    if request.method == "GET":
+        userId = ObjectId(session.get("userId"))
+        account = accounts.find_one({"_id": userId})
+        return render_template("viewProfile.html", account = account)
+    elif request.method == "POST":
+        return Response("changed something")
+    
+@account_blueprint.route('/admin/', methods=['GET'])
+@login_required
+def admin():
+    if request.method == "GET":
+        return render_template("admin.html")  
+
+
+@account_blueprint.route('/employee/', methods=['GET'])
+@login_required
+def employee():
+    if request.method == "GET":
+        return render_template("employee.html")
 

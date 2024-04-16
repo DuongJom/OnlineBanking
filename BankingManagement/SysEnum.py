@@ -11,5 +11,5 @@ class RoleEnum(Enum):
     ADMIN = 2
 
 class CardTypeEnum(Enum):
-    CREDITS=0
+    CREDITS = 0
     DEBITS = 1
