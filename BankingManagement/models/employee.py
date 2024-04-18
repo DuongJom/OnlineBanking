@@ -12,7 +12,7 @@ class Employee(BaseModel):
         self.Address = kwargs["address"] if "address" in kwargs.keys() else None
         self.Check_in_time = kwargs["checkIn"] if "checkIn" in kwargs.keys() else None
         self.Check_out_time = kwargs["checkOut"] if "checkOut" in kwargs.keys() else None
-        self.Working_status = kwargs["workingStatus"] if "workingStatus" in kwargs.keys() else None
+        self.Status = kwargs["status"] if "status" in kwargs.keys() else None
         self.Working_days = kwargs["workingDays"] if "workingDays" in kwargs.keys() else []
         self.DayOffs = kwargs["dayOffs"] if "dayOffs" in kwargs.keys else []
         self.Salary = kwargs["salary"] if "salary" in kwargs.keys() else None

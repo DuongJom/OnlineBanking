@@ -27,3 +27,7 @@ class WorkingType(Enum):
 class DayOffType(Enum):
     PAID_LEAVE = 0
     UNPAID_LEAVE = 1
+
+class EmployeeStatusType(Enum):
+    WORKING = 0
+    LEAVE = 1
