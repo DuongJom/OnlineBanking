@@ -3,7 +3,8 @@ from werkzeug.security import check_password_hash
 from models import account, user, card as model_card , database
 from message import messages
 from helpers import issueNewCard, get_token, send_email
-from  SysEnum import RoleEnum
+from SysEnum import RoleType
+
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -41,9 +42,9 @@ def login():
             session.permanent = False
             session["userId"] = str(acc["_id"])
         
-        if acc["role"] == RoleEnum.USER:
+        if acc["role"] == RoleType.USER:
             return redirect("/")
-        elif acc["role"] == RoleEnum.EMPLOYEE:
+        elif acc["role"] == RoleType.EMPLOYEE:
             return redirect("/employee/")
         else:
             return redirect("/admin/")
@@ -104,7 +105,7 @@ def register():
 
         # insert new account into database
         new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user.to_json(), 
-                                        username=username, password=password, role=RoleEnum.USER, 
+                                        username=username, password=password, role=RoleType.USER, 
                                         transferMethod=[transferMethod], 
                                         loginMethod=[loginMethod], service=[service])
         accounts.insert_one(new_account.to_json())
