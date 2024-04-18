@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug.security import check_password_hash
 from models import account, user, card as model_card , database
 from message import messages
-from helpers import issueNewCard
+from helpers import issueNewCard, get_token, send_email
 from  SysEnum import RoleEnum
 
 db = database.Database().get_db()
@@ -129,18 +129,18 @@ def reset_email():
     if request.method == 'POST':
         user_email = request.form.get('email')
         # verify if user exist, send reset password page to the user's email
-        user = collection.find_one({'email': user_email})
+        user = users.find_one({'Email': user_email})
         if user:
+            token = get_token(user_email, salt='recovery_key')
             subject = "Password reset"
-            # dumps convert python object to JSON string
-            token = ts.dumps(user_email, salt='recover-key')
             recover_url = url_for('account.reset_with_token',token=token, _external=True)
             html = render_template('email/activate.html',recover_url=recover_url)
             send_email(user_email, subject, html)
         else:
             flash('User not exist')
             return render_template('reset_email.html')
-        return redirect(url_for('account.reset_email'))
+        flash('Check your email for password reset')
+        return redirect(url_for('account.login'))
     return render_template('reset_email.html')
 
 
