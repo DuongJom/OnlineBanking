@@ -30,18 +30,3 @@ def check_in(id):
         else:
             flash(messages["employee_not_exist"].format(id))
             return redirect(url_for("home"))
-        
-@employee_blueprint.route('/employee/check-out/<id>', methods=['PUT'])
-def check_out(id):
-    if request.method == 'PUT':
-        filter = {'_id': id}
-        updated_data = {
-            'Check_out_time': datetime.now()
-        }
-        employee = employees.find_one(filter)
-
-        if employee is not None:
-            employees.update_one(filter, {'$set': updated_data})
-        else:
-            flash(messages["invalid_information"])
-            return redirect(url_for("home"))
