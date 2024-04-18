@@ -16,12 +16,14 @@ class CardType(Enum):
 
 class WorkingType(Enum):
     OFF  = 0
-    WFH = 1
-    WORK_IN_COMPANY = 2
+    HALF_DAY = 1
+    VACATION = 2
+    WEDDING = 3
+    SICK = 4
+    WFH = 5
+    WORK_IN_COMPANY = 6
+    OTHER = 7
 
 class DayOffType(Enum):
-    HALF_DAY = 0
-    VACATION = 1
-    WEDDING = 2
-    SICK = 3
-    OTHER = 4
+    PAID_LEAVE = 0
+    UNPAID_LEAVE = 1
