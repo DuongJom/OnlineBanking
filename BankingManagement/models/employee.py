@@ -13,7 +13,8 @@ class Employee(BaseModel):
         self.Check_in_time = kwargs["checkIn"] if "checkIn" in kwargs.keys() else None
         self.Check_out_time = kwargs["checkOut"] if "checkOut" in kwargs.keys() else None
         self.Working_status = kwargs["workingStatus"] if "workingStatus" in kwargs.keys() else None
-        self.TotalDayOff =  kwargs["totalDayOff"] if "totalDayOff" in kwargs.keys() else None
+        self.Working_days = kwargs["workingDays"] if "workingDays" in kwargs.keys() else []
+        self.DayOffs = kwargs["dayOffs"] if "dayOffs" in kwargs.keys else []
         self.Salary = kwargs["salary"] if "salary" in kwargs.keys() else None
     
     def to_json(self):
