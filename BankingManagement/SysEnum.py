@@ -13,3 +13,7 @@ class RoleEnum(Enum):
 class CardTypeEnum(Enum):
     CREDITS=0
     DEBITS = 1
+
+class WorkingStatusEnum(Enum):
+    NO_WORKING = 0
+    WORKING = 1
