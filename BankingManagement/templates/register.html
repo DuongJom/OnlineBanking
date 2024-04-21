@@ -13,7 +13,8 @@
 	</div>
 
 	<form class="sm:grid sm:grid-cols-3 sm:content-start sm:gap-x-6 sm:justify-center flex flex-col mb-0 items-center" 
-			action="/register" method="post">
+			action="{{ url_for('account.register') }}" method="post">
+		<input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
 		<div class="w-1/2 sm:w-full">
 			<div class="flex items-center">
 				<label for="username" class="label_field">Username</label>

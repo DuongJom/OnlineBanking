@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 
 
-app = Flask(__name__, instance_relative_config=True)
+app = Flask(__name__)
 # to access configuration variables from root_file/config.py
 load_dotenv()
 app.secret_key = os.getenv('SECRET_KEY')

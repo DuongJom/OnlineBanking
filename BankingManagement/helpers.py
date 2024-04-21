@@ -32,6 +32,7 @@ def get_token(user_email, salt):
 
 def send_email(recipient, subject, html):
     msg = Message()
+    msg.sender = ("no-reply@gmail.com", app.config['MAIL_USERNAME'])
     msg.subject = subject
     msg.recipients = [recipient]
     msg.html = html
