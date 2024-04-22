@@ -127,50 +127,48 @@ def logout():
     session.clear()
     return redirect(url_for("account.login"))
 
-@account_blueprint.route('/reset_email', methods=['GET', 'POST'])
-def reset_email():
+@account_blueprint.route('/confirm_email', methods=['GET', 'POST'])
+def confirm_email():
     if request.method == 'POST':
         user_email = request.form.get('email')
         # verify if user exist, send reset password page to the user's email
         exist_user = users.find_one({'Email': user_email})
-        if exist_user:
-            token = get_token(user_email, salt='recovery_key')
-            subject = "Password reset"
-            recover_url = url_for('account.reset_with_token',token=token, _external=True)
-            html = render_template('email/activate.html',recover_url=recover_url)
-            send_email(user_email, subject, html)
-        else:
+
+        if not exist_user:
             flash(messages['invalid_email'].format(user_email), 'error')
-            return render_template('reset_email.html')
+            return render_template('confirm_email.html')
+        
+        token = get_token(user_email, salt='recovery_key')
+        subject = "Reset Password"
+        recover_url = url_for('account.reset_password',token=token, _external=True)
+        html = render_template('email/activate.html',recover_url=recover_url)
+        send_email(user_email, subject, html)
         flash(messages['link_sent'].format(user_email), 'success')
         return redirect(url_for('account.login'))
-    return render_template('reset_email.html')
+    return render_template('confirm_email.html')
 
 
-@account_blueprint.route('/reset_with_token/<token>', methods=["GET", "POST"])
-def reset_with_token(token):
-    try:
-       user_email=ts.loads(token, salt='recovery_key', max_age=86400)
-    except:
-        flash(messages['token_expired'], 'error')
-        return redirect(url_for('account.login'))
-
+@account_blueprint.route('/reset_password/<token>', methods=["GET", "POST"])
+def reset_password(token):
     if request.method == 'POST':
-        new_password = generate_password_hash(request.form.get('password'))
-        exist_user = users.find_one({'Email': user_email},{'_id':0})
-        print(accounts.find_one({'AccountOwner': exist_user}))
-        update_password = accounts.update_one(
-            {'AccountOwner': exist_user},
-            {"$set": {"Password": new_password}})
-        print(update_password)
-        # Check if the update was successful
-        if update_password.modified_count > 0:
-            flash(messages['update_success'].format('password'), 'success')
-            return redirect(url_for('account.login'))
-        else:
-            flash(messages['not_found'], 'error')
-            return redirect(url_for('account.reset_with_token', token=token))
-    elif request.method == 'GET':
-        return render_template('reset_with_token.html', token=token)
+        try:
+            user_email = ts.loads(token, salt='recovery_key', max_age=86400)
+            new_password = generate_password_hash(request.form.get('password'))
+            exist_user = users.find_one({'Email': user_email},{'_id':0})
 
-        
+            update_password = accounts.update_one(
+                {'AccountOwner': exist_user},
+                {"$set": {"Password": new_password}
+            })
+                
+            # Check if the update was successful
+            if update_password.modified_count > 0:
+                flash(messages['update_success'].format('password'), 'success')
+                return redirect(url_for('account.login'))
+                
+            flash(messages['not_found'], 'error')
+            return redirect(url_for('account.reset_password', token=token))
+        except:
+            flash(messages['token_expired'], 'error')
+            return redirect(url_for('account.login'))
+    return render_template('reset_password.html', token=token)
