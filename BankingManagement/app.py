@@ -9,6 +9,7 @@ app = Flask(__name__)
 # to access configuration variables from root_file/config.py
 load_dotenv()
 app.secret_key = os.getenv('SECRET_KEY')
+app.salt = os.getenv('salt')
 app.config.from_object('config')
 
 # initialize mail instance

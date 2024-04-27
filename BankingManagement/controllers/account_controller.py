@@ -4,6 +4,7 @@ from models import account, user, card as model_card , database
 from message import messages
 from helpers import issueNewCard, get_token, send_email, ts
 from SysEnum import RoleType
+from app import app
 
 
 db = database.Database().get_db()
@@ -138,11 +139,12 @@ def confirm_email():
             flash(messages['invalid_email'].format(user_email), 'error')
             return render_template('confirm_email.html')
         
-        token = get_token(user_email, salt='recovery_key')
+        token = get_token(user_email, salt=app.salt)
         subject = "Reset Password"
         recover_url = url_for('account.reset_password',token=token, _external=True)
         html = render_template('email/activate.html',recover_url=recover_url)
-        send_email(user_email, subject, html)
+        attachments = [{'path': './static/img/bank.png', 'filename':'bank.png', 'mime_type': 'image/png'}]
+        send_email(user_email, subject, html, attachments=attachments)
         flash(messages['link_sent'].format(user_email), 'success')
         return redirect(url_for('account.login'))
     return render_template('confirm_email.html')
@@ -152,7 +154,7 @@ def confirm_email():
 def reset_password(token):
     if request.method == 'POST':
         try:
-            user_email = ts.loads(token, salt='recovery_key', max_age=86400)
+            user_email = ts.loads(token, salt=app.salt, max_age=86400)
             new_password = generate_password_hash(request.form.get('password'))
             exist_user = users.find_one({'Email': user_email},{'_id':0})
 
