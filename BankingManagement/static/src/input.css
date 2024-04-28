@@ -2,6 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer components {
     .input_field {
         @apply block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset 
@@ -33,5 +34,4 @@
     .success {
         @apply flex w-full justify-center bg-green-400 px-3 py-1.5 text-sm font-semibold leading-7 text-white
     }
-
 }

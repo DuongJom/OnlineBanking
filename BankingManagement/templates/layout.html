@@ -8,16 +8,16 @@
     <title>{% block title %}{% endblock %} - DHC Banking System</title>
   </head>
   <body class="overflow-y-hidden">
+    <div class="flex flex-col justify-center">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="{{category}}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="{{category}}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %} 
-
-    
-    {% block content %}{% endblock %}
+      {% block content %}{% endblock %}
+    </div>
   </body>
 </html>

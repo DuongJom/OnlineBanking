@@ -135,7 +135,7 @@ def confirm_email():
         # verify if user exist, send reset password page to the user's email
         exist_user = users.find_one({'Email': user_email})
 
-        if not exist_user:
+        if exist_user is None:
             flash(messages['invalid_email'].format(user_email), 'error')
             return render_template('confirm_email.html')
         
