@@ -1,14 +1,6 @@
 @config "../../tailwind.config.js";
 @tailwind base;
 @tailwind components;
-.error {
-    @apply flex w-full justify-center bg-red-400 px-3 py-1.5 text-sm font-semibold leading-7 text-white;
-}
-
-.success {
-    @apply flex w-full justify-center bg-green-400 px-3 py-1.5 text-sm font-semibold leading-7 text-white;
-}
-
 @tailwind utilities;
 
 @layer components {
