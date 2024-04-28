@@ -27,3 +27,15 @@ class WorkingType(Enum):
 class DayOffType(Enum):
     PAID_LEAVE = 0
     UNPAID_LEAVE = 1
+
+class MIMEType(Enum):
+    TEXT = 0
+    PDF = 1
+    EXCEL_XLS = 2
+    EXCEL_XLSX = 3
+    EXCEL_XLSMS = 4
+    XML = 5
+    WORD_DOC = 6
+    WORD_DOT = 7
+    WORD_DOCX = 8
+    WORD_DOTX = 9
