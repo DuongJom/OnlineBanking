@@ -2,7 +2,7 @@ import json
 from  werkzeug.security import generate_password_hash
 from models.base import BaseModel
 from models.datetimeEncoder import DateTimeEncoder
-
+from SysEnum import RoleType
 class Account(BaseModel):
     def __init__(self, **kwargs):
         super().__init__()
@@ -11,7 +11,7 @@ class Account(BaseModel):
         self.AccountOwner = kwargs["user"] if "user" in kwargs.keys() else None
         self.Username = kwargs["username"] if "username" in kwargs.keys() else None
         self.Password = generate_password_hash(kwargs["password"]) if "password" in kwargs.keys() else None
-        self.Role = kwargs["role"] if "role" in kwargs.keys() else 0
+        self.Role = kwargs["role"] if "role" in kwargs.keys() else RoleType.USER.value
         self.TransferMethod = kwargs["transferMethod"] if "transferMethod" in kwargs.keys() else []
         self.LoginMethod = kwargs["loginMethod"] if "loginMethod" in kwargs.keys() else []
         self.Service = kwargs["service"] if "service" in kwargs.keys() else []
