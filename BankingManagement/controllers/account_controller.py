@@ -1,19 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
-from werkzeug.security import check_password_hash, generate_password_hash
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, Response
 from werkzeug.security import check_password_hash
-import json
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, Response
 from bson import ObjectId
 
 from models import account, user, card as model_card , database
 from message import messages
-from helpers import issueNewCard, get_token, send_email, ts
+from helpers import issueNewCard, get_token, send_email, ts, login_required
 from SysEnum import RoleType
 from app import app
-
-from helpers import issueNewCard
-from SysEnum import RoleEnum
-from helpers import login_required
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -40,14 +33,10 @@ def login():
         if acc is None:
             flash(messages["invalid_information"], 'error')
             return redirect(url_for('account.login'))
-            flash(messages["invalid_information"])
-            return render_template("login.html")
         
         if not check_password_hash(acc["Password"], password):
             flash(messages['invalid_information'], 'error')
             return redirect(url_for('account.login'))
-            flash(messages['invalid_information'])
-            return render_template("login.html")
         
         if remember_me:
             session.permanent = True
@@ -63,14 +52,6 @@ def login():
             return redirect("/employee/")
         else:
             return redirect("/admin/")
-                
-
-        if acc["Role"] == RoleEnum.USER.value:
-            return redirect(url_for("home.index"))
-        elif acc["Role"] == RoleEnum.EMPLOYEE.value:
-            return redirect(url_for("employee"))
-        elif acc["Role"] == RoleEnum.ADMIN.value:
-            return redirect(url_for("admin"))
     session.clear()
     return render_template('login.html')
 
@@ -130,8 +111,6 @@ def register():
         service = services.find_one({"_id": service_id})
 
         # insert new account into database
-        new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user.to_json(), 
-                                        username=username, password=password, role=RoleType.USER.value, 
         new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user.to_json(), 
                                         username=username, password=password, role=RoleEnum.USER, 
                                         transferMethod=[transferMethod], 
