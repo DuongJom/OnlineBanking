@@ -1,16 +1,10 @@
 from flask import Flask
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
-from dotenv import load_dotenv
-import os
-
+from init_app import init
 
 app = Flask(__name__)
-# to access configuration variables from root_file/config.py
-load_dotenv()
-app.secret_key = os.getenv('SECRET_KEY')
-app.salt = os.getenv('salt')
-app.config.from_object('config')
+app = init(app)
 
 # initialize mail instance
 mail = Mail(app)
@@ -19,11 +13,8 @@ csrf = CSRFProtect(app)
 
 from controllers import home_controller, account_controller
 
-
-
 app.register_blueprint(account_controller.account_blueprint)
 app.register_blueprint(home_controller.home_blueprint)
-    
 
 if __name__ == '__main__':
     app.run(debug=True)
