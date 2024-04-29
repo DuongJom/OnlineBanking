@@ -1,4 +1,7 @@
 import json
+import os
+import jwt
+from time import time
 from models.base import BaseModel
 from models.datetimeEncoder import DateTimeEncoder
 
@@ -14,3 +17,19 @@ class User(BaseModel):
     
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))
+    
+    #send the user an email that contains the JWT associated with their account
+    def get_reset_token(self, expires=500):
+        return jwt.encode({'reset_password': self.username,
+                           'exp':    time() + expires},
+                           key=os.getenv('SECRET_KEY_FLASK'))
+    
+    def verify_reset_token(self,token):
+        try:
+            username = jwt.decode(token, key=os.getenv('SECRET_KEY_FLASK'))['reset_password']
+            print(username)
+        except Exception as e:
+            print(e)
+            return
+        return User
+    

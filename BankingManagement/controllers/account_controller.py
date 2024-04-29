@@ -1,3 +1,5 @@
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, Response
 from werkzeug.security import check_password_hash
 import json
@@ -5,6 +7,10 @@ from bson import ObjectId
 
 from models import account, user, card as model_card , database
 from message import messages
+from helpers import issueNewCard, get_token, send_email, ts
+from SysEnum import RoleType
+from app import app
+
 from helpers import issueNewCard
 from SysEnum import RoleEnum
 from helpers import login_required
@@ -32,10 +38,14 @@ def login():
         acc = accounts.find_one({"Username": username}) 
 
         if acc is None:
+            flash(messages["invalid_information"], 'error')
+            return redirect(url_for('account.login'))
             flash(messages["invalid_information"])
             return render_template("login.html")
         
         if not check_password_hash(acc["Password"], password):
+            flash(messages['invalid_information'], 'error')
+            return redirect(url_for('account.login'))
             flash(messages['invalid_information'])
             return render_template("login.html")
         
@@ -46,6 +56,14 @@ def login():
         else:
             session.permanent = False
             session["userId"] = str(acc["_id"])
+        
+        if acc["Role"] == RoleType.USER.value:
+            return redirect("/")
+        elif acc["Role"] == RoleType.EMPLOYEE.value:
+            return redirect("/employee/")
+        else:
+            return redirect("/admin/")
+                
 
         if acc["Role"] == RoleEnum.USER.value:
             return redirect(url_for("home.index"))
@@ -91,7 +109,7 @@ def register():
             error = messages['email_existed'].format(email) 
         
         if error:
-            flash(error)
+            flash(error, 'error')
             return redirect(url_for("account.register"))
 
         # insert the document to the collection if there is no error
@@ -109,13 +127,18 @@ def register():
         transferMethod = transferMethods.find_one({"_id": transferMethod_id})
         loginMethod = loginMethods.find_one({"_id": loginMethod_id})
         service = services.find_one({"_id": service_id})
+        service = services.find_one({"_id": service_id})
 
         # insert new account into database
+        new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user.to_json(), 
+                                        username=username, password=password, role=RoleType.USER.value, 
         new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user.to_json(), 
                                         username=username, password=password, role=RoleEnum.USER, 
                                         transferMethod=[transferMethod], 
                                         loginMethod=[loginMethod], service=[service])
         accounts.insert_one(new_account.to_json())
+
+        flash(messages['success'].format(), 'success')
         return redirect(url_for("account.login"))
     
     elif request.method == 'GET':

@@ -1,11 +1,13 @@
+import os
+from dotenv import load_dotenv
 from pymongo import MongoClient
 
-uri = 'mongodb+srv://admin:admin123@cluster0.w1p8zp5.mongodb.net/?retryWrites=true&w=majority'
+load_dotenv()
 class Database:
     def __init__(self):
         # Create a new client and connect to the server
-        self.client = MongoClient(uri)
-        self.db = self.client['online-banking']
+        self.client = MongoClient(str(os.getenv('MONGODB_URI')))
+        self.db = self.client[str(os.getenv('DB_NAME'))]
 
     def get_db(self):
         return self.db
