@@ -1,10 +1,10 @@
 import random
-import os
-from flask import redirect, session, render_template
+from flask import redirect, session
 from functools import wraps
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
 from app import app, mail
+from SysEnum import MIMEType
 
 def login_required(f):
     @wraps(f)
@@ -56,3 +56,54 @@ def send_email(recipients, subject, html, cc=None, bcc=None, attachments = None)
                 msg.attach(attachment['filename'], attachment['mime_type'], attached_file.read())
 
     mail.send(msg)
+
+def getMIMETypeValue(mime_type: MIMEType):
+    prefix = 'application/'
+
+    if mime_type == MIMEType.HTML:
+        return 'text/html'
+    
+    if mime_type == MIMEType.TEXT:
+        return 'text/plain'
+    
+    if mime_type == MIMEType.IMG_PNG:
+        return 'image/png'
+    
+    if mime_type == MIMEType.IMG_JPG:
+        return 'image/jpeg'
+    
+    if mime_type == MIMEType.IMG_BMP:
+        return 'image/bmp'
+    
+    if mime_type == MIMEType.PDF:
+        return prefix + 'pdf'
+    
+    if mime_type == MIMEType.XML:
+        return prefix + 'xml'
+    
+    if mime_type == MIMEType.EXCEL_XLS:
+        return prefix + 'vnd.ms-excel'
+    
+    if mime_type == MIMEType.EXCEL_XLSX:
+        return prefix + 'vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    
+    if mime_type == MIMEType.EXCEL_XLSM:
+        return prefix + 'vnd.ms-excel.sheet.macroEnabled.12'
+    
+    if mime_type == MIMEType.WORD_DOC or mime_type == MIMEType.WORD_DOT:
+        return prefix + 'msword'
+    
+    if mime_type == MIMEType.WORD_DOCX:
+        return prefix + 'vnd.openxmlformats-officedocument.wordprocessingml.document'
+    
+    if mime_type == MIMEType.WORD_DOTX:
+        return prefix + 'vnd.openxmlformats-officedocument.wordprocessingml.template'
+    
+    if mime_type == MIMEType.AUDIO:
+        return 'audio/mp4;audio/mpeg;application/ogg'
+    
+    if mime_type == MIMEType.VIDEO:
+        return 'video/mpeg'
+    
+    
+    
