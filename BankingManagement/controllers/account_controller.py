@@ -1,6 +1,7 @@
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, Response
 from bson import ObjectId
+from datetime import datetime
 
 from models import account, user, card as model_card , database
 from message import messages
@@ -11,7 +12,6 @@ from app import app
 db = database.Database().get_db()
 accounts = db['accounts']
 users = db['users']
-
 branches = db['branches']
 cards = db['cards']
 transferMethods = db['transferMethods']
@@ -32,11 +32,11 @@ def login():
 
         if acc is None:
             flash(messages["invalid_information"], 'error')
-            return redirect(url_for('account.login'))
+            return render_template('login.html')
         
         if not check_password_hash(acc["Password"], password):
             flash(messages['invalid_information'], 'error')
-            return redirect(url_for('account.login'))
+            return render_template('login.html')
         
         if remember_me:
             session.permanent = True
@@ -45,7 +45,9 @@ def login():
         else:
             session.permanent = False
             session["userId"] = str(acc["_id"])
+            session["sex"] = str(acc['AccountOwner']['Sex'])
         
+        flash(messages['login_success'],'success')
         if acc["Role"] == RoleType.USER.value:
             return redirect("/")
         elif acc["Role"] == RoleType.EMPLOYEE.value:
@@ -129,26 +131,78 @@ def register():
         return render_template('register.html', branch_list=branch_list, loginMethod_list=loginMethod_list,
                                transferMethod_list=transferMethod_list, service_list=service_list, card_info=card_info)
     
-@account_blueprint.route('/viewprofile',  methods=['GET', 'POST'])
+@account_blueprint.route('/view-profile',  methods=['GET', 'POST'])
 @login_required
-def viewprofile():
+def view_profile():
     if request.method == "GET":
         userId = ObjectId(session.get("userId"))
         account = accounts.find_one({"_id": userId})
-        return render_template("viewProfile.html", account = account)
+        expired_date = datetime.fromisoformat(account['AccountOwner']['Card']['ExpiredDate']).date()
+        return render_template("viewProfile.html", account = account, expired_date = expired_date)
     elif request.method == "POST":
         return Response("changed something")
     
-@account_blueprint.route('/admin/', methods=['GET'])
+@account_blueprint.route('/admin', methods=['GET'])
 @login_required
 def admin():
     if request.method == "GET":
         return render_template("admin.html")  
 
 
-@account_blueprint.route('/employee/', methods=['GET'])
+@account_blueprint.route('/employee', methods=['GET'])
 @login_required
 def employee():
     if request.method == "GET":
         return render_template("employee.html")
 
+@account_blueprint.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("account.login"))
+
+@account_blueprint.route('/confirm_email', methods=['GET', 'POST'])
+def confirm_email():
+    if request.method == 'POST':
+        user_email = request.form.get('email')
+        # verify if user exist, send reset password page to the user's email
+        exist_user = users.find_one({'Email': user_email})
+
+        if exist_user is None:
+            flash(messages['invalid_email'].format(user_email), 'error')
+            return render_template('confirm_email.html')
+        
+        token = get_token(user_email, salt=app.salt)
+        subject = "Reset Password"
+        recover_url = url_for('account.reset_password',token=token, _external=True)
+        html = render_template('email/activate.html',recover_url=recover_url)
+        attachments = [{'path': './static/img/bank.png', 'filename':'bank.png', 'mime_type': 'image/png'}]
+        send_email(user_email, subject, html, attachments=attachments)
+        flash(messages['link_sent'].format(user_email), 'success')
+        return redirect(url_for('account.login'))
+    return render_template('confirm_email.html')
+
+
+@account_blueprint.route('/reset_password/<token>', methods=["GET", "POST"])
+def reset_password(token):
+    if request.method == 'POST':
+        try:
+            user_email = ts.loads(token, salt=app.salt, max_age=86400)
+            new_password = generate_password_hash(request.form.get('password'))
+            exist_user = users.find_one({'Email': user_email},{'_id':0})
+
+            update_password = accounts.update_one(
+                {'AccountOwner': exist_user},
+                {"$set": {"Password": new_password}
+            })
+                
+            # Check if the update was successful
+            if update_password.modified_count > 0:
+                flash(messages['update_success'].format('password'), 'success')
+                return redirect(url_for('account.login'))
+                
+            flash(messages['not_found'], 'error')
+            return redirect(url_for('account.reset_password', token=token))
+        except:
+            flash(messages['token_expired'], 'error')
+            return redirect(url_for('account.login'))
+    return render_template('reset_password.html', token=token)
