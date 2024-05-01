@@ -1,13 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, Response
-from werkzeug.security import check_password_hash
-import json
-from bson import ObjectId
-
+from werkzeug.security import check_password_hash, generate_password_hash
 from models import account, user, card as model_card , database
 from message import messages
-from helpers import issueNewCard
-from SysEnum import RoleEnum
-from helpers import login_required
+from helpers import issueNewCard, get_token, send_email, ts, login_required
+from SysEnum import RoleType
+from app import app
+from bson import ObjectId
+
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -46,12 +45,11 @@ def login():
         else:
             session.permanent = False
             session["userId"] = str(acc["_id"])
-
-        if acc["Role"] == RoleEnum.USER.value:
+        if acc["Role"] == RoleType.USER.value:
             return redirect(url_for("home.index"))
-        elif acc["Role"] == RoleEnum.EMPLOYEE.value:
+        elif acc["Role"] == RoleType.EMPLOYEE.value:
             return redirect(url_for("employee"))
-        elif acc["Role"] == RoleEnum.ADMIN.value:
+        elif acc["Role"] == RoleType.ADMIN.value:
             return redirect(url_for("admin"))
     session.clear()
     return render_template('login.html')
@@ -91,7 +89,7 @@ def register():
             error = messages['email_existed'].format(email) 
         
         if error:
-            flash(error)
+            flash(error, 'error')
             return redirect(url_for("account.register"))
 
         # insert the document to the collection if there is no error
@@ -112,10 +110,12 @@ def register():
 
         # insert new account into database
         new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user.to_json(), 
-                                        username=username, password=password, role=RoleEnum.USER, 
+                                        username=username, password=password, role=RoleType.USER.value, 
                                         transferMethod=[transferMethod], 
                                         loginMethod=[loginMethod], service=[service])
         accounts.insert_one(new_account.to_json())
+
+        flash(messages['success'].format(), 'success')
         return redirect(url_for("account.login"))
     
     elif request.method == 'GET':
@@ -150,3 +150,54 @@ def employee():
     if request.method == "GET":
         return render_template("employee.html")
 
+@account_blueprint.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("account.login"))
+
+@account_blueprint.route('/confirm_email', methods=['GET', 'POST'])
+def confirm_email():
+    if request.method == 'POST':
+        user_email = request.form.get('email')
+        # verify if user exist, send reset password page to the user's email
+        exist_user = users.find_one({'Email': user_email})
+
+        if exist_user is None:
+            flash(messages['invalid_email'].format(user_email), 'error')
+            return render_template('confirm_email.html')
+        
+        token = get_token(user_email, salt=app.salt)
+        subject = "Reset Password"
+        recover_url = url_for('account.reset_password',token=token, _external=True)
+        html = render_template('email/activate.html',recover_url=recover_url)
+        attachments = [{'path': './static/img/bank.png', 'filename':'bank.png', 'mime_type': 'image/png'}]
+        send_email(user_email, subject, html, attachments=attachments)
+        flash(messages['link_sent'].format(user_email), 'success')
+        return redirect(url_for('account.login'))
+    return render_template('confirm_email.html')
+
+
+@account_blueprint.route('/reset_password/<token>', methods=["GET", "POST"])
+def reset_password(token):
+    if request.method == 'POST':
+        try:
+            user_email = ts.loads(token, salt=app.salt, max_age=86400)
+            new_password = generate_password_hash(request.form.get('password'))
+            exist_user = users.find_one({'Email': user_email},{'_id':0})
+
+            update_password = accounts.update_one(
+                {'AccountOwner': exist_user},
+                {"$set": {"Password": new_password}
+            })
+                
+            # Check if the update was successful
+            if update_password.modified_count > 0:
+                flash(messages['update_success'].format('password'), 'success')
+                return redirect(url_for('account.login'))
+                
+            flash(messages['not_found'], 'error')
+            return redirect(url_for('account.reset_password', token=token))
+        except:
+            flash(messages['token_expired'], 'error')
+            return redirect(url_for('account.login'))
+    return render_template('reset_password.html', token=token)
