@@ -1,17 +1,17 @@
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, Response
 from werkzeug.security import check_password_hash, generate_password_hash
+from bson import ObjectId
+from datetime import datetime
 from models import account, user, card as model_card , database
 from message import messages
 from helpers import issueNewCard, get_token, send_email, ts, login_required
 from SysEnum import RoleType
 from app import app
-from bson import ObjectId
-
 
 db = database.Database().get_db()
 accounts = db['accounts']
 users = db['users']
-
 branches = db['branches']
 cards = db['cards']
 transferMethods = db['transferMethods']
@@ -31,12 +31,12 @@ def login():
         acc = accounts.find_one({"Username": username}) 
 
         if acc is None:
-            flash(messages["invalid_information"])
-            return render_template("login.html")
+            flash(messages["invalid_information"], 'error')
+            return render_template('login.html')
         
         if not check_password_hash(acc["Password"], password):
-            flash(messages['invalid_information'])
-            return render_template("login.html")
+            flash(messages['invalid_information'], 'error')
+            return render_template('login.html')
         
         if remember_me:
             session.permanent = True
@@ -45,12 +45,16 @@ def login():
         else:
             session.permanent = False
             session["userId"] = str(acc["_id"])
+
+            session["sex"] = str(acc['AccountOwner']['Sex'])
+        
+        flash(messages['login_success'],'success')
         if acc["Role"] == RoleType.USER.value:
-            return redirect(url_for("home.index"))
+            return redirect("/")
         elif acc["Role"] == RoleType.EMPLOYEE.value:
-            return redirect(url_for("employee"))
-        elif acc["Role"] == RoleType.ADMIN.value:
-            return redirect(url_for("admin"))
+            return redirect("/employee")
+        else:
+            return redirect("/admin")
     session.clear()
     return render_template('login.html')
 
@@ -107,6 +111,7 @@ def register():
         transferMethod = transferMethods.find_one({"_id": transferMethod_id})
         loginMethod = loginMethods.find_one({"_id": loginMethod_id})
         service = services.find_one({"_id": service_id})
+        service = services.find_one({"_id": service_id})
 
         # insert new account into database
         new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user.to_json(), 
@@ -127,28 +132,16 @@ def register():
         return render_template('register.html', branch_list=branch_list, loginMethod_list=loginMethod_list,
                                transferMethod_list=transferMethod_list, service_list=service_list, card_info=card_info)
     
-@account_blueprint.route('/viewprofile',  methods=['GET', 'POST'])
+@account_blueprint.route('/view-profile',  methods=['GET', 'POST'])
 @login_required
-def viewprofile():
+def view_profile():
     if request.method == "GET":
         userId = ObjectId(session.get("userId"))
         account = accounts.find_one({"_id": userId})
-        return render_template("viewProfile.html", account = account)
+        expired_date = datetime.fromisoformat(account['AccountOwner']['Card']['ExpiredDate']).date()
+        return render_template("viewProfile.html", account = account, expired_date = expired_date)
     elif request.method == "POST":
         return Response("changed something")
-    
-@account_blueprint.route('/admin/', methods=['GET'])
-@login_required
-def admin():
-    if request.method == "GET":
-        return render_template("admin.html")  
-
-
-@account_blueprint.route('/employee/', methods=['GET'])
-@login_required
-def employee():
-    if request.method == "GET":
-        return render_template("employee.html")
 
 @account_blueprint.route("/logout")
 def logout():
@@ -201,3 +194,4 @@ def reset_password(token):
             flash(messages['token_expired'], 'error')
             return redirect(url_for('account.login'))
     return render_template('reset_password.html', token=token)
+

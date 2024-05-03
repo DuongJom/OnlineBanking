@@ -8,5 +8,7 @@ messages = {
     'token_expired' : 'The link has been expired',
     'update_success' : 'You have successfully update your {0}',
     'not_found' : 'No document matching the filter criteria',
-    'success' : 'Successfully registered'
+    'success' : 'Successfully registered',
+    'login_success' : 'You have login successfully!',
+    'login_failure' : 'Login failed!'
 }

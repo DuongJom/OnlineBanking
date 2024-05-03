@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     const moreBtn = document.getElementById("moreBtn");
     const cardinfo = document.getElementById("cardInfo");
-    const right = document.getElementById("right-arrow");
-    const down = document.getElementById("down-arrow");
+    const right = document.getElementById("right-arrowv");
+    const down = document.getElementById("down-arrowv");
 
     moreBtn.addEventListener('click', () => {
         cardinfo.classList.toggle('hidden');
