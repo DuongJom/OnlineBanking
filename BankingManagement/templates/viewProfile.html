@@ -1,161 +1,162 @@
-{% extends "layout.html" %} {% block title %} View Profile {% endblock %} {%
-block content %}
-<div class="h-screen w-screen flex justify-center" 
-      style="background-image: url('../static/img/viewProfile.jpg'); background-repeat: no-repeat; background-size: cover;">
+{% extends "layout.html" %} 
+{% block title %} View Profile {% endblock %} 
+{% block content %}
+<div
+  class="h-screen w-screen flex justify-center"
+  style="
+    background-image: url('../static/img/viewProfile.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+  ">
   <form
-    method="post"   
-    action="/view-profile" 
-    class="w-3/4 flex items-center mt-16" style="height: calc(100vh - 64px);">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    method="post"
+    action="/view-profile"
+    class="w-3/4 flex items-center mt-16"
+    style="height: calc(100vh - 64px)">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <div class="w-full h-5/6 flex items-center">
       <!-- user info -->
       <div class="h-full flex flex-1 flex-col rounded-2xl shadow-2xl mr-6">
         <!-- avatar -->
-        <div class="w-full h-1/2 flex justify-center border-b border-gray-300 p-4">
+        <div
+          class="w-full h-1/2 flex justify-center border-b border-gray-300 p-4">
           {% if account.AccountOwner.Sex == "0" %}
-            <img src="../static/img/avt_man.png" alt="avt_man" class="h-full w-auto"/>
+          <img
+            src="../static/img/avt_man.png"
+            alt="avt_man"
+            class="h-full w-auto" />
           {% elif account.AccountOwner.Sex == "1" %}
-            <img src="../static/img/avt_woman.png" alt="avt_woman" class="h-full w-auto"/>
+          <img
+            src="../static/img/avt_woman.png"
+            alt="avt_woman"
+            class="h-full w-auto" />
           {%endif%}
         </div>
 
         <!-- detail -->
         <div class="w-full h-1/2 flex flex-col justify-evenly">
-
           <div class="w-full flex justify-center items-center">
-            <div
-              id="Name"
-              class="font-bold">
+            <div id="Name" class="font-bold">
               <p>{{ account.AccountOwner.Name }}</p>
             </div>
             <div class="h-4 w-4">
               {% if account.AccountOwner.Sex == "0" %}
-                <img src="../static/img/male.png" alt="male_sign" />
+              <img src="../static/img/male.png" alt="male_sign" />
               {% elif account.AccountOwner.Sex == "1" %}
-                <img src="../static/img/female.png" alt="female_sign" />
+              <img src="../static/img/female.png" alt="female_sign" />
               {%endif%}
             </div>
           </div>
-  
+
           <div class="px-2">
             <label for="Email" class="font-bold">Email</label>
             <div>
-              <input type="text" id="Email" name="Email"
-              value={{account.AccountOwner.Email}}
-              class="w-full border-b-black border-t-0 border-l-0 border-r-0 
-              focus:ring-transparent focus:border-purple-500 bg-transparent">
+              <input
+                type="text"
+                id="Email"
+                name="Email"
+                value="{{account.AccountOwner.Email}}"
+                class="w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent focus:border-purple-500 bg-transparent" />
             </div>
           </div>
-  
+
           <div class="px-2">
             <label for="Phone" class="font-bold">Phone</label>
             <div>
-              <input type="text" id="Phone" name="phone"
-              value={{account.AccountOwner.Phone}}
-              class="w-full border-b-black border-t-0 border-l-0 border-r-0 
-              focus:ring-transparent focus:border-purple-500 bg-transparent">
+              <input
+                type="text"
+                id="Phone"
+                name="phone"
+                value="{{account.AccountOwner.Phone}}"
+                class="w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent focus:border-purple-500 bg-transparent" />
             </div>
           </div>
-  
+
           <div class="px-2">
             <label for="Address" class="font-bold">Address</label>
             <div>
               <textarea
                 id="Address"
                 name="address"
-                class="w-full h-10 border-b-black border-t-0 border-l-0 border-r-0 overflow-y-hidden resize-none 
-                focus:ring-transparent bg-transparent focus:border-purple-500"
-                >
+                class="w-full h-10 border-b-black border-t-0 border-l-0 border-r-0 overflow-y-hidden resize-none focus:ring-transparent bg-transparent focus:border-purple-500">
                 {{account.AccountOwner.Address}}
               </textarea>
             </div>
           </div>
         </div>
-        
       </div>
 
       <div class="h-full flex flex-1 flex-col justify-evenly items-center">
-            <!-- account -->
-            <div 
-            class="h-1/2 w-full flex flex-col rounded-2xl shadow-2xl mr-6 p-4 leading-tight">
+        <!-- account -->
+        <div
+          class="h-1/2 w-full flex flex-col rounded-2xl shadow-2xl mr-6 p-4 leading-tight">
+          <div>
+            <label for="Username" class="font-bold">Username</label>
             <div>
-              <label for="Username" class="font-bold">Username</label>
-              <div>
-                <input
-                  type="text"
-                  value="{{account.Username}}"
-                  id="Username"
-                  name="username"
-                  class="h-8 w-full border-b-black border-t-0 border-l-0 border-r-0 
-                  focus:ring-transparent focus:border-purple-500 bg-transparent">
-              </div>
+              <input
+                type="text"
+                value="{{account.Username}}"
+                id="Username"
+                name="username"
+                class="h-8 w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent focus:border-purple-500 bg-transparent" />
             </div>
-
-            <div >
-              <label for="Card" class="font-bold" >Card</label>
-              <div
-                id="Card"
-                class="w-full flex justify-between pl-3">
-                <p>
-                    {% if account.AccountOwner %}
-                        {{account.AccountOwner.Card.CardNumber}} 
-                    {% else %}
-                        none
-                    {% endif %}
-                </p>
-                <div
-                  id="moreBtn"
-                  
-                  class="h-8 w-8">
-                  <img
-                    src="../static/img/right-arrow.png"
-                    class="h-1/2 w-1/2"
-                    id="right-arrowv" />
-                  <img
-                    src="../static/img/down-arrow.png"
-                    class="h-1/2 w-1/2 hidden"
-                    id="down-arrowv" />
-                </div>
-              </div>
-              <div
-                id="cardInfo"
-                class="hidden">
-                <div >
-                  <span class="font-bold pl-3">Expired Date: </span>
-                  <span>{{expired_date}}</span>
-                </div>
-
-                <div >
-                  <span class="font-bold pl-3">CVV: </span>
-                  <span>{{account.AccountOwner.Card.CVV}}</span>
-                </div>
-                <div >
-                  <span class="font-bold pl-3">Card Type: </span>
-                  <span>{{account.AccountOwner.Card.Type}}</span>
-                </div>
-              </div>
-            </div>
-
-            <div >
-              <label for="AccountNumber" class="font-bold">AccountNumber</label>
-              <div
-                id="AccountNumber"
-                class="pl-3">
-                <p>{{account.AccountNumber}}</p>
-              </div>
-            </div>
-
-            <div>
-              <label for="Branch" class="font-bold">Branch</label>
-              <div
-                id="Branch"
-                class="pl-3">
-                <p>{{account.Branch}}</p>
-              </div>
-            </div>
-            
           </div>
-           <!-- save changes -->
+
+          <div>
+            <label for="Card" class="font-bold">Card Number</label>
+            <div id="Card" class="w-full flex justify-between pl-3">
+              <p>
+                {% if account.AccountOwner %}
+                {{account.AccountOwner.Card.CardNumber}} {% else %} none {%
+                endif %}
+              </p>
+              <div id="moreBtn" class="h-8 w-8">
+                <img
+                  src="../static/img/right-arrow.png"
+                  class="h-1/2 w-1/2"
+                  id="right-arrowv" />
+                <img
+                  src="../static/img/down-arrow.png"
+                  class="h-1/2 w-1/2 hidden"
+                  id="down-arrowv" />
+              </div>
+            </div>
+            <div id="cardInfo" class="hidden">
+              <div>
+                <span class="font-bold pl-3">Expired Date: </span>
+                <span>{{expired_date}}</span>
+              </div>
+
+              <div>
+                <span class="font-bold pl-3">CVV: </span>
+                <span>{{account.AccountOwner.Card.CVV}}</span>
+              </div>
+              <div>
+                <span class="font-bold pl-3">Card Type: </span>
+                {% if account.AccountOwner.Card.Type|length == 0 %} 
+                  {% for type in account.AccountOwner.Card.Type %}
+                    <span>{{type.TypeName}}</span>
+                  {% endfor %} 
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label for="AccountNumber" class="font-bold">AccountNumber</label>
+            <div id="AccountNumber" class="pl-3">
+              <p>{{account.AccountNumber}}</p>
+            </div>
+          </div>
+
+          <div>
+            <label for="Branch" class="font-bold">Branch</label>
+            <div id="Branch" class="pl-3">
+              <p>{{account.Branch}}</p>
+            </div>
+          </div>
+        </div>
+        <!-- save changes -->
 
         <div>
           <button
@@ -164,10 +165,7 @@ block content %}
             Save changes
           </button>
         </div>
-  
       </div>
-
-      
     </div>
   </form>
 </div>

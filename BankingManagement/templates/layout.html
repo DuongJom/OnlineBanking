@@ -35,6 +35,7 @@
           <div class="hidden md:block">
             <div class="flex items-center  mt-4 mr-20 absolute top-0 right-0">
               <button
+                id="toggleButton"
                 type="button"
                 class="flex items-center rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white 
                       focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
@@ -61,27 +62,38 @@
 
               <div class="absolute top-14 right-0 bg-blue-gray-300 w-48 hidden rounded-2xl" id="mainDropdown">
                 <ul class="h-full w-full flex flex-col justify-center items-center cursor-pointer">
-                  <li class="w-full h-10 border-b border-black flex items-center justify-center 
-                  rounded-tl-2xl rounded-tr-2xl hover:bg-gray-200">
-                    <a href="/view-profile">
-                      <span class="material-symbols-outlined">
+                  <li class="w-full h-10 border-b border-black flex justify-start items-center
+                      rounded-tl-2xl rounded-tr-2xl hover:bg-gray-200 px-2">
+                    <a href="/view-profile" class="flex flex-row">
+                      <div class="material-symbols-outlined">
                         person
-                      </span>
+                      </div>
+                      <div class="px-2">Profile</div>
                     </a>
                   </li>
-                  <li class="w-full h-10 border-b border-black flex items-center justify-center hover:bg-gray-200">
-                    Change Password
+                  <li class="w-full h-10 border-b border-black flex items-center justify-start hover:bg-gray-200 px-2">
+                    <a href="#" class="flex flex-row">
+                      <div class="material-symbols-outlined">
+                        password
+                      </div>
+                      <div class="px-2">Change Password</div>
+                    </a>
                   </li>
-                  <li class="w-full h-10 border-b border-black flex items-center justify-center hover:bg-gray-200">
-                    <span class="material-symbols-outlined">
-                      settings
-                    </span>
+                  <li class="w-full h-10 border-b border-black flex items-center justify-start hover:bg-gray-200 px-2">
+                    <a href="#" class="flex flex-row">
+                      <div class="material-symbols-outlined">
+                        settings
+                      </div>
+                      <div class="px-2">Setting</div>
+                    </a>
+                    
                   </li>
-                  <li class="w-full h-10 flex items-center justify-center rounded-bl-2xl rounded-br-2xl hover:bg-gray-200">
-                    <a href="/logout">
-                      <span class="material-symbols-outlined">
+                  <li class="w-full h-10 flex items-center justify-start rounded-bl-2xl rounded-br-2xl hover:bg-gray-200 px-2">
+                    <a href="/logout" class="flex flex-row">
+                      <div class="material-symbols-outlined">
                         logout
-                      </span>
+                      </div>
+                      <div class="px-2">Logout</div>
                     </a>
                   </li>
                 </ul>

@@ -12,3 +12,17 @@ toggle = () => {
     right.classList.toggle('hidden');
     down.classList.toggle('hidden');
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('toggleButton');
+    const dropdownList = document.getElementById('mainDropdown');
+  
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const targetElement = event.target;
+  
+      if (!dropdownList.contains(targetElement) && !toggleButton.contains(targetElement)) {
+        dropdownList.classList.add('hidden');
+      }
+    });
+  });
