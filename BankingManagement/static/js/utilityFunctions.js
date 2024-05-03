@@ -3,7 +3,6 @@ function onClose(){
 }
 
 toggle = () => {
-    console.log("click");
     const mainDropdown = document.getElementById("mainDropdown");
     const right = document.getElementById("right-arrow");
     const down = document.getElementById("down-arrow");
