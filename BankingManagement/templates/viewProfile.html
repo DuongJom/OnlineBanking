@@ -107,8 +107,10 @@
             <div id="Card" class="w-full flex justify-between pl-3">
               <p>
                 {% if account.AccountOwner %}
-                {{account.AccountOwner.Card.CardNumber}} {% else %} none {%
-                endif %}
+                  {{account.AccountOwner.Card.CardNumber}} 
+                {% else %} 
+                  <i>You don't have any card.</i> 
+                {% endif %}
               </p>
               <div id="moreBtn" class="h-8 w-8">
                 <img
@@ -151,8 +153,15 @@
 
           <div>
             <label for="Branch" class="font-bold">Branch</label>
-            <div id="Branch" class="pl-3">
-              <p>{{account.Branch}}</p>
+            <div id="Branch">
+              <p>
+                <span class="font-bold pl-3">Branch name:</span>
+                <span>{{account.Branch.BranchName}}</span>
+              </p>
+              <p>
+                <span class="font-bold pl-3">Address:</span>
+                <span>{{account.Branch.Address}}</span>
+              </p>
             </div>
           </div>
         </div>

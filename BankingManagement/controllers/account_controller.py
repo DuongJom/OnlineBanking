@@ -52,9 +52,9 @@ def login():
         if acc["Role"] == RoleType.USER.value:
             return redirect("/")
         elif acc["Role"] == RoleType.EMPLOYEE.value:
-            return redirect("/employee")
+            return redirect("/employee/home")
         else:
-            return redirect("/admin")
+            return redirect("/admin/home")
     session.clear()
     return render_template('login.html')
 
@@ -148,7 +148,7 @@ def logout():
     session.clear()
     return redirect(url_for("account.login"))
 
-@account_blueprint.route('/confirm_email', methods=['GET', 'POST'])
+@account_blueprint.route('/confirm-email', methods=['GET', 'POST'])
 def confirm_email():
     if request.method == 'POST':
         user_email = request.form.get('email')
@@ -170,7 +170,7 @@ def confirm_email():
     return render_template('confirm_email.html')
 
 
-@account_blueprint.route('/reset_password/<token>', methods=["GET", "POST"])
+@account_blueprint.route('/reset-password/<token>', methods=["GET", "POST"])
 def reset_password(token):
     if request.method == 'POST':
         try:
