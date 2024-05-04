@@ -126,7 +126,9 @@
             <div id="cardInfo" class="hidden">
               <div>
                 <span class="font-bold pl-3">Expired Date: </span>
-                <span>{{expired_date}}</span>
+                {% if expired_date %}
+                  <span>{{expired_date}}</span>
+                {% endif}
               </div>
 
               <div>

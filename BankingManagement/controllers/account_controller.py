@@ -3,7 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from bson import ObjectId
 from datetime import datetime
 from models import account, user, card as model_card , database
-from message import messages
+from message import messages_success, messages_failure
 from helpers import issueNewCard, get_token, send_email, ts, login_required
 from SysEnum import RoleType
 from app import app
@@ -29,31 +29,26 @@ def login():
         
         acc = accounts.find_one({"Username": username}) 
 
-        if acc is None:
-            flash(messages["invalid_information"], 'error')
-            return render_template('login.html')
-        
-        if not check_password_hash(acc["Password"], password):
-            flash(messages['invalid_information'], 'error')
+        if acc is None or not check_password_hash(acc["Password"], password):
+            flash(messages_failure["invalid_information"], 'error')
             return render_template('login.html')
         
         if remember_me:
             session.permanent = True
             current_app.config['PERMANENT_SESSION_LIFETIME'] = 1209600  # 2 weeks in seconds
-            session["userId"] = str(acc["_id"])
         else:
             session.permanent = False
-            session["userId"] = str(acc["_id"])
             session["sex"] = str(acc['AccountOwner']['Sex'])
+        session["account_id"] = str(acc["_id"])
         
-        flash(messages['login_success'],'success')
+        flash(messages_success['login_success'],'success')
         if acc["Role"] == RoleType.USER.value:
             return redirect("/")
         elif acc["Role"] == RoleType.EMPLOYEE.value:
             return redirect("/employee/home")
         else:
             return redirect("/admin/home")
-    #session.clear()
+        
     return render_template('login.html')
 
 @account_blueprint.route('/register', methods=['GET','POST'])
@@ -79,16 +74,16 @@ def register():
         # check if user input email and password or not, get error message from message.py
         error = None
         if password != confirmPassword:
-            error = messages['password_not_matched']
+            error = messages_failure['password_not_matched']
 
         # check if email or username already exist, using .format() to format error message
         existUsername = accounts.find_one({"Username": username})
         existEmail = users.find_one({"Email": email})
 
         if existUsername:
-            error = messages['username_existed'].format(username) 
+            error = messages_failure['username_existed'].format(username) 
         elif existEmail:
-            error = messages['email_existed'].format(email) 
+            error = messages_failure['email_existed'].format(email) 
         
         if error:
             flash(error, 'error')
@@ -117,7 +112,7 @@ def register():
                                         loginMethod=[loginMethod], service=[service])
         accounts.insert_one(new_account.to_json())
 
-        flash(messages['success'], 'success')
+        flash(messages_success['success'], 'success')
         return redirect(url_for("account.login"))
     
     elif request.method == 'GET':
@@ -133,10 +128,15 @@ def register():
 @login_required
 def view_profile():
     if request.method == "GET":
-        userId = ObjectId(session.get("userId"))
-        account = accounts.find_one({"_id": userId})
-        expired_date = datetime.fromisoformat(account['AccountOwner']['Card']['ExpiredDate']).date()
-        return render_template("viewProfile.html", account = account, expired_date = expired_date)
+        if session.get("account_id"):
+            account_id = ObjectId(session.get("account_id"))
+            account = accounts.find_one({"_id": account_id})
+            expired_date = None
+            if account:
+                expired_date = datetime.fromisoformat(account['AccountOwner']['Card']['ExpiredDate']).date()
+            else:
+                expired_date = None
+            return render_template("view_profile.html", account = account, expired_date = expired_date)
     elif request.method == "POST":
         return Response("changed something")
 
@@ -153,7 +153,7 @@ def confirm_email():
         exist_user = users.find_one({'Email': user_email})
 
         if exist_user is None:
-            flash(messages['invalid_email'].format(user_email), 'error')
+            flash(messages_failure['invalid_email'].format(user_email), 'error')
             return render_template('confirm_email.html')
         
         token = get_token(user_email, salt=app.salt)
@@ -162,7 +162,7 @@ def confirm_email():
         html = render_template('email/activate.html',recover_url=recover_url)
         attachments = [{'path': './static/img/bank.png', 'filename':'bank.png', 'mime_type': 'image/png'}]
         send_email(user_email, subject, html, attachments=attachments)
-        flash(messages['link_sent'].format(user_email), 'success')
+        flash(messages_success['link_sent'].format(user_email), 'success')
         return redirect(url_for('account.login'))
     return render_template('confirm_email.html')
 
@@ -181,13 +181,13 @@ def reset_password(token):
                 
             # Check if the update was successful
             if update_password.modified_count > 0:
-                flash(messages['update_success'].format('password'), 'success')
+                flash(messages_success['update_success'].format('password'), 'success')
                 return redirect(url_for('account.login'))
                 
-            flash(messages['not_found'], 'error')
+            flash(messages_failure['document_not_found'], 'error')
             return redirect(url_for('account.reset_password', token=token))
         except:
-            flash(messages['token_expired'], 'error')
+            flash(messages_failure['token_expired'], 'error')
             return redirect(url_for('account.login'))
     return render_template('reset_password.html', token=token)
 

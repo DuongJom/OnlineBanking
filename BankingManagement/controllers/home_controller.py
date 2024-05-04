@@ -12,8 +12,8 @@ home_blueprint = Blueprint('home', __name__)
 @home_blueprint.route('/')
 @login_required
 def index():
-    userId = ObjectId(session.get("userId"))
-    account = accounts.find_one({"_id": userId})
+    account_id = ObjectId(session.get("account_id"))
+    account = accounts.find_one({"_id": account_id})
     return render_template('home.html', account = account)
 
 
