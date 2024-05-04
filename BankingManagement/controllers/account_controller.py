@@ -1,4 +1,3 @@
-from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, Response
 from werkzeug.security import check_password_hash, generate_password_hash
 from bson import ObjectId
@@ -25,7 +24,7 @@ def login():
     if request.method == 'POST':
         session.clear()
         username = request.form.get("username")
-        password = request.form.get('password') 
+        password = request.form.get("password") 
         remember_me = request.form.get("remember_me")
         
         acc = accounts.find_one({"Username": username}) 
@@ -45,7 +44,6 @@ def login():
         else:
             session.permanent = False
             session["userId"] = str(acc["_id"])
-
             session["sex"] = str(acc['AccountOwner']['Sex'])
         
         flash(messages['login_success'],'success')
@@ -111,7 +109,6 @@ def register():
         transferMethod = transferMethods.find_one({"_id": transferMethod_id})
         loginMethod = loginMethods.find_one({"_id": loginMethod_id})
         service = services.find_one({"_id": service_id})
-        service = services.find_one({"_id": service_id})
 
         # insert new account into database
         new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user.to_json(), 
@@ -120,7 +117,7 @@ def register():
                                         loginMethod=[loginMethod], service=[service])
         accounts.insert_one(new_account.to_json())
 
-        flash(messages['success'].format(), 'success')
+        flash(messages['success'], 'success')
         return redirect(url_for("account.login"))
     
     elif request.method == 'GET':
@@ -168,7 +165,6 @@ def confirm_email():
         flash(messages['link_sent'].format(user_email), 'success')
         return redirect(url_for('account.login'))
     return render_template('confirm_email.html')
-
 
 @account_blueprint.route('/reset-password/<token>', methods=["GET", "POST"])
 def reset_password(token):

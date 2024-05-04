@@ -9,13 +9,11 @@ class RoleType(Enum):
     USER = 0
     EMPLOYEE = 1
     ADMIN = 2
-class CardType(Enum):
-    CREDITS=0
-    DEBITS = 1
 
 class CardType(Enum):
     CREDITS=0
     DEBITS = 1
+
 class WorkingType(Enum):
     OFF  = 0
     HALF_DAY = 1
@@ -47,4 +45,3 @@ class MIMEType(Enum):
     HTML = 13
     AUDIO = 14
     VIDEO = 15
-
