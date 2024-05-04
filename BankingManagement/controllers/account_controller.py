@@ -53,7 +53,7 @@ def login():
             return redirect("/employee/home")
         else:
             return redirect("/admin/home")
-    session.clear()
+    #session.clear()
     return render_template('login.html')
 
 @account_blueprint.route('/register', methods=['GET','POST'])
