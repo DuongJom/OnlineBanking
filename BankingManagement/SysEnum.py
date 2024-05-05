@@ -10,6 +10,16 @@ class RoleType(Enum):
     EMPLOYEE = 1
     ADMIN = 2
 
+class EmployeeRoleType(Enum):
+    CEO = 0
+    PROJECT_MANAGER = 1
+    DEPARTMENT_MANAGER = 2
+    ACCOUNTANT = 3
+    HR = 4
+    PROJECT_LEADER = 5
+    TEAM_LEADER = 6
+    NORMAL_EMPLOYEE = 7
+
 class CardType(Enum):
     CREDITS=0
     DEBITS = 1

@@ -11,10 +11,12 @@ mail = Mail(app)
 # initialize csrf protect
 csrf = CSRFProtect(app)
 
-from controllers import home_controller, account_controller
+from blueprints import account, admin, employee, home
 
-app.register_blueprint(account_controller.account_blueprint)
-app.register_blueprint(home_controller.home_blueprint)
+app.register_blueprint(account.account_blueprint)
+app.register_blueprint(home.home_blueprint)
+app.register_blueprint(employee.employee_blueprint)
+app.register_blueprint(admin.admin_blueprint)
 
 if __name__ == '__main__':
     app.run(debug=True)

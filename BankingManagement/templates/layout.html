@@ -8,9 +8,101 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" 
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" 
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <title>{% block title %}{% endblock %} - DHC Banking System</title>
   </head>
   <body class="overflow-y-hidden">
+    {% if session["account_id"] %}
+      <nav class="bg-gray-600 fixed w-full z-0 top-0 right-0 start-0">
+        <div class="mx-auto max-w-7xl flex h-16 px-4 sm:px-6 lg:px-8 justify-between">
+          <div class="flex items-center">
+            <div class="w-12 h-12 p-1 
+              focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
+              focus:ring-offset-gray-800">
+              <img width="50px" height="50px" src="../static/img/bank.png"/>   
+            </div>
+
+            <div class="hidden md:block">
+              <div class="ml-10 flex items-baseline space-x-4">
+                <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                <a href="/" class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home</a>
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Exchange rates</a>
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Transaction History</a>
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Insurance</a>
+              </div>
+            </div>
+          </div>
+          <div class="hidden md:block">
+            <div class="flex items-center  mt-4 mr-20 absolute top-0 right-0">
+              <button
+                id="toggleButton"
+                type="button"
+                class="flex items-center rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white 
+                      focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
+                      focus:ring-offset-gray-800"
+                onclick="toggle()">
+                  {% if session["sex"] == '0' %}
+                    <img width="30px" height="30px" src="../static/img/avt_man.png" alt="user avatar"/>
+                  {% else %}
+                    <img width="30px" height="30px" src="../static/img/avt_woman.png" alt="user avatar"/>
+                  {% endif %}
+
+                  <div class="h-4 w-4 ml-2" id="navAvatar">
+                    <img
+                    src="../static/img/right-arrow.png"
+                    id="right-arrow"
+                    />
+                  <img
+                    src="../static/img/down-arrow.png"
+                    id="down-arrow" 
+                    class="hidden" />
+                  </div>
+              </button>
+
+              <div class="absolute top-14 right-0 bg-blue-gray-300 w-48 hidden rounded-2xl" id="mainDropdown">
+                <ul class="h-full w-full flex flex-col justify-center items-center cursor-pointer">
+                  <li class="w-full h-10 border-b border-black flex justify-start items-center
+                      rounded-tl-2xl rounded-tr-2xl hover:bg-gray-200 px-2">
+                    <a href="/view-profile" class="flex flex-row">
+                      <div class="material-symbols-outlined">
+                        person
+                      </div>
+                      <div class="px-2">Profile</div>
+                    </a>
+                  </li>
+                  <li class="w-full h-10 border-b border-black flex items-center justify-start hover:bg-gray-200 px-2">
+                    <a href="#" class="flex flex-row">
+                      <div class="material-symbols-outlined">
+                        password
+                      </div>
+                      <div class="px-2">Change Password</div>
+                    </a>
+                  </li>
+                  <li class="w-full h-10 border-b border-black flex items-center justify-start hover:bg-gray-200 px-2">
+                    <a href="#" class="flex flex-row">
+                      <div class="material-symbols-outlined">
+                        settings
+                      </div>
+                      <div class="px-2">Setting</div>
+                    </a>
+                  </li>
+                  <li class="w-full h-10 flex items-center justify-start rounded-bl-2xl rounded-br-2xl hover:bg-gray-200 px-2">
+                    <a href="/logout" class="flex flex-row">
+                      <div class="material-symbols-outlined">
+                        logout
+                      </div>
+                      <div class="px-2">Logout</div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </nav>
+    {% endif %}
+
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, message in messages %}
@@ -38,14 +130,15 @@
                 </button>
               </div>
             {% else %}
-              <div id="alert" class="flex absolute top-0 right-0 items-center p-4 text-green-800 border-t-4 rounded-md
+              <div id="alert" 
+                  class="flex absolute top-0 right-0 items-center p-4 text-green-800 border-t-4 rounded-md
                    border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800 z-10" role="alert">
                 <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
                     fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                 </svg>
                 <div class="ms-3 text-sm font-medium">
-                  {{ message }}
+                  <p>{{ message }}</p>
                 </div>
                 <button type="button" onclick="onClose()"
                         class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 
