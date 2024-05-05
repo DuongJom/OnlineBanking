@@ -54,9 +54,11 @@
               <input
                 type="text"
                 id="Email"
-                name="Email"
+                name="email"
                 value="{{account.AccountOwner.Email}}"
-                class="w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent focus:border-purple-500 bg-transparent" />
+                class="w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent 
+                focus:border-purple-500 bg-transparent" 
+                required/>
             </div>
           </div>
 
@@ -68,7 +70,9 @@
                 id="Phone"
                 name="phone"
                 value="{{account.AccountOwner.Phone}}"
-                class="w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent focus:border-purple-500 bg-transparent" />
+                class="w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent
+                focus:border-purple-500 bg-transparent" 
+                required/>
             </div>
           </div>
 
@@ -78,7 +82,9 @@
               <textarea
                 id="Address"
                 name="address"
-                class="w-full h-10 border-b-black border-t-0 border-l-0 border-r-0 overflow-y-hidden resize-none focus:ring-transparent bg-transparent focus:border-purple-500">
+                class="w-full h-10 border-b-black border-t-0 border-l-0 border-r-0 overflow-y-hidden
+                resize-none focus:ring-transparent bg-transparent focus:border-purple-500"
+                required>
                 {{account.AccountOwner.Address}}
               </textarea>
             </div>
@@ -89,7 +95,7 @@
       <div class="h-full flex flex-1 flex-col justify-evenly items-center">
         <!-- account -->
         <div
-          class="h-1/2 w-full flex flex-col rounded-2xl shadow-2xl mr-6 p-4 leading-tight">
+          class="w-full flex flex-col rounded-2xl shadow-2xl mr-6 p-4 leading-tight">
           <div>
             <label for="Username" class="font-bold">Username</label>
             <div>
@@ -98,7 +104,9 @@
                 value="{{account.Username}}"
                 id="Username"
                 name="username"
-                class="h-8 w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent focus:border-purple-500 bg-transparent" />
+                class="h-8 w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent 
+                focus:border-purple-500 bg-transparent" 
+                required/>
             </div>
           </div>
 
@@ -128,7 +136,7 @@
                 <span class="font-bold pl-3">Expired Date: </span>
                 {% if expired_date %}
                   <span>{{expired_date}}</span>
-                {% endif}
+                {% endif %}
               </div>
 
               <div>

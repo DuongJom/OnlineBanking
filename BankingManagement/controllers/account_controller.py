@@ -38,7 +38,7 @@ def login():
             current_app.config['PERMANENT_SESSION_LIFETIME'] = 1209600  # 2 weeks in seconds
         else:
             session.permanent = False
-            session["sex"] = str(acc['AccountOwner']['Sex'])
+        session["sex"] = str(acc['AccountOwner']['Sex'])
         session["account_id"] = str(acc["_id"])
         
         flash(messages_success['login_success'],'success')
@@ -138,7 +138,24 @@ def view_profile():
                 expired_date = None
             return render_template("view_profile.html", account = account, expired_date = expired_date)
     elif request.method == "POST":
-        return Response("changed something")
+        # new_email = request.form.get("email")
+        # new_phone = request.form.get("phone")
+        new_username = request.form.get("username")
+        print(new_username)
+        # current_account = accounts.find_one("_id", ObjectId(session.get("acccount_id")))
+
+        count = accounts.update_one(
+            {'_id':  ObjectId(session.get("account_id"))},
+            {"$set": {"Username": new_username}
+        })
+
+        print(f"Updated!! {count.modified_count}")
+
+        flash(messages_success['update_success'], 'success')
+        return redirect('/view-profile')
+
+
+
 
 @account_blueprint.route("/logout")
 def logout():
@@ -190,4 +207,5 @@ def reset_password(token):
             flash(messages_failure['token_expired'], 'error')
             return redirect(url_for('account.login'))
     return render_template('reset_password.html', token=token)
+
 
