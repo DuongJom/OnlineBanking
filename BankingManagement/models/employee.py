@@ -1,11 +1,13 @@
 import json
 from models.base import BaseModel
 from models.datetimeEncoder import DateTimeEncoder
-
+from SysEnum import EmployeeRoleType
 class Employee(BaseModel):
     def __init__(self, **kwargs):
         super().__init__()
         self.EmployeeName = kwargs["employeeName"] if "employeeName" in kwargs.keys() else None
+        self.Position = kwargs["position"] if "position" in kwargs.keys() else None
+        self.Role = kwargs["role"] if "role" in kwargs.keys() else EmployeeRoleType.NORMAL_EMPLOYEE.value
         self.Sex = kwargs["sex"] if "sex" in kwargs.keys() else None
         self.Phone = kwargs["phone"] if "phone" in kwargs.keys() else None
         self.Email = kwargs["email"] if "email" in kwargs.keys() else None
@@ -19,5 +21,4 @@ class Employee(BaseModel):
     
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))
-
 
