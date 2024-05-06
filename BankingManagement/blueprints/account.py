@@ -151,7 +151,7 @@ def view_profile():
 
         error = None
         if not check_password_hash(current_account["Password"], password):
-            error = messages_failure["invalid_password"]   
+            error = messages_failure["password_not_matched"]    
         elif users.find_one({"Email": new_email}) is not None and current_email != new_email:
             error = messages_failure['email_existed'].format(new_email) 
         elif users.find_one({"Phone": new_phone}) is not None and current_phone != new_phone:
