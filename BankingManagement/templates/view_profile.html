@@ -14,6 +14,9 @@
     class="w-3/4 flex items-center mt-16"
     style="height: calc(100vh - 64px)">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <input class="hidden" type="text" name="current_email" value="{{account.AccountOwner.Email}}"/>
+    <input class="hidden" type="text" name="current_phone" value="{{account.AccountOwner.Phone}}"/>
+    <input class="hidden" type="text" name="current_username" value="{{account.Username}}"/>
     <div class="w-full h-5/6 flex items-center">
       <!-- user info -->
       <div class="h-full flex flex-1 flex-col rounded-2xl shadow-2xl mr-6">
@@ -47,16 +50,17 @@
               {%endif%}
             </div>
           </div>
-
           <div class="px-2">
             <label for="Email" class="font-bold">Email</label>
             <div>
               <input
                 type="text"
                 id="Email"
-                name="Email"
+                name="email"
                 value="{{account.AccountOwner.Email}}"
-                class="w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent focus:border-purple-500 bg-transparent" />
+                class="w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent 
+                focus:border-purple-500 bg-transparent" 
+                required/>
             </div>
           </div>
 
@@ -68,7 +72,9 @@
                 id="Phone"
                 name="phone"
                 value="{{account.AccountOwner.Phone}}"
-                class="w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent focus:border-purple-500 bg-transparent" />
+                class="w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent
+                focus:border-purple-500 bg-transparent" 
+                required/>
             </div>
           </div>
 
@@ -78,7 +84,9 @@
               <textarea
                 id="Address"
                 name="address"
-                class="w-full h-10 border-b-black border-t-0 border-l-0 border-r-0 overflow-y-hidden resize-none focus:ring-transparent bg-transparent focus:border-purple-500">
+                class="w-full h-10 border-b-black border-t-0 border-l-0 border-r-0 overflow-y-hidden
+                resize-none focus:ring-transparent bg-transparent focus:border-purple-500"
+                required>
                 {{account.AccountOwner.Address}}
               </textarea>
             </div>
@@ -89,7 +97,7 @@
       <div class="h-full flex flex-1 flex-col justify-evenly items-center">
         <!-- account -->
         <div
-          class="h-1/2 w-full flex flex-col rounded-2xl shadow-2xl mr-6 p-4 leading-tight">
+          class="w-full flex flex-col rounded-2xl shadow-2xl mr-6 p-4 leading-tight">
           <div>
             <label for="Username" class="font-bold">Username</label>
             <div>
@@ -98,7 +106,9 @@
                 value="{{account.Username}}"
                 id="Username"
                 name="username"
-                class="h-8 w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent focus:border-purple-500 bg-transparent" />
+                class="h-8 w-full border-b-black border-t-0 border-l-0 border-r-0 focus:ring-transparent 
+                focus:border-purple-500 bg-transparent" 
+                required/>
             </div>
           </div>
 
@@ -112,15 +122,15 @@
                   <i>You don't have any card.</i> 
                 {% endif %}
               </p>
-              <div id="moreBtn" class="h-8 w-8">
+              <div class="h-8 w-8" onclick="card_info_toggle()">
                 <img
                   src="../static/img/right-arrow.png"
                   class="h-1/2 w-1/2"
-                  id="right-arrowv" />
+                  id="card_right_arrow" />
                 <img
                   src="../static/img/down-arrow.png"
                   class="h-1/2 w-1/2 hidden"
-                  id="down-arrowv" />
+                  id="card_down_arrow" />
               </div>
             </div>
             <div id="cardInfo" class="hidden">
@@ -167,18 +177,44 @@
             </div>
           </div>
         </div>
-        <!-- save changes -->
 
+        <!-- save changes -->
         <div>
           <button
-            type="submit"
-            class="h-10 w-32 bg-purple-500 hover:bg-hover-btn-bg-color rounded-2xl text-white">
+              type="button"
+              class="h-10 w-32 bg-purple-500 hover:bg-hover-btn-bg-color rounded-2xl text-white"
+              onclick="open_popup()">
             Save changes
           </button>
+        </div>
+
+        <div class="fixed top-0 left-0 h-screen w-screen bg-popup-bg justify-center items-center popup hidden">
+          <div class="w-1/4 h-1/4 bg-white rounded-2xl p-7 flex flex-col relative">
+            <span 
+                class="material-symbols-outlined absolute top-3 right-3 hover:bg-gray-300 cursor-pointer close"
+                onclick="close_popup()">
+              close
+            </span>
+            <p class="text-2xl border-b border-black pb-2">Authentication</p>
+            <p class="py-2">Please re-enter your password to continue.</p>
+            <input 
+                name="password" 
+                type="password" 
+                class="w-full h-5 rounded-lg focus:outline-none focus:border-purple-500 
+                      focus:ring-2 focus:ring-purple-500 mt-2">
+            <button 
+                type="submit"
+                class="w-full h-8 rounded-lg bg-purple-500 text-white
+                hover:bg-hover-btn-bg-color mt-5">
+              Confirm
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </form>
 </div>
+
+
 <script src="{{ url_for('static', filename='js/viewprofile.js') }}"></script>
 {% endblock %}
