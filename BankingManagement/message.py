@@ -2,11 +2,12 @@ messages_failure = {
     'invalid_information' : 'Invalid username or password',
     'username_existed' : 'Username {0} is already existed',
     'email_existed' : 'Email {0} is already used',
+    'phone_existed' : 'Phone {0} is already used',
     'password_not_matched' : 'Password is not match',
     'invalid_email' : 'Email {0} is invalid',
     'token_expired' : 'The link has been expired',
     'document_not_found' : 'No document matching the filter criteria',
-    'login_failure' : 'Login failed!'
+    'login_failure' : 'Login failed!',
 }
 
 messages_success = {
@@ -14,5 +15,5 @@ messages_success = {
     'update_success' : 'You have successfully update your {0}',
     'success' : 'Successfully registered',
     'login_success' : 'You have login successfully!',
-    'Update_success': 'You have updated successfully!',
+    'update_success': 'You have updated successfully!',
 }

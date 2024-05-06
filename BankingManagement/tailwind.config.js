@@ -11,6 +11,7 @@ module.exports = withMT({
         'bg-color2' : "#323A4E",
         'hover-btn-bg-color' : '#D28FFF',
         'hover-profile-color' : '#C1C7C6',
+        'popup-bg' : 'rgba(204, 204, 204, 0.5)',
       },
       height: {
         '90%' : '90%',
@@ -22,9 +23,6 @@ module.exports = withMT({
       flex: {
         '2' : '2',
       },
-      border: {
-        '1' : '1',
-      }
     },
   },
   plugins: [require("@tailwindcss/forms")],

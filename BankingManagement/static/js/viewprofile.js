@@ -10,3 +10,19 @@ document.addEventListener("DOMContentLoaded", () => {
         down.classList.toggle('hidden');
     })
 })
+
+const closepopup = () => {
+    const popups = document.querySelectorAll(".popup");
+
+    popups.forEach(popup => {
+        popup.classList.add('hidden');
+    });
+}
+
+const openpopup = () => {
+    const popups = document.querySelectorAll(".popup");
+
+    popups.forEach(popup => {
+        popup.classList.remove('hidden');
+    });
+}

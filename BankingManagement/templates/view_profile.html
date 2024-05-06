@@ -14,6 +14,9 @@
     class="w-3/4 flex items-center mt-16"
     style="height: calc(100vh - 64px)">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <input class="hidden" type="text" name="current_email" value="{{account.AccountOwner.Email}}"/>
+    <input class="hidden" type="text" name="current_phone" value="{{account.AccountOwner.Phone}}"/>
+    <input class="hidden" type="text" name="current_username" value="{{account.Username}}"/>
     <div class="w-full h-5/6 flex items-center">
       <!-- user info -->
       <div class="h-full flex flex-1 flex-col rounded-2xl shadow-2xl mr-6">
@@ -47,7 +50,6 @@
               {%endif%}
             </div>
           </div>
-
           <div class="px-2">
             <label for="Email" class="font-bold">Email</label>
             <div>
@@ -179,14 +181,41 @@
 
         <div>
           <button
-            type="submit"
-            class="h-10 w-32 bg-purple-500 hover:bg-hover-btn-bg-color rounded-2xl text-white">
+            type="button"
+            class="h-10 w-32 bg-purple-500 hover:bg-hover-btn-bg-color rounded-2xl text-white"
+            onclick="openpopup()">
             Save changes
           </button>
+        </div>
+
+        <div class="fixed top-0 left-0 h-screen w-screen flex bg-popup-bg justify-center items-center popup hidden">
+          <div class="w-1/3 h-1/2 bg-white rounded-2xl p-7 flex flex-col relative">
+            <span 
+            class="material-symbols-outlined absolute top-3 right-3 hover:bg-gray-300 cursor-pointer close"
+            onclick="closepopup()">
+              close
+            </span>
+            <p class="text-2xl border-b border-black pb-7">Confirm Identity</p>
+            <p class="py-7">Please re-enter your password to continue.</p>
+            <label>Enter Password</label>
+            <input 
+            name="password" 
+            type="password" 
+            class="w-full rounded-lg focus:outline-none 
+            focus:border-purple-500 focus:ring-2 focus:ring-purple-500 mt-5">
+            <button 
+            type="submit"
+            class="w-full h-8 rounded-lg bg-purple-500 text-white
+            hover:bg-hover-btn-bg-color mt-5">
+              Confirm
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </form>
 </div>
+
+
 <script src="{{ url_for('static', filename='js/viewprofile.js') }}"></script>
 {% endblock %}

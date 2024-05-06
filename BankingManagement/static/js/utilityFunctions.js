@@ -2,7 +2,7 @@ function onClose(){
     document.getElementById("alert").style.display = "none";
 }
 
-toggle = () => {
+const toggle = () => {
     const mainDropdown = document.getElementById("mainDropdown");
     const right = document.getElementById("right-arrow");
     const down = document.getElementById("down-arrow");
