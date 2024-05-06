@@ -48,7 +48,7 @@ def login():
             return redirect("/employee/home")
         else:
             return redirect("/admin/home")
-        
+    session.clear()
     return render_template('login.html')
 
 @account_blueprint.route('/register', methods=['GET','POST'])
@@ -180,7 +180,7 @@ def view_profile():
             {"$set": {"Username": new_username, "AccountOwner": updated_user}}
         )
 
-        flash(messages_success["update_success"], "success");   
+        flash(messages_success["update_success"].format("information"), "success");   
         return redirect("/view-profile")
 
 
@@ -235,4 +235,30 @@ def reset_password(token):
             flash(messages_failure['token_expired'], 'error')
             return redirect(url_for('account.login'))
     return render_template('reset_password.html', token=token)
+
+@account_blueprint.route('/change-password', methods=["GET", "POST"])
+@login_required
+def change_password():
+    if request.method == "GET":
+        return render_template("changePassword.html")
+    current_password = request.form.get("current_password")
+    new_password = generate_password_hash(request.form.get("new_password"))
+
+    current_user = accounts.find_one({"_id": ObjectId(session.get("account_id"))})
+
+    if not check_password_hash(current_user["Password"], current_password):
+        flash(messages_failure["password_not_matched"], "error")
+        return redirect("/change-password")
+    
+    update_password = accounts.update_one(
+        {'_id': ObjectId(session.get("account_id"))},
+        {"$set": {"Password": new_password}
+    })
+
+    if update_password.modified_count > 0:
+        flash(messages_success['update_success'].format('password'), 'success')
+        return redirect(url_for('account.login'))
+        
+    flash(messages_failure['document_not_found'], 'error')
+    return redirect("/change-password")
 
