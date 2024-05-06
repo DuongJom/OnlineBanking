@@ -1,7 +1,7 @@
 const card_info_toggle = () => {
     const card_info = document.getElementById("cardInfo");
-    const right = document.getElementById("viewProfile_right_arrow");
-    const down = document.getElementById("viewProfile_down_arrow");
+    const right = document.getElementById("card_right_arrow");
+    const down = document.getElementById("card_down_arrow");
 
     card_info.classList.toggle('hidden');
     right.classList.toggle('hidden');

@@ -135,7 +135,7 @@ def view_profile():
             account_id = ObjectId(session.get("account_id"))
             account = accounts.find_one({"_id": account_id})
             expired_date = None
-            if account:
+            if account and account['AccountOwner']['Card']:
                 expired_date = datetime.fromisoformat(account['AccountOwner']['Card']['ExpiredDate']).date()
             return render_template("view_profile.html", account = account, expired_date = expired_date)
     elif request.method == "POST":
