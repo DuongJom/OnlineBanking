@@ -268,5 +268,5 @@ def change_password():
         session.clear()
         flash(messages_success['update_success'].format('password'), 'success')
         return redirect("/login")
-    return render_template("changePassword.html")
+    return render_template("change_password.html")
 
