@@ -12,6 +12,7 @@ module.exports = withMT({
         'hover-btn-bg-color' : '#D28FFF',
         'hover-profile-color' : '#C1C7C6',
         'popup-bg' : 'rgba(204, 204, 204, 0.5)',
+        'popup-bg-hover' : 'rgba(204, 204, 204, 0.3)',
       },
       height: {
         '90%' : '90%',

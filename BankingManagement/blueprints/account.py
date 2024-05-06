@@ -48,7 +48,6 @@ def login():
             return redirect("/employee/home")
         else:
             return redirect("/admin/home")
-    session.clear()
     return render_template('login.html')
 
 @account_blueprint.route('/register', methods=['GET','POST'])
@@ -257,7 +256,7 @@ def change_password():
             {'_id': ObjectId(session.get("account_id"))},
             {"$set": {"Password": new_password}
         })
-
+        session.clear()
         flash(messages_success['update_success'].format('password'), 'success')
-        return redirect(url_for('account.login'))
+        return redirect("/login")
     return render_template("changePassword.html")
