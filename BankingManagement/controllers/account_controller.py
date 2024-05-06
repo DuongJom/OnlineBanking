@@ -138,21 +138,7 @@ def view_profile():
                 expired_date = None
             return render_template("view_profile.html", account = account, expired_date = expired_date)
     elif request.method == "POST":
-        # new_email = request.form.get("email")
-        # new_phone = request.form.get("phone")
-        new_username = request.form.get("username")
-        print(new_username)
-        # current_account = accounts.find_one("_id", ObjectId(session.get("acccount_id")))
-
-        count = accounts.update_one(
-            {'_id':  ObjectId(session.get("account_id"))},
-            {"$set": {"Username": new_username}
-        })
-
-        print(f"Updated!! {count.modified_count}")
-
-        flash(messages_success['update_success'], 'success')
-        return redirect('/view-profile')
+        pass
 
 
 
