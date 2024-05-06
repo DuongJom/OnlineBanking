@@ -1,15 +1,12 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const moreBtn = document.getElementById("moreBtn");
+const card_info_toggle = () => {
     const card_info = document.getElementById("cardInfo");
-    const right = document.getElementById("right-arrowv");
-    const down = document.getElementById("down-arrowv");
+    const right = document.getElementById("viewProfile_right_arrow");
+    const down = document.getElementById("viewProfile_down_arrow");
 
-    moreBtn.addEventListener('click', () => {
-        card_info.classList.toggle('hidden');
-        right.classList.toggle('hidden');
-        down.classList.toggle('hidden');
-    })
-})
+    card_info.classList.toggle('hidden');
+    right.classList.toggle('hidden');
+    down.classList.toggle('hidden');
+}
 
 const close_popup = () => {
     const popups = document.querySelectorAll(".popup");
