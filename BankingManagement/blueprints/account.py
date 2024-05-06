@@ -134,34 +134,29 @@ def view_profile():
             account_id = ObjectId(session.get("account_id"))
             account = accounts.find_one({"_id": account_id})
             expired_date = None
-            if account:
+            if account and account['AccountOwner']['Card']:
                 expired_date = datetime.fromisoformat(account['AccountOwner']['Card']['ExpiredDate']).date()
-            else:
-                expired_date = None
             return render_template("view_profile.html", account = account, expired_date = expired_date)
     elif request.method == "POST":
         new_email = request.form.get("email")
         new_phone = request.form.get("phone")
         new_address = request.form.get("address")
         new_username = request.form.get("username")
-
         current_email = request.form.get("current_email")
         current_phone = request.form.get("current_phone")
         current_username = request.form.get("current_username")
-
         password = request.form.get("password")
 
         current_account = accounts.find_one({"_id": ObjectId(session.get("account_id"))})
 
         error = None
-
         if not check_password_hash(current_account["Password"], password):
             error = messages_failure["invalid_password"]   
-        elif (users.find_one({"Email": new_email}) is not None) and (current_email != new_email):
+        elif users.find_one({"Email": new_email}) is not None and current_email != new_email:
             error = messages_failure['email_existed'].format(new_email) 
-        elif (users.find_one({"Phone": new_phone}) is not None) and (current_phone != new_phone):
+        elif users.find_one({"Phone": new_phone}) is not None and current_phone != new_phone:
             error = messages_failure["phone_existed"].format(new_phone)
-        elif (accounts.find_one({"Username": new_username}) is not None) and (current_username != new_username):
+        elif accounts.find_one({"Username": new_username}) is not None and current_username != new_username:
             error = messages_failure['username_existed'].format(new_username) 
 
         if error:
@@ -170,19 +165,29 @@ def view_profile():
 
         users.update_one(
             {"Email": current_account["AccountOwner"]["Email"]},
-            {"$set": {"Email": new_email, "Phone": new_phone, "Address": new_address}})
+            {
+                "$set": {
+                    "Email": new_email, 
+                    "Phone": new_phone, 
+                    "Address": new_address
+                }
+            }
+        )
         
         updated_user = users.find_one({"Email": new_email}, {"_id":0})
              
         accounts.update_one(
             {"_id": current_account["_id"]},
-            {"$set": {"Username": new_username, "AccountOwner": updated_user}}
+            {
+                "$set": {
+                    "Username": new_username, 
+                    "AccountOwner": updated_user
+                }
+            }
         )
 
         flash(messages_success["update_success"].format("information"), "success");   
         return redirect("/view-profile")
-
-
 
 @account_blueprint.route("/logout")
 def logout():
@@ -220,8 +225,12 @@ def reset_password(token):
 
             update_password = accounts.update_one(
                 {'AccountOwner': exist_user},
-                {"$set": {"Password": new_password}
-            })
+                {
+                    "$set": {
+                        "Password": new_password
+                    }
+                }
+            )
                 
             # Check if the update was successful
             if update_password.modified_count > 0:
@@ -242,13 +251,13 @@ def change_password():
         current_password = request.form.get("current_password")
         new_password = generate_password_hash(request.form.get("new_password"))
         confirmPassword = request.form.get("confirmPassword")
-
         current_user = accounts.find_one({"_id": ObjectId(session.get("account_id"))})
 
         if not check_password_hash(current_user["Password"], current_password):
             flash(messages_failure["invalid_password"], "error")
             return redirect("/change-password")
-        elif not check_password_hash(new_password, confirmPassword):
+        
+        if not check_password_hash(new_password, confirmPassword):
             flash(messages_failure["password_not_matched"], "error")
             return redirect("/change-password")
         
@@ -260,3 +269,4 @@ def change_password():
         flash(messages_success['update_success'].format('password'), 'success')
         return redirect("/login")
     return render_template("changePassword.html")
+
