@@ -180,7 +180,7 @@ def view_profile():
             {"$set": {"Username": new_username, "AccountOwner": updated_user}}
         )
 
-        flash(messages_success["update_success"], "success");   
+        flash(messages_success["update_success"].format("information"), "success");   
         return redirect("/view-profile")
 
 
