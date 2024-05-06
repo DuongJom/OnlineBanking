@@ -5,6 +5,7 @@ messages_failure = {
     'phone_existed' : 'Phone {0} is already used',
     'password_not_matched' : 'Password is not match',
     'invalid_email' : 'Email {0} is invalid',
+    'invalid_password' : 'Your password does not match our records.',
     'token_expired' : 'The link has been expired',
     'document_not_found' : 'No document matching the filter criteria',
     'login_failure' : 'Login failed!',

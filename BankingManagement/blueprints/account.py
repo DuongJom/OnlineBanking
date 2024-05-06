@@ -38,7 +38,7 @@ def login():
             current_app.config['PERMANENT_SESSION_LIFETIME'] = 1209600  # 2 weeks in seconds
         else:
             session.permanent = False
-            session["sex"] = str(acc['AccountOwner']['Sex'])
+        session["sex"] = str(acc['AccountOwner']['Sex'])
         session["account_id"] = str(acc["_id"])
         
         flash(messages_success['login_success'],'success')
@@ -48,7 +48,6 @@ def login():
             return redirect("/employee/home")
         else:
             return redirect("/admin/home")
-        
     return render_template('login.html')
 
 @account_blueprint.route('/register', methods=['GET','POST'])
@@ -190,8 +189,6 @@ def view_profile():
         flash(messages_success["update_success"].format("information"), "success");   
         return redirect("/view-profile")
 
-
-
 @account_blueprint.route("/logout")
 def logout():
     session.clear()
@@ -246,4 +243,30 @@ def reset_password(token):
             flash(messages_failure['token_expired'], 'error')
             return redirect(url_for('account.login'))
     return render_template('reset_password.html', token=token)
+
+@account_blueprint.route('/change-password', methods=["GET", "POST"])
+@login_required
+def change_password():
+    if request.method == "POST":
+        current_password = request.form.get("current_password")
+        new_password = generate_password_hash(request.form.get("new_password"))
+        confirmPassword = request.form.get("confirmPassword")
+        current_user = accounts.find_one({"_id": ObjectId(session.get("account_id"))})
+
+        if not check_password_hash(current_user["Password"], current_password):
+            flash(messages_failure["invalid_password"], "error")
+            return redirect("/change-password")
+        
+        if not check_password_hash(new_password, confirmPassword):
+            flash(messages_failure["password_not_matched"], "error")
+            return redirect("/change-password")
+        
+        accounts.update_one(
+            {'_id': ObjectId(session.get("account_id"))},
+            {"$set": {"Password": new_password}
+        })
+        session.clear()
+        flash(messages_success['update_success'].format('password'), 'success')
+        return redirect("/login")
+    return render_template("change_password.html")
 

@@ -2,6 +2,10 @@ function onClose(){
     document.getElementById("alert").style.display = "none";
 }
 
+function goBack() {
+  window.history.back();
+}
+
 const toggle = () => {
     const mainDropdown = document.getElementById("mainDropdown");
     const right = document.getElementById("navbar_right_arrow");
