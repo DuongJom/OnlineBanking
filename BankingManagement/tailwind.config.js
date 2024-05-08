@@ -3,7 +3,11 @@
 import withMT from "@material-tailwind/html/utils/withMT";
 
 module.exports = withMT({
-  content: ["./templates/*.html", "./static/**/*.js"],
+  content: [
+    "./templates/*.html", 
+    "./templates/**/*.html",
+    "./static/**/*.js",
+  ],
   theme: {
     extend: {
       colors:{
