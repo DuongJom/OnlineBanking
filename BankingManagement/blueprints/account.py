@@ -42,6 +42,9 @@ def login():
         session["account_id"] = str(acc["_id"])
         
         flash(messages_success['login_success'],'success')
+
+        print(acc["Role"])
+
         if acc["Role"] == RoleType.USER.value:
             return redirect("/")
         elif acc["Role"] == RoleType.EMPLOYEE.value:

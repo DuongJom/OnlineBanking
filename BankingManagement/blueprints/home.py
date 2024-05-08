@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, session
+from flask import Blueprint, render_template, session, redirect
 from bson import ObjectId
 
 from models import database
 from helpers import login_required
+from SysEnum import RoleType
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -14,6 +15,12 @@ home_blueprint = Blueprint('home', __name__)
 def index():
     account_id = ObjectId(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
-    return render_template('home.html', account = account)
+    if account["Role"] == RoleType.USER.value:
+        return render_template("home.html", account = account)
+    elif account["Role"] == RoleType.EMPLOYEE.value:
+        return redirect("/employee/home")
+    else:
+        return redirect("/admin/home")
+    # return render_template("home.html", account = account)
 
 
