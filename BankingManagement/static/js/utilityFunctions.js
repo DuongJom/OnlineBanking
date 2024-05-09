@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-
   const state = {
     recipe: {},
     search: {
@@ -92,3 +91,4 @@ const getResultsPage = function (page = state.search.page) {
 
   return state.search.results.slice(start, end);
 };
+

@@ -5,47 +5,110 @@
 {% endblock %}
 
 {% block content %}
-    <label for="month">Month:</label>
-    <select id="month">
-        <option value="January">January</option>
-        <option value="February">February</option>
-        <!-- Add options for other months -->
-    </select>
-    <label for="year">Year:</label>
-    <select id="year">
-        <option value="2024">2024</option>
-        <!-- Add options for other years -->
-    </select>
 
-    <table id="data_table">
-        <thead>
-            <tr>
-                <th>Data</th>
-            </tr>
-        </thead>
-        <tbody id="data_body">
-            <!-- Data will be populated dynamically here -->
-        </tbody>
-    </table>
+    <!-- Sidebar -->
+    <aside class="bg-gray-800 text-gray-400 h-screen w-64 fixed top-0 left-0">
+        <div class="p-4">
+            <h1 class="text-xl font-bold text-white">Sidebar</h1>
+            <!-- Add your sidebar content here -->
+        </div>
+    </aside>
 
-    <script>
-        $(document).ready(function() {
-            $('#month, #year').change(function() {
-                const month = $('#month').val();
-                const year = $('#year').val();
-                $.ajax({
-                    url: '/get_data',
-                    type: 'POST',
-                    data: {month: month, year: year},
-                    success: function(response) {
-                        const tableBody = $('#data_body');
-                        tableBody.empty();
-                        response.forEach(function(item) {
-                            tableBody.append('<tr><td>' + item + '</td></tr>');
+    <!-- Content -->
+    <div class="flex flex-col ml-64 p-8"> <!-- ml-64 to offset the sidebar -->
+         <!-- Top Div with Month, Year Buttons -->
+        <div class="flex mb-4 justify-between items-center">
+            <!-- Month Button with Dropdown -->
+            <div class="relative">
+                <button type="button" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100">
+                    Month
+                    <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10.293 13.707a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <!-- Dropdown List -->
+                <div class="absolute z-10 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                    <ul class="py-1">
+                        <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">January</a></li>
+                        <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">February</a></li>
+                        <!-- Add more months here -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Year Button with Dropdown -->
+            <div class="relative">
+                <label for="month">Month:</label>
+                <select id="month">
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <!-- Add options for other months -->
+                </select>
+                <label for="year">Year:</label>
+                <select id="year">
+                    <option value="2024">2024</option>
+                    <!-- Add options for other years -->
+                </select>
+            </div>
+
+            <!-- Buttons for Check-in, Check-out, WFH Check-in, WFH Check-out, Day-off -->
+            <div>
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-md mr-2">Check-in</button>
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-md mr-2">Check-out</button>
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-md mr-2">WFH Check-in</button>
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-md mr-2">WFH Check-out</button>
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-md mr-2">Day-off</button>
+            </div>
+        </div>
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="tb_header">STT</th>
+                        <th class="tb_header">Employee ID</th>
+                        <th class="tb_header">Employee Name</th>
+                        <th class="tb_header">Role</th>
+                        <th class="tb_header">Check-in time</th>
+                        <th class="tb_header">Check-out time</th>
+                        <th class="tb_header">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+           
+
+            <table id="data_table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody id="data_body">
+                    <!-- Data will be populated dynamically here -->
+                </tbody>
+            </table>
+                </div>
+            </div>
+            <script>
+                $(document).ready(function() {
+                    $('#month, #year').change(function() {
+                        const month = $('#month').val();
+                        const year = $('#year').val();
+                        $.ajax({
+                            url: '/get_data',
+                            type: 'POST',
+                            data: {month: month, year: year},
+                            success: function(response) {
+                                const tableBody = $('#data_body');
+                                tableBody.empty();
+                                response.forEach(function(item) {
+                                    tableBody.append('<tr><td>' + item + '</td></tr>');
+                                });
+                            }
                         });
-                    }
+                    });
                 });
-            });
-        });
-    </script>
+            </script>
+
+
 {% endblock %}
