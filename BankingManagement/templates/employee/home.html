@@ -5,5 +5,47 @@
 {% endblock %}
 
 {% block content %}
-    <div class="fixed">User is signing as employee</div>
+    <label for="month">Month:</label>
+    <select id="month">
+        <option value="January">January</option>
+        <option value="February">February</option>
+        <!-- Add options for other months -->
+    </select>
+    <label for="year">Year:</label>
+    <select id="year">
+        <option value="2024">2024</option>
+        <!-- Add options for other years -->
+    </select>
+
+    <table id="data_table">
+        <thead>
+            <tr>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody id="data_body">
+            <!-- Data will be populated dynamically here -->
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            $('#month, #year').change(function() {
+                const month = $('#month').val();
+                const year = $('#year').val();
+                $.ajax({
+                    url: '/get_data',
+                    type: 'POST',
+                    data: {month: month, year: year},
+                    success: function(response) {
+                        const tableBody = $('#data_body');
+                        tableBody.empty();
+                        response.forEach(function(item) {
+                            tableBody.append('<tr><td>' + item + '</td></tr>');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
