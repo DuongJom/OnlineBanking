@@ -50,7 +50,7 @@ def login():
         elif acc["Role"] == RoleType.EMPLOYEE.value:
             return redirect("/employee/home")
         else:
-            return redirect("/admin/home")
+            return redirect("/admin/account")
     return render_template('login.html')
 
 @account_blueprint.route('/register', methods=['GET','POST'])

@@ -17,6 +17,8 @@ module.exports = withMT({
         'hover-profile-color' : '#C1C7C6',
         'popup-bg' : 'rgba(204, 204, 204, 0.5)',
         'popup-bg-hover' : 'rgba(204, 204, 204, 0.3)',
+        'side_bar_bg' : '#634CB3',
+        'hover_side_bar': '#8271C1',
       },
       height: {
         '90%' : '90%',

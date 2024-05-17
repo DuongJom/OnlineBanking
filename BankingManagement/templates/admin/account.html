@@ -1,0 +1,70 @@
+{% extends "admin/layout.html" %}
+
+{% block admin_content %}
+    <div 
+    style="height: calc(100vh - 64px); width: calc(100vw - 192px);"
+    class="flex flex-col justify-center items-center ml-48 mt-10">
+
+        <!-- add button -->
+        <div class="w-full flex justify-between">
+            <div class="ml-14">
+                <button class="h-10 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar">
+                    ADD NEW
+                </button>
+            </div>
+            <div class="mr-14 flex items-center justify-center">
+                <input type="text" class="h-10 rounded-l-2xl focus:ring-side_bar_bg"/>
+                <button class="border border-black h-10 w-10 p-1 flex items-center justify-center mr-3 rounded-r-2xl">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+                <select class="rounded-xl focus:ring-side_bar_bg">
+                    <option>Username</option>
+                    <option>Email</option>
+                </select>
+            </div>
+            
+        </div>
+        
+        <table class="w-11/12 mt-10">
+            <thead class="bg-blue-gray-300">
+                <tr class="h-12">
+                    <th class="text-left p-2">Username</th>
+                    <th class="text-left p-2">AccountNumber</th>
+                    <th class="text-left p-2">AccountOwner</th>
+                    <th class="text-left p-2">Branch</th>
+                    <th class="text-left p-2">Role</th>
+                    <th class="text-left p-2">TransferMethod</th>
+                    <th class="text-left p-2">LoginMethod</th>
+                    <th class="text-left p-2">Service</th>
+                    <th class="text-left p-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+
+        <!-- pagination -->
+        <div class="fixed bottom-5 transform -translate-x-1/2 flex items-center"
+        style="left: calc(55%);">
+            
+            <button 
+                class="bg-side_bar_bg hover:bg-hover_side_bar w-12 rounded-xl text-white flex items-center justify-center mr-4"
+                id="previous-btn">
+                <span class="material-symbols-outlined">arrow_left_alt</span>
+            </button>
+
+            <p id="location"></p>
+        
+            <button 
+                class="bg-side_bar_bg hover:bg-hover_side_bar w-12 rounded-xl text-white flex items-center justify-center ml-4"
+                id="next-btn">
+                <span class="material-symbols-outlined">arrow_right_alt</span>
+            </button>
+            
+        </div>
+        
+    </div>
+
+    <script type="module" src="{{ url_for('static', filename='js/admin/account.js') }}"></script>
+{% endblock %}
