@@ -1,7 +1,7 @@
 import json
 from models.base import BaseModel
-from models.datetimeEncoder import DateTimeEncoder
-from SysEnum import MIMEType
+from models.datetime_encoder import DateTimeEncoder
+from enums.mime_type import MIMEType
 
 class Attachment(BaseModel):
     def __init__(self, **kwargs):

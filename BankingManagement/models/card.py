@@ -1,7 +1,7 @@
 import json
 from datetime import datetime as dt, timedelta
 from models.base import BaseModel
-from models.datetimeEncoder import DateTimeEncoder
+from models.datetime_encoder import DateTimeEncoder
 
 class Card(BaseModel):
     def __init__(self, **kwargs):

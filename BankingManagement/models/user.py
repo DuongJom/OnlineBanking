@@ -3,7 +3,7 @@ import os
 import jwt
 from time import time
 from models.base import BaseModel
-from models.datetimeEncoder import DateTimeEncoder
+from models.datetime_encoder import DateTimeEncoder
 
 class User(BaseModel):
     def __init__(self, **kwargs):
