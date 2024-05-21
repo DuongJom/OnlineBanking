@@ -4,8 +4,8 @@ from bson import ObjectId
 from datetime import datetime
 from models import account, user, card as model_card , database
 from message import messages_success, messages_failure
-from helpers import issueNewCard, get_token, send_email, ts, login_required
-from SysEnum import RoleType
+from helpers import issueNewCard, get_token, send_email, ts, login_required, current_user
+from enums.role_type import RoleType
 from app import app
 
 db = database.Database().get_db()
@@ -40,6 +40,7 @@ def login():
             session.permanent = False
         session["sex"] = str(acc['AccountOwner']['Sex'])
         session["account_id"] = str(acc["_id"])
+        session["current_user"] = acc['AccountOwner'] if acc['AccountOwner'] else None
         
         flash(messages_success['login_success'],'success')
         if acc["Role"] == RoleType.USER.value:
