@@ -4,7 +4,7 @@ from functools import wraps
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
 from app import app, mail
-from SysEnum import MIMEType
+from enums.mime_type import MIMEType
 
 def login_required(f):
     @wraps(f)
