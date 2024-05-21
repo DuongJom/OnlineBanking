@@ -66,7 +66,7 @@ def get_data():
             query = {'CreatedDate': {'$gte': start_date_iso, '$lt': end_date_iso}}
 
             # Execute the query and convert the cursor to a list
-            data_cursor = db.users.find(query)
+            data_cursor = db.employee.find(query)
             data_list = list(data_cursor)  # Convert cursor to list
             if not data_list:
                 print("No documents found for the given query.")
