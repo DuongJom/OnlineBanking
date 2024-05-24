@@ -97,16 +97,16 @@
 
         <!-- Table -->
         <div class="overflow-x-auto">
-            <table id="data_table" class="min-w-full table-auto divide-y divide-gray-500">
+            <table id="data_table" class="min-w-full table-auto border border-slate-500  divide-y divide-gray-500">
                 <thead class="bg-orange-200">
                     <tr>
                         <th class="tb_header">STT</th>
                         <th class="tb_header">Employee ID</th>
                         <th class="tb_header">Employee Name</th>
                         <th class="tb_header">Role</th>
-                        <th class="tb_header">Check-in time</th>
-                        <th class="tb_header">Check-out time</th>
-                        <th class="tb_header">Status</th>
+                        <th class="hidden sm:table-cell tb_header">Check-in time</th>
+                        <th class="hidden lg:table-cell tb_header">Check-out time</th>
+                        <th class="hidden xl:table-cell tb_header">Status</th>
                     </tr>
                 </thead>
                 <tbody id= "employee-table" class="bg-yellow-100 divide-y divide-gray-500">
@@ -116,9 +116,9 @@
                             <td class="tb_row">{{ row["Employee ID"] }}</td>
                             <td class="tb_row">{{ row["Employee Name"] }}</td>
                             <td class="tb_row">{{ row["Role"] }}</td>
-                            <td class="tb_row">{{ row["Check-in time"] }}</td>
-                            <td class="tb_row">{{ row["Check-out time"] }}</td>
-                            <td class="tb_row">{{ row["Status"] }}</td>
+                            <td class="hidden sm:table-cell tb_row">{{ row["Check-in time"] }}</td>
+                            <td class="hidden lg:table-cell tb_row">{{ row["Check-out time"] }}</td>
+                            <td class="hidden xl:table-cell tb_row">{{ row["Status"] }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

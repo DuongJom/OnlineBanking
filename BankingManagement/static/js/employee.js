@@ -56,9 +56,9 @@ const render = function(data){
           <td class="tb_row">${row["_id"]}</td>
           <td class="tb_row">${row["Name"]}</td>
           <td class="tb_row">${row["Email"]}</td>
-          <td class="tb_row">${new Date(row["CreatedDate"]).toLocaleString()}</td>
-          <td class="tb_row">${new Date(row["CreatedDate"]).toLocaleString()}</td>
-          <td class="tb_row">${row["Sex"]}</td>
+          <td class="hidden sm:table-cell tb_row">${new Date(row["CreatedDate"]).toLocaleString()}</td>
+          <td class="hidden lg:table-cell tb_row">${new Date(row["CreatedDate"]).toLocaleString()}</td>
+          <td class="hidden xl:table-cell tb_row">${row["Sex"]}</td>
       `;
       tbody.appendChild(tr);
   })
