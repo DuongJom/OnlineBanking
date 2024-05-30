@@ -2,32 +2,36 @@
 
 {% block content %}
 <!-- Admin side bar -->
-<div 
-style="height: calc(100vh - 64px)"
-class="fixed left-0 w-48 bg-side_bar_bg top-16">
-    <ul class="px-4">
+<div>
+    <div 
+    style="height: calc(100vh - 216px);"
+    class="flex mt-16">
+        <ul class="bg-side_bar_bg p-4 w-48">
+            <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
+                <a href="/admin/account">Account</a>
+            </li>
+            <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
+                <a href="/admin/user">User</a>
+            </li>
+            <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
+                <a href="/admin/employee">Employee</a>
+            </li>
+            <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
+                <a href="/admin/branch">Branch</a>
+            </li>
+            <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
+                <a href="/admin/chart">chart</a>
+            </li>
+            <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
+                <a href="/admin/chart">News</a>
+            </li>
+        </ul>
+        {% block admin_content %}
+        {% endblock %}
+    </div>
 
-        <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
-            <a href="/admin/account">Account</a>
-        </li>
-        <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
-            <a href="/admin/user">User</a>
-        </li>
-        <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
-            <a href="/admin/employee">Employee</a>
-        </li>
-        <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
-            <a href="/admin/branch">Branch</a>
-        </li>
-        <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
-            <a href="/admin/chart">chart</a>
-        </li>
-    </ul>
+    <div>   
+        {% include "footer.html" %}
+    </div>
 </div>
-
-{% block admin_content %}
-{% endblock %}
-
-
-
 {% endblock %}

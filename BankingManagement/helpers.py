@@ -108,7 +108,7 @@ def getMIMETypeValue(mime_type: MIMEType):
     
     
 def paginator(page, items_list):
-    per_page = 9
+    per_page = 8
     start = (page - 1) * per_page
     end = start + per_page
 

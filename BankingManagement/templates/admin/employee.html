@@ -1,5 +1,73 @@
 {% extends "admin/layout.html" %}
 
 {% block admin_content %}
+    <div class="flex flex-1 flex-col justify-center items-center relative">
+        <!-- tool bar -->
+        <div class="w-full flex flex-1 justify-between items-center absolute top-2">
+            <div class="ml-14">
+                <button class="h-7 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar font-bold">
+                    NEW
+                </button>
+            </div>
+            <div class="mr-14 flex flex-1 items-center justify-end ">
+                <div class="border border-black border-r-0 h-8 w-10 p-1 flex items-center justify-center rounded-l-2xl">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <input type="text" class="h-8 w-1/2 rounded-r-2xl focus:ring-side_bar_bg mr-3 border-l-0 border-black"/>
+                <select class="rounded-xl focus:ring-side_bar_bg h-10 flex items-center">
+                    <option>Username</option>
+                    <option>Email</option>
+                    <optgroup label="Role">
+                        <option>Admin</option>
+                        <option>User</option>
+                        <option>Employee</option>
+                    </optgroup>
+                    <option>Branch</option>
+                </select>
+            </div>
+            
+        </div>
+        
+        <table class="w-99% border border-black max-h-56">
+            <thead class="bg-blue-gray-300">
+                <tr class="h-8">
+                    <th class="text-left p-2 border border-black">Username</th>
+                    <th class="text-left p-2 border border-black">Account Number</th>
+                    <th class="text-left p-2 border border-black">Owner</th>
+                    <th class="text-left p-2 border border-black hidden 2xl:table-cell">Branch</th>
+                    <th class="text-left p-2 border border-black hidden xl:table-cell">Role</th>
+                    <th class="text-left p-2 border border-black hidden lg:table-cell">Transfer Method</th>
+                    <th class="text-left p-2 border border-black hidden md:table-cell">Login Method</th>
+                    <th class="text-left p-2 border border-black hidden sm:table-cell">Service</th>
+                    <th class="p-2 border border-black text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        
 
+        <!-- pagination -->
+        <div class="w-full flex flex-1 justify-end mr-28 items-center absolute bottom-2">         
+            <button 
+                class="bg-side_bar_bg hover:bg-hover_side_bar h-7 w-12 rounded-xl 
+                text-white flex items-center justify-center mr-4"
+                id="previous-btn">
+                <span class="material-symbols-outlined">arrow_left_alt</span>
+            </button>
+            <p id="location"></p>
+        
+            <button 
+                class="bg-side_bar_bg hover:bg-hover_side_bar h-7 w-12 rounded-xl 
+                text-white flex items-center justify-center ml-4"
+                id="next-btn">
+                <span class="material-symbols-outlined">arrow_right_alt</span>
+            </button>
+            
+        </div>
+        
+    </div>
+ 
+
+    <script type="module" src="{{ url_for('static', filename='js/admin/account.js') }}"></script>
 {% endblock %}

@@ -21,8 +21,9 @@ export function get_admin_page_data(page, dataType) {
 
 export function create_action_button(row) {
     const action_cell = document.createElement('td');
+    action_cell.classList.add('border-x', 'border-black')
     const div = document.createElement('div');
-    div.classList.add('flex')
+    div.classList.add('flex', 'justify-center')
     const view_btn = document.createElement('button');
     const delete_btn = document.createElement('button');
     const edit_btn = document.createElement('button');
@@ -34,7 +35,8 @@ export function create_action_button(row) {
     btn_list.forEach(btn => {
         btn.classList.add('flex','items-center', 'justify-center')
         const span = document.createElement('span');
-        span.classList.add('material-symbols-outlined', 'hover:text-gray-700');
+        span.classList.add('material-symbols-outlined', 'hover:bg-gray-500', 'rounded');
+        span.style.fontWeight = '300';
         span.innerHTML = icon_list[i];
         btn.appendChild(span);
         div.appendChild(btn);
