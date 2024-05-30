@@ -1,7 +1,8 @@
 import json
 from models.base import BaseModel
-from models.datetimeEncoder import DateTimeEncoder
-from SysEnum import EmployeeRoleType
+from models.datetime_encoder import DateTimeEncoder
+from enums.employee_role_type import EmployeeRoleType
+
 class Employee(BaseModel):
     def __init__(self, **kwargs):
         super().__init__()
