@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, jsonify
 from models import database, account as a, user as u, branch as b
 
 from helpers import login_required, paginator
-from SysEnum import RoleType
+from enums.role_type import RoleType
 import random
 
 admin_blueprint = Blueprint('admin', __name__)   
