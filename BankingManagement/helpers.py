@@ -1,8 +1,10 @@
 import random
+
 from flask import redirect, session
 from functools import wraps
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
+
 from app import app, mail
 from enums.mime_type import MIMEType
 
@@ -104,6 +106,7 @@ def getMIMETypeValue(mime_type: MIMEType):
         return 'audio/mp4;audio/mpeg;application/ogg'
     
     if mime_type == MIMEType.VIDEO:
+<<<<<<< HEAD
         return 'video/mpeg'
     
     
@@ -118,3 +121,6 @@ def paginator(page, items_list):
 
     return {'render_items' : render_items, 'total_pages' : total_pages}
 
+=======
+        return 'video/mpeg'
+>>>>>>> bc6e1992dc905bbc8aabd364c5a47803f98f9910

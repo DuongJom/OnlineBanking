@@ -1,5 +1,7 @@
 import json
+
 from datetime import datetime
+
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.working_type import WorkingType
