@@ -1,8 +1,10 @@
 import random
+
 from flask import redirect, session
 from functools import wraps
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
+
 from app import app, mail
 from enums.mime_type import MIMEType
 
@@ -104,6 +106,3 @@ def getMIMETypeValue(mime_type: MIMEType):
     
     if mime_type == MIMEType.VIDEO:
         return 'video/mpeg'
-    
-    
-    

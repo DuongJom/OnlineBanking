@@ -1,7 +1,7 @@
-import json
-import os
-import jwt
+import json, os, jwt
+
 from time import time
+
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 

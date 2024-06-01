@@ -1,10 +1,13 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, Response
+import os
+
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 from werkzeug.security import check_password_hash, generate_password_hash
 from bson import ObjectId
 from datetime import datetime
+
 from models import account, user, card as model_card , database
 from message import messages_success, messages_failure
-from helpers import issueNewCard, get_token, send_email, ts, login_required, current_user
+from helpers import issueNewCard, get_token, send_email, ts, login_required
 from enums.role_type import RoleType
 from app import app
 
@@ -35,12 +38,11 @@ def login():
         
         if remember_me:
             session.permanent = True
-            current_app.config['PERMANENT_SESSION_LIFETIME'] = 1209600  # 2 weeks in seconds
+            current_app.config['PERMANENT_SESSION_LIFETIME'] = os.getenv('SESSION_LIFETIME')  # 2 weeks in seconds
         else:
             session.permanent = False
         session["sex"] = str(acc['AccountOwner']['Sex'])
         session["account_id"] = str(acc["_id"])
-        session["current_user"] = acc['AccountOwner'] if acc['AccountOwner'] else None
         
         flash(messages_success['login_success'],'success')
         if acc["Role"] == RoleType.USER.value:
