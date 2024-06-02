@@ -3,6 +3,142 @@
 import {TIMEOUT_SEC} from './config.js'
 const API_URL = '/get-data'
 
+const checkIn = document.getElementById('check_in');
+const checkOut = document.getElementById('check_out');
+const wfhCheckIn = document.getElementById('wfh_check_in');
+const wfhCheckOut = document.getElementById('wfh_check_out');
+const dayOff = document.getElementById('day_off');
+const closeModalButton = document.getElementById('closeModal');
+const modal = document.getElementById('myModal');
+const modalMessage = document.getElementById('modalMessage');
+const confirmButton = document.querySelector('.confirm');
+const buttons = document.querySelectorAll('.action-btn');
+        
+// Function to disable all buttons except the one that was clicked
+function disableButton(button) {
+            button.disabled = true;
+}
+
+
+// Event handler for button clicks using event delegation
+document.getElementById('buttonContainer').addEventListener('click', function(event) {
+
+  if (event.target.tagName === 'BUTTON') {
+    // Set the modal message based on the button clicked
+    const buttonText = event.target.textContent;
+    modalMessage.textContent = `Do you confirm to ${buttonText.toLowerCase()}?`;
+    if (event.target.id === 'check_in') {
+      //show model
+      modal.classList.toggle('hidden');
+
+      disableButton(wfhCheckIn);
+      disableButton(wfhCheckOut);
+      disableButton(dayOff);
+    }
+    if (event.target.id === 'wfh_check_in') {
+      //show model
+      modal.classList.toggle('hidden');
+
+      disableButton(checkIn);
+      disableButton(checkOut);
+      disableButton(dayOff);
+    }
+    if (event.target.id === 'check_out') {
+      //show model
+      modal.classList.toggle('hidden');
+
+      //reactivate buttons
+      buttons.forEach(button => {
+        button.disabled = false;
+      });
+    }
+    if (event.target.id === 'wfh_check_out') {
+      //show model
+      modal.classList.toggle('hidden');
+
+      //reactivate buttons
+      buttons.forEach(button => {
+        button.disabled = false;
+      });
+    }
+    if (event.target.id === 'day_off') {
+      //show model
+      modal.classList.toggle('hidden');
+      const text = `Would you like to take half-day off or 1 day off?`
+      modalMessage.textContent = text;
+      confirmButton.textContent = '1 day';
+      closeModalButton.textContent = 'Half-day'
+      //reactivate buttons
+      buttons.forEach(button => {
+        button.disabled = false;
+      });
+    }
+
+
+
+      console.log('Button clicked:', event.target);
+  }
+});
+
+// Event listener for closing the modal
+closeModalButton.addEventListener('click', () => {
+    modal.classList.toggle('hidden');
+
+    if (closeModalButton.textContent === '1 day') {
+      closeModalButton.textContent = 'Close';
+      
+      buttons.forEach(button => {
+        button.disabled = true;
+      });
+      
+      setTimeout(() => {
+        buttons.forEach(button => {
+          button.disabled = false; // Re-enable buttons after 1 day
+        });
+      }, 86400*500); 
+    }
+    
+    // Re-enable all buttons when the modal is closed
+    buttons.forEach(button => {
+        button.disabled = true;
+    });
+});
+
+confirmButton.addEventListener('click', (e) => {
+    modal.classList.toggle('hidden');
+    if (confirmButton.textContent === '1 day') {
+      confirmButton.textContent = 'Confirm';
+
+      buttons.forEach(button => {
+        button.disabled = true;
+      });
+    
+      setTimeout(() => {
+        buttons.forEach(button => {
+          button.disabled = false; // Re-enable buttons after 1 day
+        });
+      }, 86400*1000); 
+    }
+    console.log(e.target)
+});
+
+// Close modal when clicking outside the modal content
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        modal.classList.toggle('hidden');
+        // Re-enable all buttons when the modal is closed
+        buttons.forEach(button => {
+            button.disabled = false;
+        });
+    }
+});
+
+
+
+
+
+
+
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
@@ -56,7 +192,7 @@ const render = function(data){
           <td class="tb_row">${row["_id"]}</td>
           <td class="tb_row">${row["Name"]}</td>
           <td class="tb_row">${row["Email"]}</td>
-          <td class="hidden sm:table-cell tb_row">${new Date(row["CreatedDate"]).toLocaleString()}</td>
+          <td class="hidden lg:table-cell tb_row">${new Date(row["CreatedDate"]).toLocaleString()}</td>
           <td class="hidden lg:table-cell tb_row">${new Date(row["CreatedDate"]).toLocaleString()}</td>
           <td class="hidden xl:table-cell tb_row">${row["Sex"]}</td>
       `;

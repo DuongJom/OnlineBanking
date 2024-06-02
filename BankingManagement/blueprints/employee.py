@@ -37,6 +37,14 @@ def employee_home():
          "Check-in time": "08:00 AM", "Check-out time": "05:00 PM", "Status": "Present"},
         {"STT": 2, "Employee ID": "EMP002", "Employee Name": "Jane Smith", "Role": "Developer",
          "Check-in time": "09:00 AM", "Check-out time": "06:00 PM", "Status": "Present"},
+        {"STT": 3, "Employee ID": "EMP003", "Employee Name": "Fendy", "Role": "Project Manager",
+         "Check-in time": "07:00 AM", "Check-out time": "07:00 PM", "Status": "Present"},
+        {"STT": 4, "Employee ID": "EMP004", "Employee Name": "JiaQi", "Role": "Monarch Concierge",
+         "Check-in time": "09:00 AM", "Check-out time": "09:00 PM", "Status": "Present"},
+        {"STT": 5, "Employee ID": "EMP005", "Employee Name": "Vanessa", "Role": "Customer Service Officer",
+         "Check-in time": "09:00 AM", "Check-out time": "09:00 PM", "Status": "Present"},
+        {"STT": 6, "Employee ID": "EMP006", "Employee Name": "Daniel", "Role": "Developer",
+         "Check-in time": "06:00 AM", "Check-out time": "06:00 PM", "Status": "Present"},
         ]
         today = date.today()
         current_month = today.strftime("%B")
