@@ -3,7 +3,7 @@ from bson import ObjectId
 
 from models import database
 from helpers import login_required
-from SysEnum import RoleType
+from enums.role_type import RoleType
 
 db = database.Database().get_db()
 accounts = db['accounts']

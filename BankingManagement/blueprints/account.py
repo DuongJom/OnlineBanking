@@ -38,7 +38,7 @@ def login():
         
         if remember_me:
             session.permanent = True
-            current_app.config['PERMANENT_SESSION_LIFETIME'] = os.getenv('SESSION_LIFETIME')  # 2 weeks in seconds
+            current_app.config['PERMANENT_SESSION_LIFETIME'] = int(os.getenv('SESSION_LIFETIME'))
         else:
             session.permanent = False
         session["sex"] = str(acc['AccountOwner']['Sex'])

@@ -15,14 +15,16 @@
                 </div>
                 <input type="text" class="h-8 w-1/2 rounded-r-2xl focus:ring-side_bar_bg mr-3 border-l-0 border-black"/>
                 <select class="rounded-xl focus:ring-side_bar_bg h-10 flex items-center">
-                    <option>Username</option>
+                    <option>Name</option>
                     <option>Email</option>
+                    <option>Phone</option>
+                    <option>Working-status</option>
+                    <option>Salary</option>
                     <optgroup label="Role">
                         <option>Admin</option>
                         <option>User</option>
                         <option>Employee</option>
                     </optgroup>
-                    <option>Branch</option>
                 </select>
             </div>
             
@@ -31,14 +33,17 @@
         <table class="w-99% border border-black max-h-56">
             <thead class="bg-blue-gray-300">
                 <tr class="h-8">
-                    <th class="text-left p-2 border border-black">Username</th>
-                    <th class="text-left p-2 border border-black">Account Number</th>
-                    <th class="text-left p-2 border border-black">Owner</th>
-                    <th class="text-left p-2 border border-black hidden 2xl:table-cell">Branch</th>
-                    <th class="text-left p-2 border border-black hidden xl:table-cell">Role</th>
-                    <th class="text-left p-2 border border-black hidden lg:table-cell">Transfer Method</th>
-                    <th class="text-left p-2 border border-black hidden md:table-cell">Login Method</th>
-                    <th class="text-left p-2 border border-black hidden sm:table-cell">Service</th>
+                    <th class="text-left p-2 border border-black">Name</th>
+                    <th class="text-left p-2 border border-black">Position</th>
+                    <th class="text-left p-2 border border-black">Role</th>
+                    <th class="text-left p-2 border border-black hidden 2xl:table-cell">Gender</th>
+                    <th class="text-left p-2 border border-black hidden sc-1220:table-cell">Phone</th>
+                    <th class="text-left p-2 border border-black hidden xl:table-cell">Email</th>
+                    <th class="text-left p-2 border border-black hidden lg:table-cell">Address</th>
+                    <th class="text-left p-2 border border-black hidden sc-960:table-cell">Check-in</th>
+                    <th class="text-left p-2 border border-black hidden sc-860:table-cell">Check-out</th>
+                    <th class="text-left p-2 border border-black hidden md:table-cell">Working status</th>
+                    <th class="text-left p-2 border border-black hidden sm:table-cell">Salary</th>
                     <th class="p-2 border border-black text-center">Action</th>
                 </tr>
             </thead>
@@ -69,5 +74,5 @@
     </div>
  
 
-    <script type="module" src="{{ url_for('static', filename='js/admin/account.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/admin/employee.js') }}"></script>
 {% endblock %}

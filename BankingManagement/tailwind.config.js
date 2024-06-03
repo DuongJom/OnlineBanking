@@ -22,6 +22,7 @@ module.exports = withMT({
       },
       height: {
         '90%' : '90%',
+        '500': '500px',
       },
       width:{
         '500px' : '500px',
@@ -35,6 +36,12 @@ module.exports = withMT({
       zIndex: {
         '1000': 1000,
       },
+      screens: {
+        'sc-1220' : '1220px',
+        'sc-960'  : '960px',
+        'sc-860'  : '860px',
+      }
+      
     },
   },
   plugins: [require("@tailwindcss/forms")],

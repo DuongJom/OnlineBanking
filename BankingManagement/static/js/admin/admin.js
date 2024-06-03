@@ -46,4 +46,3 @@ export function create_action_button(row) {
     action_cell.appendChild(div);
     row.appendChild(action_cell);
 }
-

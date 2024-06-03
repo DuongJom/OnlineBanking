@@ -30,15 +30,15 @@ function render_table(items) {
         const new_row = document.createElement('tr');
         new_row.classList.add('h-7', 'bg-blue-gray-50', 'my-3', 'border-t', 'border-white');
 
-        const datas = [item.Username, item.AccountNumber, item.AccountOwner.Name, "branch", item.Role, 
-            item.TransferMethod, item.LoginMethod, item.Service]
+        const datas = [item.Username, "gender", "Address", item.AccountNumber, 
+            "This is sample email", "656665651965"]
 
         var i = 0;
         datas.forEach(data => {
             const cell = document.createElement('td')
             cell.innerHTML = data;
 
-            if (i == 2 || i == 3) {
+            if (i == 2 || i == 5) {
                 const span = document.createElement('span')
                 span.innerHTML = 'i';
                 span.classList.add('absolute', 'mx-1', 'font-bold');
@@ -57,12 +57,6 @@ function render_table(items) {
                         break;
                     case 5:
                         cell.classList.add('lg:table-cell');
-                        break;
-                    case 6:
-                        cell.classList.add('md:table-cell');
-                        break;
-                    case 7:
-                        cell.classList.add('sm:table-cell');
                         break;
                 }
             }

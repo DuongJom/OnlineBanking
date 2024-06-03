@@ -16,6 +16,7 @@ cards = db['cards']
 transferMethods = db['transferMethods']
 loginMethods = db['loginMethods']
 services = db['services']
+employees = db['employees']
 
 def create_random_user(i):
     return {
@@ -86,13 +87,19 @@ def admin():
     page = request.args.get('page', 1, int)
     dataType = request.args.get('dataType')
 
+    
+    # This block of code will be use to request for data
     # items = []
-
     # if dataType == 'account':
     #     items = list(accounts.find({}, {'_id': 0})) 
-    # if dataType == 'user':
+    # elif dataType == 'user':
     #     items = list(users.find({}, {'_id': 0}))
+    # elif dataType == 'branch':
+    #     items = list(branches.find({}, {'_id': 0}))
+    # elif dataType == 'employee':
+    #     items = list(employees.find({}, {'_id': 0}))
     
+
     pagination = paginator(page, items)
 
     return jsonify({'items': pagination['render_items'], 'total_pages': pagination['total_pages']})
