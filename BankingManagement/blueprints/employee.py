@@ -1,4 +1,5 @@
 import json
+from bson import ObjectId
 from flask import Blueprint, render_template, request, jsonify
 from models import database
 from datetime import datetime, date
@@ -28,28 +29,44 @@ month_map = {
     'November': 11,
     'December': 12
 }
-
+def convert_objectid(data):
+    if isinstance(data, list):
+        return [convert_objectid(item) for item in data]
+    elif isinstance(data, dict):
+        return {key: convert_objectid(value) for key, value in data.items()}
+    elif isinstance(data, ObjectId):
+        return str(data)
+    else:
+        return data
+    
 @employee_blueprint.route('/employee/home', methods = ['GET'])
 def employee_home():
     if request.method == 'GET':
-        fake_data = [
-        {"STT": 1, "Employee ID": "EMP001", "Employee Name": "John Doe", "Role": "Manager",
-         "Check-in time": "08:00 AM", "Check-out time": "05:00 PM", "Status": "Present"},
-        {"STT": 2, "Employee ID": "EMP002", "Employee Name": "Jane Smith", "Role": "Developer",
-         "Check-in time": "09:00 AM", "Check-out time": "06:00 PM", "Status": "Present"},
-        {"STT": 3, "Employee ID": "EMP003", "Employee Name": "Fendy", "Role": "Project Manager",
-         "Check-in time": "07:00 AM", "Check-out time": "07:00 PM", "Status": "Present"},
-        {"STT": 4, "Employee ID": "EMP004", "Employee Name": "JiaQi", "Role": "Monarch Concierge",
-         "Check-in time": "09:00 AM", "Check-out time": "09:00 PM", "Status": "Present"},
-        {"STT": 5, "Employee ID": "EMP005", "Employee Name": "Vanessa", "Role": "Customer Service Officer",
-         "Check-in time": "09:00 AM", "Check-out time": "09:00 PM", "Status": "Present"},
-        {"STT": 6, "Employee ID": "EMP006", "Employee Name": "Daniel", "Role": "Developer",
-         "Check-in time": "06:00 AM", "Check-out time": "06:00 PM", "Status": "Present"},
-        ]
+        # max_STT_doc = db.employee.find().sort('STT', -1).limit(1).next()
+        # max_STT = max_STT_doc["STT"]
+        # new_docs = []
+        # for doc in data:
+        #     new_doc = {k:v for k,v in doc.items() if k != '_id'} #remove the _id
+        #     max_STT += 1
+        #     new_doc['STT'] = max_STT
+        #     new_doc["CreatedDate"] = datetime(2024, 7, 1).isoformat()
+        #     new_docs.append(new_doc)
+
+        # db.employee.insert_many(new_docs)
         today = date.today()
         current_month = today.strftime("%B")
         current_year = today.year
-        return render_template('employee/home.html', current_month = current_month, current_year = current_year, months=months, years=years, fake_data=fake_data)
+
+         # Construct MongoDB query to filter documents based on month and year
+        start_date = datetime(today.year, today.month, 1)
+        end_date = datetime(today.year, today.month + 1, 1) if today.month < 12 else datetime(today.year + 1, 1, 1)
+        start_date_iso = start_date.isoformat()
+        end_date_iso = end_date.isoformat()
+
+        query = {'CreatedDate': {'$gte': start_date_iso, '$lt': end_date_iso}}
+        data = list(db.employee.find(query))
+        data = convert_objectid(data)
+        return render_template('employee/home.html', current_month = current_month, current_year = current_year, months=months, years=years, fake_data=data)
 
 @employee_blueprint.route('/get-data', methods=['POST'])
 def get_data():
@@ -61,7 +78,7 @@ def get_data():
             month_str = data['month']
             year = int(data['year'])
             
-            if month_str not in month_map:
+            if month_str not in month_map.keys():
                 return jsonify({'error': 'Invalid month name'}), 400
 
             month = month_map[month_str]
@@ -76,13 +93,14 @@ def get_data():
             # Execute the query and convert the cursor to a list
             data_cursor = db.employee.find(query)
             data_list = list(data_cursor)  # Convert cursor to list
+            
             if not data_list:
                 print("No documents found for the given query.")
             # Convert MongoDB ObjectId to string
             for doc in data_list:
                 doc['_id'] = str(doc['_id'])
-                doc['Sex'] = 'Male' if doc['Sex'] == '1' else 'Female'
-
+                doc['Sex'] = 'Male' #example, fix this later 
+            
             return jsonify(data_list), 200
         except KeyError:
             return jsonify({'error': 'Invalid input data. "month" and "year" are required.'}), 400
@@ -91,7 +109,12 @@ def get_data():
     else:
         return jsonify({'error': 'Request does not contain JSON'}), 400
 
-    
+
+@employee_blueprint.route('/employee/working-time', methods = ['GET'])
+def employee_working_time():
+    if request.method == 'GET':
+        return render_template('employee/working_time.html')
+
 
 
     

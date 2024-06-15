@@ -40,6 +40,6 @@
     }
 
     .tb_row {
-        @apply px-6 py-4 whitespace-nowrap
+        @apply px-2 py-2 whitespace-nowrap
     }
 }
