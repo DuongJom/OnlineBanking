@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 
+{% block title %}
+    Dashboard
+{% endblock %}
+
 {% block content %}
 <!-- Admin side bar -->
 <div>
@@ -8,19 +12,19 @@
     class="flex mt-16">
         <ul class="bg-side_bar_bg p-4 w-48 sidebar">
             <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
-                <a href="/admin/account">Account</a>
+                <a href="/admin/account">Accounts</a>
             </li>
             <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
-                <a href="/admin/user">User</a>
+                <a href="/admin/user">Users</a>
             </li>
             <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
-                <a href="/admin/employee">Employee</a>
+                <a href="/admin/employee">Employees</a>
             </li>
             <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
-                <a href="/admin/branch">Branch</a>
+                <a href="/admin/branch">Branchs</a>
             </li>
             <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
-                <a href="#">chart</a>
+                <a href="#">Statistical chart</a>
             </li>
             <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
                 <a href="#">News</a>
