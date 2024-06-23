@@ -2,6 +2,16 @@ import { get_admin_page_data, create_action_button } from './admin.js';
 
 var page = 1;
 var totalPage = 0;
+const columnIndex = {
+    USERNAME:0,
+    ACCOUNT_NUMBER:1,
+    OWNER:2,
+    BRANCH:3,
+    ROLE:4,
+    TRANSFER_METHOD:5,
+    LOGIN_METHOD:6,
+    SERVICE:7
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -12,11 +22,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('There was a problem with loading the items:', error);
     }
 
-    const nextbtn = document.getElementById('next-btn');
-    nextbtn.addEventListener('click', next_page);
+    const btn_next = document.getElementById('btn-next');
+    btn_next.addEventListener('click', next_page);
 
-    const previousbtn = document.getElementById('previous-btn');
-    previousbtn.addEventListener('click', previous_page);
+    const btn_previous = document.getElementById('btn-previous');
+    btn_previous.addEventListener('click', previous_page);
 });
 
 function render_table(items) {
@@ -30,13 +40,13 @@ function render_table(items) {
         const new_row = document.createElement('tr');
         new_row.classList.add('h-7', 'bg-blue-gray-50', 'my-3', 'border-t', 'border-white');
 
-        const datas = [item.Username, item.AccountNumber, item.AccountOwner.Name, "branch", item.Role, 
+        const data = [item.Username, item.AccountNumber, item.AccountOwner.Name, "branch", item.Role, 
             item.TransferMethod, item.LoginMethod, item.Service]
 
         var i = 0;
-        datas.forEach(data => {
+        data.forEach(value => {
             const cell = document.createElement('td')
-            cell.innerHTML = data;
+            cell.innerHTML = value;
 
             if (i == 2 || i == 3) {
                 const span = document.createElement('span')
