@@ -1045,11 +1045,6 @@ select {
   margin-bottom: -0.375rem;
 }
 
-.mx-1 {
-  margin-left: 0.25rem;
-  margin-right: 0.25rem;
-}
-
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -1103,6 +1098,10 @@ select {
 
 .ml-4 {
   margin-left: 1rem;
+}
+
+.ml-96 {
+  margin-left: 24rem;
 }
 
 .mr-14 {
@@ -1163,6 +1162,10 @@ select {
 
 .block {
   display: block;
+}
+
+.inline-block {
+  display: inline-block;
 }
 
 .flex {
@@ -1229,6 +1232,14 @@ select {
   height: 100vh;
 }
 
+.max-h-20 {
+  max-height: 5rem;
+}
+
+.max-h-3 {
+  max-height: 0.75rem;
+}
+
 .max-h-56 {
   max-height: 14rem;
 }
@@ -1283,6 +1294,10 @@ select {
 
 .w-90\% {
   width: 90%;
+}
+
+.w-96 {
+  width: 24rem;
 }
 
 .w-99\% {
@@ -1381,6 +1396,10 @@ select {
   margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
 }
 
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
 .overflow-y-auto {
   overflow-y: auto;
 }
@@ -1389,8 +1408,8 @@ select {
   overflow-y: hidden;
 }
 
-.text-nowrap {
-  text-wrap: nowrap;
+.whitespace-nowrap {
+  white-space: nowrap;
 }
 
 .rounded {
@@ -1531,6 +1550,11 @@ select {
   background-color: rgb(236 239 241 / var(--tw-bg-opacity));
 }
 
+.bg-brown-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(93 64 55 / var(--tw-bg-opacity));
+}
+
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(245 245 245 / var(--tw-bg-opacity));
@@ -1587,11 +1611,6 @@ select {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-gray-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(158 158 158 / var(--tw-bg-opacity));
 }
 
 .bg-gradient-to-r {
@@ -1832,11 +1851,6 @@ select {
   background-color: rgb(224 224 224 / var(--tw-bg-opacity));
 }
 
-.hover\:bg-gray-400:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(189 189 189 / var(--tw-bg-opacity));
-}
-
 .hover\:bg-gray-500:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(158 158 158 / var(--tw-bg-opacity));
@@ -1896,6 +1910,11 @@ select {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
+.focus\:border-black:focus {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+}
+
 .focus\:border-purple-500:focus {
   --tw-border-opacity: 1;
   border-color: rgb(156 39 176 / var(--tw-border-opacity));
@@ -1904,6 +1923,12 @@ select {
 .focus\:outline-none:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
+}
+
+.focus\:ring-0:focus {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 
 .focus\:ring-2:focus {

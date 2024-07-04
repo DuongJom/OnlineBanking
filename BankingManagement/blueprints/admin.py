@@ -81,6 +81,11 @@ def chart():
     if request.method == 'GET':
         return render_template('admin/chart.html')
     
+@admin_blueprint.route('/admin/news', methods = ['GET'])
+def news():
+    if request.method == 'GET':
+        return render_template('admin/news.html')
+    
 @admin_blueprint.route('/admin', methods=['GET'])
 @login_required
 def admin():
