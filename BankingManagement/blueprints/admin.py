@@ -108,3 +108,7 @@ def admin():
     pagination = paginator(page, items)
 
     return jsonify({'items': pagination['render_items'], 'total_pages': pagination['total_pages']})
+
+@admin_blueprint.route('/admin/add_account', methods = ['GET'])
+def add_account():
+    return render_template('admin/add_account.html')

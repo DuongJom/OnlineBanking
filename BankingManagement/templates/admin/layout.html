@@ -6,11 +6,10 @@
 
 {% block content %}
 <!-- Admin side bar -->
-<div>
+<div class="flex-col justify-between">
     <div 
-    style="height: calc(100vh - 216px);"
-    class="flex mt-16">
-        <ul class="bg-side_bar_bg p-4 w-48 sidebar">
+    class="flex mt-16 h-610">
+        <ul class="bg-side_bar_bg p-4 w-48 sidebar hidden sm:block">
             <li class="py-2 border-b border-white font-bold text-gray-300 hover:text-white cursor-pointer">
                 <a href="/admin/account">Accounts</a>
             </li>

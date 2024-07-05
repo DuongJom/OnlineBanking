@@ -23,6 +23,7 @@ module.exports = withMT({
       height: {
         '90%' : '90%',
         '500': '500px',
+        '610' : '609.59px'
       },
       width:{
         '500px' : '500px',
@@ -37,10 +38,11 @@ module.exports = withMT({
         '1000': 1000,
       },
       screens: {
-        'sc-1220' : '1220px',
-        'sc-960'  : '960px',
-        'sc-860'  : '860px',
-      }
+        'custom-max': { 'max': '800px' },
+      },
+      boxShadow: {
+        'shadowRight': '4px 0 6px rgba(0, 0, 0, 0.3)', 
+      },
       
     },
   },
