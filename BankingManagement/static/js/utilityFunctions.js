@@ -6,7 +6,7 @@ function goBack() {
   window.history.back();
 }
 
-const toggle = () => {
+const navBarToggle = () => {
     const mainDropdown = document.getElementById("mainDropdown");
     const right = document.getElementById("navbar_right_arrow");
     const down = document.getElementById("navbar_down_arrow");

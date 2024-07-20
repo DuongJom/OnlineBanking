@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    New_Account
+{% endblock %}
+
+{% block content %}
+    <div class="z-1000 relative top-0 left-0 h-screen w-screen bg-gradient-to-t from-pink-200 to-purple-400 overflow-y-auto">
+        <button 
+            onclick="goBack()" 
+            class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
+            <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
+        </button>
+        <div 
+            class="w-11/12 lg:h-5/6 bg-bg-color absolute left-1/2 -translate-x-1/2 lg:top-1/2 lg:-translate-y-1/2 rounded-xl
+            ">
+            <form class="h-full w-full flex lg:flex-row flex-col">
+                <div class="flex-1 flex flex-col justify-center items-center
+                bg-purple-200 lg:rounded-l-xl lg:rounded-t-none rounded-t-xl">
+                    <img
+                    class="mx-auto h-48 w-auto"
+                    src="../static/img/bank.png"
+                    alt="Company" />
+                    <h2 class="font-extrabold mt-4">New account</h2>
+                </div>
+                <!-- Account Information  -->
+                <div class="flex flex-1 items-center">
+                    <div class="w-full flex flex-col items-center justify-center border-r-2r lg:mt-0 mt-12">
+                        <div>
+                            <h2 class="font-extrabold text-white mb-4">Account Information</h2>
+                        </div>
+                        <div class="flex flex-col w-4/5 space-y-4">
+                            <div class="flex flex-col w-full">
+                                <label for="role" class="text-white font-medium">Role</label>
+                                <select id="role"
+                                class="w-full rounded-lg focus:outline-none focus:border-purple-500 
+                                focus:ring-2 focus:ring-purple-500">
+                                    <option value="">Admin</option>
+                                    <option value="">Employee</option>
+                                    <option value="">User</option>
+                                </select> 
+                            </div>
+                            <div class="flex flex-col w-full">
+                                <label for="branch" class="text-white font-medium">Branch</label>
+                                <select id="branch"
+                                class="w-full rounded-lg focus:outline-none focus:border-purple-500 
+                                focus:ring-2 focus:ring-purple-500">
+                                    <option disabled>Branch</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col w-full">
+                                <label for="loginMethod" class="text-white font-medium">Login Method</label>
+                                <select id="loginMethod"
+                                class="w-full rounded-lg focus:outline-none focus:border-purple-500 
+                                focus:ring-2 focus:ring-purple-500">
+                                    <option disabled>Login Method</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col w-full">
+                                <label for="transferMethod" class="text-white font-medium">Transfer Method</label>
+                                <select id="transferMethod"
+                                class="w-full rounded-lg focus:outline-none focus:border-purple-500 
+                                focus:ring-2 focus:ring-purple-500">
+                                    <option disabled>Transfer Method</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col w-full">
+                                <label for="service" class="text-white font-medium">Service</label>
+                                <select id="service"
+                                class="w-full rounded-lg focus:outline-none focus:border-purple-500 
+                                focus:ring-2 focus:ring-purple-500">
+                                    <option disabled id="service">Service</option>
+                                </select>
+                            </div>      
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- User -->
+                <div class="relative flex flex-1 items-center lg:mt-0 mt-12">
+                    
+                    <div class="w-full flex flex-col items-center justify-center border-r-2r">
+    
+                        <div>
+                            <h2 class="font-extrabold text-white mb-4">Owner Information</h2>
+                        </div>
+    
+                        <div class="flex flex-col w-4/5 space-y-4">
+    
+                            <div class="flex flex-col w-full">
+                                <label for="name" class="text-white font-medium">Name</label>
+                                <input type="text" name="name" id="name"
+                                class="w-full rounded-lg focus:outline-none focus:border-purple-500 
+                                focus:ring-2 focus:ring-purple-500">
+                            </div>
+    
+                            <div class="flex flex-col w-full">
+                                <label for="service" class="text-white font-medium">Gender</label>
+                                <select
+                                class="w-full rounded-lg focus:outline-none focus:border-purple-500 
+                                focus:ring-2 focus:ring-purple-500">
+                                    <option id="service">Male</option>
+                                    <option id="service">Female</option>
+                                    <option id="service">Other</option>
+                                </select>
+                            </div> 
+    
+                            <div class="flex flex-col w-full">
+                                <label for="address" class="text-white font-medium">Address</label>
+                                <input type="text" name="address" id="address" 
+                                class="w-full rounded-lg focus:outline-none focus:border-purple-500 
+                                focus:ring-2 focus:ring-purple-500">
+                            </div>                
+                            <div class="flex flex-col w-full">
+                                <label for="phone" class="text-white font-medium">Phone</label>
+                                <input type="text" name="phone" id="phone"
+                                class="w-full rounded-lg focus:outline-none focus:border-purple-500 
+                                focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div class="flex flex-col w-full">
+                                <label for="email" class="text-white font-medium">Email</label>
+                                <input type="email" name="email" id="email"
+                                class="w-full rounded-lg focus:outline-none focus:border-purple-500 
+                                focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+                        <div class="lg:absolute lg:bottom-16 flex justify-end mt-4">
+                            <button
+                                type="submit"
+                                class="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-600 hover:to-purle-800 
+                                text-white font-semibold py-2 px-6 rounded-md shadow-md focus:outline-none focus:ring-2 
+                                focus:ring-purle-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Create
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="module" src="{{ url_for('static', filename='js/admin/helpers.js') }}"></script>
+{% endblock %}

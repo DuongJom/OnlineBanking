@@ -20,3 +20,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.addEventListener('resize', adjustTableMargin);
 });
 
+

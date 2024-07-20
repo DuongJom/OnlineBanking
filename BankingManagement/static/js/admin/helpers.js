@@ -77,7 +77,7 @@ export function render_table(items, data_type, page, total_pages) {
                 style(cell, styles.cell);
                 cell.innerHTML = items[i][col_name.key];
                 if(typeof items[i][col_name.key] == 'object') {
-                    objectSign(cell);
+                    generateObjectSign(cell);
                 }
                 row.appendChild(cell);
             })
@@ -113,7 +113,7 @@ export function render_table(items, data_type, page, total_pages) {
                 style(cell, styles.cell);
                 cell.innerHTML = items[i][col_name.key];
                 if(typeof items[i][col_name.key] == 'object') {
-                    objectSign(cell);
+                    generateObjectSign(cell);
                 }
                 row.appendChild(cell);       
             })
@@ -129,7 +129,7 @@ export function render_table(items, data_type, page, total_pages) {
                 style(cell, styles.cell);
                 cell.innerHTML = items[i][col_name.key];
                 if(typeof items[i][col_name.key] == 'object') {
-                    objectSign(cell);
+                    generateObjectSign(cell);
                 }
                 row.appendChild(cell);
             })
@@ -173,11 +173,12 @@ function style(element, classes) {
     });
 }
 
-function objectSign(cell) {
-    const span = document.createElement('span')
-    span.innerHTML = 'i';
-    span.classList.add('font-bold','ml-3');
-    cell.appendChild(span);
+function generateObjectSign(cell) {
+    const icon = document.createElement('div')
+    icon.innerHTML = 'i';
+    icon.classList.add('font-bold');
+    icon.classList.add('w-5', 'h-5', 'bg-popup-bg', 'inline-block', 'rounded-full', 'text-center', 'leading-5', 'ml-4');
+    cell.appendChild(icon);
     cell.classList.add('cursor-pointer', 'hover:bg-gray-400');
 }
 
@@ -189,7 +190,6 @@ export async function next(data_type){
         localStorage.setItem('admin_page', page);
         try {
             const data = await get_admin_page_data(page, data_type);
-            console.log(data.items);
             localStorage.setItem('admin_maxPage', data.total_pages);
             render_table(data.items, data_type, page, max_page);
         } catch (error) {
@@ -217,10 +217,10 @@ export async function previous(data_type, page, max_page){
 export function adjustTableMargin() {
     const table1 = document.getElementById('table1');
     const table2 = document.getElementById('table2');
-    console.log(window.innerWidth)
-;    if (window.innerWidth >= 700) {
+    if (window.innerWidth >= 700) {
         table2.style.marginLeft = `${table1.offsetWidth - 2}px`;
     } else {
         table2.style.marginLeft = '0px';
     }
 }
+
