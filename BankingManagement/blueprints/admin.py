@@ -60,7 +60,7 @@ def admin_user():
     if request.method == 'GET':
         return render_template('admin/user.html')
     
-@admin_blueprint.route('/admin/account', methods = ['GET'])
+@admin_blueprint.route('/admin/accounts', methods = ['GET'])
 @login_required
 def account():
     if request.method == 'GET':

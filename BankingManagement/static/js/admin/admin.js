@@ -1,11 +1,17 @@
-import { get_admin_page_data, render_table, next, previous, adjustTableMargin } from "./helpers.js";
+import { 
+    get_admin_page_data, 
+    render_table, 
+    next, 
+    previous, 
+    adjustTableMargin 
+} from "./helpers.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     const data_type = document.getElementById('dataType').value;
     const next_btn = document.getElementById('next-btn');
     const previous_btn = document.getElementById('previous-btn');
 
-    localStorage.setItem('admin_page',1);
+    localStorage.setItem('admin_page', 1);
 
     try {
         const data = await get_admin_page_data(1, data_type);
