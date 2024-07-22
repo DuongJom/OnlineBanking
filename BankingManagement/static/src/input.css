@@ -38,4 +38,8 @@
     .admin_input {
         @apply w-full rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500
     }
+
+    .admin_label {
+        @apply text-white font-medium
+    }
 }

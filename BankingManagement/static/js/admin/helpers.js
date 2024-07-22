@@ -50,10 +50,10 @@ function create_action_button(row) {
     row.appendChild(action_cell);
 }
 
-export function render_table(items, data_type, page, total_pages) { 
+export function render_table(items, data_type) { 
     const tables = document.querySelectorAll('table');
     const table_wrapper = document.getElementById('table_wrapper');
-    const col_names = table_structure[data_type]
+    const col_names = table_structure[data_type];
     const items_length = col_names.length;
     const location = document.getElementById('location');
 
@@ -201,7 +201,7 @@ export async function next(data_type){
             const data = await get_admin_page_data(page, data_type);
 
             localStorage.setItem('admin_maxPage', data.total_pages);
-            render_table(data.items, data_type, page, max_page);
+            render_table(data.items, data_type);
         } catch (error) {
             console.error('There was a problem with loading the items:', error);
         }
@@ -218,7 +218,7 @@ export async function previous(data_type, page, max_page){
         try {
             const data = await get_admin_page_data(page, data_type);
             localStorage.setItem('admin_maxPage', data.total_pages);
-            render_table(data.items, data_type, page, max_page);
+            render_table(data.items, data_type);
         } catch (error) {
             console.error('There was a problem with loading the items:', error);
         }

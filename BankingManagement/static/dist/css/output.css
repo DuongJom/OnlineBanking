@@ -929,6 +929,12 @@ select {
   --tw-ring-color: rgb(156 39 176 / var(--tw-ring-opacity));
 }
 
+.admin_label {
+  font-weight: 500;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
