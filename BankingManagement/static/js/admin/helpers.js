@@ -207,9 +207,8 @@ export async function next(data_type){
     }
 }
 
-export async function previous(data_type, page, max_page){
+export async function previous(data_type, page){
     var page = localStorage.getItem('admin_page');
-    var max_page = localStorage.getItem('admin_maxPage');
 
     if (page > 1) {
         page--;
