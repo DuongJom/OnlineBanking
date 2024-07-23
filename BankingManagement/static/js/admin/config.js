@@ -7,7 +7,8 @@ export const table_structure = {
         {key: 'Role', name: 'Role'}, 
         {key: 'TransferMethod', name: 'Transfer Method'}, 
         {key: 'LoginMethod', name: 'Login Method'}, 
-        {key: 'Service', name: 'Service'}],
+        {key: 'Service', name: 'Service'}
+    ],
     user: [
         
     ]

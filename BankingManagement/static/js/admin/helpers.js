@@ -56,6 +56,12 @@ export function render_table(items, data_type) {
     const col_names = table_structure[data_type];
     const items_length = col_names.length;
     const location = document.getElementById('location');
+    const col_names1 = col_names.slice(0, 3); //cols for left(fixed) table
+    const col_names2 = col_names.slice(3, items_length);//cols for right table
+    const table1 = document.createElement('table');
+    const tbody1 = document.createElement('tbody');
+    const table2 = document.createElement('table');
+    const tbody2 = document.createElement('tbody');
 
     tables.forEach(table => {
         table.remove();
@@ -95,13 +101,6 @@ export function render_table(items, data_type) {
     }
 
     //if table has greater than or equal to 4 columns
-    const col_names1 = col_names.slice(0, 3); //cols for left(fixed) table
-    const col_names2 = col_names.slice(3, items_length);//cols for right table
-    const table1 = document.createElement('table');
-    const tbody1 = document.createElement('tbody');
-    const table2 = document.createElement('table');
-    const tbody2 = document.createElement('tbody');
-
     //fixed table
     table1.id = 'table1';
     tableHeader(col_names1, table1, true);
