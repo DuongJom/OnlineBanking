@@ -114,6 +114,11 @@ def get_data():
 def employee_working_time():
     if request.method == 'GET':
         return render_template('employee/working_time.html')
+    
+@employee_blueprint.route('/employee/salary', methods = ['GET'])
+def employee_salary():
+    if request.method == 'GET':
+        return render_template('employee/salary.html')
 
 
 
