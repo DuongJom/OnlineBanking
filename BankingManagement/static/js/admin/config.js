@@ -3,7 +3,7 @@ export const table_structure = {
         {key: 'Username', name: 'Username'}, 
         {key: 'AccountNumber', name: 'Account Number'}, 
         {key: 'Branch', name: 'Branch'}, 
-        {key: "AccountOwner", name: 'Owner'}, 
+        {key: "AccountOwner", object_key: "Name", name: 'Owner'}, 
         {key: 'Role', name: 'Role'}, 
         {key: 'TransferMethod', name: 'Transfer Method'}, 
         {key: 'LoginMethod', name: 'Login Method'}, 

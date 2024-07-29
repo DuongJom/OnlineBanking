@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         const data = await get_admin_page_data(1, data_type);
+        console.log(data.items)
         localStorage.setItem('admin_maxPage', data.total_pages)
         render_table(data.items, data_type);
     } catch (error) {
