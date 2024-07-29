@@ -1,5 +1,7 @@
 import json
+
 from  werkzeug.security import generate_password_hash
+
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.role_type import RoleType
@@ -19,3 +21,6 @@ class Account(BaseModel):
     
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))
+    
+
+

@@ -2,7 +2,7 @@
 {% block title %} View Profile {% endblock %} 
 {% block content %}
 <div
-  class="h-screen w-screen flex justify-center overflow-y-auto"
+  class="h-screen w-screen flex flex-col items-center overflow-y-auto"
   style="
     background-image: url('../static/img/viewProfile.jpg');
     background-repeat: no-repeat;
@@ -12,7 +12,7 @@
     method="post"
     action="/view-profile"
     class="w-3/4 flex items-center mt-16"
-    style="height: calc(100vh - 64px)">
+    style="height: calc(100vh - 216px)">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <input class="hidden" type="text" name="current_email" value="{{account.AccountOwner.Email}}"/>
     <input class="hidden" type="text" name="current_phone" value="{{account.AccountOwner.Phone}}"/>
@@ -213,6 +213,10 @@
       </div>
     </div>
   </form>
+  <div class="w-full"> 
+    {% include "footer.html" %}
+  </div>
+  
 </div>
 
 <script src="{{ url_for('static', filename='js/viewprofile.js') }}"></script>

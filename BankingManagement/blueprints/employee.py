@@ -1,7 +1,10 @@
 import json
-from bson import ObjectId
 from flask import Blueprint, render_template, request, jsonify
+from bson import ObjectId
+
 from models import database
+
+from helpers import login_required, paginator
 from datetime import datetime, date
 
 db = database.Database().get_db()
@@ -119,7 +122,16 @@ def employee_working_time():
 def employee_salary():
     if request.method == 'GET':
         return render_template('employee/salary.html')
-
-
-
     
+@employee_blueprint.route('/employee', methods = ['GET'])
+@login_required
+def employee():
+    page = request.args.get('page', 1, int)
+    dataType = request.args.get('dataType')
+    if dataType == 'employee':
+        items = list(employee.find({}, {'_id': 0}))
+    
+    pagination = paginator(page, items)
+    return jsonify({'items': pagination['render_items'], 'total_pages': pagination['total_pages']})
+    
+

@@ -9,5 +9,5 @@ def init(app: Flask):
     app.secret_key = os.getenv('SECRET_KEY')
     app.salt = os.getenv('SALT')
     app.config.from_object('config')
-
+    
     return app

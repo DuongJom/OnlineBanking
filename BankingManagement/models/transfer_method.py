@@ -1,4 +1,5 @@
 import json
+
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 

@@ -1,10 +1,13 @@
 import random
+
 from flask import redirect, session
 from functools import wraps
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
+
 from app import app, mail
 from enums.mime_type import MIMEType
+
 
 def login_required(f):
     @wraps(f)
@@ -106,4 +109,15 @@ def getMIMETypeValue(mime_type: MIMEType):
         return 'video/mpeg'
     
     
-    
+def paginator(page, items_list):
+    per_page = 10
+    start = (page - 1) * per_page
+    end = start + per_page
+
+    render_items = items_list[start:end]
+
+    total_pages = (len(items_list) + per_page - 1) // per_page
+
+    return {'render_items' : render_items, 'total_pages' : total_pages}
+
+
