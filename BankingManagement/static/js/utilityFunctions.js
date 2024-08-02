@@ -6,6 +6,11 @@ function goBack() {
   window.history.back();
 }
 
+const toggle = () => {
+    const toggled_element = document.getElementById('toggled_element');
+    toggled_element.classList.toggle('hidden');
+}
+
 const navBarToggle = () => {
     const mainDropdown = document.getElementById("mainDropdown");
     const right = document.getElementById("navbar_right_arrow");

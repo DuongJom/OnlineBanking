@@ -20,6 +20,6 @@ def index():
     elif account["Role"] == RoleType.EMPLOYEE.value:
         return redirect("/employee/home")
     else:
-        return redirect("/admin/accounts")
+        return redirect("/admin/account")
 
 

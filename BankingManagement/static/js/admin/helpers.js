@@ -21,12 +21,27 @@ export function get_admin_page_data(page, dataType) {
     });
 }
 
-function create_action_button(row) {
+export function closeDeleteForm() {
+    const delete_form = document.getElementById("admin_delete_form");
+    delete_form.classList.add('hidden');
+}
+
+function renderDeleteForm(id) {
+    const delete_form = document.getElementById("admin_delete_form");
+    const object_id = document.getElementById("object_id");
+
+    delete_form.classList.remove('hidden');
+    object_id.setAttribute('value', id)
+}
+
+function create_action_button(row, _id, data_type) {
+    // UI for action button
     const action_cell = document.createElement('td');
-    const view_btn = document.createElement('button');
-    const delete_btn = document.createElement('button');
-    const edit_btn = document.createElement('button');
+    const view_btn = document.createElement('a');
+    const delete_btn = document.createElement('a');
+    const edit_btn = document.createElement('a');
     const div = document.createElement('div');
+
     const btn_list = [view_btn, delete_btn, edit_btn];
     const icon_list = ['visibility', 'delete', 'edit']
     let i = 0;
@@ -38,11 +53,22 @@ function create_action_button(row) {
         const span = document.createElement('span');
 
         btn.classList.add('flex','items-center', 'justify-center')
-        span.classList.add('material-symbols-outlined', 'hover:bg-gray-500', 'rounded');
+        span.classList.add('material-symbols-outlined', 'hover:bg-gray-500', 'rounded', 'cursor-pointer');
         span.style.fontWeight = '300';
         span.innerHTML = icon_list[i];
         btn.appendChild(span);
         div.appendChild(btn);
+        if (icon_list[i] == 'visibility') {
+            btn.href = `/admin/${data_type}/view/${_id}`;
+        }
+        else if (icon_list[i] == 'edit') {
+            btn.href = `/admin/${data_type}/edit/${_id}`;
+        }
+        else if (icon_list[i] == 'delete') {
+            btn.addEventListener('click', () => {
+                renderDeleteForm(_id);
+            })
+        }
         i++;
     })
 
@@ -54,7 +80,7 @@ export function render_table(items, data_type) {
     const tables = document.querySelectorAll('table');
     const table_wrapper = document.getElementById('table_wrapper');
     const col_names = table_structure[data_type];
-    const items_length = col_names.length;
+    const number_col = col_names.length;
     const location = document.getElementById('location');
 
     tables.forEach(table => {
@@ -66,7 +92,7 @@ export function render_table(items, data_type) {
     location.innerHTML =  `${localStorage.getItem('admin_page')}/${localStorage.getItem('admin_maxPage')}`;
 
     //get dataType for the table
-    if(items_length <= 3) { //if table has less than 4 columns
+    if(number_col <= 3) { //if table has less than 4 columns
         const table = document.createElement('table');
         const tbody = document.createElement('tbody');
 
@@ -83,21 +109,20 @@ export function render_table(items, data_type) {
                 cell.innerHTML = items[i][col_name.key];
                 if(typeof items[i][col_name.key] == 'object') {
                     generateObjectSign(cell);
-                    cell.innerHTML = items[i][col_name.key][col_name.object_key];
+                    cell.innerHTML = items[i][col_name.key][col_name.object_key];  
                 }
                 row.appendChild(cell);
             })
-            create_action_button(row);
+            create_action_button(row, items[i]['_id'], data_type);
             tbody.appendChild(row);
         }
-
         table_wrapper.appendChild(table);
         return
     }
 
     //if table has greater than or equal to 4 columns
     const col_names1 = col_names.slice(0, 3); //cols for left(fixed) table
-    const col_names2 = col_names.slice(3, items_length);//cols for right table
+    const col_names2 = col_names.slice(3, number_col);//cols for right table
     const table1 = document.createElement('table');
     const tbody1 = document.createElement('tbody');
     const table2 = document.createElement('table');
@@ -138,11 +163,12 @@ export function render_table(items, data_type) {
             style(cell, styles.cell);
             cell.innerHTML = items[i][col_name.key];
             if(typeof items[i][col_name.key] == 'object') {
+                cell.innerHTML = items[i][col_name.key][col_name.object_key];
                 generateObjectSign(cell);
             }
             row.appendChild(cell);
         })
-        create_action_button(row);
+        create_action_button(row, items[i]['_id'], data_type);
         tbody2.appendChild(row);
     }
 
@@ -186,8 +212,8 @@ function generateObjectSign(cell) {
 
     icon.innerHTML = 'i';
     icon.classList.add('font-bold');
-    icon.classList.add('w-5', 'h-5', 'bg-popup-bg', 'inline-block', 'rounded-full', 'text-center', 'leading-5', 'ml-4');
-    cell.appendChild(icon);
+    icon.classList.add('w-5', 'h-5', 'bg-popup-bg', 'inline-block', 'rounded-full', 'text-center', 'leading-5', 'mr-3');
+    cell.insertBefore(icon, cell.firstChild);
     cell.classList.add('cursor-pointer', 'hover:bg-gray-400');
 }
 

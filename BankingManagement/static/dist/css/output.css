@@ -1131,6 +1131,10 @@ select {
   margin-right: 3.5rem;
 }
 
+.mr-16 {
+  margin-right: 4rem;
+}
+
 .mr-20 {
   margin-right: 5rem;
 }
@@ -1181,6 +1185,14 @@ select {
 
 .mt-5 {
   margin-top: 1.25rem;
+}
+
+.mb-16 {
+  margin-bottom: 4rem;
+}
+
+.mb-14 {
+  margin-bottom: 3.5rem;
 }
 
 .block {
@@ -1253,6 +1265,10 @@ select {
 
 .h-8 {
   height: 2rem;
+}
+
+.h-96 {
+  height: 24rem;
 }
 
 .h-auto {
@@ -1685,6 +1701,20 @@ select {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
+.bg-popup-bg-hover {
+  background-color: rgba(204, 204, 204, 0.3);
+}
+
+.bg-pink-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(240 98 146 / var(--tw-bg-opacity));
+}
+
+.bg-blue-gray-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(96 125 139 / var(--tw-bg-opacity));
+}
+
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
@@ -1785,6 +1815,11 @@ select {
 .py-10 {
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
+}
+
+.py-16 {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
 }
 
 .py-2 {

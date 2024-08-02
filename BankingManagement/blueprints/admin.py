@@ -1,10 +1,9 @@
 from flask import Blueprint, render_template, request, jsonify
+from bson import ObjectId
 
-from models import database, account as a, user as u, branch as b
+from models import database
 
-from helpers import login_required, paginator
-from enums.role_type import RoleType
-import random
+from helpers import login_required
 
 admin_blueprint = Blueprint('admin', __name__)   
 
@@ -18,53 +17,64 @@ loginMethods = db['loginMethods']
 services = db['services']
 employees = db['employees']
 
-def create_random_user(i):
-    return {
-        "name": f"User {i}",
-        "sex": random.choice([0, 1]),
-        "address": f"Address {i}",
-        "phone": f"000-000-000{i}",
-        "email": f"user{i}@example.com",
-        "card": []
-    }
+@admin_blueprint.route('/admin', methods=['GET'])
+@login_required
+def admin():
+    per_page = 10
+    page = request.args.get('page', 1, int)
+    dataType = request.args.get('dataType')
+    collection = None
+    items = []
+    total_pages = 0
 
-def create_random_branch(i):
-    return {
-        "branchName": f"Branch {i}",
-        "address": f"Branch Address {i}"
-    }
+    # decide which collection to query
+    if dataType == 'account':
+        collection = accounts
+    elif dataType == 'user':
+        collection = users
+    elif dataType == 'branch':
+        collection = branches
+    elif dataType == 'employee':
+        collection = employees
 
-def create_account_list(num_accounts=30):
-    accounts = []
-    for i in range(num_accounts):
-        user = u.User(**create_random_user(i)).to_json()
-        branch = b.Branch(**create_random_branch(i)).to_json()
-        acc = a.Account(
-            accountNumber=f"00000000000{i:04}",
-            branch=branch,
-            user=user,
-            username=f"user{i}",
-            password="password123",
-            role=RoleType.USER.value,
-            transferMethod=["method1", "method2"],
-            loginMethod=["login1", "login2"],
-            service=["service1", "service2"]
-        ).to_json()
-        accounts.append(acc)
-    return accounts
+    # query for list of data and total pages
+    total_pages = (collection.count_documents({}) + per_page - 1) // per_page
+    items_cursor = collection.find({}).skip((page-1)*per_page).limit(per_page)
 
-items = create_account_list()
+    # convert ObjectId '_id' to string '_id'
+    for item in items_cursor:
+        if '_id' in item:
+            item['_id'] = str(item['_id'])
+        items.append(item)
+
+    return jsonify({'items': items, 'total_pages': total_pages})
+
+# Start admin_account
+
+@admin_blueprint.route('/admin/account', defaults={'page': None, 'id': None}, methods=['GET'])
+@admin_blueprint.route('/admin/account/<page>', defaults={'id': None}, methods=['GET'])
+@admin_blueprint.route('/admin/account/<page>/<id>', methods=['GET'])
+@login_required
+def account(page, id):
+    if request.method == 'GET':
+        if page == "add":
+            return render_template('admin/add_account.html')
+        elif page == "view" and id is not None:
+            account_id = ObjectId(id)
+            viewed_account = accounts.find_one({"_id": account_id})
+            return render_template('admin/view_account.html', account = viewed_account)
+        elif page == "edit" and id is not None:
+            account_id = ObjectId(id)
+            edited_account = accounts.find_one({"_id": account_id})
+            return render_template('admin/edit_account.html', account = edited_account)
+        return render_template('admin/account.html')
+
+# End admin_account
 
 @admin_blueprint.route('/admin/user', methods = ['GET'])
 def admin_user():
     if request.method == 'GET':
         return render_template('admin/user.html')
-    
-@admin_blueprint.route('/admin/accounts', methods = ['GET'])
-@login_required
-def account():
-    if request.method == 'GET':
-        return render_template('admin/account.html')
     
 @admin_blueprint.route('/admin/employee', methods = ['GET'])
 def employee():
@@ -85,30 +95,6 @@ def chart():
 def news():
     if request.method == 'GET':
         return render_template('admin/news.html')
-    
-@admin_blueprint.route('/admin', methods=['GET'])
-@login_required
-def admin():
-    page = request.args.get('page', 1, int)
-    dataType = request.args.get('dataType')
 
-    
-    # This block of code will be use to request for data
-    # items = []
-    # if dataType == 'account':
-    #     items = list(accounts.find({}, {'_id': 0})) 
-    # elif dataType == 'user':
-    #     items = list(users.find({}, {'_id': 0}))
-    # elif dataType == 'branch':
-    #     items = list(branches.find({}, {'_id': 0}))
-    # elif dataType == 'employee':
-    #     items = list(employees.find({}, {'_id': 0}))
-    
 
-    pagination = paginator(page, items)
 
-    return jsonify({'items': pagination['render_items'], 'total_pages': pagination['total_pages']})
-
-@admin_blueprint.route('/admin/add_account', methods = ['GET'])
-def add_account():
-    return render_template('admin/add_account.html')
