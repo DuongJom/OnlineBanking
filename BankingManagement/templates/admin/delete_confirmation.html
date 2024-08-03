@@ -1,0 +1,18 @@
+<div 
+    id="admin_delete_form"
+    class="hidden flex w-screen h-screen fixed top-0 left-0 shadow-2xl bg-popup-bg-hover z-1000 justify-center items-center">
+    <form class="flex flex-col justify-center items-center shadow-2xl h-96 w-96 bg-white rounded-lg">
+        <input id="object_id" value="" hidden>
+        <div class="mb-16">
+            <p class="font-bold">Are you sure?</p>
+        </div>
+        <div class="w-full flex justify-evenly">
+            <div class="w-1/4">
+                <button class="btn" type="submit">Delete</button>
+            </div>
+            <div class="w-1/4">
+                <button id="cancel-btn" class="btn" type="button">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit Account
+{% endblock %}
+
+{% block content %}
+    <div class="z-1000 relative top-0 left-0 h-screen overflow-y-auto flex justify-center items-center
+                bg-gradient-to-t from-pink-200 to-purple-400">
+        <button 
+            onclick="goBack()" 
+            class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
+            <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
+        </button>
+        <form class="w-3/4 bg-bg-color flex flex-col justify-center items-center py-16 rounded-lg">
+            <div class="w-full flex justify-center">
+                <h2 class="font-extrabold text-white">Edit Account Information</h2>
+            </div>
+            <div class="w-full flex items-center justify-center">
+                <div class="mr-16 w-96">
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label">Username</label>
+                        <input value="{{account.Username}}" class="admin_input">
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label">Role</label>
+                        <select id="gender" class="admin_input" >
+                            <option id="0">Male</option>
+                            <option id="1">Female</option>
+                            <option id="2">Other</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label">Account Number</label>
+                        <input value="{{account.AccountNumber}}" class="admin_input">
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label">Owner</label>
+                        <input value="{{account.AccountOwner.Name}}" class="admin_input">
+                    </div>
+                </div>
+                <div class="w-96">
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label">Branch</label>
+                        <select id="branch" class="admin_input" >
+                            <option>branch 1</option>
+                            <option>branch 2</option>
+                            <option>branch 3</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label">Service</label>
+                        <select id="service" class="admin_input" >
+                            <option value="{{account.Service}}">{{account.Service}}</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label">Transfer Method</label>
+                        <select id="transferMethod" class="admin_input" >
+                            <option>Method 1</option>
+                            <option>Method 2</option>
+                            <option>Method 3</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label">Login Method</label>
+                        <select id="loginMethod" class="admin_input" >
+                            <option value="{{account.LoginMethod}}">LoginMethod</option>
+                            <option>Method 1</option>
+                            <option>Method 2</option>
+                            <option>Method 3</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full flex justify-center mt-5">
+                <button
+                    type="button"
+                    class="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-600 
+                           hover:to-purle-800 text-white font-semibold py-2 px-6 rounded-md shadow-md 
+                           focus:outline-none focus:ring-2 focus:ring-purle-500 focus:ring-opacity-50 
+                           transition-all duration-300 ease-in-out"
+                    onclick="toggle()">
+                    Change
+                </button>
+            </div>
+            <div class="hidden flex h-screen w-screen fixed top-0 left-0 justify-center items-center z-1000" id="toggled_element">
+                <div class="flex flex-col h-96 w-96 justify-center items-center bg-white shadow-2xl rounded">
+                    <div class="font-bold mb-14">Do you want to save changes</div>
+                    <div class="w-full flex justify-evenly">
+                        <div class="w-1/4">
+                            <button class="btn" type="submit">Change</button>
+                        </div>
+                        <div class="w-1/4">
+                            <button class="btn" type="button" onclick="toggle()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        </form>
+    </div>
+{% endblock %}
