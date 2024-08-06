@@ -116,7 +116,7 @@ def paginator(page, items_list):
 
     render_items = items_list[start:end]
 
-    total_pages = (len(items_list) + per_page - 1) // per_page
+    total_pages = (len(items_list) + per_page - 1) / per_page
 
     return {'render_items' : render_items, 'total_pages' : total_pages}
 

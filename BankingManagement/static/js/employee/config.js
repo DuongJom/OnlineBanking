@@ -18,7 +18,7 @@ export const table_structure ={
     {key: 'WageType', name: 'Wage  Type'},
     {key: 'BasicSalary', name: 'Basic Salary'},
     {key: 'OverTime', name: 'Over Time'},
-    {key: 'PHHoliday', name: 'PH Holiday'},
+    {key: 'PublicHoliday', name: 'Public Holiday'},
     {key: 'ShiftAllowance', name: 'Shift Allowance'},
     {key: 'GroomingAllowance', name: 'Grooming Allowance'},
     {key: 'PerformanceBonus', name: 'Performance Bonus'},

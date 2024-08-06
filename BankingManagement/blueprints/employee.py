@@ -1,14 +1,15 @@
-import json
+import json, random
 from flask import Blueprint, render_template, request, jsonify
 from bson import ObjectId
 
-from models import database
+from models import database, salary as s
 
 from helpers import login_required, paginator
 from datetime import datetime, date
 
 db = database.Database().get_db()
 employee = db['employees']
+salary = db['salary']
 
 employee_blueprint = Blueprint('employee', __name__)
 
@@ -17,6 +18,7 @@ months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
 ]
+
 # Mapping of month names to numbers
 month_map = {
     'January': 1,
@@ -32,6 +34,65 @@ month_map = {
     'November': 11,
     'December': 12
 }
+
+'''create a func return a random amount
+create a func that assign that random amount to each field of the salary model,
+gross wages and net pay will be the total of those fields
+repeat the func above for 12 months or at least until the current month'''    
+
+def generate_random_number(length, max_value=None):
+    if length <= 0:
+        return "Length must be a positive integer"
+    
+    # Generate a random number with the specified length
+    start = 10**(length - 1)
+    end = (10**length) - 1
+
+    if max_value is not None:
+        end = min(end, max_value)
+        if end < start:
+            return "Max value is too small for the specified length"
+
+    return random.randint(start, end)
+
+def create_random_salary(length, max_value=None):
+    salary_fields = {
+        "basicSalary": generate_random_number(length, max_value),
+        "overTime": generate_random_number(length, max_value),
+        "publicHoliday": generate_random_number(length, max_value),
+        "shiftAllowance": generate_random_number(length, max_value),
+        "groomingAllowance": generate_random_number(length, max_value),
+        "performanceBonus": generate_random_number(length, max_value),
+    }
+    
+    # Calculate GrossWages and NetPay
+    salary_fields["grossWages"] = sum(salary_fields.values())
+    salary_fields["netPay"] = salary_fields["grossWages"]
+    
+    return s.Salary(**salary_fields)
+
+def generate_salaries_for_year(length, max_value=None):
+    current_month = datetime.now().month
+    salaries = {}
+    
+    for month in range(1, current_month + 1):
+        month_name = datetime(2024, month, 1).strftime('%B')
+        salaries[month_name] = create_random_salary(length, max_value)
+    
+    return salaries
+
+def insert_salaries_to_mongodb(salaries, collection):
+    # Insert each salary document into the collection
+    for month, data in salaries.items():
+        salary_doc = data.to_json()
+        salary_doc['month'] = month
+        collection.insert_one(salary_doc)
+
+
+'''{'jan': {....},
+'feb':{...}}
+insert the salary into the database '''
+
 def convert_objectid(data):
     if isinstance(data, list):
         return [convert_objectid(item) for item in data]
@@ -118,10 +179,20 @@ def employee_working_time():
     if request.method == 'GET':
         return render_template('employee/working_time.html')
     
+'''get data from database
+return the data to template
+use jinja to dynamically insert data into table.'''   
 @employee_blueprint.route('/employee/salary', methods = ['GET'])
 def employee_salary():
     if request.method == 'GET':
-        return render_template('employee/salary.html')
+           # Fetch all salary documents from the collection
+        salaries = list(salary.find())
+        
+        # Convert ObjectId to string for JSON serialization
+        for s in salaries: #s for salary
+            s['_id'] = str(s['_id'])
+        
+        return jsonify({'salaries' : salaries})
     
 @employee_blueprint.route('/employee', methods = ['GET'])
 @login_required

@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
       hideModals();
   });
 
-// Convert HTMLCollection to an array
+  // Convert HTMLCollection to an array
   Array.from(cancelBtn).forEach(btn => {
     btn.addEventListener('click', () => {
         hideModals();
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function (){
   
 });
 
-function controlPagination(page) {
+function controlPagination(page=1) {
   render(getSearchResultsPage(page));
   const markup = generatePaginationButton(icons);
   paginationButton.innerHTML='';
