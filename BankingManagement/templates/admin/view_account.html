@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Edit Account
+    View Account
 {% endblock %}
 
 {% block content %}
@@ -19,38 +19,62 @@
             <div class="w-full flex items-center justify-center">
                 <div class="mr-16 w-96">
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Username</label>
-                        <input value="{{account.Username}}" readonly class="admin_input focus:ring-0">
+                        <label class="admin_label" for="accountUsername">Username</label>
+                        <div class="admin_readonly" id="accountUsername">
+                            <div>{{account.Username}}</div>
+                        </div>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Role</label>
-                        <input value="{{account.Role}}" readonly class="admin_input focus:ring-0">
+                        <label class="admin_label" for="role">Role</label>
+                        <div id="role" class="admin_readonly">
+                            <div>
+                                {% if account.Role == 0 %}
+                                Admin 
+                                {% elif account.Role == 1 %}
+                                Employee
+                                {% else %}
+                                User
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Account Number</label>
-                        <input value="{{account.AccountNumber}}" readonly class="admin_input focus:ring-0">
+                        <label class="admin_label" for="accountNumber">Account Number</label>
+                        <div  id="accountNumber" class="admin_readonly">
+                            <div>{{account.AccountNumber}}</div>
+                        </div>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Owner</label>
-                        <input value="{{account.AccountOwner.Name}}" readonly class="admin_input focus:ring-0">
+                        <label class="admin_label" for="accountOwner">Owner</label>
+                        <div id="accountOwner" class="admin_readonly">
+                            <div>{{account.AccountOwner.Name}}</div>
+                        </div>
                     </div>
                 </div>
                 <div class="w-96">
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Branch</label>
-                        <input value="{{account.Branch.Name}}" readonly class="admin_input focus:ring-0">
+                        <label class="admin_label" for="branch">Branch</label>
+                        <div id="branch" class="admin_readonly">
+                            <div>{{account.Branch}}</div>
+                        </div>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Service</label>
-                        <input value="{{account.Service}}" readonly class="admin_input focus:ring-0">
+                        <label class="admin_label" for="service">Service</label>
+                        <div id="service" class="admin_readonly">
+                            <div>{{account.Service}}</div>
+                        </div>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Transfer Method</label>
-                        <input value="{{account.TransferMethod}}" readonly class="admin_input focus:ring-0">
+                        <label class="admin_label" for="transferMethod">Transfer Method</label>
+                        <div id="transferMethod" class="admin_readonly">
+                            <div>{{account.TransferMethod}}</div>
+                        </div>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Login Method</label>
-                        <input value="{{account.LoginMethod}}" readonly class="admin_input focus:ring-0">
+                        <label class="admin_label" for="loginMethod">Login Method</label>
+                        <div id="loginMethod" class="admin_readonly">
+                            <div>{{account.LoginMethod}}</div>
+                        </div>
                     </div>
                 </div>
             </div>

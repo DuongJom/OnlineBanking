@@ -14,6 +14,13 @@ export const table_structure = {
     ]
 }
 
+export const object_identifier = {
+    account: 'Username',
+    user: 'Name',
+    branch: 'BranchName',
+    employee: 'EmployeeName'
+}
+
 export const styles = {
     cell: 'whitespace-nowrap p-2 relative border-x border-black',
     table: 'border border-black',

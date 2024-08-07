@@ -42,4 +42,8 @@
     .admin_label {
         @apply text-white font-medium
     }
+
+    .admin_readonly {
+        @apply w-full h-10 flex items-center bg-gray-400 rounded-lg pl-3 text-gray-800
+    }
 }

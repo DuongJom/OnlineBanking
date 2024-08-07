@@ -19,29 +19,35 @@
             <div class="w-full flex items-center justify-center">
                 <div class="mr-16 w-96">
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Username</label>
-                        <input value="{{account.Username}}" class="admin_input">
+                        <label class="admin_label" for="accountUsername">Username</label>
+                        <div class="admin_readonly" id="accountUsername">
+                            <div>{{account.Username}}</div>
+                        </div>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Role</label>
-                        <select id="gender" class="admin_input" >
-                            <option id="0">Male</option>
-                            <option id="1">Female</option>
-                            <option id="2">Other</option>
+                        <label class="admin_label" for="role">Role</label>
+                        <select id="role" class="admin_input" >
+                            <option id="0">Admin</option>
+                            <option id="1">Employee</option>
+                            <option id="2">User</option>
                         </select>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Account Number</label>
-                        <input value="{{account.AccountNumber}}" class="admin_input">
+                        <label class="admin_label" for="accountNumber">Account Number</label>
+                        <div  id="accountNumber" class="admin_readonly">
+                            <div>{{account.AccountNumber}}</div>
+                        </div>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Owner</label>
-                        <input value="{{account.AccountOwner.Name}}" class="admin_input">
+                        <label class="admin_label" for="accountOwner">Owner</label>
+                        <div id="accountOwner" class="admin_readonly">
+                            <div>{{account.AccountOwner.Name}}</div>
+                        </div>
                     </div>
                 </div>
                 <div class="w-96">
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Branch</label>
+                        <label class="admin_label" for="branch">Branch</label>
                         <select id="branch" class="admin_input" >
                             <option>branch 1</option>
                             <option>branch 2</option>
@@ -49,13 +55,13 @@
                         </select>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Service</label>
+                        <label class="admin_label" for="service">Service</label>
                         <select id="service" class="admin_input" >
                             <option value="{{account.Service}}">{{account.Service}}</option>
                         </select>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Transfer Method</label>
+                        <label class="admin_label" for="transferMethod">Transfer Method</label>
                         <select id="transferMethod" class="admin_input" >
                             <option>Method 1</option>
                             <option>Method 2</option>
@@ -63,7 +69,7 @@
                         </select>
                     </div>
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label">Login Method</label>
+                        <label class="admin_label" for="loginMethod">Login Method</label>
                         <select id="loginMethod" class="admin_input" >
                             <option value="{{account.LoginMethod}}">LoginMethod</option>
                             <option>Method 1</option>
@@ -84,9 +90,9 @@
                     Change
                 </button>
             </div>
-            <div class="hidden flex h-screen w-screen fixed top-0 left-0 justify-center items-center z-1000" id="toggled_element">
-                <div class="flex flex-col h-96 w-96 justify-center items-center bg-white shadow-2xl rounded">
-                    <div class="font-bold mb-14">Do you want to save changes</div>
+            <div class="hidden h-screen w-screen fixed top-0 left-0 justify-center items-center z-1000" id="toggled_element">
+                <div class="flex flex-col h-40 w-96 justify-center items-center bg-white shadow-2xl rounded">
+                    <div class="font-bold mb-10">Do you want to save changes</div>
                     <div class="w-full flex justify-evenly">
                         <div class="w-1/4">
                             <button class="btn" type="submit">Change</button>

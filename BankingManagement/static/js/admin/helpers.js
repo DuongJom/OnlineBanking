@@ -1,4 +1,4 @@
-import { styles, table_structure } from "./config.js";
+import { styles, table_structure, object_identifier } from "./config.js";
 
 export function get_admin_page_data(page, dataType) {
     return fetch(`/admin?page=${page}&dataType=${dataType}`, {
@@ -26,15 +26,18 @@ export function closeDeleteForm() {
     delete_form.classList.add('hidden');
 }
 
-function renderDeleteForm(id) {
+function renderDeleteForm(id, object_name) {
     const delete_form = document.getElementById("admin_delete_form");
     const object_id = document.getElementById("object_id");
+    const deleteConfirmation = document.getElementById("deleteConfirmation");
 
+    deleteConfirmation.innerHTML = `Are you sure you want to delete ${object_name}?`;
     delete_form.classList.remove('hidden');
+    delete_form.classList.add('flex');
     object_id.setAttribute('value', id)
 }
 
-function create_action_button(row, _id, data_type) {
+function create_action_button(row, _id, data_type, object_name) {
     // UI for action button
     const action_cell = document.createElement('td');
     const view_btn = document.createElement('a');
@@ -66,7 +69,7 @@ function create_action_button(row, _id, data_type) {
         }
         else if (icon_list[i] == 'delete') {
             btn.addEventListener('click', () => {
-                renderDeleteForm(_id);
+                renderDeleteForm(_id, object_name);
             })
         }
         i++;
@@ -113,7 +116,7 @@ export function render_table(items, data_type) {
                 }
                 row.appendChild(cell);
             })
-            create_action_button(row, items[i]['_id'], data_type);
+            create_action_button(row, items[i]['_id'], data_type, items[i][object_identifier[data_type]]);
             tbody.appendChild(row);
         }
         table_wrapper.appendChild(table);
@@ -168,7 +171,7 @@ export function render_table(items, data_type) {
             }
             row.appendChild(cell);
         })
-        create_action_button(row, items[i]['_id'], data_type);
+        create_action_button(row, items[i]['_id'], data_type, items[i][object_identifier[data_type]]);
         tbody2.appendChild(row);
     }
 
