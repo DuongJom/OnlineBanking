@@ -31,7 +31,7 @@ function renderDeleteForm(id, object_name) {
     const object_id = document.getElementById("object_id");
     const deleteConfirmation = document.getElementById("deleteConfirmation");
 
-    deleteConfirmation.innerHTML = `Are you sure you want to delete ${object_name}?`;
+    deleteConfirmation.innerHTML = `Are you sure you want to delete <b style="color:red">${object_name}</b>?`;
     delete_form.classList.remove('hidden');
     delete_form.classList.add('flex');
     object_id.setAttribute('value', id)

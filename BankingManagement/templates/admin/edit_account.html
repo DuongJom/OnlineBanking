@@ -24,6 +24,21 @@
                             <div>{{account.Username}}</div>
                         </div>
                     </div>
+                    
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="accountNumber">Account Number</label>
+                        <div  id="accountNumber" class="admin_readonly">
+                            <div>{{account.AccountNumber}}</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="accountOwner">Owner</label>
+                        <div id="accountOwner" class="admin_readonly">
+                            <div>{{account.AccountOwner.Name}}</div>
+                        </div>
+                    </div>
+
                     <div class="flex flex-col mb-4">
                         <label class="admin_label" for="role">Role</label>
                         <select id="role" class="admin_input" >
@@ -31,18 +46,6 @@
                             <option id="1">Employee</option>
                             <option id="2">User</option>
                         </select>
-                    </div>
-                    <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="accountNumber">Account Number</label>
-                        <div  id="accountNumber" class="admin_readonly">
-                            <div>{{account.AccountNumber}}</div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="accountOwner">Owner</label>
-                        <div id="accountOwner" class="admin_readonly">
-                            <div>{{account.AccountOwner.Name}}</div>
-                        </div>
                     </div>
                 </div>
                 <div class="w-96">

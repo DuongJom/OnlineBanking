@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Add New Account
+    Add Account
 {% endblock %}
 
 {% block content %}
@@ -20,14 +20,14 @@
                         class="mx-auto h-48 w-auto"
                         src="/static/img/bank.png"
                         alt="Company" />
-                    <h2 class="font-extrabold mt-4">New account</h2>
+                    <h2 class="font-extrabold mt-4">New</h2>
                 </div>
 
                 <!-- Account Information  -->
                 <div class="flex flex-1">
                     <div class="w-full flex flex-col items-center border-r-2r mt-20">
                         <div>
-                            <h2 class="font-extrabold text-white mb-4">Account Information</h2>
+                            <h2 class="font-extrabold text-white mb-4">List of Account</h2>
                         </div>
 
                         <div class="flex flex-col w-4/5 space-y-4">
@@ -49,14 +49,14 @@
 
                             <div class="flex flex-col w-full">
                                 <label for="loginMethod" class="admin_label">Login Method</label>
-                                <select id="loginMethod" class="admin_input" >
+                                <select id="loginMethod" class="admin_input">
                                     <option disabled>Login Method</option>
                                 </select>
                             </div>
 
                             <div class="flex flex-col w-full">
                                 <label for="transferMethod" class="admin_label">Transfer Method</label>
-                                <select id="transferMethod" class="admin_input" >
+                                <select id="transferMethod" class="admin_input">
                                     <option disabled>Transfer Method</option>
                                 </select>
                             </div>
