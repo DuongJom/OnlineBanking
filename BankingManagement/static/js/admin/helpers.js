@@ -1,4 +1,4 @@
-import { styles, table_structure, object_identifier } from "./config.js";
+import {table_structure, object_identifier } from "./config.js";
 
 export function get_admin_page_data(page, dataType) {
     return fetch(`/admin?page=${page}&dataType=${dataType}`, {
@@ -79,6 +79,18 @@ function create_action_button(row, _id, data_type, object_name) {
     row.appendChild(action_cell);
 }
 
+function create_status_col(row, isActive) {
+    const status_cell = document.createElement('td');
+    const div = document.createElement('div');
+
+    status_cell.classList.add('border-x', 'border-black');
+    div.classList.add('flex', 'justify-center');
+
+    create_toggle_button(div, isActive);
+    status_cell.appendChild(div);
+    row.appendChild(status_cell);
+}
+
 export function render_table(items, data_type) { 
     const tables = document.querySelectorAll('table');
     const table_wrapper = document.getElementById('table_wrapper');
@@ -90,7 +102,7 @@ export function render_table(items, data_type) {
         table.remove();
     })
     
-    style(table_wrapper, styles.table_wrapper);
+    table_wrapper.classList.add('admin_table_wrapper');
     
     location.innerHTML =  `${localStorage.getItem('admin_page')}/${localStorage.getItem('admin_maxPage')}`;
 
@@ -99,16 +111,16 @@ export function render_table(items, data_type) {
         const table = document.createElement('table');
         const tbody = document.createElement('tbody');
 
-        style(table, styles.table);
-        tableHeader(col_names, table, false);
+        table.classList.add('admin_table');
+        tableHeader(col_names, table, false, data_type);
         table.appendChild(tbody);
 
         for(let i = 0; i < items.length; i++) {
             const row = document.createElement('tr');
-            style(row, styles.tr);
+            row.classList.add('admin_tr');
             col_names.forEach(col_name => {
                 const cell = document.createElement('td');
-                style(cell, styles.cell);
+                cell.classList.add('admin_cell');
                 cell.innerHTML = items[i][col_name.key];
                 if(typeof items[i][col_name.key] == 'object') {
                     generateObjectSign(cell);
@@ -117,6 +129,11 @@ export function render_table(items, data_type) {
                 row.appendChild(cell);
             })
             create_action_button(row, items[i]['_id'], data_type, items[i][object_identifier[data_type]]);
+
+            if(data_type == 'account') {
+                create_status_col(row, true, items[i]['IsDeleted']);
+            }
+
             tbody.appendChild(row);
         }
         table_wrapper.appendChild(table);
@@ -133,21 +150,21 @@ export function render_table(items, data_type) {
 
     //fixed table
     table1.id = 'table1';
-    tableHeader(col_names1, table1, true);
+    tableHeader(col_names1, table1, true, data_type);
     table1.appendChild(tbody1);
 
     //right table
     table2.id = 'table2';
-    tableHeader(col_names2, table2, false);
+    tableHeader(col_names2, table2, false, data_type);
     table2.appendChild(tbody2);
 
     //loop to render fixed table
     for(let i = 0; i < items.length; i++) {
         const row = document.createElement('tr');
-        style(row, styles.tr);
+        row.classList.add('admin_tr');
         col_names1.forEach(col_name => {
             const cell = document.createElement('td');
-            style(cell, styles.cell);
+            cell.classList.add('admin_cell');
             cell.innerHTML = items[i][col_name.key];
             if(typeof items[i][col_name.key] == 'object') {
                 generateObjectSign(cell);
@@ -160,10 +177,10 @@ export function render_table(items, data_type) {
     //loop to render right table
     for(let i = 0; i < items.length; i++) {
         const row = document.createElement('tr');
-        style(row, styles.tr);
+        row.classList.add('admin_tr');
         col_names2.forEach(col_name => {
             const cell = document.createElement('td');
-            style(cell, styles.cell);
+            cell.classList.add('admin_cell');
             cell.innerHTML = items[i][col_name.key];
             if(typeof items[i][col_name.key] == 'object') {
                 cell.innerHTML = items[i][col_name.key][col_name.object_key];
@@ -172,23 +189,28 @@ export function render_table(items, data_type) {
             row.appendChild(cell);
         })
         create_action_button(row, items[i]['_id'], data_type, items[i][object_identifier[data_type]]);
+
+        if(data_type == 'account') {
+            create_status_col(row, items[i]['IsDeleted']);
+        }
+        
         tbody2.appendChild(row);
     }
 
     table_wrapper.appendChild(table1);
-    style(table1, styles.table1);
-    style(table2, styles.table2);
+    table1.classList.add('admin_table1');
+    table2.classList.add('admin_table2');
     table_wrapper.appendChild(table2);
     adjustTableMargin();
 }
 
-function tableHeader(col_names, table, isFixed){
+function tableHeader(col_names, table, isFixed, data_type){
     const thead = document.createElement('thead');
 
-    style(thead, styles.thead);
+    thead.classList.add('admin_thead');
     col_names.forEach(col_name => {
         const th = document.createElement('th');
-        style(th, styles.th);
+        th.classList.add('admin_th');
         th.innerHTML = col_name.name;
         thead.appendChild(th);
     })
@@ -197,17 +219,19 @@ function tableHeader(col_names, table, isFixed){
         const action_col = document.createElement('th');
 
         action_col.innerHTML = 'Action'
-        style(action_col, styles.th);
+        action_col.classList.add('admin_th');
         thead.appendChild(action_col);
     }
 
-    table.appendChild(thead);
-}
+    if(!isFixed && data_type == 'account') {
+        const status_col = document.createElement('th');
 
-function style(element, classes) {
-    classes.split(' ').forEach(function(cls) {
-        element.classList.add(cls);
-    });
+        status_col.innerHTML = 'Status';
+        status_col.classList.add('admin_th');
+        thead.appendChild(status_col);
+    }
+
+    table.appendChild(thead);
 }
 
 function generateObjectSign(cell) {
@@ -265,3 +289,40 @@ export function adjustTableMargin() {
     }
 }
 
+function style(element, classes) {
+    classes.split(' ').forEach(function(cls) {
+        element.classList.add(cls);
+    });
+}
+
+function create_toggle_button(parent, isActive) {
+    const wrapper_style = "inline-flex items-center me-5";
+    const input_style = "sr-only peer";
+    const text_style = "ms-3 text-sm font-medium text-gray-900 dark:text-gray-300";
+    const div_style = "relative w-8 h-4 bg-gray-500 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0 after:start-0 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"
+
+    const wrapper = document.createElement('label');
+    const input = document.createElement('input');
+    const div = document.createElement('div');
+    const text = document.createElement('span');
+
+    input.type = 'checkbox';  
+    input.disabled = true;
+
+    if (isActive == 0) {
+        input.checked = true;
+        text.innerHTML = 'Active';
+    }
+    text.innerHTML = 'Inactive';
+
+    style(wrapper, wrapper_style);
+    style(input, input_style);;
+    style(text, text_style);
+    style(div, div_style);
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(div);
+    wrapper.appendChild(text);
+
+    parent.appendChild(wrapper);
+}

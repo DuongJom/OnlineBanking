@@ -46,4 +46,36 @@
     .admin_readonly {
         @apply w-full h-10 flex items-center bg-gray-400 rounded-lg pl-3 text-gray-800
     }
+
+    .admin_cell {
+        @apply whitespace-nowrap p-2 relative border-x border-black
+    }
+
+    .admin_table {
+        @apply border border-black
+    }
+
+    .admin_table1 {
+        @apply border border-black z-10 sm:fixed shadow-shadowRight
+    }
+
+    .admin_table2 {
+        @apply flex-1 border border-black
+    }
+
+    .admin_th {
+        @apply text-left p-2 border border-black whitespace-nowrap
+    }
+
+    .admin_tr {
+        @apply h-8 bg-blue-gray-50 my-3 border-t border-white
+    }
+
+    .admin_table_wrapper {
+        @apply w-99% flex absolute top-20 overflow-x-auto
+    }
+
+    .admin_thead {
+        @apply bg-blue-gray-300
+    }
 }
