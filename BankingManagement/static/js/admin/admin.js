@@ -12,11 +12,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const next_btn = document.getElementById("next-btn");
   const previous_btn = document.getElementById("previous-btn");
   const cancel_btn = document.getElementById("cancel-btn");
+  const lazyLoading = document.getElementById("lazyLoading");
 
   localStorage.setItem("admin_page", 1);
 
   try {
     const data = await get_admin_page_data(1, data_type);
+
+    lazyLoading.classList.add('hidden');
+
     localStorage.setItem("admin_maxPage", data.total_pages);
     render_table(data.items, data_type);
   } catch (error) {
