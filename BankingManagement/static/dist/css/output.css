@@ -1353,6 +1353,10 @@ select {
   height: 100vh;
 }
 
+.h-14 {
+  height: 3.5rem;
+}
+
 .max-h-20 {
   max-height: 5rem;
 }
@@ -1455,6 +1459,10 @@ select {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-14 {
+  width: 3.5rem;
 }
 
 .max-w-7xl {
