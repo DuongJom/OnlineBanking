@@ -64,7 +64,7 @@
     }
 
     .admin_th {
-        @apply text-left p-2 border border-black whitespace-nowrap
+        @apply p-2 border border-black whitespace-nowrap
     }
 
     .admin_tr {
@@ -76,6 +76,6 @@
     }
 
     .admin_thead {
-        @apply bg-blue-gray-300
+        @apply bg-blue-gray-300 text-center
     }
 }
