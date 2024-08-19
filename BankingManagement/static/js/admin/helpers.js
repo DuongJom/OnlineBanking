@@ -183,9 +183,14 @@ export function render_table(items, data_type) {
     col_names1.forEach((col_name) => {
       const cell = document.createElement("td");
       cell.classList.add("admin_cell");
-      cell.innerHTML = items[i][col_name.key];
-      if (typeof items[i][col_name.key] == "object") {
-        generateObjectSign(cell);
+      if(items[i][col_name.key] != undefined) {
+        cell.innerHTML = items[i][col_name.key];
+        if (typeof items[i][col_name.key] == "object") {
+          cell.innerHTML = items[i][col_name.key][col_name.object_key];
+          generateObjectSign(cell);
+        }
+      }else {
+        cell.innerHTML = "undefined";
       }
       row.appendChild(cell);
     });
@@ -199,11 +204,16 @@ export function render_table(items, data_type) {
     col_names2.forEach((col_name) => {
       const cell = document.createElement("td");
       cell.classList.add("admin_cell");
-      cell.innerHTML = items[i][col_name.key];
-      if (typeof items[i][col_name.key] == "object") {
-        cell.innerHTML = items[i][col_name.key][col_name.object_key];
-        generateObjectSign(cell);
+      if(items[i][col_name.key] != undefined) {
+        cell.innerHTML = items[i][col_name.key];
+        if (typeof items[i][col_name.key] == "object") {
+          cell.innerHTML = items[i][col_name.key][col_name.object_key];
+          generateObjectSign(cell);
+        }
+      }else {
+        cell.innerHTML = "undefined";
       }
+      
       row.appendChild(cell);
     });
     create_action_button(

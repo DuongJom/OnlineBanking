@@ -78,4 +78,12 @@
     .admin_thead {
         @apply bg-blue-gray-300 text-center
     }
+
+    .hightlight {
+        @apply bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg rounded-md
+    }
+
+    .admin_sidebar_item {
+        @apply py-2 border-b border-white font-bold text-gray-300 hover:text-white pl-2
+    }
 }

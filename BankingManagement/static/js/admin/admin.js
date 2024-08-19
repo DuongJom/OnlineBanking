@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const previous_btn = document.getElementById("previous-btn");
   const cancel_btn = document.getElementById("cancel-btn");
   const lazyLoading = document.getElementById("lazyLoading");
+  const sidebarItems = document.querySelectorAll('.sidebar li');
 
   localStorage.setItem("admin_page", 1);
 
@@ -27,9 +28,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("There was a problem with loading the items:", error);
   }
 
+  // add event handler for button in admin page
   next_btn.addEventListener("click", () => next(data_type));
   previous_btn.addEventListener("click", () => previous(data_type));
   cancel_btn.addEventListener("click", () => closeDeleteModal());
 
-  addEventListener("resize", adjustTableMargin);
+  // ad event handler for navBar
+  sidebarItems.forEach(item => {
+    item.addEventListener('click', () => {
+      sidebarItems.forEach(item => {
+        item.classList.remove("active");
+      })
+
+      item.classList.add("active");
+    })
+  })
 });
