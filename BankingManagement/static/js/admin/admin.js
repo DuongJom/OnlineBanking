@@ -1,9 +1,8 @@
 import {
-  get_admin_page_data,
-  render_table,
-  next,
-  previous,
-  adjustTableMargin,
+  getAdminData,
+  renderTable,
+  goNext,
+  goPrevious,
   closeDeleteModal,
 } from "./helpers.js";
 
@@ -17,19 +16,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   localStorage.setItem("admin_page", 1);
 
   try {
-    const data = await get_admin_page_data(1, data_type);
+    const data = await getAdminData(1, data_type);
 
     lazyLoading.classList.add('hidden');
 
     localStorage.setItem("admin_maxPage", data.total_pages);
-    render_table(data.items, data_type);
+    renderTable(data.items, data_type);
   } catch (error) {
     console.error("There was a problem with loading the items:", error);
   }
 
   // add event handler for button in admin page
-  next_btn.addEventListener("click", () => next(data_type));
-  previous_btn.addEventListener("click", () => previous(data_type));
+  next_btn.addEventListener("click", () => goNext(data_type));
+  previous_btn.addEventListener("click", () => goPrevious(data_type));
   cancel_btn.addEventListener("click", () => closeDeleteModal());
 
   

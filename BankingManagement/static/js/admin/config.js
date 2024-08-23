@@ -18,7 +18,7 @@ export const table_structure = {
     { key: "Card", name: "Card", object_key: "CardNumber" },
   ],
   branch: [
-    { key: "BranchName", name: "BranchName" },
+    { key: "BranchName", name: "Branch Name" },
     { key: "Address", object_key: "District", name: "Address" }
   ],
   employee: [

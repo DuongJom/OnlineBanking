@@ -33,9 +33,9 @@
                       focus:ring-offset-gray-800"
                 onclick="navBarToggle()">
                   {% if session["sex"] == '1' %}
-                    <img width="30px" height="30px" src="../static/img/avt_woman.png" alt="user avatar"/>
-                  {% else %}
                     <img width="30px" height="30px" src="../static/img/avt_man.png" alt="user avatar"/>
+                  {% else %}
+                    <img width="30px" height="30px" src="../static/img/avt_woman.png" alt="user avatar"/>
                   {% endif %}
 
                   <div class="h-4 w-4 ml-2" id="navAvatar">
