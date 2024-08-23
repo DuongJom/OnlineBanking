@@ -959,6 +959,7 @@ select {
 }
 
 .admin_table {
+  width: 75%;
   border-width: 1px;
   --tw-border-opacity: 1;
   border-color: rgb(0 0 0 / var(--tw-border-opacity));
@@ -988,6 +989,15 @@ select {
 }
 
 .admin_th {
+  white-space: nowrap;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+  padding: 0.5rem;
+}
+
+.less_admin_th {
+  width: 25%;
   white-space: nowrap;
   border-width: 1px;
   --tw-border-opacity: 1;

@@ -239,26 +239,46 @@ export function renderTable(items, data_type) {
 
 function createTableHeader(col_names, table, isFixed, data_type) {
   const thead = document.createElement("thead");
-
   thead.classList.add("admin_thead");
-  col_names.forEach((col_name) => {
-    const th = document.createElement("th");
-    th.classList.add("admin_th");
-    th.innerHTML = col_name.name;
-    thead.appendChild(th);
-  });
+
+  if(col_names.length > 3 || isFixed == true) {
+    col_names.forEach((col_name) => {
+      const th = document.createElement("th");
+      th.classList.add("admin_th"); 
+      th.innerHTML = col_name.name;
+      console.log(col_name.name);
+      thead.appendChild(th);
+    });
+  }else {
+    col_names.forEach((col_name) => {
+      const th = document.createElement("th");
+      th.classList.add("less_admin_th"); 
+      th.innerHTML = col_name.name;
+      thead.appendChild(th);
+    });
+  }
+  
 
   if (!isFixed) {
     const action_col = document.createElement("th");
 
     action_col.innerHTML = "Action";
-    action_col.classList.add("admin_th");
+    if(col_names.length > 3) {
+      action_col.classList.add("admin_th");
+    }else {
+      action_col.classList.add("less_admin_th");
+    }  
+    
     thead.appendChild(action_col);
 
     if (data_type == "account") {
       const status_col = document.createElement("th");
       status_col.innerHTML = "Status";
-      status_col.classList.add("admin_th");
+      if(col_names.length > 3) {
+        status_col.classList.add("admin_th");
+      }else {
+        status_col.classList.add("less_admin_th");
+      }
       thead.appendChild(status_col);
     }
   }

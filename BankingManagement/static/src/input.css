@@ -52,7 +52,7 @@
     }
 
     .admin_table {
-        @apply border border-black
+        @apply border border-black w-3/4
     }
 
     .admin_table1 {
@@ -65,6 +65,10 @@
 
     .admin_th {
         @apply p-2 border border-black whitespace-nowrap
+    }
+
+    .less_admin_th {
+        @apply p-2 border border-black whitespace-nowrap w-1/4
     }
 
     .admin_tr {
