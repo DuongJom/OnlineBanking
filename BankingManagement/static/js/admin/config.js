@@ -41,3 +41,10 @@ export const object_identifier = {
   branch: "BranchName",
   employee: "EmployeeName",
 };
+
+export const pages = {
+  account: "Accounts",
+  user: "Users",
+  employee: "Employees",
+  branch: "Branches",
+}

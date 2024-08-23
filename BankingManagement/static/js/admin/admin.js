@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const previous_btn = document.getElementById("previous-btn");
   const cancel_btn = document.getElementById("cancel-btn");
   const lazyLoading = document.getElementById("lazyLoading");
-  const sidebarItems = document.querySelectorAll('.sidebar li');
 
   localStorage.setItem("admin_page", 1);
 
@@ -33,14 +32,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   previous_btn.addEventListener("click", () => previous(data_type));
   cancel_btn.addEventListener("click", () => closeDeleteModal());
 
-  // ad event handler for navBar
-  sidebarItems.forEach(item => {
-    item.addEventListener('click', () => {
-      sidebarItems.forEach(item => {
-        item.classList.remove("active");
-      })
+  
 
-      item.classList.add("active");
-    })
-  })
 });
