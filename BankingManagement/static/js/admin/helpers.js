@@ -1,6 +1,6 @@
 import { table_structure, object_identifier } from "./config.js";
 
-export function get_admin_page_data(page, dataType) {
+export function getAdminData(page, dataType) {
   return fetch(`/admin?page=${page}&dataType=${dataType}`, {
     method: "GET",
     headers: {
@@ -37,7 +37,7 @@ function renderDeleteModal(id, object_name) {
   object_id.setAttribute("value", id);
 }
 
-function create_action_button(row, _id, data_type, object_name) {
+function createActionButton(row, _id, data_type, object_name) {
   // UI for action button
   const action_cell = document.createElement("td");
   const view_btn = document.createElement("a");
@@ -88,7 +88,7 @@ function create_action_button(row, _id, data_type, object_name) {
   row.appendChild(action_cell);
 }
 
-function create_status_col(row, isActive) {
+function createStatusCol(row, isActive) {
   const status_cell = document.createElement("td");
   const div = document.createElement("div");
 
@@ -100,7 +100,7 @@ function create_status_col(row, isActive) {
   row.appendChild(status_cell);
 }
 
-export function render_table(items, data_type) {
+export function renderTable(items, data_type) {
   const tables = document.querySelectorAll("table");
   const table_wrapper = document.getElementById("table_wrapper");
   const col_names = table_structure[data_type];
@@ -124,7 +124,7 @@ export function render_table(items, data_type) {
     const tbody = document.createElement("tbody");
 
     table.classList.add("admin_table");
-    tableHeader(col_names, table, false, data_type);
+    createTableHeader(col_names, table, false, data_type);
     table.appendChild(tbody);
 
     for (let i = 0; i < items.length; i++) {
@@ -141,7 +141,7 @@ export function render_table(items, data_type) {
         row.appendChild(cell);
       });
 
-      create_action_button(
+      createActionButton(
         row,
         items[i]["_id"],
         data_type,
@@ -149,7 +149,7 @@ export function render_table(items, data_type) {
       );
 
       if (data_type == "account") {
-        create_status_col(row, true, items[i]["IsDeleted"]);
+        createStatusCol(row, true, items[i]["IsDeleted"]);
       }
 
       tbody.appendChild(row);
@@ -168,12 +168,12 @@ export function render_table(items, data_type) {
 
   //fixed table
   table1.id = "table1";
-  tableHeader(col_names1, table1, true, data_type);
+  createTableHeader(col_names1, table1, true, data_type);
   table1.appendChild(tbody1);
 
   //right table
   table2.id = "table2";
-  tableHeader(col_names2, table2, false, data_type);
+  createTableHeader(col_names2, table2, false, data_type);
   table2.appendChild(tbody2);
 
   //loop to render fixed table
@@ -216,7 +216,7 @@ export function render_table(items, data_type) {
       
       row.appendChild(cell);
     });
-    create_action_button(
+    createActionButton(
       row,
       items[i]["_id"],
       data_type,
@@ -224,7 +224,7 @@ export function render_table(items, data_type) {
     );
 
     if (data_type == "account") {
-      create_status_col(row, items[i]["IsDeleted"]);
+      createStatusCol(row, items[i]["IsDeleted"]);
     }
 
     tbody2.appendChild(row);
@@ -237,7 +237,7 @@ export function render_table(items, data_type) {
   adjustTableMargin();
 }
 
-function tableHeader(col_names, table, isFixed, data_type) {
+function createTableHeader(col_names, table, isFixed, data_type) {
   const thead = document.createElement("thead");
 
   thead.classList.add("admin_thead");
@@ -285,7 +285,7 @@ function generateObjectSign(cell) {
   cell.classList.add("cursor-pointer", "hover:bg-gray-400");
 }
 
-export async function next(data_type) {
+export async function goNext(data_type) {
   var page = localStorage.getItem("admin_page");
   var max_page = localStorage.getItem("admin_maxPage");
 
@@ -293,26 +293,26 @@ export async function next(data_type) {
     page++;
     localStorage.setItem("admin_page", page);
     try {
-      const data = await get_admin_page_data(page, data_type);
+      const data = await getAdminData(page, data_type);
 
       localStorage.setItem("admin_maxPage", data.total_pages);
-      render_table(data.items, data_type);
+      renderTable(data.items, data_type);
     } catch (error) {
       console.error("There was a problem with loading the items:", error);
     }
   }
 }
 
-export async function previous(data_type, page) {
+export async function goPrevious(data_type, page) {
   var page = localStorage.getItem("admin_page");
 
   if (page > 1) {
     page--;
     localStorage.setItem("admin_page", page);
     try {
-      const data = await get_admin_page_data(page, data_type);
+      const data = await getAdminData(page, data_type);
       localStorage.setItem("admin_maxPage", data.total_pages);
-      render_table(data.items, data_type);
+      renderTable(data.items, data_type);
     } catch (error) {
       console.error("There was a problem with loading the items:", error);
     }
@@ -330,7 +330,7 @@ export function adjustTableMargin() {
   }
 }
 
-function style(element, classes) {
+function addStyle(element, classes) {
   classes.split(" ").forEach(function (cls) {
     element.classList.add(cls);
   });
@@ -362,10 +362,10 @@ function create_toggle_button(parent, isActive) {
   }
   text.innerHTML = "Inactive";
 
-  style(wrapper, wrapper_style);
-  style(input, input_style);
-  style(text, text_style);
-  style(div, div_style);
+  addStyle(wrapper, wrapper_style);
+  addStyle(input, input_style);
+  addStyle(text, text_style);
+  addStyle(div, div_style);
 
   wrapper.appendChild(input);
   wrapper.appendChild(div);
