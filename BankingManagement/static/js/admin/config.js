@@ -1,4 +1,4 @@
-export const table_structure = {
+export const tableStructure = {
   account: [
     { key: "Username", name: "Username" },
     { key: "AccountNumber", name: "Account Number" },
@@ -35,7 +35,7 @@ export const table_structure = {
   ]
 };
 
-export const object_identifier = {
+export const identifier = {
   account: "Username",
   user: "Name",
   branch: "BranchName",
