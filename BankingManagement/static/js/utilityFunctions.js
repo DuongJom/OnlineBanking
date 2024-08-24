@@ -7,10 +7,10 @@ function goBack() {
 }
 
 function toggle() {
-    const toggled_element = document.getElementById('toggled_element');
+    const toggledElement = document.getElementById('toggled_element');
 
-    toggled_element.classList.toggle('flex');
-    toggled_element.classList.toggle('hidden');
+    toggledElement.classList.toggle('flex');
+    toggledElement.classList.toggle('hidden');
 }
 
 function navBarToggle () {
