@@ -3,7 +3,6 @@ from bson import ObjectId
 from datetime import datetime
 
 from models import database
-
 from helpers import login_required
 
 admin_blueprint = Blueprint('admin', __name__)   
@@ -59,16 +58,16 @@ def admin():
 def account(page, id):
     if request.method == 'GET':
         if page == "add":
-            return render_template('admin/add_account.html')
+            return render_template('admin/account/add_account.html')
         elif page == "view" and id is not None:
             account_id = ObjectId(id)
             viewed_account = accounts.find_one({"_id": account_id})
-            return render_template('admin/view_account.html', account = viewed_account)
+            return render_template('admin/account/view_account.html', account = viewed_account)
         elif page == "edit" and id is not None:
             account_id = ObjectId(id)
             edited_account = accounts.find_one({"_id": account_id})
-            return render_template('admin/edit_account.html', account = edited_account)
-        return render_template('admin/account.html')
+            return render_template('admin/account/edit_account.html', account = edited_account)
+        return render_template('admin/account/account.html')
 
 # End admin_account
 
@@ -86,12 +85,12 @@ def user(page, id):
             if(viewed_user['Card']):
                 expiredDate = datetime.fromisoformat(viewed_user['Card']['ExpiredDate']).date()
                 issuanceDate = datetime.fromisoformat(viewed_user['Card']['IssuanceDate']).date()
-            return render_template('admin/view_user.html', user = viewed_user, expiredDate = expiredDate, issuanceDate = issuanceDate)
+            return render_template('admin/user/view_user.html', user = viewed_user, expiredDate = expiredDate, issuanceDate = issuanceDate)
         elif page == "edit" and id is not None:
             user_id = ObjectId(id)
             edited_user = users.find_one({"_id": user_id}) 
-            return render_template('admin/edit_user.html', user = edited_user)
-        return render_template('admin/user.html')
+            return render_template('admin/user/edit_user.html', user = edited_user)
+        return render_template('admin/user/user.html')
     
 @admin_blueprint.route('/admin/employee', defaults={'page': None, 'id': None}, methods=['GET'])
 @admin_blueprint.route('/admin/employee/<page>', defaults={'id': None}, methods=['GET'])
@@ -100,16 +99,16 @@ def user(page, id):
 def employee(page, id):
     if request.method == 'GET':
         if page == "add":
-            return render_template('admin/add_employee.html')
+            return render_template('admin/employee/add_employee.html')
         elif page == "view" and id is not None:
             employee_id = ObjectId(id)
             viewed_employee = users.find_one({"_id": employee_id})
-            return render_template('admin/view_employee.html', employee = viewed_employee)
+            return render_template('admin/employee/view_employee.html', employee = viewed_employee)
         elif page == "edit" and id is not None:
             employee_id = ObjectId(id)
             edited_employee = users.find_one({"_id": employee_id}) 
-            return render_template('admin/edit_employee.html', employee = edited_employee)
-        return render_template('admin/employee.html')
+            return render_template('admin/employee/edit_employee.html', employee = edited_employee)
+        return render_template('admin/employee/employee.html')
     
 @admin_blueprint.route('/admin/branch', defaults={'page': None, 'id': None}, methods=['GET'])
 @admin_blueprint.route('/admin/branch/<page>', defaults={'id': None}, methods=['GET'])
@@ -118,16 +117,16 @@ def employee(page, id):
 def branch(page, id):
     if request.method == 'GET':
         if page == "add":
-            return render_template('admin/add_branch.html')
+            return render_template('admin/branch/add_branch.html')
         elif page == "view" and id is not None:
             branch_id = ObjectId(id)
             viewed_branch = users.find_one({"_id": branch_id})
-            return render_template('admin/view_branch.html', branch = viewed_branch)
+            return render_template('admin/branch/view_branch.html', branch = viewed_branch)
         elif page == "edit" and id is not None:
             branch_id = ObjectId(id)
             edited_branch = users.find_one({"_id": branch_id}) 
-            return render_template('admin/edit_branch.html', branch = edited_branch)
-        return render_template('admin/branch.html')
+            return render_template('admin/branch/edit_branch.html', branch = edited_branch)
+        return render_template('admin/branch/branch.html')
     
 @admin_blueprint.route('/admin/chart', methods = ['GET'])
 def chart():
