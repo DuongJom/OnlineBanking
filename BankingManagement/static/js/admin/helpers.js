@@ -22,37 +22,37 @@ export function getAdminData(page, dataType) {
 }
 
 export function closeDeleteModal() {
-  const deleteModal = document.getElementById("delete_modal");
-  deleteModal.classList.add("hidden");
+  const delete_modal = document.getElementById("delete_modal");
+  delete_modal.classList.add("hidden");
 }
 
-function renderDeleteModal(id, name) {
-  const deleteModal = document.getElementById("delete_modal");
-  const objectId = document.getElementById("object_id");
+function renderDeleteModal(id, object_name) {
+  const delete_modal = document.getElementById("delete_modal");
+  const object_id = document.getElementById("object_id");
   const deleteConfirmMessage = document.getElementById("deleteConfirmMessage");
 
-  deleteConfirmMessage.innerHTML = `Are you sure you want to delete <b style="color:red">${name}</b>?`;
-  deleteModal.classList.remove("hidden");
-  deleteModal.classList.add("flex");
-  objectId.setAttribute("value", id);
+  deleteConfirmMessage.innerHTML = `Are you sure you want to delete <b style="color:red">${object_name}</b>?`;
+  delete_modal.classList.remove("hidden");
+  delete_modal.classList.add("flex");
+  object_id.setAttribute("value", id);
 }
 
-function createActionButton(row, id, dataType, name) {
+function createActionButton(row, _id, data_type, object_name) {
   // UI for action button
-  const cellAction = document.createElement("td");
-  const btnView = document.createElement("a");
-  const btnDelete = document.createElement("a");
-  const btnEdit = document.createElement("a");
+  const action_cell = document.createElement("td");
+  const view_btn = document.createElement("a");
+  const delete_btn = document.createElement("a");
+  const edit_btn = document.createElement("a");
   const div = document.createElement("div");
 
-  const lstButton = [btnView, btnDelete, btnEdit];
-  const lstIcon = ["visibility", "delete", "edit"];
+  const btn_list = [view_btn, delete_btn, edit_btn];
+  const icon_list = ["visibility", "delete", "edit"];
   let i = 0;
 
-  cellAction.classList.add("border-x", "border-black");
+  action_cell.classList.add("border-x", "border-black");
   div.classList.add("flex", "justify-center");
 
-  lstButton.forEach((btn) => {
+  btn_list.forEach((btn) => {
     const span = document.createElement("span");
 
     btn.classList.add("flex", "items-center", "justify-center");
@@ -64,78 +64,73 @@ function createActionButton(row, id, dataType, name) {
     );
 
     span.style.fontWeight = "300";
-    span.innerHTML = lstIcon[i];
+    span.innerHTML = icon_list[i];
     btn.appendChild(span);
     div.appendChild(btn);
 
-    switch (lstIcon[i]) {
+    switch (icon_list[i]) {
       case "visibility":
-        btn.href = `/admin/${dataType}/view/${id}`;
+        btn.href = `/admin/${data_type}/view/${_id}`;
         break;
       case "edit":
-        btn.href = `/admin/${dataType}/edit/${id}`;
+        btn.href = `/admin/${data_type}/edit/${_id}`;
         break;
       case "delete":
         btn.addEventListener("click", () => {
-          renderDeleteModal(id, name);
+          renderDeleteModal(_id, object_name);
         });
         break;
     }
     i++;
   });
 
-  cellAction.appendChild(div);
-  row.appendChild(cellAction);
+  action_cell.appendChild(div);
+  row.appendChild(action_cell);
 }
 
 function createStatusCol(row, isActive) {
-  const cellStatus = document.createElement("td");
+  const status_cell = document.createElement("td");
   const div = document.createElement("div");
 
-  cellStatus.classList.add("border-x", "border-black");
+  status_cell.classList.add("border-x", "border-black");
   div.classList.add("flex", "justify-center");
 
-  createToggleButton(div, isActive);
-  cellStatus.appendChild(div);
-  row.appendChild(cellStatus);
+  create_toggle_button(div, isActive);
+  status_cell.appendChild(div);
+  row.appendChild(status_cell);
 }
 
-export function renderTable(items, dataType) {
+export function renderTable(items, data_type) {
   const tables = document.querySelectorAll("table");
-  const tableWrapper = document.getElementById("table_wrapper");
-  const colNames = tableStructure[dataType];
-  const columnCount = colNames.length;
+  const table_wrapper = document.getElementById("table_wrapper");
+  const col_names = tableStructure[data_type];
+  const number_col = col_names.length;
   const location = document.getElementById("location");
-  const pagination = document.getElementById("pagination");
 
   tables.forEach((table) => {
     table.remove();
   });
 
-  tableWrapper.classList.add("admin_table_wrapper");
+  table_wrapper.classList.add("admin_table_wrapper");
 
-  location.innerHTML = `${localStorage.getItem("admin_page")}/${localStorage.getItem("admin_maxPage")}`;
-
-  // set visibility of pagination part of table
-  pagination.classList.remove("hidden");
-  if(localStorage.getItem("admin_maxPage") <= 1){
-    pagination.classList.add("hidden");
-  }
+  location.innerHTML = `${localStorage.getItem(
+    "admin_page"
+  )}/${localStorage.getItem("admin_maxPage")}`;
 
   //get dataType for the table
-  if (columnCount <= 3) {
+  if (number_col <= 3) {
     //if table has less than 4 columns
     const table = document.createElement("table");
     const tbody = document.createElement("tbody");
 
     table.classList.add("admin_table");
-    createTableHeader(colNames, table, false, dataType);
+    createTableHeader(col_names, table, false, data_type);
     table.appendChild(tbody);
 
     for (let i = 0; i < items.length; i++) {
       const row = document.createElement("tr");
       row.classList.add("admin_tr");
-      colNames.forEach((col_name) => {
+      col_names.forEach((col_name) => {
         const cell = document.createElement("td");
         cell.classList.add("admin_cell");
         cell.innerHTML = items[i][col_name.key];
@@ -149,23 +144,23 @@ export function renderTable(items, dataType) {
       createActionButton(
         row,
         items[i]["_id"],
-        dataType,
-        items[i][identifier[dataType]]
+        data_type,
+        items[i][identifier[data_type]]
       );
 
-      if (dataType == "account") {
+      if (data_type == "account") {
         createStatusCol(row, true, items[i]["IsDeleted"]);
       }
 
       tbody.appendChild(row);
     }
-    tableWrapper.appendChild(table);
+    table_wrapper.appendChild(table);
     return;
   }
 
   //if table has greater than or equal to 4 columns
-  const colNames1 = colNames.slice(0, 3); //cols for left(fixed) table
-  const colNames2 = colNames.slice(3, columnCount); //cols for right table
+  const col_names1 = col_names.slice(0, 3); //cols for left(fixed) table
+  const col_names2 = col_names.slice(3, number_col); //cols for right table
   const table1 = document.createElement("table");
   const tbody1 = document.createElement("tbody");
   const table2 = document.createElement("table");
@@ -173,19 +168,19 @@ export function renderTable(items, dataType) {
 
   //fixed table
   table1.id = "table1";
-  createTableHeader(colNames1, table1, true, dataType);
+  createTableHeader(col_names1, table1, true, data_type);
   table1.appendChild(tbody1);
 
   //right table
   table2.id = "table2";
-  createTableHeader(colNames2, table2, false, dataType);
+  createTableHeader(col_names2, table2, false, data_type);
   table2.appendChild(tbody2);
 
   //loop to render fixed table
   for (let i = 0; i < items.length; i++) {
     const row = document.createElement("tr");
     row.classList.add("admin_tr");
-    colNames1.forEach((col_name) => {
+    col_names1.forEach((col_name) => {
       const cell = document.createElement("td");
       cell.classList.add("admin_cell");
       if(items[i][col_name.key] != undefined) {
@@ -206,7 +201,7 @@ export function renderTable(items, dataType) {
   for (let i = 0; i < items.length; i++) {
     const row = document.createElement("tr");
     row.classList.add("admin_tr");
-    colNames2.forEach((col_name) => {
+    col_names2.forEach((col_name) => {
       const cell = document.createElement("td");
       cell.classList.add("admin_cell");
       if(items[i][col_name.key] != undefined) {
@@ -224,38 +219,36 @@ export function renderTable(items, dataType) {
     createActionButton(
       row,
       items[i]["_id"],
-      dataType,
-      items[i][identifier[dataType]]
+      data_type,
+      items[i][identifier[data_type]]
     );
 
-    if (dataType == "account") {
+    if (data_type == "account") {
       createStatusCol(row, items[i]["IsDeleted"]);
     }
 
     tbody2.appendChild(row);
   }
 
-  tableWrapper.appendChild(table1);
+  table_wrapper.appendChild(table1);
   table1.classList.add("admin_table1");
   table2.classList.add("admin_table2");
-  tableWrapper.appendChild(table2);
+  table_wrapper.appendChild(table2);
   adjustTableMargin();
 }
 
-function createTableHeader(colNames, table, isFixed, dataType) {
+function createTableHeader(col_names, table, isFixed, data_type) {
   const thead = document.createElement("thead");
   thead.classList.add("admin_thead");
-
-  if(colNames.length > 3 || isFixed == true) {
-    colNames.forEach((col_name) => {
+  if(col_names.length > 3 || isFixed == true) {
+    col_names.forEach((col_name) => {
       const th = document.createElement("th");
       th.classList.add("admin_th"); 
       th.innerHTML = col_name.name;
-      console.log(col_name.name);
       thead.appendChild(th);
     });
   }else {
-    colNames.forEach((col_name) => {
+    col_names.forEach((col_name) => {
       const th = document.createElement("th");
       th.classList.add("less_admin_th"); 
       th.innerHTML = col_name.name;
@@ -265,26 +258,26 @@ function createTableHeader(colNames, table, isFixed, dataType) {
   
 
   if (!isFixed) {
-    const columnAction = document.createElement("th");
+    const action_col = document.createElement("th");
 
-    columnAction.innerHTML = "Action";
-    if(colNames.length > 3) {
-      columnAction.classList.add("admin_th");
+    action_col.innerHTML = "Action";
+    if(col_names.length > 3) {
+      action_col.classList.add("admin_th");
     }else {
-      columnAction.classList.add("less_admin_th");
+      action_col.classList.add("less_admin_th");
     }  
     
-    thead.appendChild(columnAction);
+    thead.appendChild(action_col);
 
-    if (dataType == "account") {
-      const columnStatus = document.createElement("th");
-      columnStatus.innerHTML = "Status";
-      if(colNames.length > 3) {
-        columnStatus.classList.add("admin_th");
+    if (data_type == "account") {
+      const status_col = document.createElement("th");
+      status_col.innerHTML = "Status";
+      if(col_names.length > 3) {
+        status_col.classList.add("admin_th");
       }else {
-        columnStatus.classList.add("less_admin_th");
+        status_col.classList.add("less_admin_th");
       }
-      thead.appendChild(columnStatus);
+      thead.appendChild(status_col);
     }
   }
 
@@ -310,34 +303,34 @@ function generateObjectSign(cell) {
   cell.classList.add("cursor-pointer", "hover:bg-gray-400");
 }
 
-export async function goNext(dataType) {
+export async function goNext(data_type) {
   var page = localStorage.getItem("admin_page");
-  var maxPage = localStorage.getItem("admin_maxPage");
+  var max_page = localStorage.getItem("admin_maxPage");
 
-  if (page < maxPage) {
+  if (page < max_page) {
     page++;
     localStorage.setItem("admin_page", page);
     try {
-      const data = await getAdminData(page, dataType);
+      const data = await getAdminData(page, data_type);
 
       localStorage.setItem("admin_maxPage", data.total_pages);
-      renderTable(data.items, dataType);
+      renderTable(data.items, data_type);
     } catch (error) {
       console.error("There was a problem with loading the items:", error);
     }
   }
 }
 
-export async function goPrevious(dataType, page) {
+export async function goPrevious(data_type, page) {
   var page = localStorage.getItem("admin_page");
 
   if (page > 1) {
     page--;
     localStorage.setItem("admin_page", page);
     try {
-      const data = await getAdminData(page, dataType);
+      const data = await getAdminData(page, data_type);
       localStorage.setItem("admin_maxPage", data.total_pages);
-      renderTable(data.items, dataType);
+      renderTable(data.items, data_type);
     } catch (error) {
       console.error("There was a problem with loading the items:", error);
     }
@@ -361,12 +354,12 @@ function addStyle(element, classes) {
   });
 }
 
-function createToggleButton(parent, isActive) {
-  const wrapperStyle = "inline-flex items-center me-5";
-  const inputStyle = "sr-only peer";
-  const textStyle =
+function create_toggle_button(parent, isActive) {
+  const wrapper_style = "inline-flex items-center me-5";
+  const input_style = "sr-only peer";
+  const text_style =
     "ms-3 text-sm font-medium text-gray-900 dark:text-gray-300";
-  const divStyle =
+  const div_style =
     "relative w-8 h-4 bg-gray-500 rounded-full peer dark:bg-gray-700 peer-focus:ring-4" +
     "peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 peer-checked:after:translate-x-full " +
     "rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] " + 
@@ -387,10 +380,10 @@ function createToggleButton(parent, isActive) {
   }
   text.innerHTML = "Inactive";
 
-  addStyle(wrapper, wrapperStyle);
-  addStyle(input, inputStyle);
-  addStyle(text, textStyle);
-  addStyle(div, divStyle);
+  addStyle(wrapper, wrapper_style);
+  addStyle(input, input_style);
+  addStyle(text, text_style);
+  addStyle(div, div_style);
 
   wrapper.appendChild(input);
   wrapper.appendChild(div);

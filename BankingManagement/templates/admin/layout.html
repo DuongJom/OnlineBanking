@@ -7,7 +7,7 @@
 {% block content %}
 <!-- Admin side bar -->
 <div class="flex-col justify-between">
-    <div class="flex mt-16 h-screen">
+    <div class="flex mt-14 h-screen">
         <ul class="bg-side_bar_bg p-4 w-48 sidebar hidden sm:block">
             <li class="admin_sidebar_item{% if request.path == '/admin/account' %} hightlight{% endif %}">
                 <a href="/admin/account">Accounts</a>
@@ -22,7 +22,7 @@
                 <a href="/admin/branch">Branches</a>
             </li>
             <li class="admin_sidebar_item{% if request.path == '/admin/statistical-chart' %} hightlight{% endif %}">
-                <a href="/admin/statistical-chart">Statistical chart</a>
+                <a href="/admin/chart">Statistical chart</a>
             </li>
             <li class="admin_sidebar_item{% if request.path == '/admin/news' %} hightlight{% endif %}">
                 <a href="/admin/news">News</a>
@@ -38,6 +38,4 @@
         {% endblock %}
     </div>
 </div>
-
-<script type="module" src="{{ url_for('static', filename='js/admin/admin.js') }}"></script>
 {% endblock %}

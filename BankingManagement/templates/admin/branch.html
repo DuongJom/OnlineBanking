@@ -5,7 +5,7 @@
     <div class="flex flex-1 flex-col justify-center items-center relative">
         {% include "admin/delete_confirmation.html" %}
         <!-- tool bar -->
-        <div class="w-full flex flex-col sm:flex-row flex-1 justify-between items-center absolute top-2">
+        <div class="w-full flex flex-col sm:flex-row flex-1 justify-between items-center absolute top-4">
             <div class="sm:ml-14 mb-2 sm:mb-0">
                 <button class="h-7 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar font-bold">
                     <a href="/admin/branch/add">Add</a>
@@ -26,14 +26,6 @@
                     <option>Country</option>
                     <option>District</option>
                 </select>
-
-                <!-- <select class="h-8 text-sm pe-8 py-0 border border-black focus:ring-0 focus:border-black ml-5 rounded-lg">
-                    <option selected disabled>Role</option>
-                    <option value="">Admin</option>
-                    <option value="">User</option>
-                    <option value="">Employee</option>
-                </select> -->
-
             </div>
         </div>
         
@@ -64,4 +56,5 @@
         </div>
         
     </div>
+    <script type="module" src="{{ url_for('static', filename='js/admin/admin.js') }}"></script>
 {% endblock %}
