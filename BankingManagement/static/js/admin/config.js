@@ -32,6 +32,13 @@ export const tableStructure = {
     { key: "Check_in_time", name: "Check In"},
     { key: "Check_out_time", name: "Check Out"},
     { key: "Salary", name: "Salary"},
+  ],
+  news: [
+    { key: "Title", name: "Title"},
+    { key: "Content", name: "Content"},
+    { key: "StartDate", name: "Start date"},
+    { key: "EndDate", name: "End date"},
+    { key: "PublishedBy", name: "Publisher"}
   ]
 };
 

@@ -1,145 +1,68 @@
-{% extends "layout.html" %}
+{% extends "admin/layout.html" %}
 
-{% block title %}
-    Home
-{% endblock %}
+{% block admin_content %}
+    <input class="hidden" id="dataType" value="news" type="text">
+    <div class="flex flex-1 flex-col justify-center items-center relative">
+        {% include "admin/delete_confirmation.html" %}
+        <!-- tool bar -->
+        <div class="w-full flex flex-col sm:flex-row flex-1 justify-between items-center absolute top-4">
+            <div class="sm:ml-14 mb-2 sm:mb-0">
+                <button class="h-7 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar font-bold">
+                    <a href="/admin/employee/add">Add</a>
+                </button>
 
-{% block content %}
-   <div class="h-screen w-screen flex items-center">
-    <div class="flex w-99% overflow-x-auto">
-        <table class="border border-black fixed w-96 max-h-20 bg-brown-700 sm:ml-0">
+                <button class="h-7 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar font-bold">
+                    <a href="#">import</a>
+                </button>
 
-            <thead class="h-3">
-                <th>Username</th>
-                <th>Role</th>
-                <th>Account Number</th>
-            </thead>
+                <button class="h-7 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar font-bold">
+                    <a href="#">Export</a>
+                </button>
+            </div>
+            <div class="mr-14 flex flex-1 items-center justify-end ">
 
-            <tbody>
-                <tr>
-                    <td>HuuHieu</td>
-                    <td>Admin</td>
-                    <td>056516596655</td>
-                </tr>
-                <tr>
-                    <td>HuuHieu</td>
-                    <td>Admin</td>
-                    <td>056516596655</td>
-                </tr>
-                <tr>
-                    <td>HuuHieu</td>
-                    <td>Admin</td>
-                    <td>056516596655</td>
-                </tr>
-                <tr>
-                    <td>HuuHieu</td>
-                    <td>Admin</td>
-                    <td>056516596655</td>
-                </tr>
-                <tr>
-                    <td>HuuHieu</td>
-                    <td>Admin</td>
-                    <td>056516596655</td>
-                </tr>
-                <tr>
-                    <td>HuuHieu</td>
-                    <td>Admin</td>
-                    <td>056516596655</td>
-                </tr>
-                <tr>
-                    <td>HuuHieu</td>
-                    <td>Admin</td>
-                    <td>056516596655</td>
-                </tr>
-                <tr>
-                    <td>HuuHieu</td>
-                    <td>Admin</td>
-                    <td>056516596655</td>
-                </tr>
-            </tbody>
-        </table>
+                <div class="border border-black border-r-0 h-8 w-10 p-1 flex items-center justify-center rounded-l-2xl">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <input type="text" class="h-8 w-1/2 border-black focus:ring-0 focus:border-black"/>
+         
+                <select class="h-8 text-sm pe-8 py-0 border border-black focus:ring-0 focus:border-black rounded-r-2xl">
+                    <option selected disabled>Search By</option>
+                    <option>Title</option>
+                    <option>Publisher</option>
+                    <option>Start date</option>
+                    <option>End date</option>
+                </select>
 
+            </div>
+        </div>
+        
+        <!-- table -->
+       <div id="table_wrapper">
+            <div class="animate-spin h-10 w-10 rounded-full border-4 border-dotted border-black" id="lazyLoading">
 
-            <table class="border border-black w-full max-h-20 ml-96">
-                <thead class="max-h-3">
-                    <th>Service</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Address</th>
-                    <th class="whitespace-nowrap">Login Method</th>
-                    <th>Action</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>bank</td>
-                        <td>kjsad@gmail.com</td>
-                        <td>012359626955</td>
-                        <td>Ben Tre</td>
-                        <td>Login</td>
-                        <td>Action</td>
-                    </tr>
-                    <tr>
-                        <td>bank</td>
-                        <td>kjsad@gmail.com</td>
-                        <td>012359626955</td>
-                        <td>Ben Tre</td>
-                        <td>Login</td>
-                        <td>Action</td>
-                    </tr>
-                    <tr>
-                        <td>bank</td>
-                        <td>kjsad@gmail.com</td>
-                        <td>012359626955</td>
-                        <td>Ben Tre</td>
-                        <td>Login</td>
-                        <td>Action</td>
-                    </tr>
-                    <tr>
-                        <td>bank</td>
-                        <td>kjsad@gmail.com</td>
-                        <td>012359626955</td>
-                        <td>Ben Tre</td>
-                        <td>Login</td>
-                        <td>Action</td>
-                    </tr>
-                    <tr>
-                        <td>bank</td>
-                        <td>kjsad@gmail.com</td>
-                        <td>012359626955</td>
-                        <td>Ben Tre</td>
-                        <td>Login</td>
-                        <td>Action</td>
-                    </tr>
-                    <tr>
-                        <td>bank</td>
-                        <td>kjsad@gmail.com</td>
-                        <td>012359626955</td>
-                        <td>Ben Tre</td>
-                        <td>Login</td>
-                        <td>Action</td>
-                    </tr>
-                    <tr>
-                        <td>bank</td>
-                        <td>kjsad@gmail.com</td>
-                        <td>012359626955</td>
-                        <td>Ben Tre</td>
-                        <td>Login</td>
-                        <td>Action</td>
-                    </tr>
-                    <tr>
-                        <td>bank</td>
-                        <td>kjsad@gmail.com</td>
-                        <td>012359626955</td>
-                        <td>Ben Tre</td>
-                        <td>Login</td>
-                        <td>Action</td>
-                    </tr>
-                </tbody>
-            </table>
+            </div>
+       </div>
+
+        <!-- pagination -->
+        <div id="pagination" class="flex flex-1 justify-end items-center fixed right-5 bottom-5">         
+            <button 
+                class="bg-side_bar_bg hover:bg-hover_side_bar h-7 w-12 rounded-xl 
+                text-white flex items-center justify-center mr-4"
+                id="previous-btn">
+                <span class="material-symbols-outlined">arrow_left_alt</span>
+            </button>
+            <p id="location"></p>
+        
+            <button 
+                class="bg-side_bar_bg hover:bg-hover_side_bar h-7 w-12 rounded-xl 
+                text-white flex items-center justify-center ml-4"
+                id="next-btn">
+                <span class="material-symbols-outlined">arrow_right_alt</span>
+            </button>
+            
+        </div>
+        
     </div>
-   </div>
+    <script type="module" src="{{ url_for('static', filename='js/admin/admin.js') }}"></script>
 {% endblock %}
-
-
-
-

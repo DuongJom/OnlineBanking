@@ -1414,11 +1414,6 @@ select {
   max-height: 24rem;
 }
 
-.max-h-max {
-  max-height: -moz-max-content;
-  max-height: max-content;
-}
-
 .w-1\/2 {
   width: 50%;
 }
@@ -1800,11 +1795,6 @@ select {
   background-color: rgb(50 58 78 / var(--tw-bg-opacity));
 }
 
-.bg-blue-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(66 165 245 / var(--tw-bg-opacity));
-}
-
 .bg-brown-700 {
   --tw-bg-opacity: 1;
   background-color: rgb(93 64 55 / var(--tw-bg-opacity));
@@ -1843,21 +1833,6 @@ select {
 .bg-green-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(232 245 233 / var(--tw-bg-opacity));
-}
-
-.bg-orange-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 204 128 / var(--tw-bg-opacity));
-}
-
-.bg-pink-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(244 143 177 / var(--tw-bg-opacity));
-}
-
-.bg-pink-600 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(216 27 96 / var(--tw-bg-opacity));
 }
 
 .bg-popup-bg {
