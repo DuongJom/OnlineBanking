@@ -82,10 +82,13 @@ def user(page, id):
             issuanceDate = None
             user_id = ObjectId(id)
             viewed_user = users.find_one({"_id": user_id})
-            if(viewed_user['Card']):
+            if viewed_user and viewed_user['Card']:
                 expiredDate = datetime.fromisoformat(viewed_user['Card']['ExpiredDate']).date()
                 issuanceDate = datetime.fromisoformat(viewed_user['Card']['IssuanceDate']).date()
-            return render_template('admin/user/view_user.html', user = viewed_user, expiredDate = expiredDate, issuanceDate = issuanceDate)
+            return render_template('admin/user/view_user.html', 
+                                   user = viewed_user, 
+                                   expiredDate = expiredDate, 
+                                   issuanceDate = issuanceDate)
         elif page == "edit" and id is not None:
             user_id = ObjectId(id)
             edited_user = users.find_one({"_id": user_id}) 

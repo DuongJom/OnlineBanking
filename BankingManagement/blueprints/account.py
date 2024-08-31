@@ -46,8 +46,6 @@ def login():
         
         flash(messages_success['login_success'],'success')
 
-        print(acc["Role"])
-
         if acc["Role"] == RoleType.USER.value:
             return redirect("/")
         elif acc["Role"] == RoleType.EMPLOYEE.value:
@@ -76,12 +74,12 @@ def register():
         accountNumber = request.form['accountNumber']
         cvvNumber = request.form['cvvNumber']
 
-        # check if user input email and password or not, get error message from message.py
+        # check if user input email and password or not
         error = None
         if password != confirmPassword:
             error = messages_failure['password_not_matched']
 
-        # check if email or username already exist, using .format() to format error message
+        # check if email or username already exist
         existUsername = accounts.find_one({"Username": username})
         existEmail = users.find_one({"Email": email})
         existPhone = users.find_one({"Phone": phone})
@@ -152,7 +150,6 @@ def view_profile():
         current_phone = request.form.get("current_phone")
         current_username = request.form.get("current_username")
         password = request.form.get("password")
-
         current_account = accounts.find_one({"_id": ObjectId(session.get("account_id"))})
 
         error = None
