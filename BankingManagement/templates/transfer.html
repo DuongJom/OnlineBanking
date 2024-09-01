@@ -1,0 +1,43 @@
+{% block content %}
+    <div class="flex flex-col bg-light-green-600 w-1/4 mx-auto mt-40 rounded-md p-2">
+        <div class="flex-row">
+            <!--back button-->
+            <button>&lt--</button>
+            <span>Domestic money transfer</span>
+        </div>
+        <div class="flex flex-col border-2 border-gray-600 bg-light-green-400 
+                    rounded-tl-lg rounded-br-lg rounded-bl-md rounded-tr-md">
+            <div>
+                Source account 
+                <span class="border rounded-lg bg-light-green-200">9395815642</span>
+            </div>
+            <div>
+                Balance
+                <span class="text-white font-semibold font-mono">
+                    10,000<sup>VND</sup>
+                </span>
+            </div>
+        </div>
+        <div>Receiver Information</div>
+        <div class="flex flex-col">
+            <div class="flex flex-col border-2 border-gray-600 rounded-lg px-2">
+                <label for="receiver_bank" class="h-7 text-sm">Receiver bank</label>
+                <select id="receiver_bank" class="h-8 rounded-md text-sm pt-1 -mt-1">
+                    <option value="-1" selected>Select receiver bank</option>
+                    <!-- {% for bank in banks %}
+                        <option value="{{bank.BankId}}">{{bank.BankName}}</option>
+                    {% endfor %} -->
+                </select>
+            </div>
+            <div class="flex flex-col border-2 border-gray-600 rounded-lg w-full px-2">
+                <label for="receiver_account" class="h-7 text-sm">Receiver account/Receiver card number</label>
+                <div class="flex flex-row w-full">
+                    <input type="text" id="receiver_account" 
+                            placeholder="Please select a receiver account or card number"
+                            class="w-11/12 rounded-md h-8 text-sm"/>
+                    <button id="receiver_available_list" class="justify-self-end bg-red-300 ml-1">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
