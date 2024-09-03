@@ -1,7 +1,8 @@
 {% extends "employee/layout.html" %}
 {% block employee_content %}
+<input class="hidden" id="dataType" value="salary" type="text">
 <!-- Content -->
-<div class="min-h-full flex flex-col ml-60 p-8 float-left overflow-x-auto"> 
+<div class="min-h-full flex flex-col ml-60 p-8 overflow-x-auto"> 
     <h2 class="text-2xl font-bold">Employee Salary Through the Months</h2>
     <div class="mb-2">
         <label for="year" class="mr-2">Select Year:</label>
@@ -15,7 +16,7 @@
         </select>
     </div>
 
-    <div id='table_wrapper' class="overflow-x-auto flex items-center">
+    <div id='table_wrapper'>
     <!-- <table class="min-w-full bg-white border border-gray-200 shadow-lg rounded-lg">
         <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
             <tr>
@@ -167,5 +168,22 @@
         </tbody>
     </table> -->
     </div>
+      <!-- pagination -->
+      <div class="w-full flex flex-1 justify-end mr-28 items-center absolute bottom-2">         
+        <button 
+            class="bg-side_bar_bg hover:bg-hover_side_bar h-7 w-12 rounded-xl 
+            text-white flex items-center justify-center mr-4"
+            id="previous-btn">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+        </button>
+        <p id="location"></p>
+        <button 
+            class="bg-side_bar_bg hover:bg-hover_side_bar h-7 w-12 rounded-xl 
+            text-white flex items-center justify-center ml-4"
+            id="next-btn">
+            <span class="material-symbols-outlined">arrow_right_alt</span>
+        </button>
+    </div>
 </div>
+<script type="module" src="{{url_for('static',filename='js/employee/salary.js')}}"></script>
 {% endblock %}

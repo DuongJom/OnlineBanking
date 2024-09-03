@@ -1,7 +1,7 @@
 import { styles, table_structure } from "./config.js";
-
-export function get_salary_page_data() {
-    return fetch(`/employee/salary`, {
+const currentYear = document.getElementById('year');
+function get_salary_page_data(page, dataType, year = currentYear) {
+    return fetch(`/employee?page=${page}&dataType=${dataType}&year=${year}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -20,20 +20,18 @@ export function get_salary_page_data() {
         console.error('There was a problem with the fetch operation:', error);
     });
 }
-//salaries=[{},{}]
-export function render_table(items, data_type = 'salary') { 
+
+/* 
+    columns will be months
+    rows will be table_structure[data_type]
+*/
+function render_table(items, data_type = 'salary') { 
     const tables = document.querySelectorAll('table');
     const table_wrapper = document.getElementById('table_wrapper');
-    const col_names = table_structure[data_type];
-    const items_length = col_names.length;
+    const col_names = items.map(item => item.month);
+    col_names.unshift(table_structure[data_type][0]['name'])
+    const row_names = table_structure[data_type].slice(1);
     const location = document.getElementById('location');
-    const col_names1 = col_names.slice(0, 3); //cols for left(fixed) table
-    const col_names2 = col_names.slice(3, items_length);//cols for right table
-    const table1 = document.createElement('table');
-    const tbody1 = document.createElement('tbody');
-    const table2 = document.createElement('table');
-    const tbody2 = document.createElement('tbody');
-
     tables.forEach(table => {
         table.remove();
     })
@@ -42,104 +40,49 @@ export function render_table(items, data_type = 'salary') {
     
     location.innerHTML =  `${localStorage.getItem('salary_page')}/${localStorage.getItem('salary_maxPage')}`;
 
-    //get dataType for the table
-    if(items_length <= 3) { //if table has less than 4 columns
-        const table = document.createElement('table');
-        const tbody = document.createElement('tbody');
+    const table = document.createElement('table');
+    const tbody = document.createElement('tbody');
 
-        style(table, styles.table);
-        tableHeader(col_names, table, false);
-        table.appendChild(tbody);
-
-        for(let i = 0; i < items.length; i++) {
-            const row = document.createElement('tr');
-            style(row, styles.tr);
-            col_names.forEach(col_name => {
-                const cell = document.createElement('td');
-                style(cell, styles.cell);
-                cell.innerHTML = items[i][col_name.key];
-                if(typeof items[i][col_name.key] == 'object') {
-                    generateObjectSign(cell);
-                }
-                row.appendChild(cell);
-            })
-            create_action_button(row);
-            tbody.appendChild(row);
-        }
-
-        table_wrapper.appendChild(table);
-        return
-    }
-
-    //if table has greater than or equal to 4 columns
-    //fixed table
-    table1.id = 'table1';
-    tableHeader(col_names1, table1, true);
-    table1.appendChild(tbody1);
-
-    //right table
-    table2.id = 'table2';
-    tableHeader(col_names2, table2, false);
-    table2.appendChild(tbody2);
-
-    //loop to render fixed table
-    for(let i = 0; i < items.length; i++) {
+    style(table, styles.table);
+    tableHeader(col_names, table);
+    table.appendChild(tbody);
+/*
+    loop through items.elements, get properties of the table_structure and put it in the row data
+    fill in the first column
+    get the data of each month and insert to each row that we want 
+*/
+    for(let i = 0; i < row_names.length; i++) {
         const row = document.createElement('tr');
         style(row, styles.tr);
-        col_names1.forEach(col_name => {
-            const cell = document.createElement('td');
-            style(cell, styles.cell);
-            cell.innerHTML = items[i][col_name.key];
-            if(typeof items[i][col_name.key] == 'object') {
-                generateObjectSign(cell);
-            }
-            row.appendChild(cell);       
-        })
-        tbody1.appendChild(row);
-    }
+        const cell1 = document.createElement('td');
+        cell1.innerHTML = row_names[i].name;
+        row.appendChild(cell1);
 
-    //loop to render right table
-    for(let i = 0; i < items.length; i++) {
-        const row = document.createElement('tr');
-        style(row, styles.tr);
-        col_names2.forEach(col_name => {
+        //fill data in the table sequently 
+        items.forEach(item => {
             const cell = document.createElement('td');
             style(cell, styles.cell);
-            cell.innerHTML = items[i][col_name.key];
-            if(typeof items[i][col_name.key] == 'object') {
-                generateObjectSign(cell);
-            }
+            cell.innerHTML = item[row_names[i].key];
             row.appendChild(cell);
         })
-        create_action_button(row);
-        tbody2.appendChild(row);
+        tbody.appendChild(row);
     }
 
-    table_wrapper.appendChild(table1);
-    style(table1, styles.table1);
-    style(table2, styles.table2);
-    table_wrapper.appendChild(table2);
-    adjustTableMargin();
+    table_wrapper.appendChild(table);
+    return
+
 }
 
-function tableHeader(col_names, table, isFixed){
+function tableHeader(col_names, table){
     const thead = document.createElement('thead');
 
     style(thead, styles.thead);
     col_names.forEach(col_name => {
         const th = document.createElement('th');
         style(th, styles.th);
-        th.innerHTML = col_name.name;
+        th.innerHTML = col_name;
         thead.appendChild(th);
     })
-
-    if(!isFixed) {
-        const action_col = document.createElement('th');
-
-        action_col.innerHTML = 'Action'
-        style(action_col, styles.th);
-        thead.appendChild(action_col);
-    }
 
     table.appendChild(thead);
 }
@@ -160,17 +103,24 @@ function generateObjectSign(cell) {
     cell.classList.add('cursor-pointer', 'hover:bg-gray-400');
 }
 
-export async function next(data_type){
-    var page = localStorage.getItem('salary_page');
-    var max_page = localStorage.getItem('salary_maxPage');
+async function next(data_type, year) {
+    // Retrieve and convert 'page' and 'max_page' to numbers
+    let page = parseInt(localStorage.getItem('salary_page'), 10);
+    const max_page = parseInt(localStorage.getItem('salary_maxPage'), 10);
 
+    // Compare page with max_page as numbers
     if (page < max_page) {
-        page++;
+        page++;  // Increment the page number
         localStorage.setItem('salary_page', page);
-        try {
-            const data = await get_salary_page_data(page, data_type);
 
+        try {
+            // Fetch the data for the next page
+            const data = await get_salary_page_data(page, data_type, year);
+
+            // Update max_page in localStorage if necessary
             localStorage.setItem('salary_maxPage', data.total_pages);
+
+            // Re-render the table with the new data
             render_table(data.items, data_type);
         } catch (error) {
             console.error('There was a problem with loading the items:', error);
@@ -178,15 +128,24 @@ export async function next(data_type){
     }
 }
 
-export async function previous(data_type, page){
-    var page = localStorage.getItem('salary_page');
 
+async function previous(data_type, year) {
+    // Retrieve and convert 'page' to a number
+    let page = parseInt(localStorage.getItem('salary_page'), 10);
+
+    // Check if the page number is greater than 1
     if (page > 1) {
-        page--;
+        page--;  // Decrement the page number
         localStorage.setItem('salary_page', page);
+
         try {
-            const data = await get_salary_page_data(page, data_type);
+            // Fetch the data for the previous page
+            const data = await get_salary_page_data(page, data_type, year);
+
+            // Update max_page in localStorage if necessary
             localStorage.setItem('salary_maxPage', data.total_pages);
+
+            // Re-render the table with the new data
             render_table(data.items, data_type);
         } catch (error) {
             console.error('There was a problem with loading the items:', error);
@@ -194,14 +153,34 @@ export async function previous(data_type, page){
     } 
 }
 
-export function adjustTableMargin() {
-    const table1 = document.getElementById('table1');
-    const table2 = document.getElementById('table2');
-    
-    if (window.innerWidth >= 700) {
-        table2.style.marginLeft = `${table1.offsetWidth - 2}px`;
-    } else {
-        table2.style.marginLeft = '0px';
-    }
-}
+document.addEventListener('DOMContentLoaded', async () => {
+    const data_type = document.getElementById('dataType').value;
+    const next_btn = document.getElementById('next-btn');
+    const previous_btn = document.getElementById('previous-btn');
+    const yearEl = document.getElementById('year');
+    const year = yearEl.value;
 
+    localStorage.setItem('salary_page', 1);
+
+    try {
+        let data = await get_salary_page_data(1, data_type, year);
+        console.log(data);
+
+        yearEl.addEventListener('change', async (e) => {
+            e.preventDefault();
+            data = await get_salary_page_data(1, data_type, year);
+            render_table(data.items, data_type);
+            next_btn.addEventListener('click', () => next(data_type, year));
+            previous_btn.addEventListener('click', () => previous(data_type, year));
+        })
+        
+        localStorage.setItem('salary_maxPage', 1)
+        render_table(data.items, data_type);
+    } catch (error) {
+        console.error('There was a problem with loading the items:', error);
+    }
+
+    next_btn.addEventListener('click', () => next(data_type, year));
+    previous_btn.addEventListener('click', () => previous(data_type, year));
+    //can add the adjustTableMargin() to the code later 
+});

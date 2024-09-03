@@ -179,29 +179,33 @@ def employee_working_time():
     if request.method == 'GET':
         return render_template('employee/working_time.html')
     
-'''get data from database
-return the data to template
-use jinja to dynamically insert data into table.'''   
 @employee_blueprint.route('/employee/salary', methods = ['GET'])
 def employee_salary():
     if request.method == 'GET':
-           # Fetch all salary documents from the collection
-        salaries = list(salary.find())
-        
-        # Convert ObjectId to string for JSON serialization
-        for s in salaries: #s for salary
-            s['_id'] = str(s['_id'])
-        
-        return jsonify({'salaries' : salaries})
+        return  render_template('employee/salary.html') 
     
 @employee_blueprint.route('/employee', methods = ['GET'])
 @login_required
 def employee():
     page = request.args.get('page', 1, int)
     dataType = request.args.get('dataType')
-    if dataType == 'employee':
-        items = list(employee.find({}, {'_id': 0}))
-    
+    year = request.args.get('year')
+    if year is not None:
+        try:
+            year = int(year)
+        except ValueError:
+            # Handle the error if the conversion fails, e.g., log the error or set a default value
+            year = datetime.now().year  #  default current year
+    else:
+        year = datetime.now().year  #  default current year
+
+    query = {'CreatedDate': {
+        '$gte': datetime(year, 1, 1).isoformat(),
+        '$lt': datetime(year + 1, 1, 1).isoformat()
+    }}
+    if dataType == 'salary':
+        items = list(salary.find(query, {'_id': 0}))
+            
     pagination = paginator(page, items)
     return jsonify({'items': pagination['render_items'], 'total_pages': pagination['total_pages']})
     
