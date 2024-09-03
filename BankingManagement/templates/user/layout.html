@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block content %}
+<!-- Admin side bar -->
+<div class="flex-col justify-between">
+    <div class="flex mt-14 h-screen">
+        <ul class="bg-side_bar_bg p-4 w-48 sidebar hidden sm:block">
+            <li class="admin_sidebar_item{% if request.path == '/user/transfer-money' %} hightlight{% endif %}">
+                <a href="/user/transfer-money">Transfer money</a>
+            </li>
+        </ul>
+        {% block user_content %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}
