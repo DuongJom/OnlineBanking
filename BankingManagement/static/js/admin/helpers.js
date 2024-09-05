@@ -242,20 +242,19 @@ function createTableHeader(col_names, table, isFixed, data_type) {
   thead.classList.add("admin_thead");
   if(col_names.length > 3 || isFixed == true) {
     col_names.forEach((col_name) => {
-      const th = document.createElement("th");
+      var th = document.createElement("th");
       th.classList.add("admin_th"); 
       th.innerHTML = col_name.name;
-      thead.appendChild(th);
+      thead.appendChild(th); 
     });
   }else {
     col_names.forEach((col_name) => {
       const th = document.createElement("th");
       th.classList.add("less_admin_th"); 
       th.innerHTML = col_name.name;
-      thead.appendChild(th);
+      thead.appendChild(th); 
     });
   }
-  
 
   if (!isFixed) {
     const action_col = document.createElement("th");
@@ -340,11 +339,12 @@ export async function goPrevious(data_type, page) {
 export function adjustTableMargin() {
   const table1 = document.getElementById("table1");
   const table2 = document.getElementById("table2");
-
-  if (innerWidth >= 700) {
-    table2.style.marginLeft = `${table1.offsetWidth - 2}px`;
-  } else {
-    table2.style.marginLeft = "0px";
+  if(table1 != null) {
+    if (innerWidth >= 540) {
+      table2.style.marginLeft = `${table1.offsetWidth - 2}px`;
+    } else {
+      table2.style.marginLeft = "0px";
+    }
   }
 }
 
@@ -390,4 +390,13 @@ function create_toggle_button(parent, isActive) {
   wrapper.appendChild(text);
 
   parent.appendChild(wrapper);
+}
+
+export function decide_button_type(data_type) {
+  const addBtn = document.getElementById("add_button");
+
+  if(addBtn != null)
+  {
+    addBtn.href = `/admin/${data_type}/add`;
+  }
 }

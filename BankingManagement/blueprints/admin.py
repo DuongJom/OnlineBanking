@@ -142,7 +142,7 @@ def chart():
 @admin_blueprint.route('/admin/news', methods = ['GET'])
 def admin_news():
     if request.method == 'GET':
-        return render_template('admin/news.html')
+        return render_template('admin/news/news.html')
     
         
 @admin_blueprint.route('/admin/import-data', methods = ['GET'])
