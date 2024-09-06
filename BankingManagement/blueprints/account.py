@@ -34,7 +34,7 @@ def login():
 
         if acc is None or not check_password_hash(acc["Password"], password):
             flash(messages_failure["invalid_information"], 'error')
-            return render_template('login.html')
+            return render_template('general/login.html')
         
         if remember_me:
             session.permanent = True
@@ -52,7 +52,7 @@ def login():
             return redirect("/employee/home")
         else:
             return redirect("/admin/account")
-    return render_template('login.html')
+    return render_template('general/login.html')
 
 @account_blueprint.route('/register', methods=['GET','POST'])
 def register():
@@ -127,7 +127,7 @@ def register():
         transferMethod_list = transferMethods.find()
         service_list = services.find()
         card_info = issueNewCard()
-        return render_template('register.html', branch_list=branch_list, loginMethod_list=loginMethod_list,
+        return render_template('general/register.html', branch_list=branch_list, loginMethod_list=loginMethod_list,
                                transferMethod_list=transferMethod_list, service_list=service_list, card_info=card_info)
     
 @account_blueprint.route('/view-profile',  methods=['GET', 'POST'])
@@ -140,7 +140,7 @@ def view_profile():
             expired_date = None
             if account and account['AccountOwner']['Card']:
                 expired_date = datetime.fromisoformat(account['AccountOwner']['Card']['ExpiredDate']).date()
-            return render_template("view_profile.html", account = account, expired_date = expired_date)
+            return render_template("general/view_profile.html", account = account, expired_date = expired_date)
     elif request.method == "POST":
         new_email = request.form.get("email")
         new_phone = request.form.get("phone")
@@ -206,7 +206,7 @@ def confirm_email():
 
         if exist_user is None:
             flash(messages_failure['invalid_email'].format(user_email), 'error')
-            return render_template('confirm_email.html')
+            return render_template('email/confirm_email.html')
         
         token = get_token(user_email, salt=app.salt)
         subject = "Reset Password"
@@ -216,7 +216,7 @@ def confirm_email():
         send_email(user_email, subject, html, attachments=attachments)
         flash(messages_success['link_sent'].format(user_email), 'success')
         return redirect(url_for('account.login'))
-    return render_template('confirm_email.html')
+    return render_template('email/confirm_email.html')
 
 @account_blueprint.route('/reset-password/<token>', methods=["GET", "POST"])
 def reset_password(token):
@@ -245,7 +245,7 @@ def reset_password(token):
         except:
             flash(messages_failure['token_expired'], 'error')
             return redirect(url_for('account.login'))
-    return render_template('reset_password.html', token=token)
+    return render_template('general/reset_password.html', token=token)
 
 @account_blueprint.route('/change-password', methods=["GET", "POST"])
 @login_required
@@ -271,5 +271,5 @@ def change_password():
         session.clear()
         flash(messages_success['update_success'].format('password'), 'success')
         return redirect("/login")
-    return render_template("change_password.html")
+    return render_template("general/change_password.html")
 

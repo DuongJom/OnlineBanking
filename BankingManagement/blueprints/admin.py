@@ -137,7 +137,7 @@ def branch(page, id):
 @admin_blueprint.route('/admin/chart', methods = ['GET'])
 def chart():
     if request.method == 'GET':
-        return render_template('admin/chart.html')
+        return render_template('admin/general/chart.html')
     
 @admin_blueprint.route('/admin/news', methods = ['GET'])
 def admin_news():
@@ -145,10 +145,10 @@ def admin_news():
         return render_template('admin/news/news.html')
     
         
-@admin_blueprint.route('/admin/import-data', methods = ['GET'])
+@admin_blueprint.route('/admin/import-data', methods = ['GET','POST'])
 def import_data():
     if request.method == 'GET':
-        return render_template('admin/import_data.html')
+        return render_template('admin/general/import.html')
 
 
 

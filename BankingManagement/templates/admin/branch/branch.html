@@ -1,9 +1,9 @@
-{% extends "admin/layout.html" %}
+{% extends "admin/general/layout.html" %}
 
 {% block admin_content %}
     <input class="hidden" id="dataType" value="branch" type="text">
     <div class="flex flex-1 flex-col justify-center items-center relative">
-        {% include "admin/delete_confirmation.html" %}
+        {% include "admin/general/delete_confirmation.html" %}
         <!-- tool bar -->
         <div class="w-full flex flex-col sm:flex-row flex-1 justify-between items-center absolute top-4">
             <div class="sm:ml-14 mb-2 sm:mb-0">

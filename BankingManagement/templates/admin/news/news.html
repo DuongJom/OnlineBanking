@@ -1,9 +1,9 @@
-{% extends "admin/layout.html" %}
+{% extends "admin/general/layout.html" %}
 
 {% block admin_content %}
     <input class="hidden" id="dataType" value="news" type="text">
     <div class="flex flex-1 flex-col justify-center items-center relative">
-        {% include "admin/delete_confirmation.html" %}
+        {% include "admin/general/delete_confirmation.html" %}
         <!-- tool bar -->
         <div class="w-full flex flex-col sm:flex-row flex-1 justify-between items-center absolute top-4">
             <div class="sm:ml-14 mb-2 sm:mb-0">
@@ -12,11 +12,11 @@
                 </button>
 
                 <button class="h-7 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar font-bold">
-                    <a href="#">Import</a>
+                    <a href="admin/import-data">Import</a>
                 </button>
 
                 <button class="h-7 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar font-bold">
-                    <a href="#">Export</a>
+                    <a href="admin/export-data">Export</a>
                 </button>
             </div>
             <div class="mr-14 flex flex-1 items-center justify-end ">
