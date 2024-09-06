@@ -48,7 +48,7 @@
     }
 
     .admin_cell {
-        @apply whitespace-nowrap p-2 relative border-x border-black
+        @apply whitespace-nowrap p-2 relative border-x border-black overflow-hidden max-w-96
     }
 
     .admin_table {

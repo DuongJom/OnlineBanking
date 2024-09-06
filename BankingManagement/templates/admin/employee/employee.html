@@ -1,16 +1,12 @@
-{% extends "admin/layout.html" %}
+{% extends "admin/general/layout.html" %}
 
 {% block admin_content %}
     <input class="hidden" id="dataType" value="employee" type="text">
     <div class="flex flex-1 flex-col justify-center items-center relative">
-        {% include "admin/delete_confirmation.html" %}
+        {% include "admin/general/delete_confirmation.html" %}
         <!-- tool bar -->
         <div class="w-full flex flex-col sm:flex-row flex-1 justify-between items-center absolute top-4">
-            <div class="sm:ml-14 mb-2 sm:mb-0">
-                <button class="h-7 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar font-bold">
-                    <a href="/admin/employee/add">Add</a>
-                </button>
-            </div>
+            {% include "admin/general/function_button.html" %}
             <div class="mr-14 flex flex-1 items-center justify-end ">
 
                 <div class="border border-black border-r-0 h-8 w-10 p-1 flex items-center justify-center rounded-l-2xl">

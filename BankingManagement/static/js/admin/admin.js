@@ -4,9 +4,12 @@ import {
   goNext,
   goPrevious,
   closeDeleteModal,
+  adjustTableMargin,
+  decide_button_type
 } from "./helpers.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+  window.addEventListener("resize", adjustTableMargin);
   const dataType = document.getElementById("dataType").value;
   const btnNext = document.getElementById("next-btn");
   const btnPrevious = document.getElementById("previous-btn");
@@ -30,4 +33,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   btnNext.addEventListener("click", () => goNext(dataType));
   btnPrevious.addEventListener("click", () => goPrevious(dataType));
   btnCancel.addEventListener("click", () => closeDeleteModal());
+  decide_button_type(dataType);
 });

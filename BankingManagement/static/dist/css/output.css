@@ -950,6 +950,8 @@ select {
 
 .admin_cell {
   position: relative;
+  max-width: 24rem;
+  overflow: hidden;
   white-space: nowrap;
   border-left-width: 1px;
   border-right-width: 1px;
@@ -1264,10 +1266,6 @@ select {
   margin-left: 1.25rem;
 }
 
-.ml-96 {
-  margin-left: 24rem;
-}
-
 .mr-14 {
   margin-right: 3.5rem;
 }
@@ -1424,22 +1422,6 @@ select {
   height: 100vh;
 }
 
-.h-3\/4 {
-  height: 75%;
-}
-
-.h-2\/3 {
-  height: 66.666667%;
-}
-
-.max-h-20 {
-  max-height: 5rem;
-}
-
-.max-h-3 {
-  max-height: 0.75rem;
-}
-
 .max-h-96 {
   max-height: 24rem;
 }
@@ -1466,6 +1448,10 @@ select {
 
 .w-12 {
   width: 3rem;
+}
+
+.w-2\/3 {
+  width: 66.666667%;
 }
 
 .w-20 {
@@ -1524,10 +1510,6 @@ select {
   width: 24rem;
 }
 
-.w-99\% {
-  width: 99%;
-}
-
 .w-auto {
   width: auto;
 }
@@ -1540,12 +1522,8 @@ select {
   width: 100vw;
 }
 
-.w-1\/3 {
-  width: 33.333333%;
-}
-
-.w-2\/3 {
-  width: 66.666667%;
+.min-w-80 {
+  min-width: 20rem;
 }
 
 .max-w-7xl {
@@ -1585,6 +1563,10 @@ select {
 
 .resize-none {
   resize: none;
+}
+
+.resize {
+  resize: both;
 }
 
 .grid-cols-2 {
@@ -1657,28 +1639,12 @@ select {
   margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
 }
 
-.justify-self-start {
-  justify-self: start;
-}
-
-.justify-self-end {
-  justify-self: end;
-}
-
-.overflow-x-auto {
-  overflow-x: auto;
-}
-
 .overflow-y-auto {
   overflow-y: auto;
 }
 
 .overflow-y-hidden {
   overflow-y: hidden;
-}
-
-.whitespace-nowrap {
-  white-space: nowrap;
 }
 
 .rounded {
@@ -1876,11 +1842,6 @@ select {
   background-color: rgb(50 58 78 / var(--tw-bg-opacity));
 }
 
-.bg-brown-700 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(93 64 55 / var(--tw-bg-opacity));
-}
-
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(245 245 245 / var(--tw-bg-opacity));
@@ -1914,21 +1875,6 @@ select {
 .bg-green-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(232 245 233 / var(--tw-bg-opacity));
-}
-
-.bg-light-green-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(197 225 165 / var(--tw-bg-opacity));
-}
-
-.bg-light-green-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(156 204 101 / var(--tw-bg-opacity));
-}
-
-.bg-light-green-600 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(124 179 66 / var(--tw-bg-opacity));
 }
 
 .bg-popup-bg {
@@ -2581,10 +2527,6 @@ select {
 
   .sm\:mb-0 {
     margin-bottom: 0px;
-  }
-
-  .sm\:ml-0 {
-    margin-left: 0px;
   }
 
   .sm\:ml-14 {
