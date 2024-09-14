@@ -1,14 +1,14 @@
-const card_info_toggle = () => {
-    const card_info = document.getElementById("cardInfo");
+const toggleCardInfo = () => {
+    const cardInfo = document.getElementById("cardInfo");
     const right = document.getElementById("card_right_arrow");
     const down = document.getElementById("card_down_arrow");
 
-    card_info.classList.toggle('hidden');
+    cardInfo.classList.toggle('hidden');
     right.classList.toggle('hidden');
     down.classList.toggle('hidden');
 }
 
-const close_popup = () => {
+const closePopup = () => {
     const popups = document.querySelectorAll(".popup");
 
     popups.forEach(popup => {
@@ -16,7 +16,7 @@ const close_popup = () => {
     });
 }
 
-const open_popup = () => {
+const openPopup = () => {
     const popups = document.querySelectorAll(".popup");
 
     popups.forEach(popup => {

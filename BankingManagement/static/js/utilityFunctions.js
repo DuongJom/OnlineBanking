@@ -7,7 +7,14 @@ function goBack() {
   window.history.back();
 }
 
-const navBarToggle = () => {
+function toggle() {
+    const toggledElement = document.getElementById('toggled_element');
+
+    toggledElement.classList.toggle('flex');
+    toggledElement.classList.toggle('hidden');
+}
+
+function navBarToggle () {
     const mainDropdown = document.getElementById("mainDropdown");
     const right = document.getElementById("navbar_right_arrow");
     const down = document.getElementById("navbar_down_arrow");

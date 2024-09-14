@@ -8,7 +8,6 @@ from flask_mail import Message
 from app import app, mail
 from enums.mime_type import MIMEType
 
-
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):

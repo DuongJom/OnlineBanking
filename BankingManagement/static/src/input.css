@@ -49,4 +49,52 @@
     .admin_label {
         @apply text-white font-medium
     }
+
+    .admin_readonly {
+        @apply w-full h-10 flex items-center bg-gray-400 rounded-lg pl-3 text-gray-800
+    }
+
+    .admin_cell {
+        @apply whitespace-nowrap p-2 relative border-x border-black overflow-hidden max-w-96
+    }
+
+    .admin_table {
+        @apply border border-black w-3/4
+    }
+
+    .admin_table1 {
+        @apply border border-black z-10 sm:fixed shadow-shadowRight
+    }
+
+    .admin_table2 {
+        @apply flex-1 border border-black
+    }
+
+    .admin_th {
+        @apply p-2 border border-black whitespace-nowrap
+    }
+
+    .less_admin_th {
+        @apply p-2 border border-black whitespace-nowrap w-1/4
+    }
+
+    .admin_tr {
+        @apply h-8 bg-blue-gray-50 my-3 border-t border-white
+    }
+
+    .admin_table_wrapper {
+        @apply w-99% flex absolute top-20 overflow-x-auto
+    }
+
+    .admin_thead {
+        @apply bg-blue-gray-300 text-center
+    }
+
+    .hightlight {
+        @apply bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg rounded-md
+    }
+
+    .admin_sidebar_item {
+        @apply py-2 border-b border-white font-bold text-gray-300 hover:text-white pl-2
+    }
 }

@@ -1,0 +1,62 @@
+{% extends "admin/general/layout.html" %}
+
+{% block admin_content %}
+    <input class="hidden" id="dataType" value="account" type="text">
+    <div class="flex flex-1 flex-col justify-center items-center relative">
+        {% include "admin/general/delete_confirmation.html" %}
+        <!-- tool bar -->
+        <div class="w-full flex flex-col sm:flex-row flex-1 justify-between items-center absolute top-4">
+            {% include "admin/general/function_button.html" %}
+            <div class="mr-14 flex flex-1 items-center justify-end ">
+
+                <div class="border border-black border-r-0 h-8 w-10 p-1 flex items-center justify-center rounded-l-2xl">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <input type="text" class="h-8 w-1/2 border-black focus:ring-0 focus:border-black"/>
+         
+                <select class="h-8 text-sm pe-8 py-0 border border-black focus:ring-0 focus:border-black rounded-r-2xl">
+                    <option selected disabled>Search By</option>
+                    <option>Username</option>
+                    <option>Email</option>
+                    <option>Branch</option>
+                </select>
+
+                <select class="h-8 text-sm pe-8 py-0 border border-black focus:ring-0 focus:border-black ml-5 rounded-lg">
+                    <option selected disabled>Role</option>
+                    <option value="">Admin</option>
+                    <option value="">User</option>
+                    <option value="">Employee</option>
+                </select>
+
+            </div>
+        </div>
+        
+        <!-- table -->
+       <div id="table_wrapper">
+            <div class="animate-spin h-10 w-10 rounded-full border-4 border-dotted border-black" id="lazyLoading">
+
+            </div>
+       </div>
+
+        <!-- pagination -->
+        <div id="pagination" class="flex flex-1 justify-end items-center fixed right-5 bottom-5">         
+            <button 
+                class="bg-side_bar_bg hover:bg-hover_side_bar h-7 w-12 rounded-xl 
+                text-white flex items-center justify-center mr-4"
+                id="previous-btn">
+                <span class="material-symbols-outlined">arrow_left_alt</span>
+            </button>
+            <p id="location"></p>
+        
+            <button 
+                class="bg-side_bar_bg hover:bg-hover_side_bar h-7 w-12 rounded-xl 
+                text-white flex items-center justify-center ml-4"
+                id="next-btn">
+                <span class="material-symbols-outlined">arrow_right_alt</span>
+            </button>
+            
+        </div>
+        
+    </div>
+    <script type="module" src="{{ url_for('static', filename='js/admin/admin.js') }}"></script>
+{% endblock %}

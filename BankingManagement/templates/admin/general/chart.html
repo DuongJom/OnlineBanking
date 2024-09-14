@@ -1,0 +1,88 @@
+{% extends "admin/general/layout.html" %}
+
+{% block admin_content %} 
+   <div class="w-full h-full flex flex-col">
+        <!-- Start tool bar -->
+        <div class="w-full p-5">
+            <form class="flex">   
+                <div>
+                    <select id="filterType" class="m-0 border-r-transparent rounded-l-md cursor-pointer focus:shadow-2xl focus:bg-gray-200 hover:bg-gray-200">
+                        <option value="quarter">Quarter</option>
+                        <option value="month">Month</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <select name="" id="filterByQuarter" class="w-44 m-0 rounded-r-md">
+                        <option value="">First Quarter</option>
+                        <option value="">Second Quarter</option>
+                        <option value="">Third Quarter</option>
+                        <option value="">Fourth Quarter</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <select name="" id="filterByMonth" class="hidden w-44 m-0 rounded-r-md">
+                        <option value="">January</option>
+                        <option value="">February</option>
+                        <option value="">March</option>
+                        <option value="">April</option>
+                        <option value="">May</option>
+                        <option value="">June</option>
+                        <option value="">July</option>
+                        <option value="">August</option>
+                        <option value="">September</option>
+                        <option value="">October</option>
+                        <option value="">November</option>
+                        <option value="">December</option>
+                    </select>
+                </div>
+                    
+                <div class="ml-5">
+                    <select class="rounded-md">
+                        <option value="">2010</option>
+                        <option value="">2011</option>
+                        <option value="">2012</option>
+                        <option value="">2013</option>
+                        <option value="">2014</option>
+                        <option value="">2015</option>
+                        <option value="">2016</option>
+                        <option value="">2017</option>
+                        <option value="">2018</option>
+                        <option value="">2019</option>
+                        <option value="">2020</option>
+                        <option value="">2021</option>
+                        <option value="">2022</option>
+                        <option value="">2023</option>
+                        <option value="">2024</option>
+                    </select>
+                </div>
+
+                <div>
+                    <button type="submit" class="bg-side_bar_bg w-20 h-10 ml-5 rounded-sm font-bold text-white">Apply</button>
+                </div>
+
+            </form>
+        </div>
+        <!-- End tool bar -->
+
+        <!-- start chart area -->
+        <div class="w-full grid grid-cols-2" style="height: calc(100vh - 138px);">
+            <div class="max-h-96">
+                <div id="columnChartContainer" class="h-full"></div>
+            </div>
+            <div class="max-h-96">
+                <div id="pieChartContainer" class="h-full"></div>
+            </div>
+            <div class="max-h-96">
+                <div id="lineChartContainer" class="h-full"></div>
+            </div>
+            <div class="max-h-96">
+                <div id="rangeAreaChartContainer" class="h-full"></div>
+            </div>
+        </div>
+        <!-- End chart area -->
+   </div>
+
+   <script type="module" src="{{ url_for('static', filename='js/admin/chart.js') }}"></script>
+{% endblock %}

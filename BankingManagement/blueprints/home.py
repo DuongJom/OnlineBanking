@@ -15,11 +15,13 @@ home_blueprint = Blueprint('home', __name__)
 def index():
     account_id = ObjectId(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
-    if account["Role"] == RoleType.USER.value:
-        return render_template("home.html", account = account)
-    elif account["Role"] == RoleType.EMPLOYEE.value:
-        return redirect("/employee/home")
-    else:
-        return redirect("/admin/accounts")
+    if account:
+        if account["Role"] == RoleType.USER.value:
+            return render_template("home.html", account = account)
+        elif account["Role"] == RoleType.EMPLOYEE.value:
+            return redirect("/employee/home")
+        else:
+            return redirect("/admin/account")
+    return redirect("/login")
 
 

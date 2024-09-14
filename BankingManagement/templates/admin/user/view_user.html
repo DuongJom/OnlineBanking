@@ -1,0 +1,81 @@
+{% extends "general/layout.html" %}
+
+{% block title %}
+    View User
+{% endblock %}
+
+{% block content %}
+    <div class="z-1000 relative top-0 left-0 h-screen overflow-y-auto flex justify-center items-center
+                bg-gradient-to-t from-pink-200 to-purple-400">
+        <button 
+            onclick="goBack()" 
+            class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
+            <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
+        </button>
+        <div class="w-3/4 bg-bg-color flex flex-col justify-center items-center py-16 rounded-lg">
+            <div class="w-full flex justify-center">
+                <h2 class="font-extrabold text-white">User Information</h2>
+            </div>
+            <div class="w-full flex items-center justify-center">
+                <div class="mr-16 w-96">
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="name">Name</label>
+                        <div class="admin_readonly" id="name">
+                            <div>{{user.Name}}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="sex">Gender</label>
+                        <div id="sex" class="admin_readonly">
+                            <div>
+                                {% if user.Sex == 0 %}
+                                Male
+                                {% elif user.Sex == 1 %}
+                                Female
+                                {% else %}
+                                Other
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="address">Address</label>
+                        <div  id="address" class="admin_readonly">
+                            <div>{{user.Address}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-96 top-14">
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="phone">Phone</label>
+                        <div id="phone" class="admin_readonly">
+                            <div>{{user.Phone}}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="email">Email</label>
+                        <div id="email" class="admin_readonly">
+                            <div>{{user.Email}}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="card">Card</label>
+                        {% if user.Card != None %}
+                        <div id="card" class="admin_readonly cursor-pointer hover:bg-blue-gray-50" onclick="toggle()">
+                            <div>{{user.Card.CardNumber}}</div>
+                        </div>
+                        <div class="w-full flex-col bg-gradient-to-b from-blue-gray-700 to-blue-500 rounded-md mt-2 px-3 text-white hidden" id="toggled_element">
+                            <div class="border-b border-white">CVV: {{user.Card.CVV}}</div>
+                            <div class="border-b border-white">Type: {{user.Card.Type}}</div>
+                            <div class="border-b border-white">Expired date: {{expiredDate}}</div>
+                            <div>Issuance date: {{issuanceDate}}</div>
+                        </div>
+                        {% else %}
+                        <div id="card" class="admin_readonly"></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

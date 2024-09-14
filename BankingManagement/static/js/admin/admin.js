@@ -1,29 +1,37 @@
-import { 
-    get_admin_page_data, 
-    render_table, 
-    next, 
-    previous, 
-    adjustTableMargin 
+import {
+  getAdminData,
+  renderTable,
+  goNext,
+  goPrevious,
+  closeDeleteModal,
+  adjustTableMargin,
+  decide_button_type
 } from "./helpers.js";
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const data_type = document.getElementById('dataType').value;
-    const next_btn = document.getElementById('next-btn');
-    const previous_btn = document.getElementById('previous-btn');
+document.addEventListener("DOMContentLoaded", async () => {
+  window.addEventListener("resize", adjustTableMargin);
+  const dataType = document.getElementById("dataType").value;
+  const btnNext = document.getElementById("next-btn");
+  const btnPrevious = document.getElementById("previous-btn");
+  const btnCancel = document.getElementById("cancel-btn");
+  const lazyLoading = document.getElementById("lazyLoading");
 
-    localStorage.setItem('admin_page', 1);
+  localStorage.setItem("admin_page", 1);
 
-    try {
-        const data = await get_admin_page_data(1, data_type);
-        localStorage.setItem('admin_maxPage', data.total_pages)
-        render_table(data.items, data_type);
-    } catch (error) {
-        console.error('There was a problem with loading the items:', error);
-    }
+  try {
+    const data = await getAdminData(1, dataType);
 
-    next_btn.addEventListener('click', () => next(data_type));
-    previous_btn.addEventListener('click', () => previous(data_type));
-    window.addEventListener('resize', adjustTableMargin);
+    lazyLoading.classList.add('hidden');
+
+    localStorage.setItem("admin_maxPage", data.total_pages);
+    renderTable(data.items, dataType);
+  } catch (error) {
+    console.error("There was a problem with loading the items:", error);
+  }
+
+  // add event handler for button in admin page
+  btnNext.addEventListener("click", () => goNext(dataType));
+  btnPrevious.addEventListener("click", () => goPrevious(dataType));
+  btnCancel.addEventListener("click", () => closeDeleteModal());
+  decide_button_type(dataType);
 });
-
-

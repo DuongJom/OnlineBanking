@@ -1,0 +1,83 @@
+{% extends "general/layout.html" %}
+
+{% block title %}
+    View Account
+{% endblock %}
+
+{% block content %}
+    <div class="z-1000 relative top-0 left-0 h-screen overflow-y-auto flex justify-center items-center
+                bg-gradient-to-t from-pink-200 to-purple-400">
+        <button 
+            onclick="goBack()" 
+            class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
+            <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
+        </button>
+        <div class="w-3/4 bg-bg-color flex flex-col justify-center items-center py-16 rounded-lg">
+            <div class="w-full flex justify-center">
+                <h2 class="font-extrabold text-white">Account Information</h2>
+            </div>
+            <div class="w-full flex items-center justify-center">
+                <div class="mr-16 w-96">
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="accountUsername">Username</label>
+                        <div class="admin_readonly" id="accountUsername">
+                            <div>{{account.Username}}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="role">Role</label>
+                        <div id="role" class="admin_readonly">
+                            <div>
+                                {% if account.Role == 0 %}
+                                User 
+                                {% elif account.Role == 1 %}
+                                Employee
+                                {% else %}
+                                Admin
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="accountNumber">Account Number</label>
+                        <div  id="accountNumber" class="admin_readonly">
+                            <div>{{account.AccountNumber}}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="accountOwner">Owner</label>
+                        <div id="accountOwner" class="admin_readonly">
+                            <div>{{account.AccountOwner.Name}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-96">
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="branch">Branch</label>
+                        <div id="branch" class="admin_readonly">
+                            <div>{{account.Branch}}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="service">Service</label>
+                        <div id="service" class="admin_readonly">
+                            <div>{{account.Service}}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="transferMethod">Transfer Method</label>
+                        <div id="transferMethod" class="admin_readonly">
+                            <div>{{account.TransferMethod}}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="admin_label" for="loginMethod">Login Method</label>
+                        <div id="loginMethod" class="admin_readonly">
+                            <div>{{account.LoginMethod}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends "general/layout.html" %} 
+
+{% block title %} 
+    Add Account 
+{% endblock %}
+
+{% block content %}
+<div
+  class="z-1000 relative top-0 left-0 h-screen w-screen bg-gradient-to-t from-pink-200 to-purple-400 overflow-y-auto">
+  <button
+    onclick="goBack()"
+    class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
+    <span class="material-symbols-outlined absolute right-2"
+      >arrow_back_ios</span
+    >
+  </button>
+
+  <div
+    class="w-11/12 bg-bg-color absolute left-1/2 -translate-x-1/2 lg:top-1/2 lg:-translate-y-1/2 rounded-xl">
+    <form class="h-full w-full flex lg:flex-row flex-col">
+      <div
+        class="flex-1 flex flex-col justify-center items-center bg-purple-200 rounded-t-xl lg:rounded-l-xl lg:rounded-tr-none">
+        <img
+          class="mx-auto h-48 w-auto"
+          src="/static/img/bank.png"
+          alt="Company" />
+        <h2 class="font-extrabold mt-4">New</h2>
+      </div>
+
+      <!-- Account Information  -->
+      <div class="flex flex-1">
+        <div class="w-full flex flex-col items-center border-r-2r mt-20">
+          <div>
+            <h2 class="font-extrabold text-white mb-4">Account Information</h2>
+          </div>
+
+          <div class="flex flex-col w-4/5 space-y-4">
+            <div class="flex flex-col w-full">
+              <label for="role" class="admin_label">Role</label>
+              <select id="role" class="admin_input">
+                <option value="">Admin</option>
+                <option value="">Employee</option>
+                <option value="">User</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="branch" class="admin_label">Branch</label>
+              <select id="branch" class="admin_input">
+                <option disabled>Branch</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="loginMethod" class="admin_label">Login Method</label>
+              <select id="loginMethod" class="admin_input">
+                <option disabled>Login Method</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="transferMethod" class="admin_label"
+                >Transfer Method</label
+              >
+              <select id="transferMethod" class="admin_input">
+                <option disabled>Transfer Method</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="service" class="admin_label">Service</label>
+              <select id="service" class="admin_input">
+                <option disabled id="service">Service</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User -->
+      <div class="flex flex-1">
+        <div
+          class="w-full flex flex-col items-center justify-start border-r-2r mt-20">
+          <div>
+            <h2 class="font-extrabold text-white mb-4">Owner Information</h2>
+          </div>
+
+          <div class="flex flex-col w-4/5 space-y-4">
+            <div class="flex flex-col w-full">
+              <label for="name" class="admin_label">Name</label>
+              <input type="text" name="name" id="name" class="admin_input" />
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="gender" class="admin_label">Gender</label>
+              <select id="gender" class="admin_input">
+                <option id="0">Male</option>
+                <option id="1">Female</option>
+                <option id="2">Other</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="address" class="admin_label">Address</label>
+              <input
+                type="text"zz
+                name="address"
+                id="address"
+                class="admin_input" />
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="phone" class="admin_label">Phone</label>
+              <input type="text" name="phone" id="phone" class="admin_input" />
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="email" class="admin_label">Email</label>
+              <input type="email" name="email" id="email" class="admin_input" />
+            </div>
+
+            <div class="flex justify-end pb-6">
+              <button
+                type="submit"
+                class="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-600 hover:to-purle-800 text-white font-semibold py-2 px-6 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-purle-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">
+                Create
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script
+  type="module"
+  src="{{ url_for('static', filename='js/admin/helpers.js') }}"></script>
+{% endblock %}

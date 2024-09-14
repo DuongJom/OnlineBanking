@@ -1,0 +1,99 @@
+{% extends "general/layout.html" %} 
+
+{% block title %} 
+    Add Account 
+{% endblock %}
+
+{% block content %}
+<div
+  class="z-1000 relative top-0 left-0 h-screen w-screen bg-gradient-to-t from-pink-200 to-purple-400 overflow-y-auto">
+  <button
+    onclick="goBack()"
+    class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
+    <span class="material-symbols-outlined absolute right-2"
+      >arrow_back_ios</span
+    >
+  </button>
+
+  <div
+    class="w-11/12 bg-bg-color absolute left-1/2 -translate-x-1/2 lg:top-1/2 lg:-translate-y-1/2 rounded-xl">
+    <form class="h-full w-full flex lg:flex-row flex-col">
+      <div
+        class="flex-1 flex flex-col justify-center items-center bg-purple-200 rounded-t-xl lg:rounded-l-xl lg:rounded-tr-none">
+        <img
+          class="mx-auto h-48 w-auto"
+          src="/static/img/bank.png"
+          alt="Company" />
+        <h2 class="font-extrabold mt-4">New</h2>
+      </div>
+
+      <!-- Account Information  -->
+      <div class="flex flex-1">
+        <div class="w-full flex flex-col items-center border-r-2r mt-20">
+            <div>
+                <h2 class="font-extrabold text-white mb-4">Branch</h2>
+            </div>
+          <div class="flex flex-col w-4/5 space-y-4">
+            <div class="flex flex-col w-full">
+              <label for="branchName" class="admin_label">Branch Name</label>
+              <input id="branchName" class="admin_input" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User -->
+      <div class="flex flex-1">
+        <div
+          class="w-full flex flex-col items-center justify-start border-r-2r mt-20">
+          <div>
+            <h2 class="font-extrabold text-white mb-4">Address</h2>
+          </div>
+
+          <div class="flex flex-col w-4/5 space-y-4">
+            <div class="flex flex-col w-full">
+              <label for="street" class="admin_label">Street</label>
+              <input type="text" name="street" id="street" class="admin_input" />
+            </div>
+
+            <div class="flex flex-col w-full">
+                <label for="city" class="admin_label">City</label>
+                <input type="text" name="city" id="city" class="admin_input" />
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="ward" class="admin_label">Ward</label>
+              <input
+                type="text"
+                name="ward"
+                id="ward"
+                class="admin_input"/>
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="country" class="admin_label">Country</label>
+              <input type="text" name="country" id="country" class="admin_input" />
+            </div>
+
+            <div class="flex flex-col w-full">
+              <label for="district" class="admin_label">District</label>
+              <input type="email" name="district" id="district" class="admin_input" />
+            </div>
+
+            <div class="flex justify-end pb-6">
+              <button
+                type="submit"
+                class="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-600 hover:to-purle-800 text-white font-semibold py-2 px-6 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-purle-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">
+                Create
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script
+  type="module"
+  src="{{ url_for('static', filename='js/admin/helpers.js') }}"></script>
+{% endblock %}
