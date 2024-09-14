@@ -6,7 +6,10 @@ from enums.employee_role_type import EmployeeRoleType
 
 class Employee(BaseModel):
     def __init__(self, **kwargs):
-        super().__init__()
+        created_by = kwargs["created_by"] if "created_by" in kwargs.keys() else None
+        modified_by = kwargs["modified_by"] if "modified_by" in kwargs.keys() else None
+        super().__init__(created_by=created_by, modified_by=modified_by)
+        
         self.EmployeeName = str(kwargs["employeeName"]).strip() if "employeeName" in kwargs.keys() else None
         self.Position = kwargs["position"] if "position" in kwargs.keys() else None
         self.Role = kwargs["role"] if "role" in kwargs.keys() else EmployeeRoleType.NORMAL_EMPLOYEE.value

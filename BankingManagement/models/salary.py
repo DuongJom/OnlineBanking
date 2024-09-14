@@ -6,7 +6,10 @@ from enums.employee_role_type import EmployeeRoleType
 
 class Salary(BaseModel):
     def __init__(self, **kwargs):
-        super().__init__()
+        created_by = kwargs["created_by"] if "created_by" in kwargs.keys() else None
+        modified_by = kwargs["modified_by"] if "modified_by" in kwargs.keys() else None
+        super().__init__(created_by=created_by, modified_by=modified_by)
+        
         self.BasicSalary = kwargs["basicSalary"] if "basicSalary" in kwargs.keys() else None
         self.OverTime = kwargs["overTime"] if "overTime" in kwargs.keys() else None
         self.PublicHoliday = kwargs["publicHoliday"] if "publicHoliday" in kwargs.keys() else EmployeeRoleType.NORMAL_EMPLOYEE.value
