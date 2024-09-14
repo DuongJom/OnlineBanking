@@ -3,18 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterByQuarter = document.getElementById('filterByQuarter');
     const filterByMonth = document.getElementById('filterByMonth');
 
-    console.log(filterType.value);
-
     filterType.addEventListener('change', () => {
         if(filterType.value === 'month') {
-            console.log(filterType.value);
             filterByQuarter.classList.add('hidden');
             filterByQuarter.classList.remove('block');
 
             filterByMonth.classList.add('block');
             filterByMonth.classList.remove('hidden');
         }else {
-            console.log(filterType.value);
             filterByMonth.classList.add('hidden');
             filterByMonth.classList.remove('block');
 

@@ -5,7 +5,10 @@ import {
   goPrevious,
   closeDeleteModal,
   adjustTableMargin,
-  decide_button_type
+  decide_button_type,
+  openImportForm,
+  closeImportForm,
+  changeFileName,
 } from "./helpers.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -15,6 +18,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnPrevious = document.getElementById("previous-btn");
   const btnCancel = document.getElementById("cancel-btn");
   const lazyLoading = document.getElementById("lazyLoading");
+  const openImportFormBtn = document.getElementById("openImportFormButton");
+  const closeImportFormBtn = document.getElementById("closeImportFormButton");
 
   localStorage.setItem("admin_page", 1);
 
@@ -33,5 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   btnNext.addEventListener("click", () => goNext(dataType));
   btnPrevious.addEventListener("click", () => goPrevious(dataType));
   btnCancel.addEventListener("click", () => closeDeleteModal());
+  openImportFormBtn.addEventListener("click", () => openImportForm());
+  closeImportFormBtn.addEventListener("click", () => closeImportForm());
   decide_button_type(dataType);
 });

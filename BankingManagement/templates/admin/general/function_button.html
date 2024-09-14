@@ -1,15 +1,18 @@
 <div class="sm:ml-14 mb-2 sm:mb-0">
     {% if not 'user' in request.path %}
-    <button class="h-7 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar font-bold">
+    <button class="h-7 w-24 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar font-bold">
         <a href="#" id="add_button">Add</a>
     </button>
     {% endif %}
 
-    <button class="h-7 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar font-bold">
-        <a href="#">Import</a>
+    <button class="h-7 w-24 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar font-bold" 
+            id="openImportFormButton">
+        Import
     </button>
 
-    <button class="h-7 w-24 bg-side_bar_bg rounded-xl text-white hover:bg-hover_side_bar font-bold">
-        <a href="#">Export</a>
+    <button class="h-7 w-24 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar font-bold">
+        Export
     </button>
+
+    {% include 'admin/general/import.html' %}
 </div>

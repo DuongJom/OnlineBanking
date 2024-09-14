@@ -400,3 +400,23 @@ export function decide_button_type(data_type) {
     addBtn.href = `/admin/${data_type}/add`;
   }
 }
+
+
+export function openImportForm() {
+  const importForm = document.getElementById("importForm");
+
+  importForm.classList.remove('hidden');
+  importForm.classList.add('flex');
+}
+
+export function closeImportForm() {
+  const importForm = document.getElementById("importForm");
+
+  importForm.classList.remove('flex');
+  importForm.classList.add('hidden');
+}
+
+export function changeFileName() {
+  const fileName = this.files[0] ? this.files[0].name : 'Choose a file...';
+  fileNameDisplay.textContent = fileName;
+}
