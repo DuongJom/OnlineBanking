@@ -8,11 +8,11 @@ from enums.role_type import RoleType
 
 class Account(BaseModel):
     def __init__(self, **kwargs):
-        super().__init__()
+        super().__init__(kwargs=kwargs)
         self.AccountNumber = kwargs["accountNumber"] if "accountNumber" in kwargs.keys() else None
         self.Branch = kwargs["branch"] if "branch" in kwargs.keys() else None
         self.AccountOwner = kwargs["user"] if "user" in kwargs.keys() else None
-        self.Username = kwargs["username"] if "username" in kwargs.keys() else None
+        self.Username = str(kwargs["username"]).strip() if "username" in kwargs.keys() else None
         self.Password = generate_password_hash(kwargs["password"]) if "password" in kwargs.keys() else None
         self.Role = kwargs["role"] if "role" in kwargs.keys() else RoleType.USER.value
         self.TransferMethod = kwargs["transferMethod"] if "transferMethod" in kwargs.keys() else []

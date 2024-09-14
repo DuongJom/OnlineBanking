@@ -1,4 +1,4 @@
-import json, random
+import random
 from flask import Blueprint, render_template, request, jsonify
 from bson import ObjectId
 
@@ -102,7 +102,7 @@ def convert_objectid(data):
         return str(data)
     else:
         return data
-    
+
 @employee_blueprint.route('/employee/home', methods = ['GET'])
 def employee_home():
     if request.method == 'GET':

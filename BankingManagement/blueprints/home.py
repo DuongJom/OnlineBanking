@@ -17,7 +17,7 @@ def index():
     account = accounts.find_one({"_id": account_id})
     if account:
         if account["Role"] == RoleType.USER.value:
-            return render_template("home.html", account = account)
+            return render_template("general/home.html", account = account)
         elif account["Role"] == RoleType.EMPLOYEE.value:
             return redirect("/employee/home")
         else:
