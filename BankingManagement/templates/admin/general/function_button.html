@@ -14,32 +14,5 @@
         Export
     </button>
 
-    <!-- Import form -->
-    <div class="hidden h-screen w-screen fixed top-0 left-0 bg-popup-bg-hover z-20 justify-center items-center" id="importForm">
-        <form class="w-96 h-52 bg-white rounded-md flex flex-col items-center justify-center relative">
-            <div class="w-full flex justify-end absolute top-1 right-1">
-                <span class="material-symbols-outlined cursor-pointer rounded-md hover:bg-hover-profile-color" 
-                    id="closeImportFormButton">close</span>
-            </div>
-            <label for="excel_input" class="mb-5">
-                <div class="min-w-44 h-11 max-w-full bg-white border-2 border-purple-400 flex text-purple-400 items-center justify-around cursor-pointer
-                            hover:border-purple-700 hover:text-purple-700">
-                    <span class="material-symbols-outlined">upload_file</span>
-                    <p class="font-bold" id="file-name">Choose a file...</p>
-                </div>
-            </label>
-            <input type="file" id="excel_input" hidden/>
-            <button class="h-10 w-56 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar font-bold">Import Data</button>
-        </form>
-    </div>
-    
-    <script>
-        const excelInput = document.getElementById('excel_input');
-        const fileNameDisplay = document.getElementById('file-name');
-    
-        excelInput.addEventListener('change', function() {
-            const fileName = this.files[0] ? this.files[0].name : 'Choose a file...';
-            fileNameDisplay.textContent = fileName;
-        });
-    </script>
+    {% include 'admin/general/import.html' %}
 </div>
