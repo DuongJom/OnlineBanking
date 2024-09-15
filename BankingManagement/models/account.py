@@ -20,7 +20,6 @@ class Account(BaseModel):
         self.Role = kwargs["role"] if "role" in kwargs.keys() else RoleType.USER.value
         self.TransferMethod = kwargs["transferMethod"] if "transferMethod" in kwargs.keys() else []
         self.LoginMethod = kwargs["loginMethod"] if "loginMethod" in kwargs.keys() else []
-        self.Service = kwargs["service"] if "service" in kwargs.keys() else []
     
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

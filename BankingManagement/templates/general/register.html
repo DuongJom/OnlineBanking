@@ -135,16 +135,6 @@
 		</div>
 
 		<div class="w-1/2 sm:w-full">
-			<label for="service" class="label_field">Service</label>
-			<select id="service" name="service" class="select_field">
-				<option selected value="-1">Choose a Service</option>
-				{% for service in service_list %}
-				<option value="{{service._id}}">{{service.ServiceName}}</option>
-				{% endfor %}
-			</select>
-		</div>
-
-		<div class="w-1/2 sm:w-full">
 			<div class="flex items-center">
 				<label for="card" class="label_field">Card</label>
 			</div>

@@ -9,6 +9,7 @@ from models import account, user, card as model_card , database
 from message import messages_success, messages_failure
 from helpers import issueNewCard, get_token, send_email, ts, login_required
 from enums.role_type import RoleType
+from enums.card_type import CardType
 from app import app
 
 db = database.Database().get_db()
@@ -16,9 +17,8 @@ accounts = db['accounts']
 users = db['users']
 branches = db['branches']
 cards = db['cards']
-transferMethods = db['transferMethods']
-loginMethods = db['loginMethods']
-services = db['services']
+transferMethods = db['transfer_methods']
+loginMethods = db['login_methods']
 
 account_blueprint = Blueprint('account', __name__)
 
@@ -73,7 +73,6 @@ def register():
         loginMethod_id = request.form['loginMethod']
         email = request.form['email']
         sex = request.form['sex']
-        service_id = request.form['service']
         card = request.form['card']
         accountNumber = request.form['accountNumber']
         cvvNumber = request.form['cvvNumber']
@@ -101,7 +100,7 @@ def register():
 
         # insert the document to the collection if there is no error
 
-        new_card = model_card.Card(cardNumber=card, cvv=cvvNumber)
+        new_card = model_card.Card(cardNumber=card, cvv=cvvNumber, type=CardType.CREDITS.value)
 
         cards.insert_one(new_card.to_json())
 
@@ -113,13 +112,12 @@ def register():
         branch = branches.find_one({"_id": branch_id})
         transferMethod = transferMethods.find_one({"_id": transferMethod_id})
         loginMethod = loginMethods.find_one({"_id": loginMethod_id})
-        service = services.find_one({"_id": service_id})
 
         # insert new account into database
         new_account = account.Account(accountNumber=accountNumber, branch=branch, user=new_user.to_json(), 
                                         username=username, password=password, role=RoleType.USER.value, 
                                         transferMethod=[transferMethod], 
-                                        loginMethod=[loginMethod], service=[service])
+                                        loginMethod=[loginMethod])
         accounts.insert_one(new_account.to_json())
 
         flash(messages_success['success'], 'success')
@@ -129,10 +127,9 @@ def register():
         branch_list = branches.find()
         loginMethod_list = loginMethods.find()
         transferMethod_list = transferMethods.find()
-        service_list = services.find()
         card_info = issueNewCard()
         return render_template('general/register.html', branch_list=branch_list, loginMethod_list=loginMethod_list,
-                               transferMethod_list=transferMethod_list, service_list=service_list, card_info=card_info)
+                               transferMethod_list=transferMethod_list, card_info=card_info)
     
 @account_blueprint.route('/view-profile',  methods=['GET', 'POST'])
 @login_required

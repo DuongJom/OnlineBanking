@@ -6,8 +6,7 @@ export const tableStructure = {
     { key: "AccountOwner", name: "Owner", object_key: "Name" },
     { key: "Role", name: "Role" },
     { key: "TransferMethod", name: "Transfer Method" },
-    { key: "LoginMethod", name: "Login Method" },
-    { key: "Service", name: "Service" },
+    { key: "LoginMethod", name: "Login Method" }
   ],
   user: [
     { key: "Name", name: "Name" },

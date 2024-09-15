@@ -9,7 +9,8 @@ class CardType(BaseModel):
         modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
         super().__init__(createdBy=created_by, modifiedBy=modified_by)
         
-        self.TypeName = str(kwargs["typeName"]).strip() if "typeName" in kwargs.keys() else None
+        self.TypeName = kwargs["typeName"] if "typeName" in kwargs.keys() else None
+        self.TypeValue = kwargs["typeValue"] if "typeValue" in kwargs.keys() else None
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))
