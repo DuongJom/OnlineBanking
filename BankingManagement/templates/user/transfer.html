@@ -1,7 +1,7 @@
 {% extends "user/layout.html" %}
 
 {% block user_content %}
-    <div class="flex flex-col bg-light-green-600 w-1/4 h-2/3 mx-auto rounded-md p-2 mt-5">
+    <div class="flex flex-col w-1/4 h-2/3 m-auto border-2 shadow-lg rounded-md p-2 bg-light-green-600">
         <div class="flex-row">
             Domestic money transfer
         </div>
@@ -59,7 +59,7 @@
                 <div class="flex flex-col border-2 border-gray-600 rounded-lg w-full px-2 h-16 mt-2">
                     <label for="message" class="h-7 text-sm">Message</label>
                     <input type="text" id="message" name="message"
-                            placeholder="{{account.AccountOwner.Name}} transfer money"
+                            value="{{account.AccountOwner.Name}} transfer money"
                             class="w-full rounded-md h-8 text-sm -mt-1"/>
                 </div>
             </div>

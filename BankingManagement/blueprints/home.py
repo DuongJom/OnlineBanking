@@ -24,7 +24,7 @@ def index():
             return redirect("/admin/account")
     return redirect("/login")
 
-@home_blueprint.route("/user/transfer-money", methods=["GET", "POST"])
+@home_blueprint.route("/transfer-money", methods=["GET", "POST"])
 @login_required
 def transfer_money():
     account_id = ObjectId(session.get("account_id"))
