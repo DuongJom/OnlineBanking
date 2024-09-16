@@ -21,8 +21,8 @@
     }
 
     .btn {
-        @apply flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 
-                text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 
+        @apply flex w-full justify-center rounded-md bg-bg-color px-3 py-1.5 
+                text-sm font-medium leading-6 text-white shadow-sm hover:bg-hover-btn-bg-color
                 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
               focus-visible:outline-indigo-600
     }
@@ -34,7 +34,14 @@
     .success {
         @apply flex w-full justify-center bg-green-400 px-3 py-1.5 text-sm font-semibold leading-7 text-white
     }
-    
+
+    .tb_header {
+        @apply px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider
+    }
+
+    .tb_row {
+        @apply px-6 py-2 whitespace-nowrap
+    }
     .admin_input {
         @apply w-full rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500
     }

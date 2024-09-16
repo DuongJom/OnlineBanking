@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel templates/employee/home.html",
     "build": "npx tailwindcss -i ./static/src/input.css -o ./static/dist/css/output.css --watch"
   },
   "author": "",
@@ -17,8 +17,10 @@
   "keywords": [],
   "dependencies": {
     "@material-tailwind/html": "^2.2.2",
+    "core-js": "^3.37.0",
     "onlinebanking": "file:",
     "postcss-loader": "^8.1.1",
+    "regenerator-runtime": "^0.14.1",
     "source-map-generator": "^0.8.0"
   },
   "description": ""

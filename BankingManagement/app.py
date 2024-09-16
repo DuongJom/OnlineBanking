@@ -3,6 +3,7 @@ from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 
 from init_app import init
+from init_data import initialize_data
 
 app = Flask(__name__)
 app = init(app)
@@ -18,6 +19,7 @@ app.register_blueprint(account.account_blueprint)
 app.register_blueprint(home.home_blueprint)
 app.register_blueprint(employee.employee_blueprint)
 app.register_blueprint(admin.admin_blueprint)
+initialize_data(app)
 
 if __name__ == '__main__':
     app.run(debug=True)

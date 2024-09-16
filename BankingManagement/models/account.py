@@ -9,18 +9,21 @@ from enums.currency import CurrencyType
 
 class Account(BaseModel):
     def __init__(self, **kwargs):
-        super().__init__()
+        created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
+        modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
+        super().__init__(createdBy=created_by, modifiedBy=modified_by)
+        
         self.AccountNumber = kwargs["accountNumber"] if "accountNumber" in kwargs.keys() else None
         self.Branch = kwargs["branch"] if "branch" in kwargs.keys() else None
         self.AccountOwner = kwargs["user"] if "user" in kwargs.keys() else None
         self.Balance = kwargs["balance"] if "balance" in kwargs.keys() else 0
         self.Currency = kwargs["currency"] if "currency" in kwargs.keys() else CurrencyType.VND.value()
         self.Username = kwargs["username"] if "username" in kwargs.keys() else None
+        self.Username = str(kwargs["username"]).strip() if "username" in kwargs.keys() else None
         self.Password = generate_password_hash(kwargs["password"]) if "password" in kwargs.keys() else None
         self.Role = kwargs["role"] if "role" in kwargs.keys() else RoleType.USER.value
         self.TransferMethod = kwargs["transferMethod"] if "transferMethod" in kwargs.keys() else []
         self.LoginMethod = kwargs["loginMethod"] if "loginMethod" in kwargs.keys() else []
-        self.Service = kwargs["service"] if "service" in kwargs.keys() else []
     
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

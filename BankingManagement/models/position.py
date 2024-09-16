@@ -5,9 +5,12 @@ from models.datetime_encoder import DateTimeEncoder
 
 class Position(BaseModel):
     def __init__(self, **kwargs):
-        super().__init__()
-        self.PositionName = kwargs["position_name"] if "position_name" in kwargs.keys() else None
-        self.AbbreviatedName = kwargs["abbreviated_name"] if "abbreviated_name" in kwargs.keys() else None
+        created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
+        modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
+        super().__init__(createdBy=created_by, modifiedBy=modified_by)
+        
+        self.PositionName = str(kwargs["positionName"]).strip() if "positionName" in kwargs.keys() else None
+        self.AbbreviatedName = str(kwargs["abbreviatedName"]).strip() if "abbreviatedName" in kwargs.keys() else None
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

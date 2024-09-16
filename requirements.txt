@@ -4,3 +4,6 @@ pip install bson
 pip install python-dotenv
 
 npm install @tailwindcss/forms
+npm i parcel -D
+npm i regenerator-runtime #polyfiling async functions
+npm i core-js #converting es6 features to es5 features for older browser

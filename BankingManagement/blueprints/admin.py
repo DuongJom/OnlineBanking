@@ -14,7 +14,6 @@ branches = db['branches']
 cards = db['cards']
 transferMethods = db['transferMethods']
 loginMethods = db['loginMethods']
-services = db['services']
 employees = db['employees']
 news = db['news']
 

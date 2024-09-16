@@ -10,9 +10,11 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://kit.fontawesome.com/a16fe50658.js" crossorigin="anonymous"></script>
+ 
     <title>{% block title %}{% endblock %} - DHC Banking System</title>
   </head>
-  <body class="overflow-y-hidden">
+  <body class="h-screen overflow-y-hidden">
     {% if session["account_id"] %}
       <nav class="bg-gray-500 fixed w-full z-10 top-0 right-0 start-0">
         <div class="mx-auto max-w-7xl flex h-16 px-4 sm:px-6 lg:px-8 justify-between">
@@ -24,6 +26,7 @@
                 class="rounded-full bg-white w-full h-full object-contain"/>   
             </div>
           </div>
+
           <div class="hidden md:block">
             <div class="flex items-center mt-4 mr-20 absolute top-0 right-0">
               <button
@@ -33,7 +36,7 @@
                       focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
                       focus:ring-offset-gray-800"
                 onclick="navBarToggle()">
-                  {% if session["sex"] == '1' %}
+                  {% if session["sex"] == '0' %}
                     <img width="30px" height="30px" src="../static/img/avt_man.png" alt="user avatar"/>
                   {% else %}
                     <img width="30px" height="30px" src="../static/img/avt_woman.png" alt="user avatar"/>

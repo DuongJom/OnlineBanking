@@ -1,0 +1,84 @@
+{% extends "general/layout.html" %}
+
+{% block title %}
+{% endblock %}
+<style>
+    /* Ensure the dropdown menu is hidden by default and shown on hover */
+    .group:hover .group-hover\:block {
+        display: block;
+    }
+
+</style>
+{% block content %}
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<div class="flex flex-col min-h-full relative top-16 min-w-full bg-white">
+    
+    <!-- Sidebar -->
+    <aside class="flex bg-gray-600 text-gray-500 border rounded-md sm:w-60 h-auto sm:fixed sm:left-0">
+        <div class="p-4 flex flex-col">
+            <h1 class="text-xl font-bold text-white mb-4">Banking App</h1>
+            <ul class="list-none">
+                <!-- News Item with Notification Icon -->
+                <li class="mb-2 group">
+                    <a href="#" class="block py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700 flex 
+                    items-center">
+                        <!-- Notification Icon Container -->
+                        <div class="relative">
+                            <!-- Notification Badge -->
+                            <div class="absolute -top-1 right-0 bg-red-600 h-3 w-3 rounded-full flex items-center 
+                            justify-center text-xs">
+                                2
+                            </div>
+                            <!-- Bell Icon -->
+                            <i class="block fas fa-bell mr-2"></i>
+                        </div>
+                        <!-- Text -->
+                        <span>News</span>
+                    </a>
+                </li>
+                
+                <li class="relative mb-2 group">
+                    <a href="{{url_for('employee.employee_working_time')}}" class="block py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700">
+                        <i class="fa-regular fa-calendar-check mr-2"></i> Working time
+                    </a>
+                </li>
+
+                <li class="relative mb-2 group">
+                    <a href="{{url_for('employee.employee_salary')}}" class="block py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700">
+                        <i class="fa-solid fa-dollar-sign mr-2"></i> Salary
+                    </a>
+                </li>
+
+                <li class="relative mb-2 group">
+                    <a href="#" class="block py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700">
+                        <i class="fas fa-exchange-alt mr-2"></i> Transactions
+                    </a>
+                    <div class="absolute hidden left-0 top-full group-hover:block bg-gray-700 text-gray-300 
+                    min-w-full rounded shadow-lg">
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 hover:text-white">Create Account</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 hover:text-white">Delete Account</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 hover:text-white">History</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 hover:text-white">Deposit</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 hover:text-white">Withdraw</a>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="mt-8 border-t border-gray-700 pt-4">
+                <h2 class="text-lg font-semibold mb-2">Help & Support</h2>
+                <a href="#" class="block py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700">
+                    <i class="fas fa-question-circle mr-2"></i> FAQs
+                </a>
+                <a href="#" class="block py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700">
+                    <i class="fas fa-comments mr-2"></i> Contact Us
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    {% block employee_content %}
+    {% endblock %}
+
+{% include "general/footer.html" %}
+</div>
+{% endblock %}
