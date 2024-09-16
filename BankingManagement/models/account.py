@@ -18,7 +18,6 @@ class Account(BaseModel):
         self.AccountOwner = kwargs["user"] if "user" in kwargs.keys() else None
         self.Balance = kwargs["balance"] if "balance" in kwargs.keys() else 0
         self.Currency = kwargs["currency"] if "currency" in kwargs.keys() else CurrencyType.VND.value()
-        self.Username = kwargs["username"] if "username" in kwargs.keys() else None
         self.Username = str(kwargs["username"]).strip() if "username" in kwargs.keys() else None
         self.Password = generate_password_hash(kwargs["password"]) if "password" in kwargs.keys() else None
         self.Role = kwargs["role"] if "role" in kwargs.keys() else RoleType.USER.value
