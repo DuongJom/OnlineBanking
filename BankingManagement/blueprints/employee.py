@@ -13,7 +13,7 @@ salary = db['salary']
 
 employee_blueprint = Blueprint('employee', __name__)
 
-years = list(range(2000, 2101))
+years = list( range(2000, date.today().year + 1) )
 months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -62,7 +62,6 @@ def employee_home():
         today = date.today()
         current_month = today.strftime("%B")
         current_year = today.year
-
          # Construct MongoDB query to filter documents based on month and year
         start_date = datetime(today.year, today.month, 1)
         end_date = datetime(today.year, today.month + 1, 1) if today.month < 12 else datetime(today.year + 1, 1, 1)
