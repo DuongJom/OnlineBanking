@@ -36,6 +36,7 @@ module.exports = withMT({
       },
       zIndex: {
         '1000': 1000,
+        '99999': 99999,
       },
       screens: {
         'custom-max': { 'max': '800px' },

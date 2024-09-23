@@ -4,9 +4,14 @@ from flask import redirect, session
 from functools import wraps
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
+from models import database
 
 from app import app, mail
 from enums.mime_type import MIMEType
+import hashlib
+
+db = database.Database().get_db()
+accounts = db['accounts']
 
 def login_required(f):
     @wraps(f)
@@ -119,4 +124,22 @@ def paginator(page, items_list):
 
     return {'render_items' : render_items, 'total_pages' : total_pages}
 
+def generate_login_info(email, phone):       
+    suffix = 0
+    username = email.split('@')[0]
+
+    while(accounts.find_one({"Username": username} != None)):
+        if suffix != 0:
+            username = username.rpartition('_')[0]
+        username = username + '_' + str(suffix)
+        suffix = suffix + 1
+
+    hash_object = hashlib.sha256(phone.encode())
+    hash_hex = hash_object.hexdigest()
+    password = hash_hex[:10]
+
+    return {
+        "Username": username,
+        "Password": password
+    }
 

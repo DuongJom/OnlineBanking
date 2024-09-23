@@ -14,7 +14,7 @@ class User(BaseModel):
         
         self.Name = str(kwargs["name"]).strip() if "name" in kwargs.keys() else None
         self.Sex = kwargs["sex"] if "sex" in kwargs.keys() else SexType.MALE.value
-        self.Address = str(kwargs["address"]).strip() if "address" in kwargs.keys() else None
+        self.Address = kwargs["address"] if "address" in kwargs.keys() else None
         self.Phone = str(kwargs["phone"]).strip() if "phone" in kwargs.keys() else None
         self.Email = str(kwargs["email"]).strip() if "email" in kwargs.keys() else None
         self.Card = kwargs["card"] if "card" in kwargs.keys() else []

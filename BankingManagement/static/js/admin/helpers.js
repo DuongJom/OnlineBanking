@@ -26,15 +26,17 @@ export function closeDeleteModal() {
   delete_modal.classList.add("hidden");
 }
 
-function renderDeleteModal(id, object_name) {
+function renderDeleteModal(id, object_name, data_type) {
   const delete_modal = document.getElementById("delete_modal");
-  const object_id = document.getElementById("object_id");
   const deleteConfirmMessage = document.getElementById("deleteConfirmMessage");
+  const deleteForm = document.getElementById("delete_form");
 
   deleteConfirmMessage.innerHTML = `Are you sure you want to delete <b style="color:red">${object_name}</b>?`;
   delete_modal.classList.remove("hidden");
   delete_modal.classList.add("flex");
-  object_id.setAttribute("value", id);
+
+  deleteForm.action = `/admin/${data_type}/delete/${id}`
+  
 }
 
 function createActionButton(row, _id, data_type, object_name) {
@@ -77,7 +79,7 @@ function createActionButton(row, _id, data_type, object_name) {
         break;
       case "delete":
         btn.addEventListener("click", () => {
-          renderDeleteModal(_id, object_name);
+          renderDeleteModal(_id, object_name, data_type);
         });
         break;
     }
@@ -147,11 +149,7 @@ export function renderTable(items, data_type) {
         data_type,
         items[i][identifier[data_type]]
       );
-
-      if (data_type == "account") {
-        createStatusCol(row, true, items[i]["IsDeleted"]);
-      }
-
+      createStatusCol(row, true, items[i]["IsDeleted"]);
       tbody.appendChild(row);
     }
     table_wrapper.appendChild(table);
@@ -222,11 +220,7 @@ export function renderTable(items, data_type) {
       data_type,
       items[i][identifier[data_type]]
     );
-
-    if (data_type == "account") {
-      createStatusCol(row, items[i]["IsDeleted"]);
-    }
-
+    createStatusCol(row, items[i]["IsDeleted"]);
     tbody2.appendChild(row);
   }
 
@@ -268,18 +262,16 @@ function createTableHeader(col_names, table, isFixed, data_type) {
     
     thead.appendChild(action_col);
 
-    if (data_type == "account") {
-      const status_col = document.createElement("th");
-      status_col.innerHTML = "Status";
-      if(col_names.length > 3) {
-        status_col.classList.add("admin_th");
-      }else {
-        status_col.classList.add("less_admin_th");
-      }
-      thead.appendChild(status_col);
+    const status_col = document.createElement("th");
+    status_col.innerHTML = "Status";
+    if(col_names.length > 3) {
+      status_col.classList.add("admin_th");
+    }else {
+      status_col.classList.add("less_admin_th");
     }
+    thead.appendChild(status_col);
+    
   }
-
   table.appendChild(thead);
 }
 
@@ -414,9 +406,4 @@ export function closeImportForm() {
 
   importForm.classList.remove('flex');
   importForm.classList.add('hidden');
-}
-
-export function changeFileName() {
-  const fileName = this.files[0] ? this.files[0].name : 'Choose a file...';
-  fileNameDisplay.textContent = fileName;
 }

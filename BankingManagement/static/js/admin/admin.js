@@ -8,7 +8,6 @@ import {
   decide_button_type,
   openImportForm,
   closeImportForm,
-  changeFileName,
 } from "./helpers.js";
 
 document.addEventListener("DOMContentLoaded", async () => {

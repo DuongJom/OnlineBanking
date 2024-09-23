@@ -46,15 +46,11 @@ def login():
         
         flash(messages_success['login_success'],'success')
 
-        print(acc["Role"])
         if acc["Role"] == RoleType.USER.value:
-            print("user")
             return redirect("/")
         elif acc["Role"] == RoleType.EMPLOYEE.value:
-            print("employee")
             return redirect("/employee/home")
         else:
-            print("admin")
             return redirect("/admin/account")
     return render_template('general/login.html')
 
@@ -204,7 +200,7 @@ def confirm_email():
         user_email = request.form.get('email')
         # verify if user exist, send reset password page to the user's email
         exist_user = users.find_one({'Email': user_email})
-
+        
         if exist_user is None:
             flash(messages_failure['invalid_email'].format(user_email), 'error')
             return render_template('email/confirm_email.html')

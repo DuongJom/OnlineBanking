@@ -16,4 +16,6 @@ messages_success = {
     'update_success' : 'You have successfully update your {0}',
     'success' : 'Successfully registered',
     'login_success' : 'You have login successfully!',
+    'register_success' : 'Account have been successfully created',
+    'delete_success' : '{0} deleted successfully'
 }

@@ -1,14 +1,19 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, flash, url_for
 from bson import ObjectId
 from datetime import datetime
+from werkzeug.security import generate_password_hash
 
-from models import database
-from helpers import login_required
+from models import database, address, user as u, card, account as acc
+from helpers import login_required, issueNewCard, generate_login_info, send_email
+from enums.card_type import CardType
+from enums.deleted_type import DeletedType
+from message import messages_success, messages_failure
 
 admin_blueprint = Blueprint('admin', __name__)   
 
 db = database.Database().get_db()
 accounts = db['accounts']
+addresses = db['address']
 users = db['users']
 branches = db['branches']
 cards = db['cards']
@@ -16,6 +21,10 @@ transferMethods = db['transferMethods']
 loginMethods = db['loginMethods']
 employees = db['employees']
 news = db['news']
+login_methods = db['login_methods']
+transfer_methods = db['transfer_methods']
+roles = db['roles']
+card_types = db['card_types']
 
 @admin_blueprint.route('/admin', methods=['GET'])
 @login_required
@@ -53,14 +62,22 @@ def admin():
 
 # Start admin_account
 
-@admin_blueprint.route('/admin/account', defaults={'page': None, 'id': None}, methods=['GET'])
+@admin_blueprint.route('/admin/account', defaults={'page': None, 'id': None}, methods=['GET', 'POST'])
 @admin_blueprint.route('/admin/account/<page>', defaults={'id': None}, methods=['GET'])
 @admin_blueprint.route('/admin/account/<page>/<id>', methods=['GET'])
 @login_required
 def account(page, id):
     if request.method == 'GET':
         if page == "add":
-            return render_template('admin/account/add_account.html')
+            loginMethods = login_methods.find()
+            transferMethods = transfer_methods.find()
+            _roles = roles.find()
+            _branches = branches.find()
+            return render_template('admin/account/add_account.html', 
+                                   loginMethods = loginMethods, 
+                                   transferMethods = transferMethods, 
+                                   roles = _roles,
+                                   branches = _branches)
         elif page == "view" and id is not None:
             account_id = ObjectId(id)
             viewed_account = accounts.find_one({"_id": account_id})
@@ -70,6 +87,89 @@ def account(page, id):
             edited_account = accounts.find_one({"_id": account_id})
             return render_template('admin/account/edit_account.html', account = edited_account)
         return render_template('admin/account/account.html')
+    elif request.method == 'POST':
+        # Account info
+        card_type = card_types.find_one({"TypeValue": CardType.CREDITS.value})
+        card_info = issueNewCard()
+        role = roles.find_one({"Value": int(request.form['role'])})
+
+        loginMethodTypeList = list(map(int, request.form.getlist("loginMethod")))
+        transferMethodTypeList = list(map(int, request.form.getlist("transferMethod")))
+
+        loginMethods = list(login_methods.find({'Value': {'$in': loginMethodTypeList}}))
+        transferMethods = list(transfer_methods.find({'Value': {'$in': transferMethodTypeList}}))
+        request_branch = None
+
+        try:
+            request_branch = branches.find_one({"BranchName": request.form['branch']})
+        except KeyError:
+            request_branch = None
+
+        # User info
+        name = request.form['name']
+        sex = request.form['gender']
+        phone = request.form['phone']
+        email = request.form['email']    
+
+        #Login info
+        loginInfo = generate_login_info(email, phone)
+
+        # Address
+        street = request.form['street']
+        ward = request.form['ward']
+        district = request.form['district']
+        city = request.form['city']
+        country = request.form['country']
+
+        # check if user input email and password or not
+        error = None
+        # check if email or username already exist
+        existEmail = users.find_one({"Email": email})
+        existPhone = users.find_one({"Phone": phone})
+
+        if existEmail:
+            error = messages_failure['email_existed'].format(email) 
+        elif existPhone:
+            error = messages_failure['phone_existed'].format(phone)
+        
+        if error:
+            flash(error, 'error')
+            return redirect("/admin/account/add")
+        
+        new_card = card.Card(cardNumber=card_info['cardNumber'], cvv=card_info['cvvNumber'], type=card_type)
+        
+        new_address = address.Address(street = street, ward = ward, district = district, city = city, country = country)
+
+        new_user = u.User(name = name, sex = sex, address = new_address.to_json(), phone = phone, email = email, card = new_card.to_json())
+
+        new_account = acc.Account(accountNumber = card_info['accountNumber'], branch = request_branch, user = new_user.to_json(),
+                                  username = loginInfo['Username'], password = loginInfo['Password'], role = role,
+                                  transferMethod = transferMethods, loginMethod = loginMethods)
+
+        addresses.insert_one(new_address.to_json())
+        users.insert_one(new_user.to_json())
+        accounts.insert_one(new_account.to_json())
+
+        html = render_template('email/send_Login_Info.html', username = loginInfo['Username'], password = loginInfo['Password'])
+        attachments = [{'path': './static/img/bank.png', 'filename':'bank.png', 'mime_type': 'image/png'}]
+        subject = "Send login information"
+        send_email(email, subject, html, attachments=attachments)
+        flash(messages_success['register_success'].format(email), 'success')
+        return redirect('/admin/account/add')
+    
+@admin_blueprint.route('/admin/account/delete/<id>', methods=['POST'])
+@login_required
+def delete_account(id):
+    if request.method == 'POST':
+        account_id = ObjectId(id)
+        _account = accounts.find_one({"_id": account_id})
+        accounts.update_one(
+            {'_id': account_id},
+            {"$set": {"IsDeleted": DeletedType.DELETED.value}
+        })      
+        flash(messages_success['delete_success'].format(_account["Username"]), 'success') 
+    return redirect(redirect(url_for('admin.account')))
+
 
 # End admin_account
 

@@ -83,3 +83,4 @@ def init_card_types():
 
         for type in lstTypes:
             card_types.insert_one(type.to_json())
+
