@@ -19,7 +19,7 @@ branches = db['branches']
 cards = db['cards']
 transferMethods = db['transferMethods']
 loginMethods = db['loginMethods']
-employees = db['employees']
+employees = db['employee']
 news = db['news']
 login_methods = db['login_methods']
 transfer_methods = db['transfer_methods']
@@ -68,11 +68,11 @@ def admin():
 @login_required
 def account(page, id):
     if request.method == 'GET':
+        loginMethods = login_methods.find()
+        transferMethods = transfer_methods.find()
+        _roles = roles.find()
+        _branches = branches.find()
         if page == "add":
-            loginMethods = login_methods.find()
-            transferMethods = transfer_methods.find()
-            _roles = roles.find()
-            _branches = branches.find()
             return render_template('admin/account/add_account.html', 
                                    loginMethods = loginMethods, 
                                    transferMethods = transferMethods, 
@@ -85,23 +85,50 @@ def account(page, id):
         elif page == "edit" and id is not None:
             account_id = ObjectId(id)
             edited_account = accounts.find_one({"_id": account_id})
-            return render_template('admin/account/edit_account.html', account = edited_account)
+            login_values = []
+            transfer_values = []
+
+            try:
+                login_values = [method["Value"] for method in edited_account["LoginMethod"]]
+            except Exception:
+                print("Login Method empty")
+
+            try:
+                transfer_values = [method["Value"] for method in edited_account["TransferMethod"]]
+            except Exception:
+                print("Transfer Method empty")
+
+            return render_template('admin/account/edit_account.html', 
+                                   account = edited_account,
+                                   loginMethods = loginMethods, 
+                                   transferMethods = transferMethods, 
+                                   roles = _roles,
+                                   branches = _branches,
+                                   login_values = login_values,
+                                   transfer_values = transfer_values)
         return render_template('admin/account/account.html')
     elif request.method == 'POST':
         # Account info
-        card_type = card_types.find_one({"TypeValue": CardType.CREDITS.value})
+        card_type = card_types.find_one({"TypeValue": CardType.CREDITS.value}, {"_id":0})
         card_info = issueNewCard()
-        role = roles.find_one({"Value": int(request.form['role'])})
+        role = roles.find_one({"Value": int(request.form['role'])}, {"_id":0})
 
         loginMethodTypeList = list(map(int, request.form.getlist("loginMethod")))
         transferMethodTypeList = list(map(int, request.form.getlist("transferMethod")))
 
-        loginMethods = list(login_methods.find({'Value': {'$in': loginMethodTypeList}}))
-        transferMethods = list(transfer_methods.find({'Value': {'$in': transferMethodTypeList}}))
+        loginMethods = list(login_methods.find(
+            {'Value': {'$in': loginMethodTypeList}}, 
+            {'_id': 0}  
+        ))
+
+        transferMethods = list(transfer_methods.find(
+            {'Value': {'$in': transferMethodTypeList}}, 
+            {'_id': 0}  
+        ))
         request_branch = None
 
         try:
-            request_branch = branches.find_one({"BranchName": request.form['branch']})
+            request_branch = branches.find_one({"BranchName": request.form['branch']}, {"_id":0})
         except KeyError:
             request_branch = None
 
@@ -168,7 +195,52 @@ def delete_account(id):
             {"$set": {"IsDeleted": DeletedType.DELETED.value}
         })      
         flash(messages_success['delete_success'].format(_account["Username"]), 'success') 
-    return redirect(redirect(url_for('admin.account')))
+    return redirect('/admin/account')
+
+@admin_blueprint.route('/admin/edit_account', methods=['POST'])
+@login_required
+def edit_account():
+    if request.method == 'POST':
+        _id = request.form.get("account_id")
+        id = ObjectId(_id)
+        role = roles.find_one({"Value": int(request.form['role'])}, {"_id":0})
+
+        loginMethodTypeList = list(map(int, request.form.getlist("loginMethod")))
+        transferMethodTypeList = list(map(int, request.form.getlist("transferMethod")))
+
+        status = int(request.form.get("status"))
+
+        loginMethods = list(login_methods.find(
+            {'Value': {'$in': loginMethodTypeList}}, 
+            {'_id': 0}  
+        ))
+
+        transferMethods = list(transfer_methods.find(
+            {'Value': {'$in': transferMethodTypeList}}, 
+            {'_id': 0}  
+        ))
+
+        request_branch = None
+
+        try:
+            request_branch = branches.find_one({"BranchName": request.form['branch']}, {"_id": 0})
+        except KeyError:
+            request_branch = None
+
+        accounts.update_one(
+            {'_id': id},
+            {"$set": {
+                "Role": role,
+                "LoginMethod": loginMethods,
+                "TransferMethod": transferMethods,
+                "Branch": request_branch,
+                "IsDeleted": status,
+            }}
+        )
+
+        flash(messages_success["update_success"].format("Account"), 'success')
+        return redirect(f"/admin/account/edit/{_id}")
+
 
 
 # End admin_account

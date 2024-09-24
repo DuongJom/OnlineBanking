@@ -12,7 +12,9 @@
             class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
             <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
         </button>
-        <form class="w-3/4 bg-bg-color flex flex-col justify-center items-center py-16 rounded-lg">
+        <form class="w-3/4 bg-bg-color flex flex-col justify-center items-center py-16 rounded-lg" method="post" action="{{ url_for('admin.edit_account') }}">
+            <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" /> 
+            <input type="hidden" value="{{account._id}}" name="account_id" id="account_id"/>
             <div class="w-full flex justify-center">
                 <h2 class="font-extrabold text-white">Edit Account Information</h2>
             </div>
@@ -40,40 +42,76 @@
                     </div>
 
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="role">Role</label>
-                        <select id="role" class="admin_input" >
-                            <option id="0">Admin</option>
-                            <option id="1">Employee</option>
-                            <option id="2">User</option>
+                        <label for="role" class="admin_label">Role</label>
+                        <select id="role" class="admin_input" name="role" required>
+                            {% for role in roles %}
+                                {% if role.Value == account.Role.Value %}
+                                    <option value="{{role.Value }}" selected>{{ role.RoleName }}</option>
+                                {% else %}
+                                    <option value="{{role.Value }}">{{ role.RoleName }}</option>
+                                {% endif %}
+                            {% endfor %}
                         </select>
+                    </div>
+
+                    <div class="flex mb-4">   
+                        <label class="admin_label mr-4" for="status">Status</label>
+                        {% if account.IsDeleted == 0 %}
+                        <label class="inline-flex items-center me-5 cursor-pointer" onclick="change_status_value(event)">
+                            <input type="hidden" value="{{ account.IsDeleted }}" name="status" id="status_input"/>
+                            <input type="checkbox" class="sr-only peer" checked id="status_checkbox" value="{{ account.IsDeleted }}"/>
+                            <div class="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
+                            <span class="ms-3 text-sm font-bold text-white dark:text-gray-300">Active</span>
+                        </label>
+                        {% else %}
+                        <label class="inline-flex items-center me-5 cursor-pointer" onclick="change_status_value(event)">
+                            <input type="hidden" value="{{ account.IsDeleted }}" name="status" id="status_input"/>
+                            <input type="checkbox" class="sr-only peer" id="status_checkbox" value="{{ account.IsDeleted }}"/>
+                            <div class="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
+                            <span class="ms-3 text-sm font-bold text-white dark:text-gray-300">Inactive</span>
+                        </label>
+                        {% endif %}
                     </div>
         
                 </div>
                 <div class="w-96">
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="branch">Branch</label>
-                        <select id="branch" class="admin_input" >
-                            <option>branch 1</option>
-                            <option>branch 2</option>
-                            <option>branch 3</option>
+                        <label for="branch" class="admin_label">Branch</label>
+                        <select id="branch" class="admin_input" name="branch">
+                          {% for branch in branches %}
+                          <option value="{{branch.BranchName}}">{{branch.BranchName}}</option>
+                          {% endfor %}
                         </select>
                     </div>
-                    <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="transferMethod">Transfer Method</label>
-                        <select id="transferMethod" class="admin_input" >
-                            <option>Method 1</option>
-                            <option>Method 2</option>
-                            <option>Method 3</option>
-                        </select>
+
+                    <div class="flex w-full flex-col">
+                        <div>
+                          <h2 class="admin_label">Login Method</h2>
+                        </div>
+                        <div class="pl-5 text-white">
+                            {% for loginMethod in loginMethods %}
+                                <div>
+                                    <input type="checkbox" value="{{loginMethod.Value}}" class="rounded-full" name="loginMethod"
+                                    {% if loginMethod.Value in login_values %}checked{% endif %}/>
+                                    <label>{{loginMethod.MethodName}}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                    <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="loginMethod">Login Method</label>
-                        <select id="loginMethod" class="admin_input" >
-                            <option value="{{account.LoginMethod}}">LoginMethod</option>
-                            <option>Method 1</option>
-                            <option>Method 2</option>
-                            <option>Method 3</option>
-                        </select>
+
+                    <div class="flex w-full flex-col">
+                        <div>
+                            <h2 class="admin_label">Tranfer Method</h2>
+                        </div>
+                        <div class="pl-5 text-white">
+                            {% for transferMethod in transferMethods %}
+                            <div>
+                                <input type="checkbox" value="{{transferMethod.Value}}" class="rounded-full" name="transferMethod"
+                                {% if transferMethod.Value in transfer_values %}checked{% endif %}/>
+                                <label>{{transferMethod.MethodName}}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
 
                     <div class="w-full flex justify-center mt-5">

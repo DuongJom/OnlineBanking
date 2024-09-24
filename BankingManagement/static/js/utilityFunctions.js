@@ -24,6 +24,17 @@ function navBarToggle () {
     down.classList.toggle('hidden');
 }
 
+function change_status_value(event) {
+  event.preventDefault()
+  const input = document.getElementById("status_input");
+  const status_checkbox = document.getElementById("status_checkbox")
+  
+  input.value = (input.value == 0) ? 9 : 0;
+  status_checkbox.value = (status_checkbox.value == 0) ? 9 : 0;
+
+  status_checkbox.checked = (input.value == 0);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const toggleButton = document.getElementById('toggleButton');
     const dropdownList = document.getElementById('mainDropdown');

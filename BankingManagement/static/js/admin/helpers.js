@@ -137,8 +137,16 @@ export function renderTable(items, data_type) {
         cell.classList.add("admin_cell");
         cell.innerHTML = items[i][col_name.key];
         if (typeof items[i][col_name.key] == "object") {
-          generateObjectSign(cell);
-          cell.innerHTML = items[i][col_name.key][col_name.object_key];
+          if(Array.isArray(items[i][col_name.key])) {
+            if(items[i][col_name.key].length != 0 && items[i][col_name.key][0] != null) {
+              cell.innerHTML = items[i][col_name.key].map(item => item.MethodName).join(', ');
+            }else {
+              cell.innerHTML = "List of method"
+            }
+          }else {
+            cell.innerHTML = items[i][col_name.key][col_name.object_key];
+            generateObjectSign(cell);
+          }
         }
         row.appendChild(cell);
       });
@@ -184,8 +192,16 @@ export function renderTable(items, data_type) {
       if(items[i][col_name.key] != undefined) {
         cell.innerHTML = items[i][col_name.key];
         if (typeof items[i][col_name.key] == "object") {
-          cell.innerHTML = items[i][col_name.key][col_name.object_key];
-          generateObjectSign(cell);
+          if(Array.isArray(items[i][col_name.key])) {
+            if(items[i][col_name.key].length != 0 && items[i][col_name.key][0] != null) {
+              cell.innerHTML = items[i][col_name.key].map(item => item.MethodName).join(', ');
+            }else {
+              cell.innerHTML = "List of method"
+            }
+          }else {
+            cell.innerHTML = items[i][col_name.key][col_name.object_key];
+            generateObjectSign(cell);
+          }
         }
       }else {
         cell.innerHTML = "undefined";
@@ -205,8 +221,16 @@ export function renderTable(items, data_type) {
       if(items[i][col_name.key] != undefined) {
         cell.innerHTML = items[i][col_name.key];
         if (typeof items[i][col_name.key] == "object") {
-          cell.innerHTML = items[i][col_name.key][col_name.object_key];
-          generateObjectSign(cell);
+          if(Array.isArray(items[i][col_name.key])) {
+            if(items[i][col_name.key].length != 0 && items[i][col_name.key][0] != null) {
+              cell.innerHTML = items[i][col_name.key].map(item => item.MethodName).join(', ');
+            }else {
+              cell.innerHTML = "List of method"
+            }
+          }else {
+            cell.innerHTML = items[i][col_name.key][col_name.object_key];
+            generateObjectSign(cell);
+          }
         }
       }else {
         cell.innerHTML = "undefined";
