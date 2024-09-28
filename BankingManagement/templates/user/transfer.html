@@ -1,29 +1,31 @@
 {% extends "user/layout.html" %}
 
 {% block user_content %}
-    <div class="flex flex-col w-1/4 h-2/3 m-auto border-2 shadow-lg rounded-md p-2 bg-light-green-600">
-        <div class="flex-row">
-            Domestic money transfer
-        </div>
-        <div class="flex flex-col border-2 border-gray-600 bg-light-green-400 
-                    rounded-tl-lg rounded-br-lg rounded-bl-md rounded-tr-md">
-            <div class="flex flex-row px-1 pt-1">
-                <div class="justify-self-start w-2/3">Source account</div> 
-                <div class="border rounded-lg bg-light-green-200 justify-self-end">{{account.AccountNumber}}</div>
+    <div class="flex flex-col w-full h-full bg-light-green-400">
+        <form method="post" action="/user/transfer-money" 
+            class="sm:w-1/4 h-2/3 w-3/4 m-auto p-2 border-2 shadow-lg rounded-md">
+            <div class="flex-row">
+                Domestic money transfer
             </div>
-            <div class="flex flex-row px-1 pt-1">
-                <div class="justify-self-start w-2/3">Balance</div>
-                <div class="text-white font-semibold font-mono justify-self-end">
-                    {{account.Balance}}<sup>{{account.Currency}}</sup>
+            <div class="flex flex-col border-2 border-gray-600 bg-light-green-400 
+                        rounded-tl-lg rounded-br-lg rounded-bl-md rounded-tr-md">
+                <div class="flex flex-row px-1 pt-1 w-full">
+                    <div class="w-32">Source account</div> 
+                    <div class="border rounded-lg bg-light-green-200">{{account.AccountNumber}}</div>
+                </div>
+                <div class="flex flex-row px-1 pt-1 w-full">
+                    <div class="w-32">Balance</div>
+                    <div class="text-red-500 font-semibold font-mono">
+                        {{account.Balance | currency_format}}<sup>{{account.Currency}}</sup>
+                    </div>
                 </div>
             </div>
-        </div>
-        <form method="post" action="/user/transfer-money">
             <div class="text-md">Receiver Information</div>
             <div class="flex flex-col">
                 <div class="flex flex-col border-2 border-gray-600 rounded-lg px-2 h-16">
                     <label for="receiver_bank" class="h-7 text-sm">Receiver bank</label>
-                    <select id="receiver_bank" name="receiver_bank" class="h-8 rounded-md text-sm pt-1 -mt-1">
+                    <select id="receiver_bank" name="receiver_bank" 
+                        class="h-8 rounded-md text-sm pt-1 -mt-1">
                         <option value="-1" selected>Select receiver bank</option>
                         {% for bank in banks %}
                             <option value="{{bank.BankId}}">{{bank.BankName}}</option>
@@ -47,7 +49,7 @@
                     <div class="flex flex-row -mt-1">
                         <input id="amount" type="number" name="amount" 
                             placeholder="Please type amount"
-                            class="w-3/4 h-8 rounded-l-lg text-sm"/>
+                            class="w-full h-8 rounded-l-lg text-sm"/>
                         <select name="currency" id="currency" name="currency"
                                 class="h-8 rounded-r-lg text-sm -pt-1">
                             <option class="text-sm" value="0">VND</option>

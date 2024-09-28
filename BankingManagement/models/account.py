@@ -16,11 +16,11 @@ class Account(BaseModel):
         self.AccountNumber = kwargs["accountNumber"] if "accountNumber" in kwargs.keys() else None
         self.Branch = kwargs["branch"] if "branch" in kwargs.keys() else None
         self.AccountOwner = kwargs["user"] if "user" in kwargs.keys() else None
-        self.Balance = kwargs["balance"] if "balance" in kwargs.keys() else 0
+        self.Balance = float(kwargs["balance"]) if "balance" in kwargs.keys() else 0
         self.Currency = kwargs["currency"] if "currency" in kwargs.keys() else CurrencyType.VND.value
         self.Username = str(kwargs["username"]).strip() if "username" in kwargs.keys() else None
         self.Password = generate_password_hash(kwargs["password"]) if "password" in kwargs.keys() else None
-        self.Role = kwargs["role"] if "role" in kwargs.keys() else RoleType.USER.value
+        self.Role = int(kwargs["role"]) if "role" in kwargs.keys() else RoleType.USER.value
         self.TransferMethod = kwargs["transferMethod"] if "transferMethod" in kwargs.keys() else []
         self.LoginMethod = kwargs["loginMethod"] if "loginMethod" in kwargs.keys() else []
     

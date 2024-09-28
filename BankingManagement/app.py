@@ -21,5 +21,10 @@ app.register_blueprint(employee.employee_blueprint)
 app.register_blueprint(admin.admin_blueprint)
 initialize_data(app)
 
+@app.template_filter()
+def currency_format(value):
+    value = float(str(value))
+    return "{:,.3f}".format(value)
+
 if __name__ == '__main__':
     app.run(debug=True)
