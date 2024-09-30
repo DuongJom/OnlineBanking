@@ -77,7 +77,7 @@ def init_transfer_methods():
 def init_card_types():
     if "card_types" not in lst_collections:
         lstTypes = [
-            t.CardType(typeName="Credit Card", typeValue=CardType.CREDITS.value, createdBy=admin_id, modifiedBy=admin),
+            t.CardType(typeName="Credit Card", typeValue=CardType.CREDITS.value, createdBy=admin_id, modifiedBy=admin_id),
             t.CardType(typeName="Debit Card", typeValue=CardType.DEBITS.value, createdBy=admin_id, modifiedBy=admin_id),
         ]
 

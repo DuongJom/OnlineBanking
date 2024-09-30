@@ -58,7 +58,7 @@ def admin():
             item['_id'] = str(item['_id'])
         items.append(item)
 
-    return jsonify({'items': items, 'total_pages': total_pages})
+    return jsonify({"Hello world"})
 
 # Start admin_account
 
