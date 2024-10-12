@@ -4,6 +4,7 @@ const API_URL = '/get-data';
 
 const paginationButton = document.querySelector('.pagination');
 
+//add event when document is loaded
 document.addEventListener('DOMContentLoaded', () => {
   const buttons = document.querySelectorAll('#buttonContainer .action-btn');
   const confirmationModal = document.getElementById('confirmationModal');
@@ -103,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const month = document.getElementById('month');
 const year = document.getElementById('year');
 
+//render table
 const render = function(data){
   // Clear existing rows
   const tbody = document.querySelector('#employee-table');
@@ -113,7 +115,7 @@ const render = function(data){
       const tr = document.createElement('tr');
       tr.innerHTML = `
       <td class="tb_row">${row["STT"]}</td>
-      <td class="tb_row">${row["Employee ID"]}</td>
+      <td class="tb_row">${row["_id"]}</td>
       <td class="tb_row">${row["Employee Name"]}</td>
       <td class="tb_row">${row["Role"]}</td>
       <td class="hidden lg:table-cell tb_row">${row["Check-in time"]}</td>
@@ -158,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function (){
   
 });
 
+//control pagination
 function controlPagination(page=1) {
   render(getSearchResultsPage(page));
   const markup = generatePaginationButton(icons);
@@ -165,6 +168,7 @@ function controlPagination(page=1) {
   paginationButton.insertAdjacentHTML('afterbegin', markup);
 } 
 
+//pagination
 paginationButton.addEventListener('click', function (e) {
   const btn = e.target.closest('.btn--inline');
   if (!btn) return;

@@ -46,11 +46,13 @@ const timeout = function (s) {
       }, s * 1000);
     });
   };
+
   // get the csrf token
 const getCSRFToken = () => {
     return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
   };
-  
+ 
+  //AJAX, get data from backend
 export const AJAX = async function (url, uploadData = undefined) {
     try {
       const csrfToken = getCSRFToken();
@@ -83,6 +85,7 @@ export const state = {
   resultsPerPage: 10
 }
 
+//generate pagination button
 export function generatePaginationButton(icons) {
     const curPage = state.page;
     const numPages = Math.ceil(
