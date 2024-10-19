@@ -63,8 +63,9 @@ def employee_home():
         current_month = today.strftime("%B")
         current_year = today.year
          # Construct MongoDB query to filter documents based on month and year
-        start_date = datetime(today.year, today.month, 1)
-        end_date = datetime(today.year, today.month + 1, 1) if today.month < 12 else datetime(today.year + 1, 1, 1)
+        start_date = datetime(2024, 6, 1)#datetime(today.year, today.month, 1)
+        end_date = datetime(2024, 7, 1)#datetime(today.year, today.month + 1, 1) if today.month < 12 else datetime(today.year + 1, 1, 1)
+        print(end_date)
         start_date_iso = start_date.isoformat()
         end_date_iso = end_date.isoformat()
 

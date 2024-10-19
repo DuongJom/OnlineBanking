@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.disabled = false;
         }
     });
-}
+  }
 
 
   function enableAllButtons() {
@@ -114,13 +114,18 @@ const render = function(data){
   data.forEach((row) => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-      <td class="tb_row">${row["STT"]}</td>
-      <td class="tb_row">${row["_id"]}</td>
-      <td class="tb_row">${row["Employee Name"]}</td>
-      <td class="tb_row">${row["Role"]}</td>
-      <td class="hidden lg:table-cell tb_row">${row["Check-in time"]}</td>
-      <td class="hidden lg:table-cell tb_row">${row["Check-out time"]}</td>
-      <td class="hidden xl:table-cell tb_row">${row["Status"]}</td>
+      <td class="text-center employee_tr">${row["STT"]}</td>
+      <td class="employee_tr">${row["_id"]}</td>
+      <td class="employee_tr">${row["Employee Name"]}</td>
+      <td class="employee_tr">${row["Gender"]}</td>
+      <td class="employee_tr">${row["Employee Position"]}</td>
+      <td class="employee_tr">${row["Role"]}</td>
+      <td class="employee_tr">${row["Employee Phone"]}</td>
+      <td class="employee_tr">${row["Employee Email"]}</td>
+      <td class="employee_tr">${row["Employee Address"]}</td>
+      <td class="hidden lg:table-cell text-center employee_tr">${row["Check-in time"]}</td>
+      <td class="hidden lg:table-cell text-center employee_tr">${row["Check-out time"]}</td>
+      <td class="hidden xl:table-cell employee_tr">${row["Status"]}</td>
       `;
       tbody.appendChild(tr);
   })
