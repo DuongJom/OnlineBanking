@@ -1,43 +1,43 @@
 export const tableStructure = {
   account: [
-    { key: "Username", name: "Username" },
-    { key: "AccountNumber", name: "Account Number" },
-    { key: "Branch", name: "Branch" },
-    { key: "AccountOwner", name: "Owner", object_key: "Name" },
-    { key: "Role", name: "Role", object_key: "RoleName" },
-    { key: "TransferMethod", name: "Transfer Method", object_key: "MethodName"},
-    { key: "LoginMethod", name: "Login Method", object_key: "MethodName"}
+    { key: "Username", name: "Username", isObject: false},
+    { key: "AccountNumber", name: "Account Number", isObject: false },
+    { key: "Branch", name: "Branch", isObject: false },
+    { key: "AccountOwner", name: "Owner", object_key: "Name", isObject: true },
+    { key: "Role", name: "Role", object_key: "RoleName", isObject: false },
+    { key: "TransferMethod", name: "Transfer Method", object_key: "MethodName", isObject: true},
+    { key: "LoginMethod", name: "Login Method", object_key: "MethodName", isObject: true}
   ],
   user: [
-    { key: "Name", name: "Name" },
-    { key: "Sex", name: "Gender" },
-    { key: "Address", name: "Address" },
-    { key: "Phone", name: "Phone" },
-    { key: "Email", name: "Email" },
-    { key: "Card", name: "Card", object_key: "CardNumber" },
+    { key: "Name", name: "Name", isObject: false },
+    { key: "Sex", name: "Gender", isObject: false },
+    { key: "Address", name: "Address", object_key: "District", isObject: false },
+    { key: "Phone", name: "Phone", isObject: false },
+    { key: "Email", name: "Email", isObject: false},
+    { key: "Card", name: "Card", object_key: "CardNumber", isObject: true},
   ],
   branch: [
-    { key: "BranchName", name: "Branch Name" },
-    { key: "Address", object_key: "District", name: "Address" }
+    { key: "BranchName", name: "Branch Name", isObject: false},
+    { key: "Address", object_key: "District", name: "Address", isObject: true}
   ],
   employee: [
-    { key: "EmployeeName", name: "Name" },
-    { key: "Position", name: "Position" },
-    { key: "Role", name: "Role"},
-    { key: "Sex", name: "Gender"},
-    { key: "Phone", name: "Phone"},
-    { key: "Email", name: "Email"},
-    { key: "Address", name: "Address", object_key: "Country"},
-    { key: "Check_in_time", name: "Check In"},
-    { key: "Check_out_time", name: "Check Out"},
-    { key: "Salary", name: "Salary"},
+    { key: "EmployeeName", name: "Name", isObject: false },
+    { key: "Position", name: "Position", isObject: false },
+    { key: "Role", name: "Role", isObject: false},
+    { key: "Sex", name: "Gender", isObject: false},
+    { key: "Phone", name: "Phone", isObject: false},
+    { key: "Email", name: "Email", isObject: false},
+    { key: "Address", name: "Address", object_key: "Country", isObject: false},
+    { key: "Check_in_time", name: "Check In", isObject: false},
+    { key: "Check_out_time", name: "Check Out", isObject: false},
+    { key: "Salary", name: "Salary", isObject: false},
   ],
   news: [
-    { key: "Title", name: "Title"},
-    { key: "Content", name: "Content"},
-    { key: "StartDate", name: "Start date"},
-    { key: "EndDate", name: "End date"},
-    { key: "PublishedBy", name: "Publisher"}
+    { key: "Title", name: "Title", isObject: false},
+    { key: "Content", name: "Content", isObject: false},
+    { key: "StartDate", name: "Start date", isObject: false},
+    { key: "EndDate", name: "End date", isObject: false},
+    { key: "PublishedBy", name: "Publisher", isObject: false}
   ]
 };
 
@@ -53,4 +53,11 @@ export const pages = {
   user: "Users",
   employee: "Employees",
   branch: "Branches",
+}
+
+export const filterType = {
+  account: "accountFilterConditons",
+  user: "userFilterConditions",
+  employee: "employeeFilterConditions",
+  branch: "branchFilterConditions"
 }

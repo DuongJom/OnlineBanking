@@ -1,11 +1,18 @@
 import { tableStructure, identifier } from "./config.js";
 
 export function getAdminData(page, dataType) {
-  return fetch(`/admin?page=${page}&dataType=${dataType}`, {
-    method: "GET",
+  const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+  return fetch(`/admin`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
     },
+    body: JSON.stringify({
+      page: page,
+      dataType: dataType,
+      filter: JSON.parse(localStorage.getItem("filterCondition"))
+    }),
   })
     .then((response) => {
       if (!response.ok) {
@@ -141,11 +148,13 @@ export function renderTable(items, data_type) {
             if(items[i][col_name.key].length != 0 && items[i][col_name.key][0] != null) {
               cell.innerHTML = items[i][col_name.key].map(item => item.MethodName).join(', ');
             }else {
-              cell.innerHTML = "List of method"
+              cell.innerHTML = ""
             }
-          }else {
+          }else if(col_name.isObject == true){
             cell.innerHTML = items[i][col_name.key][col_name.object_key];
             generateObjectSign(cell);
+          }else {
+            cell.innerHTML = items[i][col_name.key][col_name.object_key];
           }
         }
         row.appendChild(cell);
@@ -196,11 +205,13 @@ export function renderTable(items, data_type) {
             if(items[i][col_name.key].length != 0 && items[i][col_name.key][0] != null) {
               cell.innerHTML = items[i][col_name.key].map(item => item.MethodName).join(', ');
             }else {
-              cell.innerHTML = "List of method"
+              cell.innerHTML = ""
             }
-          }else {
+          }else if(col_name.isObject == true){
             cell.innerHTML = items[i][col_name.key][col_name.object_key];
             generateObjectSign(cell);
+          }else {
+            cell.innerHTML = items[i][col_name.key][col_name.object_key];
           }
         }
       }else {
@@ -225,11 +236,13 @@ export function renderTable(items, data_type) {
             if(items[i][col_name.key].length != 0 && items[i][col_name.key][0] != null) {
               cell.innerHTML = items[i][col_name.key].map(item => item.MethodName).join(', ');
             }else {
-              cell.innerHTML = "List of method"
+              cell.innerHTML = ""
             }
-          }else {
+          }else if(col_name.isObject == true){
             cell.innerHTML = items[i][col_name.key][col_name.object_key];
             generateObjectSign(cell);
+          }else {
+            cell.innerHTML = items[i][col_name.key][col_name.object_key];
           }
         }
       }else {
@@ -374,7 +387,7 @@ function create_toggle_button(parent, isActive) {
   const wrapper_style = "inline-flex items-center me-5";
   const input_style = "sr-only peer";
   const text_style =
-    "ms-3 text-sm font-medium text-gray-900 dark:text-gray-300";
+    "ms-3 text-sm font-medium text-gray-900 dark:text-gray-500";
   const div_style =
     "relative w-8 h-4 bg-gray-500 rounded-full peer dark:bg-gray-700 peer-focus:ring-4" +
     "peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 peer-checked:after:translate-x-full " +
@@ -393,8 +406,9 @@ function create_toggle_button(parent, isActive) {
   if (isActive == 0) {
     input.checked = true;
     text.innerHTML = "Active";
+  }else {
+    text.innerHTML = "Inactive";
   }
-  text.innerHTML = "Inactive";
 
   addStyle(wrapper, wrapper_style);
   addStyle(input, input_style);
@@ -417,17 +431,53 @@ export function decide_button_type(data_type) {
   }
 }
 
-
 export function openImportForm() {
   const importForm = document.getElementById("importForm");
-
+  
   importForm.classList.remove('hidden');
   importForm.classList.add('flex');
 }
 
 export function closeImportForm() {
   const importForm = document.getElementById("importForm");
-
+  
   importForm.classList.remove('flex');
   importForm.classList.add('hidden');
+}
+
+function getFilterCondition() {
+  const dynamicKey = document.getElementById("dynamicKey").value; 
+  const dynamicValue = document.getElementById("dynamicValue").value; 
+  let filterCondition = {};
+
+  try {
+    const fixedCondition = [...document.getElementsByClassName("fixedCondition")];
+    fixedCondition.map(con => {
+      if(con.value !== "") {
+        filterCondition[con.name] = con.value;
+      }
+    })
+
+  }
+  catch(error) {
+    console.log(error.message);
+  }
+
+  if (dynamicValue !== "" && dynamicKey !== "") {
+    filterCondition[dynamicKey] = dynamicValue;
+  }
+
+  localStorage.setItem("filterCondition", JSON.stringify(filterCondition));
+}
+
+export async function filter(data_type) {
+  getFilterCondition();
+  localStorage.setItem("admin_page", 1);
+  try {
+    const data = await getAdminData(1, data_type);
+    localStorage.setItem("admin_maxPage", data.total_pages);
+    renderTable(data.items, data_type);
+  } catch (error) {
+    console.error("There was a problem with loading the items:", error);
+  }
 }

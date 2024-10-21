@@ -12,7 +12,7 @@ login_methods = db['login_methods']
 transfer_methods = db['transfer_methods']
 card_types = db['card_types']
 
-admin = accounts.find_one({'Role': RoleType.ADMIN.value})
+admin = accounts.find_one({'Role.Value': RoleType.ADMIN.value})
 lst_collections = db.list_collection_names()
 admin_id = admin["_id"]
 

@@ -27,12 +27,19 @@ function navBarToggle () {
 function change_status_value(event) {
   event.preventDefault()
   const input = document.getElementById("status_input");
-  const status_checkbox = document.getElementById("status_checkbox")
+  const status_checkbox = document.getElementById("status_checkbox");
+  const status_text = document.getElementById("status_text");
   
   input.value = (input.value == 0) ? 9 : 0;
   status_checkbox.value = (status_checkbox.value == 0) ? 9 : 0;
 
   status_checkbox.checked = (input.value == 0);
+
+  if(input.value == 0) {
+    status_text.innerHTML = "Active";
+  }else {
+    status_text.innerHTML = "Inactive";
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {

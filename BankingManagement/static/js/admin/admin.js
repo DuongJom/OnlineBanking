@@ -8,9 +8,11 @@ import {
   decide_button_type,
   openImportForm,
   closeImportForm,
+  filter,
 } from "./helpers.js";
-
 document.addEventListener("DOMContentLoaded", async () => {
+  window.filter = filter;
+  localStorage.setItem("filterCondition", JSON.stringify({}));
   window.addEventListener("resize", adjustTableMargin);
   const dataType = document.getElementById("dataType").value;
   const btnNext = document.getElementById("next-btn");
@@ -19,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const lazyLoading = document.getElementById("lazyLoading");
   const openImportFormBtn = document.getElementById("openImportFormButton");
   const closeImportFormBtn = document.getElementById("closeImportFormButton");
-
+  const dynamicValue = document.getElementById("dynamicValue");
   localStorage.setItem("admin_page", 1);
 
   try {
@@ -40,4 +42,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   openImportFormBtn.addEventListener("click", () => openImportForm());
   closeImportFormBtn.addEventListener("click", () => closeImportForm());
   decide_button_type(dataType);
+
+  dynamicValue.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") { 
+      filter(dataType);
+    }
+  });
 });
+ 

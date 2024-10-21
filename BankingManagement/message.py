@@ -9,9 +9,11 @@ messages_failure = {
     'token_expired' : 'The link has been expired',
     'document_not_found' : 'No document matching the filter criteria',
     'login_failure' : 'Login failed!',
+    'null_data': '{0} can not null',
 }
 
 messages_success = {
+    'create_success': '{0} is created successfully',
     'link_sent' : 'A reset password link is sent to {0}',
     'update_success' : 'You have successfully update your {0}',
     'success' : 'Successfully registered',

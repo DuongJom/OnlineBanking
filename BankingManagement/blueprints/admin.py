@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, flash, url_for
+from flask import Blueprint, render_template, request, jsonify, redirect, flash, session
 from bson import ObjectId
 from datetime import datetime
-from werkzeug.security import generate_password_hash
+from io import BytesIO
+import pandas as pd
 
 from models import database, address, user as u, card, account as acc
-from helpers import login_required, issueNewCard, generate_login_info, send_email
+from helpers import login_required, issueNewCard, generate_login_info, send_email, create_accounts
 from enums.card_type import CardType
 from enums.deleted_type import DeletedType
 from message import messages_success, messages_failure
@@ -26,17 +27,23 @@ transfer_methods = db['transfer_methods']
 roles = db['roles']
 card_types = db['card_types']
 
-@admin_blueprint.route('/admin', methods=['GET'])
+@admin_blueprint.route('/admin', methods=['POST'])
 @login_required
 def admin():
-    per_page = 10
-    page = request.args.get('page', 1, int)
-    dataType = request.args.get('dataType')
+    page = request.json.get('page', 1)
+    dataType = request.json.get('dataType')
+    filters = request.json.get('filter')
+
+    for key, value in filters.items():
+        if isinstance(value, str) and value.isdigit(): 
+            filters[key] = int(value)
+        elif isinstance(value, (int, float)):  
+            filters[key] = int(value)
+
     collection = None
     items = []
     total_pages = 0
 
-    # decide which collection to query
     if dataType == 'account':
         collection = accounts
     elif dataType == 'user':
@@ -47,18 +54,22 @@ def admin():
         collection = employees
     elif dataType == 'news':
         collection = news
+    else:
+        return jsonify({"error": "Invalid dataType"}), 400
 
-    # query for list of data and total pages
-    total_pages = (collection.count_documents({}) + per_page - 1) // per_page
-    items_cursor = collection.find({}).skip((page-1)*per_page).limit(per_page)
+    # Calculate total pages and fetch items
+    per_page = 10
+    total_documents = collection.count_documents({})
+    total_pages = (total_documents + per_page - 1) // per_page
+    items_cursor = collection.find(filters).skip((page - 1) * per_page).limit(per_page)
 
-    # convert ObjectId '_id' to string '_id'
+    # Convert ObjectId to string for JSON response
     for item in items_cursor:
         if '_id' in item:
             item['_id'] = str(item['_id'])
         items.append(item)
 
-    return jsonify({"Hello world"})
+    return jsonify({'items': items, 'total_pages': total_pages})
 
 # Start admin_account
 
@@ -108,6 +119,7 @@ def account(page, id):
                                    transfer_values = transfer_values)
         return render_template('admin/account/account.html')
     elif request.method == 'POST':
+        admin_id = session.get("account_id")
         # Account info
         card_type = card_types.find_one({"TypeValue": CardType.CREDITS.value}, {"_id":0})
         card_info = issueNewCard()
@@ -163,16 +175,18 @@ def account(page, id):
             flash(error, 'error')
             return redirect("/admin/account/add")
         
-        new_card = card.Card(cardNumber=card_info['cardNumber'], cvv=card_info['cvvNumber'], type=card_type)
+        new_card = card.Card(cardNumber=card_info['cardNumber'], cvv=card_info['cvvNumber'], type=card_type, createdBy = admin_id)
         
-        new_address = address.Address(street = street, ward = ward, district = district, city = city, country = country)
+        new_address = address.Address(street = street, ward = ward, district = district, city = city, country = country, createdBy = admin_id)
 
-        new_user = u.User(name = name, sex = sex, address = new_address.to_json(), phone = phone, email = email, card = new_card.to_json())
+        new_user = u.User(name = name, sex = sex, address = new_address.to_json(), phone = phone, email = email, card = new_card.to_json(),
+                          createdBy = admin_id)
 
         new_account = acc.Account(accountNumber = card_info['accountNumber'], branch = request_branch, user = new_user.to_json(),
                                   username = loginInfo['Username'], password = loginInfo['Password'], role = role,
-                                  transferMethod = transferMethods, loginMethod = loginMethods)
+                                  transferMethod = transferMethods, loginMethod = loginMethods, createdBy = admin_id)
 
+        cards.insert_one(new_card.to_json())
         addresses.insert_one(new_address.to_json())
         users.insert_one(new_user.to_json())
         accounts.insert_one(new_account.to_json())
@@ -201,6 +215,7 @@ def delete_account(id):
 @login_required
 def edit_account():
     if request.method == 'POST':
+        admin_id = session.get("account_id")
         _id = request.form.get("account_id")
         id = ObjectId(_id)
         role = roles.find_one({"Value": int(request.form['role'])}, {"_id":0})
@@ -235,13 +250,27 @@ def edit_account():
                 "TransferMethod": transferMethods,
                 "Branch": request_branch,
                 "IsDeleted": status,
+                "ModifiedBy": admin_id
             }}
         )
 
         flash(messages_success["update_success"].format("Account"), 'success')
         return redirect(f"/admin/account/edit/{_id}")
 
+@admin_blueprint.route('/admin/accounts', methods=['POST'])
+@login_required
+def import_accounts():
+    if request.method == 'POST':
+        data = []
+        excel = request.files["accounts"]
+        df = pd.read_excel(BytesIO(excel.read()), engine='openpyxl')
 
+        data = df.to_dict(orient='records')
+
+        res = create_accounts(data)
+
+
+    return render_template("admin/account/import_result.html", res = res)
 
 # End admin_account
 

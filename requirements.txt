@@ -2,6 +2,7 @@ pip install Werkzeug
 pip install functools
 pip install bson
 pip install python-dotenv
+pip install pandas
 
 npm install @tailwindcss/forms
 npm i parcel -D
