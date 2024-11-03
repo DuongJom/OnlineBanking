@@ -63,8 +63,8 @@ def employee_home():
         current_month = today.strftime("%B")
         current_year = today.year
          # Construct MongoDB query to filter documents based on month and year
-        start_date = datetime(2024, 6, 1)#datetime(today.year, today.month, 1)
-        end_date = datetime(2024, 7, 1)#datetime(today.year, today.month + 1, 1) if today.month < 12 else datetime(today.year + 1, 1, 1)
+        start_date = datetime(today.year, today.month, 1)
+        end_date = datetime(today.year, today.month + 1, 1) if today.month < 12 else datetime(today.year + 1, 1, 1)
         print(end_date)
         start_date_iso = start_date.isoformat()
         end_date_iso = end_date.isoformat()
@@ -119,7 +119,10 @@ def get_data():
 @employee_blueprint.route('/employee/working-time', methods = ['GET'])
 def employee_working_time():
     if request.method == 'GET':
-        return render_template('employee/working_time.html')
+        today = datetime.now()
+        formated_month_year = today.strftime("%m/%y")
+        formated_date_month = today.strftime("%d/%m")
+        return render_template('employee/working_time.html', month_year = formated_month_year, date_month = formated_date_month)
     
 @employee_blueprint.route('/employee/salary', methods = ['GET'])
 def employee_salary():

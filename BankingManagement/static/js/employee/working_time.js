@@ -26,9 +26,10 @@ for (let day = 1; day <= daysInMonth; day++) {
 
     const row = `
         <tr>
-            <td class="tb_row">${day}</td>
-            <td class="tb_row">${dayOfWeek}</td>
-            <td class="tb_row">${shift}</td>
+            <td class="employee_working_tr">${day}</td>
+            <td class="employee_working_tr">${dayOfWeek}</td>
+            <td class="employee_working_tr">${shift}</td>
+            <td class="employee_working_tr">${shift}</td>
         </tr>
     `;
     data.push(row);

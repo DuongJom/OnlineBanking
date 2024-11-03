@@ -100,9 +100,9 @@
                         <th class="employee_th">STT</th>
                         <th class="employee_th">Employee ID</th>
                         <th class="employee_th">Employee Name</th>
+                        <th class="employee_th">Role</th>
                         <th class="employee_th">Gender</th>
                         <th class="employee_th">Employee Position</th>
-                        <th class="employee_th">Role</th>
                         <th class="employee_th">Employee Phone</th>
                         <th class="employee_th">Employee Email</th>
                         <th class="employee_th">Employee Address</th>
@@ -135,6 +135,9 @@
                 </button> -->
 
             </div>
+
+            <!-- Sentinel element for IntersectionObserver -->
+            <div id="sentinel" class="h-10"></div>
         </div>
     </div>
     <script type="module" src="{{url_for('static',filename='js/employee/home.js')}}"></script>

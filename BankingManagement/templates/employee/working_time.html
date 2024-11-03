@@ -1,13 +1,14 @@
 {% extends "employee/layout.html" %}
 {% block employee_content %}
         <div class="flex flex-col ml-60 p-8 float-left overflow-x-auto"> 
-            <h1 class="text-2xl font-bold mb-4">Your Working Timetable</h1>
-            <table id="data_table" class="min-w-full table-auto border border-gray-500 divide-y divide-gray-500">
+            <h1 class="text-2xl font-bold mb-4"> {{month_year}}</h1>
+            <table id="data_table" class="employee_working_table">
                 <thead class="bg-orange-300">
                     <tr>
-                        <th class="tb_header">Date</th>
-                        <th class="tb_header">Day</th>
-                        <th class="tb_header">Shift</th>
+                        <th class="employee_working_th">Date ({{date_month}})</th>
+                        <th class="employee_working_th">Check-in</th>
+                        <th class="employee_working_th">Check-out</th>
+                        <th class="employee_working_th">Working status</th>
                     </tr>
                 </thead>
                 <tbody id="timetable-body" class="bg-yellow-100 divide-y divide-gray-500">
