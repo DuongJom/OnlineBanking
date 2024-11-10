@@ -1,0 +1,25 @@
+import json
+
+from models.base import BaseModel
+from models.datetime_encoder import DateTimeEncoder
+
+from enums.currency import CurrencyType
+from enums.transaction_type import TransactionType
+from enums.transaction_status import TransactionStatus
+
+class Transaction(BaseModel):
+    def __init__(self, **kwargs):
+        created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
+        modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
+        super().__init__(createdBy=created_by, modifiedBy=modified_by)
+
+        self.SenderId = kwargs["sender"] if "sender" in kwargs.keys() else None
+        self.ReceiverId = kwargs["receiver"] if "receiver" in kwargs.keys() else None
+        self.Message = kwargs["message"] if "message" in kwargs.keys() else None
+        self.Currency = kwargs["currency"] if "currency" in kwargs.keys() else CurrencyType.VND.value()
+        self.TransactionType = kwargs["transaction_type"] if "transaction_type" in kwargs.keys() else TransactionType.WITHDRAWAL.value()
+        self.Amount = float(kwargs["amount"]) if "amount" in kwargs.keys() else 0
+        self.Status = kwargs["status"] if "status" in kwargs.keys() else TransactionStatus.DOING.value()
+
+    def to_json(self):
+        return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))
