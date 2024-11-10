@@ -46,11 +46,10 @@ def login():
         
         flash(messages_success['login_success'],'success')
 
-        print(acc["Role"])
-        if acc["Role"] == RoleType.USER.value:
+        if acc["Role"]["Value"] == RoleType.USER.value:
             print("user")
             return redirect("/")
-        elif acc["Role"] == RoleType.EMPLOYEE.value:
+        elif acc["Role"]["Value"] == RoleType.EMPLOYEE.value:
             print("employee")
             return redirect("/employee/home")
         else:

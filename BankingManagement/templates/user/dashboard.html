@@ -1,0 +1,54 @@
+{% extends 'user/layout.html' %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block user_content %}
+<!-- Main Content -->
+<div class="container mx-auto mt-10 px-4">
+    <!-- User Information Section -->
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Welcome, {{ user_name }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="text-lg font-medium text-gray-700">Account Balance</h3>
+                <p class="text-3xl font-bold text-green-600">{{ account_balance }} USD</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-medium text-gray-700">Account Number</h3>
+                <p class="text-xl text-gray-800">{{ account_number }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="bg-white shadow-lg rounded-lg p-6">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">Recent Transactions</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto border-collapse">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-700">
+                        <th class="px-6 py-3 text-left">Date</th>
+                        <th class="px-6 py-3 text-left">Description</th>
+                        <th class="px-6 py-3 text-left">Amount</th>
+                        <th class="px-6 py-3 text-left">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr class="bg-gray-50 text-gray-700">
+                        <td class="border px-6 py-4">{{ transaction.date }}</td>
+                        <td class="border px-6 py-4">{{ transaction.description }}</td>
+                        <td class="border px-6 py-4 {{ 'text-red-600' if transaction.amount < 0 else 'text-green-600' }}">
+                            {{ transaction.amount }} USD
+                        </td>
+                        <td class="border px-6 py-4">{{ transaction.balance }} USD</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

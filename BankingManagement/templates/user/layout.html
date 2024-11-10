@@ -1,21 +1,23 @@
 {% extends "general/layout.html" %}
 
-{% block title %}
-    Home
-{% endblock %}
-
 {% block content %}
 <!-- User side bar -->
 <div class="flex-col justify-between">
-    <div class="flex mt-14 h-screen">
+    <div class="flex h-screen">
         <ul class="p-4 w-48 sidebar hidden sm:block bg-light-green-300">
-            <li class="text-white hover:text-white hover:bg-light-green-800 border rounded-lg
+            <li class="mt-20 text-white hover:text-white hover:bg-light-green-800 border rounded-lg
+                admin_sidebar_item{% if request.path == '/home' %} hightlight{% endif %}">
+                <button><a href="/home">Home</a></button>
+            </li>
+            <li class="mt-2 text-white hover:text-white hover:bg-light-green-800 border rounded-lg
                 admin_sidebar_item{% if request.path == '/transfer-money' %} hightlight{% endif %}">
                 <a href="/transfer-money">Transfer money</a>
             </li>
         </ul>
-        {% block user_content %}
-        {% endblock %}
+        <div class="mt-16 w-full h-full">
+            {% block user_content %}
+            {% endblock %}
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -23,8 +23,9 @@ initialize_data(app)
 
 @app.template_filter()
 def currency_format(value):
-    value = float(str(value))
-    return "{:,.3f}".format(value)
+    if value is None:
+        value = 0
+    return "{:,.3f}".format(float(value))
 
 if __name__ == '__main__':
     app.run(debug=True)
