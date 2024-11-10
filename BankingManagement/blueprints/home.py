@@ -17,7 +17,7 @@ def index():
     account = accounts.find_one({"_id": account_id})
     if account and account["Role"]:
         if account["Role"]["Value"] == RoleType.USER.value:
-            return render_template("/user/home.html", account = account)
+            return redirect("/home")
         elif account["Role"]["Value"] == RoleType.EMPLOYEE.value:
             return redirect("/employee/home")
         else:
@@ -33,7 +33,8 @@ def transfer_money():
     if request.method == "GET":
         return render_template("/user/transfer.html", account=account, banks=banks)
 
-@home_blueprint.route("/home", methods=["GET"])
+@home_blueprint.route("/home/", methods=["GET"])
+@login_required
 def home():
     # Simulate user and transaction data
     user_name = "John Doe"
@@ -50,3 +51,15 @@ def home():
                            account_balance=account_balance, 
                            account_number=account_number, 
                            transactions=transactions)
+
+@home_blueprint.route('/confirm-otp', methods=['GET','POST'])
+@login_required
+def confirm_otp():
+    #generate OTP code
+    if request.method == 'GET':
+        return render_template("/user/otp_confirmation.html")
+    return redirect("/home")
+
+@home_blueprint.route('/resend-otp',methods=['POST'])
+def resend_otp():
+    pass
