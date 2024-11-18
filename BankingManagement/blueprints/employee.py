@@ -48,20 +48,10 @@ def convert_objectid(data):
 @employee_blueprint.route('/employee/home', methods = ['GET'])
 def employee_home():
     if request.method == 'GET':
-        # max_STT_doc = db.employee.find().sort('STT', -1).limit(1).next()
-        # max_STT = max_STT_doc["STT"]
-        # new_docs = []
-        # for doc in data:
-        #     new_doc = {k:v for k,v in doc.items() if k != '_id'} #remove the _id
-        #     max_STT += 1
-        #     new_doc['STT'] = max_STT
-        #     new_doc["CreatedDate"] = datetime(2024, 7, 1).isoformat()
-        #     new_docs.append(new_doc)
-
-        # db.employee.insert_many(new_docs)
         today = date.today()
         current_month = today.strftime("%B")
         current_year = today.year
+
          # Construct MongoDB query to filter documents based on month and year
         start_date = datetime(today.year, today.month, 1)
         end_date = datetime(today.year, today.month + 1, 1) if today.month < 12 else datetime(today.year + 1, 1, 1)
@@ -74,8 +64,9 @@ def employee_home():
         data = convert_objectid(data)
         return render_template('employee/home.html', current_month = current_month, current_year = current_year, months=months, years=years, fake_data=data)
 
-@employee_blueprint.route('/get-data', methods=['POST'])
-def get_data():
+#return home data
+@employee_blueprint.route('/get-home-data', methods=['POST'])
+def get_home_data():
     # Check if the request contains JSON data
     if request.is_json:
         try:
@@ -86,8 +77,8 @@ def get_data():
             
             if month_str not in month_map.keys():
                 return jsonify({'error': 'Invalid month name'}), 400
-
             month = month_map[month_str]
+            
             # Construct MongoDB query to filter documents based on month and year
             start_date = datetime(year, month, 1)
             end_date = datetime(year, month + 1, 1) if month < 12 else datetime(year + 1, 1, 1)
@@ -123,6 +114,43 @@ def employee_working_time():
         formated_month_year = today.strftime("%m/%y")
         formated_date_month = today.strftime("%d/%m")
         return render_template('employee/working_time.html', month_year = formated_month_year, date_month = formated_date_month)
+
+#get working time data
+@employee_blueprint.route('/get-working-time-data', methods=['POST'])
+def get_working_time_data():
+    # Check if the request contains JSON data
+    if request.is_json:
+        try:
+            # get json from body of the request
+            data = request.get_json()
+            month = data['month'] + 1 
+            year = int(data['year'])
+            
+            # Construct MongoDB query to filter documents based on month and year
+            start_date = datetime(year, month, 1)
+            end_date = datetime(year, month + 1, 1) if month < 12 else datetime(year + 1, 1, 1)
+            start_date_iso = start_date.isoformat()
+            end_date_iso = end_date.isoformat()
+
+            query = {'CreatedDate': {'$gte': start_date_iso, '$lt': end_date_iso}}
+
+            # Execute the query and convert the cursor to a list
+            data_cursor = db.employee.find(query)
+            data_list = list(data_cursor)  # Convert cursor to list
+            
+            if not data_list:
+                print("No documents found for the given query.")
+            # Convert MongoDB ObjectId to string
+            for doc in data_list:
+                doc['_id'] = str(doc['_id'])
+            
+            return jsonify(data_list), 200
+        except KeyError:
+            return jsonify({'error': 'Invalid input data. "month" and "year" are required.'}), 400
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
+    else:
+        return jsonify({'error': 'Request does not contain JSON'}), 400
     
 @employee_blueprint.route('/employee/salary', methods = ['GET'])
 def employee_salary():

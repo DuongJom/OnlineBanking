@@ -1,6 +1,6 @@
 'strict mode'
 import { AJAX, icons, generatePaginationButton, state, getSearchResultsPage} from './config.js';
-const API_URL = '/get-data';
+const API_URL = '/get-home-data';
 
 const paginationButton = document.querySelector('.pagination');
 
@@ -86,8 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
       disableOtherButtons('day_off');
       hideModals();
   });
-   // Add event listeners to close the modal when clicking outside of it
-   confirmationModal.addEventListener('click', (event) => {
+  
+  // Add event listeners to close the modal when clicking outside of it
+  confirmationModal.addEventListener('click', (event) => {
     if (event.target === confirmationModal) {
         hideModals();
     }
