@@ -8,6 +8,7 @@
         <!-- tool bar -->
         <div class="w-full flex flex-col sm:flex-row flex-1 justify-between items-center absolute top-4">
             {% include "admin/general/function_button.html" %}
+            {% include "admin/general/import_result.html" %}
             <div class="mr-14 flex flex-1 items-center justify-end ">
                 
                 <div class="border border-black border-r-0 h-8 w-10 p-1 flex items-center justify-center rounded-l-2xl">
@@ -24,7 +25,7 @@
                 class="h-8 text-sm pe-8 py-0 border border-black focus:ring-0 focus:border-black ml-5 rounded-lg fixedCondition" 
                 name="Role.Value"
                 onchange="filter('account')">
-                    <option value="" selected >Role</option>
+                    <option value="" selected >All</option>
                     <option value="2">Admin</option>
                     <option value="1">Employee</option>
                     <option value="0">User</option>

@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const openImportFormBtn = document.getElementById("openImportFormButton");
   const closeImportFormBtn = document.getElementById("closeImportFormButton");
   const dynamicValue = document.getElementById("dynamicValue");
+  let timeout = null;
   localStorage.setItem("admin_page", 1);
 
   try {
@@ -43,10 +44,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   closeImportFormBtn.addEventListener("click", () => closeImportForm());
   decide_button_type(dataType);
 
-  dynamicValue.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") { 
+  dynamicValue.addEventListener('keyup', function () {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(function () {
       filter(dataType);
-    }
+    }, 1000);
   });
 });
  

@@ -19,6 +19,15 @@ module.exports = withMT({
         'popup-bg-hover' : 'rgba(204, 204, 204, 0.3)',
         'side_bar_bg' : '#634CB3',
         'hover_side_bar': '#8271C1',
+        'success_bg': '#D1E7DD',
+        'success_border': '#A3CFBB',
+        'success_text': '#0A3622',
+        'error_bg': '#F8D7DA',
+        'error_border': '#F1AEB5',
+        'error_text': '#5D304D',
+      },
+      maxHeight: {
+        '600': '600px',
       },
       height: {
         '90%' : '90%',

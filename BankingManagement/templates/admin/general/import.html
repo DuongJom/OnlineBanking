@@ -2,8 +2,6 @@
 <div class="hidden h-screen w-screen fixed top-0 left-0 bg-popup-bg-hover z-20 justify-center items-center" id="importForm">
     <form 
     class="w-96 h-52 bg-white rounded-md flex flex-col items-center justify-center relative"
-    action="{{ url_for('admin.import_accounts') }}" 
-    method="post"
     enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" /> 
         <div class="w-full flex justify-end absolute top-1 right-1">
@@ -21,17 +19,9 @@
         <button 
         class="h-10 w-56 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar font-bold"
         value="Upload"
-        type="submit"
+        type="button"
+        onclick="importData()"
         >Import Data</button>
     </form>
 </div>
-
-<script>
-    const excelInput = document.getElementById('excel_input');
-    const fileNameDisplay = document.getElementById('file-name');
-
-    excelInput.addEventListener('change', function() {
-        const fileName = this.files[0] ? this.files[0].name : 'Choose a file...';
-        fileNameDisplay.textContent = fileName;
-    });
-</script>
+<script type="module" src="{{ url_for('static', filename='js/admin/import_data.js') }}"></script>

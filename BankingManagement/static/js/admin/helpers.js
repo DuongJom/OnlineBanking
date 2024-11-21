@@ -448,6 +448,7 @@ export function closeImportForm() {
 function getFilterCondition() {
   const dynamicKey = document.getElementById("dynamicKey").value; 
   const dynamicValue = document.getElementById("dynamicValue").value; 
+
   let filterCondition = {};
 
   try {
@@ -464,9 +465,9 @@ function getFilterCondition() {
   }
 
   if (dynamicValue !== "" && dynamicKey !== "") {
-    filterCondition[dynamicKey] = dynamicValue;
+    filterCondition[dynamicKey] = {$regex: `^${dynamicValue}`, $options: 'i'};
   }
-
+  console.log(filterCondition);
   localStorage.setItem("filterCondition", JSON.stringify(filterCondition));
 }
 

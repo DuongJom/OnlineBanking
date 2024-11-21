@@ -157,14 +157,14 @@ def generate_login_info(email, phone):
 def verify_input_data(row_index, **kwargs):
     for k, v in kwargs.items():
         if  not isinstance(v,str) or v == None:
-            return {'status': "fail", 'message': messages_failure["null_data"].format(k), "row_index": row_index}
+            return {'status': "error", 'message': messages_failure["null_data"].format(k), "row_index": row_index}
         
     if accounts.find_one({"Username": kwargs["Username"]}) != None:
-        return {'status': "fail", 'message': messages_failure["username_existed"].format(kwargs["Username"]), "row_index": row_index}
+        return {'status': "error", 'message': messages_failure["username_existed"].format(kwargs["Username"]), "row_index": row_index}
     if users.find_one({"Email": kwargs["Email"]}) != None:
-        return {'status': "fail", 'message': messages_failure["email_existed"].format(kwargs["Email"]), "row_index": row_index}
+        return {'status': "error", 'message': messages_failure["email_existed"].format(kwargs["Email"]), "row_index": row_index}
     if users.find_one({"Phone": kwargs["Phone"]}) != None:
-        return {'status': "fail", 'message': messages_failure["phone_existed"].format(kwargs["Phone"]), "row_index": row_index}
+        return {'status': "error", 'message': messages_failure["phone_existed"].format(kwargs["Phone"]), "row_index": row_index}
     
     return {'status': "success", 'message': messages_success["create_success"].format(kwargs["Username"]), "row_index": row_index}
 

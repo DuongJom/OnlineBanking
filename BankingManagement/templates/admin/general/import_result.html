@@ -1,0 +1,27 @@
+<div class="h-screen w-screen bg-popup-bg-hover fixed top-0 left-0 z-20 hidden" id="import_result">
+    <div class="absolute w-90% h-90% top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col bg-white rounded-md">
+        <div class="flex-1 w-full flex flex-col">
+            <div class="w-full border-b-2 border-gray-300 h-16 relative flex items-center justify-center">
+                <div class="inline-block font-bold text-2xl">
+                    <p>Import result</p>
+                </div>
+                <button class="bg-white absolute right-0 inline-block hover:bg-gray-300 mr-2" id="closeResultPanelBtn">
+                    <img src="../static/img/icon/close.svg" height="35px" width="35px"/>
+                </button>
+            </div>
+
+            <div class="flex-1 flex justify-center items-center overflow-y-auto border-b-2 border-gray-300">
+                <div class="w-full justify-between max-h-600" id="response_logs">
+
+                </div>
+            </div>
+            
+
+            <div class="h-14 w-full flex items-center font-semibold">
+                <div class="ml-5">
+                    <p id="result_text"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  

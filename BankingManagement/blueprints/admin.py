@@ -8,6 +8,7 @@ from models import database, address, user as u, card, account as acc
 from helpers import login_required, issueNewCard, generate_login_info, send_email, create_accounts
 from enums.card_type import CardType
 from enums.deleted_type import DeletedType
+from enums.data_type import DataType
 from message import messages_success, messages_failure
 
 admin_blueprint = Blueprint('admin', __name__)   
@@ -40,19 +41,21 @@ def admin():
         elif isinstance(value, (int, float)):  
             filters[key] = int(value)
 
+    filters.update({"IsDeleted": DeletedType.AVAILABLE.value})
+
     collection = None
     items = []
     total_pages = 0
 
-    if dataType == 'account':
+    if dataType == DataType.ACCOUNT.value:
         collection = accounts
-    elif dataType == 'user':
+    elif dataType == DataType.USER.value:
         collection = users
-    elif dataType == 'branch':
+    elif dataType == DataType.BRANCH.value:
         collection = branches
-    elif dataType == 'employee':
+    elif dataType == DataType.EMPLOYEE.value:
         collection = employees
-    elif dataType == 'news':
+    elif dataType == DataType.NEWS.value:
         collection = news
     else:
         return jsonify({"error": "Invalid dataType"}), 400
@@ -255,22 +258,20 @@ def edit_account():
         )
 
         flash(messages_success["update_success"].format("Account"), 'success')
-        return redirect(f"/admin/account/edit/{_id}")
+        return redirect("/admin/account")
 
-@admin_blueprint.route('/admin/accounts', methods=['POST'])
+@admin_blueprint.route('/admin/<data_type>/import', methods=['POST'])
 @login_required
-def import_accounts():
+def import_accounts(data_type):
     if request.method == 'POST':
         data = []
-        excel = request.files["accounts"]
+        excel = request.files['file']
         df = pd.read_excel(BytesIO(excel.read()), engine='openpyxl')
 
         data = df.to_dict(orient='records')
 
         res = create_accounts(data)
-
-
-    return render_template("admin/account/import_result.html", res = res)
+    return jsonify(res)
 
 # End admin_account
 
@@ -345,10 +346,10 @@ def admin_news():
         return render_template('admin/news/news.html')
     
         
-@admin_blueprint.route('/admin/import-data', methods = ['GET','POST'])
+@admin_blueprint.route('/admin/import', methods = ['GET','POST'])
 def import_data():
     if request.method == 'GET':
-        return render_template('admin/general/import.html')
+        return render_template('admin/general/import_result.html')
 
 
 
