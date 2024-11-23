@@ -219,18 +219,8 @@ def create_accounts(data):
             roleValue = RoleType.USER
 
         role = roles.find_one({"Value": roleValue.value}, {"_id":0})
-
-        try:
-            request_branch = branches.find_one({"BranchName": branchName}, {"_id":0})
-        except KeyError:
-            request_branch = None
-        
-        try:
-            mar = list(map(lambda x: x.strip(), text_address.split(',')))
-            new_address = address.Address(street = mar[0], ward = mar[1], district = mar[2], city = mar[3], country = mar[4], createdBy = admin_id).to_json()
-        except:
-            new_address = None
-
+        mar = list(map(lambda x: x.strip(), text_address.split(',')))
+        new_address = address.Address(street = mar[0], ward = mar[1], district = mar[2], city = mar[3], country = mar[4], createdBy = admin_id).to_json()
         res = verify_input_data(row_index , Username = username, Email = email, Phone = phone)
 
         if res["status"] == "success":

@@ -95,22 +95,22 @@ def account(page, id):
         elif page == "view" and id is not None:
             account_id = ObjectId(id)
             viewed_account = accounts.find_one({"_id": account_id})
-            return render_template('admin/account/view_account.html', account = viewed_account)
+            login_values = [method["Value"] for method in viewed_account["LoginMethod"]]
+            transfer_values = [method["Value"] for method in viewed_account["TransferMethod"]]
+            
+            return render_template('admin/account/view_account.html', 
+                                   account = viewed_account,
+                                   login_values = login_values,
+                                   transfer_values = transfer_values,
+                                   loginMethods = loginMethods, 
+                                   transferMethods = transferMethods,)
         elif page == "edit" and id is not None:
             account_id = ObjectId(id)
             edited_account = accounts.find_one({"_id": account_id})
             login_values = []
             transfer_values = []
-
-            try:
-                login_values = [method["Value"] for method in edited_account["LoginMethod"]]
-            except Exception:
-                print("Login Method empty")
-
-            try:
-                transfer_values = [method["Value"] for method in edited_account["TransferMethod"]]
-            except Exception:
-                print("Transfer Method empty")
+            login_values = [method["Value"] for method in edited_account["LoginMethod"]]
+            transfer_values = [method["Value"] for method in edited_account["TransferMethod"]]
 
             return render_template('admin/account/edit_account.html', 
                                    account = edited_account,

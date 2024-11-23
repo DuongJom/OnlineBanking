@@ -12,7 +12,9 @@
             class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
             <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
         </button>
-        <div class="w-3/4 bg-bg-color flex flex-col justify-center items-center py-16 rounded-lg">
+        <form class="w-3/4 bg-bg-color flex flex-col justify-center items-center py-16 rounded-lg" method="post" action="{{ url_for('admin.edit_account') }}">
+            <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" /> 
+            <input type="hidden" value="{{account._id}}" name="account_id" id="account_id"/>
             <div class="w-full flex justify-center">
                 <h2 class="font-extrabold text-white">Account Information</h2>
             </div>
@@ -24,54 +26,92 @@
                             <div>{{account.Username}}</div>
                         </div>
                     </div>
-                    <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="role">Role</label>
-                        <div id="role" class="admin_readonly">
-                            <div>
-                                {% if account.Role == 0 %}
-                                User 
-                                {% elif account.Role == 1 %}
-                                Employee
-                                {% else %}
-                                Admin
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+                    
                     <div class="flex flex-col mb-4">
                         <label class="admin_label" for="accountNumber">Account Number</label>
-                        <div  id="accountNumber" class="admin_readonly">
+                        <div id="accountNumber" class="admin_readonly">
                             <div>{{account.AccountNumber}}</div>
                         </div>
                     </div>
+
                     <div class="flex flex-col mb-4">
                         <label class="admin_label" for="accountOwner">Owner</label>
                         <div id="accountOwner" class="admin_readonly">
                             <div>{{account.AccountOwner.Name}}</div>
                         </div>
                     </div>
+
+                    <div class="flex flex-col mb-4">
+                        <label for="role" class="admin_label">Role</label>
+                        <div class="admin_readonly">
+                            <div>{{account.Role.RoleName}}</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="w-96">
                     <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="branch">Branch</label>
-                        <div id="branch" class="admin_readonly">
-                            <div>{{account.Branch}}</div>
+                        <label for="branch" class="admin_label">Branch</label>
+                        <div class="admin_readonly">
+                            <div></div>
                         </div>
                     </div>
-                    <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="transferMethod">Transfer Method</label>
-                        <div id="transferMethod" class="admin_readonly">
-                            <div>{{account.TransferMethod}}</div>
+
+                    <div class="flex w-full flex-col">
+                        <div>
+                          <h2 class="admin_label">Login Method</h2>
+                        </div>
+                        <div class="pl-5 text-white">
+                            {% for loginMethod in loginMethods %}
+                                <div>
+                                    <input type="checkbox" value="{{loginMethod.Value}}" class="rounded-full" name="loginMethod" disabled
+                                    {% if loginMethod.Value in login_values %}checked{% endif %}/>
+                                    <label>{{loginMethod.MethodName}}</label>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="loginMethod">Login Method</label>
-                        <div id="loginMethod" class="admin_readonly">
-                            <div>{{account.LoginMethod}}</div>
+
+                    <div class="flex w-full flex-col">
+                        <div>
+                            <h2 class="admin_label">Tranfer Method</h2>
                         </div>
+                        <div class="pl-5 text-white">
+                            {% for transferMethod in transferMethods %}
+                            <div>
+                                <input type="checkbox" value="{{transferMethod.Value}}" class="rounded-full" name="transferMethod" disabled
+                                {% if transferMethod.Value in transfer_values %}checked{% endif %}/>
+                                <label>{{transferMethod.MethodName}}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="w-full flex justify-center mt-5">
+                        <button
+                            type="button"
+                            class="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-600 
+                                   hover:to-purle-800 text-white font-semibold py-2 px-6 rounded-md shadow-md 
+                                   focus:outline-none focus:ring-2 focus:ring-purle-500 focus:ring-opacity-50 
+                                   transition-all duration-300 ease-in-out"
+                            onclick="toggle()">
+                            Change
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="hidden h-screen w-screen fixed top-0 left-0 justify-center items-center z-1000" id="toggled_element">
+                <div class="flex flex-col h-40 w-96 justify-center items-center bg-white shadow-2xl rounded">
+                    <div class="font-bold mb-10">Do you want to save changes</div>
+                    <div class="w-full flex justify-evenly">
+                        <div class="w-1/4">
+                            <button class="btn" type="submit">Change</button>
+                        </div>
+                        <div class="w-1/4">
+                            <button class="btn" type="button" onclick="toggle()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        </form>
     </div>
 {% endblock %}
