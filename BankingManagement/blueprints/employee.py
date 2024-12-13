@@ -1,5 +1,5 @@
 import random
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, session
 from bson import ObjectId
 
 from models import database
@@ -8,7 +8,8 @@ from helpers import login_required, paginator
 from datetime import datetime, date
 
 db = database.Database().get_db()
-employee = db['employees']
+accounts = db['accounts']
+employees = db['employees']
 salary = db['salary']
 
 employee_blueprint = Blueprint('employee', __name__)
@@ -18,6 +19,9 @@ months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
 ]
+# document = emp.Employee(employeeName = 'Jake', position = 'CSC', role = 'admin', sex = 'male', phone = '12345678', email = 'nguyenvancong74185@gmail.com', 
+#                         address = 'hanoi', checkIn = datetime.now().strftime("%H:%M"), checkOut = datetime.now().strftime("%H:%M"), workingStatus = 'present', workingDays = 20, dayOffs = 10).to_json()
+# employee.insert_one(document)
 
 # Mapping of month names to numbers
 month_map = {
@@ -55,7 +59,7 @@ def employee_home():
          # Construct MongoDB query to filter documents based on month and year
         start_date = datetime(today.year, today.month, 1)
         end_date = datetime(today.year, today.month + 1, 1) if today.month < 12 else datetime(today.year + 1, 1, 1)
-        print(end_date)
+
         start_date_iso = start_date.isoformat()
         end_date_iso = end_date.isoformat()
 
@@ -90,7 +94,6 @@ def get_home_data():
             # Execute the query and convert the cursor to a list
             data_cursor = db.employee.find(query)
             data_list = list(data_cursor)  # Convert cursor to list
-            
             if not data_list:
                 print("No documents found for the given query.")
             # Convert MongoDB ObjectId to string
@@ -125,6 +128,9 @@ def get_working_time_data():
             data = request.get_json()
             month = data['month'] + 1 
             year = int(data['year'])
+            account_id = ObjectId(session.get("account_id"))
+            account = accounts.find_one({"_id": account_id})
+            print(account)
             
             # Construct MongoDB query to filter documents based on month and year
             start_date = datetime(year, month, 1)
@@ -132,11 +138,12 @@ def get_working_time_data():
             start_date_iso = start_date.isoformat()
             end_date_iso = end_date.isoformat()
 
-            query = {'CreatedDate': {'$gte': start_date_iso, '$lt': end_date_iso}}
+            query = {'CreatedDate': {'$gte': start_date_iso, '$lt': end_date_iso},
+                     'Email': account['AccountOwner']['Email']}
+            print(account['AccountOwner']['Email'])
 
             # Execute the query and convert the cursor to a list
-            data_cursor = db.employee.find(query)
-            data_list = list(data_cursor)  # Convert cursor to list
+            data_list = list(employees.find(query))
             
             if not data_list:
                 print("No documents found for the given query.")

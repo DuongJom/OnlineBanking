@@ -2,9 +2,6 @@ import { AJAX, generatePaginationButton, getSearchResultsPage, state, icons } fr
 
 const API_URL = '/get-working-time-data';
 const timetableBody = document.getElementById('timetable-body');
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const shifts = ["Morning", "Afternoon", "Evening", "Night"]; 
-const paginationButton = document.querySelector('.pagination');
 
 //create function to get data from 'employee' document
 const getData = async function(uploadData) {
@@ -32,32 +29,15 @@ state.data.forEach( (doc) => {
     const row = `
         <tr>
             <td class="employee_working_tr">${doc['Check_in_time']}</td>
-            <td class="employee_working_tr">${doc['Check_in time']}</td>
-            <td class="employee_working_tr">${doc['Check_out time']}</td>
-            <td class="employee_working_tr">${doc['Status']}</td>
+            <td class="employee_working_tr">${doc['Check_in_time']}</td>
+            <td class="employee_working_tr">${doc['Check_out_time']}</td>
+            <td class="employee_working_tr">${doc['Working_status']}</td>
         </tr>
     `;
     markup += row;
 });
 
-getSearchResultsPage().forEach( e => render(e));
-controlPagination();
-
-function controlPagination(page) {
-    timetableBody.innerHTML='';
-    getSearchResultsPage(page).forEach( e => render(e));
-    const markup = generatePaginationButton(icons);
-    paginationButton.innerHTML='';
-    paginationButton.insertAdjacentHTML('afterbegin', markup);
-} 
-
-paginationButton.addEventListener('click', function (e) {
-    const btn = e.target.closest('.btn--inline');
-    if (!btn) return;
-  
-    const goToPage = +btn.dataset.goto;
-    controlPagination(goToPage);
-});
+render(markup);
 
 //add event when document is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -66,10 +46,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmBtn = document.getElementById('confirmBtn');
     const cancelBtn = document.getElementsByClassName('cancelBtn');
 
+    //hide models
     function hideModals() {
         confirmationModal.classList.add('hidden');
     }
 
+    //load data from the server for the one who log in
+
+
+    // show confirmation btn
     function showConfirmationModal(message) {
         document.getElementById('modalMessage').textContent = message;
         confirmationModal.classList.remove('hidden');

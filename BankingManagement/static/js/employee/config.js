@@ -71,8 +71,13 @@ export const AJAX = async function (url, uploadData = undefined) {
   
       const res = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)]);
       const data = await res.json();
-      data.sort((a,b) => a.STT - b.STT);
+      // Assuming doc is part of the data object and want to check its STT value
+      if (Array.isArray(data) && data.some(item => item.STT === true)) {
+        // Sorting the data array based on STT, assuming STT is a numeric property
+        data.sort((a, b) => a.STT - b.STT);
+      }
       if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+      console.log(data);
       return data;
     } catch (err) {
       throw err;
