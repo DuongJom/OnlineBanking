@@ -1,4 +1,5 @@
 import json
+from datetime import datetime as dt
 
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
@@ -20,6 +21,8 @@ class Transaction(BaseModel):
         self.TransactionType = kwargs["transaction_type"] if "transaction_type" in kwargs.keys() else TransactionType.WITHDRAWAL.value()
         self.Amount = float(kwargs["amount"]) if "amount" in kwargs.keys() else 0
         self.Status = kwargs["status"] if "status" in kwargs.keys() else TransactionStatus.DOING.value()
+        self.CurrentBalance = kwargs["balance"] if "balance" in kwargs.keys() else 0
+        self.TransactionDate = kwargs["transactionDate"] if "transactionDate" in kwargs.keys() else dt.now()
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

@@ -6,44 +6,40 @@
     <div class="flex h-screen">
         <ul class="p-2 w-52 h-screen hidden sm:block bg-white text-sm border-r-2 border-gray-200">
             <li class="mt-20 user_bar_item
-                {% if request.path == '/' %} hightlight {% endif %}">
-                <button><a href="/">Home</a></button>
+                {% if request.path == '/' %} hightlight {% endif %}" onclick="window.location.href='/'">
+                Home
             </li>
             <li class="mt-2 user_bar_item
-                {% if request.path == '/account-management' %} hightlight {% endif %}">
-                <a href="/account-management">Account Management</a>
+                {% if request.path == '/money-transfer' %} hightlight {% endif %}" onclick="window.location.href='/money-transfer'">
+                Money Transfer
             </li>
             <li class="mt-2 user_bar_item
-                {% if request.path == '/money-transfer' %} hightlight {% endif %}">
-                <a href="/money-transfer">Money Transfer</a>
+                {% if request.path == '/bill-payment' %} hightlight {% endif %}" onclick="window.location.href='/bill-payment'">
+               Bill Payment
             </li>
             <li class="mt-2 user_bar_item
-                {% if request.path == '/bill-payment' %} hightlight {% endif %}">
-                <a href="/bill-payment">Bill Payment</a>
+                {% if request.path == '/top-up' %} hightlight {% endif %}" onclick="window.location.href='/top-up'">
+                Top-up
             </li>
             <li class="mt-2 user_bar_item
-                {% if request.path == '/top-up' %} hightlight {% endif %}">
-                <a href="/top-up">Top-up</a>
+                {% if request.path == '/card-management' %} hightlight {% endif %}" onclick="window.location.href='/card-management'">
+                Card Management
             </li>
             <li class="mt-2 user_bar_item
-                {% if request.path == '/card-management' %} hightlight {% endif %}">
-                <a href="/card-management">Card Management</a>
+                {% if request.path == '/investment-savings' %} hightlight {% endif %}" onclick="window.location.href='/investment-savings'">
+                Investment/Savings
             </li>
             <li class="mt-2 user_bar_item
-                {% if request.path == '/investment-savings' %} hightlight {% endif %}">
-                <a href="/investment-savings">Investment/Savings</a>
+                {% if request.path == '/loan-management' %} hightlight {% endif %}" onclick="window.location.href='/loan-management'">
+                Loan Management
             </li>
             <li class="mt-2 user_bar_item
-                {% if request.path == '/loan-management' %} hightlight {% endif %}">
-                <a href="/loan-management">Loan Management</a>
+                {% if request.path == '/settings-security' %} hightlight {% endif %}" onclick="window.location.href='/settings-security'">
+                Settings/Security
             </li>
             <li class="mt-2 user_bar_item
-                {% if request.path == '/settings-security' %} hightlight {% endif %}">
-                <a href="/settings-security">Settings/Security</a>
-            </li>
-            <li class="mt-2 user_bar_item
-                {% if request.path == '/other-services' %} hightlight {% endif %}">
-                <a href="/other-services">Other Services</a>
+                {% if request.path == '/other-services' %} hightlight {% endif %}" onclick="window.location.href='/other-services'">
+                Other Services
             </li>
         </ul>
         <div class="mt-16 w-full h-full">
