@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, session, redirect, request
+from flask import Blueprint, render_template, session, redirect, request, flash
 from bson import ObjectId
 
 from models import database
-from helpers import login_required, get_banks
-from enums.currency import CurrencyType
+from message import messages_success, messages_failure
+from helpers import login_required, get_banks, generate_otp, send_email
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -38,23 +38,31 @@ def home():
             {"date": transaction["TransactionDate"], "description": transaction["Message"], "amount": transaction["Amount"], "balance": transaction["CurrentBalance"]}
             for transaction in transactions_data
         ]
-        
-        currency_list = [currency for currency in CurrencyType]
 
         return render_template('/user/dashboard.html', 
                             account=account,
-                            currency_list=currency_list,
                             transactions_list=transactions_of_account)
 
 @home_blueprint.route('/confirm-otp', methods=['GET','POST'])
 @login_required
 def confirm_otp():
-    #generate OTP code
     if request.method == 'GET':
-        return render_template("/user/otp_confirmation.html")
+        try:
+            account_id = ObjectId(session.get("account_id"))
+            account = accounts.find_one({"_id": account_id})
+            if account:
+                otp = generate_otp()
+                html = render_template('/email/verify_otp.html', otp_code=otp, otp_expiration_time=60, customer_name=account['AccountOwner']['Name'])
+                send_email(recipients=account['AccountOwner']['Email'], subject="OTP For Money Transfer", html=html)
+                flash(messages_success['send_otp_success'].format(account['AccountOwner']['Email']), 'success')
+                return render_template("/user/otp_confirmation.html")
+        except:
+            flash(messages_failure['send_otp_failure'], 'error')
+            return redirect('/money-transfer')
     return redirect("/home")
 
-@home_blueprint.route('/resend-otp',methods=['POST'])
+@home_blueprint.route('/resend-otp', methods=['GET'])
+@login_required
 def resend_otp():
     pass
 

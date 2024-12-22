@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification</title>
+  <style>
+    /* Tailwind-like styles for emails */
+    .bg-gray-100 { background-color: #f7fafc; }
+    .bg-white { background-color: #ffffff; }
+    .bg-green-500 { background-color: #48bb78; }
+    .text-gray-800 { color: #2d3748; }
+    .text-gray-500 { color: #a0aec0; }
+    .text-white { color: #ffffff; }
+    .text-center { text-align: center; }
+    .font-bold { font-weight: 700; }
+    .rounded { border-radius: .375rem; }
+    .p-4 { padding: 1rem; }
+    .m-4 { margin: 1rem; }
+    .w-full { width: 100%; }
+    .max-w-md { max-width: 28rem; }
+    .inline-block { display: inline-block; }
+    .shadow-lg { box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <div class="w-full p-4 text-gray-800">
+    <div class="max-w-md mx-auto bg-white p-4 rounded shadow-lg">
+      <h2 class="text-xl font-bold text-center">Verify Your Account</h2>
+      <p class="text-gray-500 text-center my-4">
+        Dear <strong>{{customer_name}}</strong>,
+      </p>
+      <p class="text-gray-500 text-center">
+        To complete your verification, use the OTP code below:
+      </p>
+
+      <div class="text-center my-6">
+        <span class="inline-block bg-green-500 text-white font-bold p-4 rounded">
+          {{ otp_code }}
+        </span>
+      </div>
+
+      <p class="text-gray-500 text-center">
+        This OTP code is valid for the next <strong>{{ otp_expiration_time }}</strong> minutes.
+      </p>
+
+      <p class="text-gray-500 text-center mt-4">
+        If you didn’t request this code, please ignore this email. If you need help, contact our support team.
+      </p>
+
+      <p class="text-gray-500 text-center text-xs mt-4">
+        &copy; 2024 DHC Banking. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

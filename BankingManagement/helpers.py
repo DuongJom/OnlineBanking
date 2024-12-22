@@ -139,4 +139,6 @@ def get_banks():
     except:
         pass
 
-
+# Function to generate a random OTP
+def generate_otp():
+    return str(random.randint(100000, 999999))

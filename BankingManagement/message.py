@@ -9,6 +9,7 @@ messages_failure = {
     'token_expired' : 'The link has been expired',
     'document_not_found' : 'No document matching the filter criteria',
     'login_failure' : 'Login failed!',
+    'send_otp_failure': "OTP hasn't send to your email!"
 }
 
 messages_success = {
@@ -16,4 +17,5 @@ messages_success = {
     'update_success' : 'You have successfully update your {0}',
     'success' : 'Successfully registered',
     'login_success' : 'You have login successfully!',
+    'send_otp_success': 'OTP has been sent to the email {0}!'
 }

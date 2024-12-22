@@ -7,38 +7,47 @@
         <ul class="p-2 w-52 h-screen hidden sm:block bg-white text-sm border-r-2 border-gray-200">
             <li class="mt-20 user_bar_item
                 {% if request.path == '/' %} hightlight {% endif %}" onclick="window.location.href='/'">
-                Home
+                <img src="{{ url_for('static', filename='img/home.png') }}" alt="home-icon" class="w-6 h-6">
+                <span>Home</span>
             </li>
             <li class="mt-2 user_bar_item
                 {% if request.path == '/money-transfer' %} hightlight {% endif %}" onclick="window.location.href='/money-transfer'">
-                Money Transfer
+                <img src="{{ url_for('static', filename='img/money.png') }}" alt="money-transfer-icon" class="w-6 h-6">
+                <span>Money Transfer</span>
             </li>
             <li class="mt-2 user_bar_item
                 {% if request.path == '/bill-payment' %} hightlight {% endif %}" onclick="window.location.href='/bill-payment'">
-               Bill Payment
+                <img src="{{ url_for('static', filename='img/bill.png') }}" alt="bill-payment-icon" class="w-6 h-6">
+                <span>Bill Payment</span>
             </li>
             <li class="mt-2 user_bar_item
                 {% if request.path == '/top-up' %} hightlight {% endif %}" onclick="window.location.href='/top-up'">
-                Top-up
+                <img src="{{ url_for('static', filename='img/top-up.png') }}" alt="top-up-icon" class="w-6 h-6">
+                <span>Top-up</span>
             </li>
             <li class="mt-2 user_bar_item
                 {% if request.path == '/card-management' %} hightlight {% endif %}" onclick="window.location.href='/card-management'">
-                Card Management
+                <img src="{{ url_for('static', filename='img/card-manage.png') }}" alt="card-management-icon" class="w-6 h-6">
+                <span>Card Management</span>
             </li>
             <li class="mt-2 user_bar_item
                 {% if request.path == '/investment-savings' %} hightlight {% endif %}" onclick="window.location.href='/investment-savings'">
-                Investment/Savings
+                <img src="{{ url_for('static', filename='img/investing.png') }}" alt="investment-savings-icon" class="w-6 h-6">
+                <span>Investment/Savings</span>
             </li>
             <li class="mt-2 user_bar_item
                 {% if request.path == '/loan-management' %} hightlight {% endif %}" onclick="window.location.href='/loan-management'">
-                Loan Management
+                <img src="{{ url_for('static', filename='img/loan.png') }}" alt="loan-management-icon" class="w-6 h-6">
+                <span>Loan Management</span>
             </li>
             <li class="mt-2 user_bar_item
                 {% if request.path == '/settings-security' %} hightlight {% endif %}" onclick="window.location.href='/settings-security'">
-                Settings/Security
+                <img src="{{ url_for('static', filename='img/setting.png') }}" alt="setting-security-icon" class="w-6 h-6">
+                <span>Settings/Security</span>
             </li>
             <li class="mt-2 user_bar_item
                 {% if request.path == '/other-services' %} hightlight {% endif %}" onclick="window.location.href='/other-services'">
+                <img src="{{ url_for('static', filename='img/provider.png') }}" alt="other-services-icon" class="w-6 h-6">
                 Other Services
             </li>
         </ul>

@@ -15,11 +15,13 @@
                 <h3 class="text-lg font-medium text-gray-700">Account Balance</h3>
                 <p class="flex flex-row text-3xl font-bold text-green-600 items-center space-x-2">
                     <span>{{ account.Balance|currency_format }}</span>
-                    <select name="currency" id="currency" class="w-auto h-auto border-2 rounded-md text-sm">
-                        {% for currency in currency_list %}
-                            <option value="{{currency.value}}">{{currency.name}}</option>
-                        {% endfor %}
-                    </select>
+                    {% if account.Currency == 0 %}
+                    <span>VND</span>
+                    {% elif account.Currency == 1 %}
+                    <span>USD</span>
+                    {% elif account.Currency == 2 %}
+                    <span>EUR</span>
+                    {% endif %}
                 </p>
             </div>
             <div>

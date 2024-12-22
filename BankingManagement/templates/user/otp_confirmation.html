@@ -23,7 +23,7 @@
             </div>
     
             <!-- Submit button -->
-            <input type="submit" value="Verify OTP" 
+            <input type="submit" value="Verify OTP" id="verifyBtn"
                 class="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
     
             <div class="mt-4 text-center">
@@ -51,8 +51,10 @@
         if (countdownTime === 0) {
             clearInterval(timerInterval);
             document.getElementById('countdown').textContent = 'You can now resend the OTP.';
+            document.getElementById('verifyBtn').disabled = true;
         } else {
             countdownTime--;
+            document.getElementById('verifyBtn').disabled = false;
         }
     }
 
