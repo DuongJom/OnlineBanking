@@ -1119,6 +1119,23 @@ select {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
+.user_bar_item {
+  border-radius: 0.5rem;
+  border-width: 1px;
+  --tw-bg-opacity: 1;
+  background-color: rgb(129 199 132 / var(--tw-bg-opacity));
+  padding: 0.5rem;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.user_bar_item:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(85 139 47 / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1676,6 +1693,14 @@ select {
   width: 100vw;
 }
 
+.w-64 {
+  width: 16rem;
+}
+
+.w-52 {
+  width: 13rem;
+}
+
 .min-w-44 {
   min-width: 11rem;
 }
@@ -1980,6 +2005,10 @@ select {
   border-top-width: 4px;
 }
 
+.border-r-2 {
+  border-right-width: 2px;
+}
+
 .border-dotted {
   border-style: dotted;
 }
@@ -2032,6 +2061,16 @@ select {
 .border-white {
   --tw-border-opacity: 1;
   border-color: rgb(255 255 255 / var(--tw-border-opacity));
+}
+
+.border-gray-100 {
+  --tw-border-opacity: 1;
+  border-color: rgb(245 245 245 / var(--tw-border-opacity));
+}
+
+.border-gray-200 {
+  --tw-border-opacity: 1;
+  border-color: rgb(238 238 238 / var(--tw-border-opacity));
 }
 
 .border-b-black {
@@ -2123,11 +2162,6 @@ select {
   background-color: rgb(33 33 33 / var(--tw-bg-opacity));
 }
 
-.bg-green-100 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(200 230 201 / var(--tw-bg-opacity));
-}
-
 .bg-green-200 {
   --tw-bg-opacity: 1;
   background-color: rgb(165 214 167 / var(--tw-bg-opacity));
@@ -2141,11 +2175,6 @@ select {
 .bg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(76 175 80 / var(--tw-bg-opacity));
-}
-
-.bg-light-green-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(174 213 129 / var(--tw-bg-opacity));
 }
 
 .bg-orange-300 {
@@ -2741,11 +2770,6 @@ select {
 .hover\:bg-hover_side_bar:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(130 113 193 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-light-green-800:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(85 139 47 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-popup-bg-hover:hover {

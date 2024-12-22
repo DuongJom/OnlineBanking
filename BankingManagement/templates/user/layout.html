@@ -4,14 +4,46 @@
 <!-- User side bar -->
 <div class="flex-col justify-between">
     <div class="flex h-screen">
-        <ul class="p-4 w-48 sidebar hidden sm:block bg-light-green-300">
-            <li class="mt-20 text-white hover:text-white hover:bg-light-green-800 border rounded-lg
-                admin_sidebar_item{% if request.path == '/home' %} hightlight{% endif %}">
-                <button><a href="/home">Home</a></button>
+        <ul class="p-2 w-52 h-screen hidden sm:block bg-white text-sm border-r-2 border-gray-200">
+            <li class="mt-20 user_bar_item
+                {% if request.path == '/' %} hightlight {% endif %}">
+                <button><a href="/">Home</a></button>
             </li>
-            <li class="mt-2 text-white hover:text-white hover:bg-light-green-800 border rounded-lg
-                admin_sidebar_item{% if request.path == '/transfer-money' %} hightlight{% endif %}">
-                <a href="/transfer-money">Transfer money</a>
+            <li class="mt-2 user_bar_item
+                {% if request.path == '/account-management' %} hightlight {% endif %}">
+                <a href="/account-management">Account Management</a>
+            </li>
+            <li class="mt-2 user_bar_item
+                {% if request.path == '/money-transfer' %} hightlight {% endif %}">
+                <a href="/money-transfer">Money Transfer</a>
+            </li>
+            <li class="mt-2 user_bar_item
+                {% if request.path == '/bill-payment' %} hightlight {% endif %}">
+                <a href="/bill-payment">Bill Payment</a>
+            </li>
+            <li class="mt-2 user_bar_item
+                {% if request.path == '/top-up' %} hightlight {% endif %}">
+                <a href="/top-up">Top-up</a>
+            </li>
+            <li class="mt-2 user_bar_item
+                {% if request.path == '/card-management' %} hightlight {% endif %}">
+                <a href="/card-management">Card Management</a>
+            </li>
+            <li class="mt-2 user_bar_item
+                {% if request.path == '/investment-savings' %} hightlight {% endif %}">
+                <a href="/investment-savings">Investment/Savings</a>
+            </li>
+            <li class="mt-2 user_bar_item
+                {% if request.path == '/loan-management' %} hightlight {% endif %}">
+                <a href="/loan-management">Loan Management</a>
+            </li>
+            <li class="mt-2 user_bar_item
+                {% if request.path == '/settings-security' %} hightlight {% endif %}">
+                <a href="/settings-security">Settings/Security</a>
+            </li>
+            <li class="mt-2 user_bar_item
+                {% if request.path == '/other-services' %} hightlight {% endif %}">
+                <a href="/other-services">Other Services</a>
             </li>
         </ul>
         <div class="mt-16 w-full h-full">

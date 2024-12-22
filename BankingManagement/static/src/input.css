@@ -101,4 +101,8 @@
     .custom-heading {
         @apply text-green-600 text-center text-2xl font-bold;
     }
+
+    .user_bar_item {
+        @apply hover:text-white hover:bg-light-green-800 border rounded-lg text-white bg-green-300 p-2;
+    }
 }

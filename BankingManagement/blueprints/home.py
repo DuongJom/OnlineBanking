@@ -10,21 +10,7 @@ accounts = db['accounts']
 
 home_blueprint = Blueprint('home', __name__)
 
-@home_blueprint.route('/')
-@login_required
-def index():
-    account_id = ObjectId(session.get("account_id"))
-    account = accounts.find_one({"_id": account_id})
-    if account and account["Role"]:
-        if account["Role"]["Value"] == RoleType.USER.value:
-            return redirect("/home")
-        elif account["Role"]["Value"] == RoleType.EMPLOYEE.value:
-            return redirect("/employee/home")
-        else:
-            return redirect("/admin/account")
-    return redirect("/login")
-
-@home_blueprint.route("/transfer-money", methods=["GET", "POST"])
+@home_blueprint.route("/money-transfer", methods=["GET", "POST"])
 @login_required
 def transfer_money():
     account_id = ObjectId(session.get("account_id"))
@@ -33,7 +19,7 @@ def transfer_money():
     if request.method == "GET":
         return render_template("/user/transfer.html", account=account, banks=banks)
 
-@home_blueprint.route("/home/", methods=["GET"])
+@home_blueprint.route("/", methods=["GET"])
 @login_required
 def home():
     # Simulate user and transaction data
@@ -62,4 +48,36 @@ def confirm_otp():
 
 @home_blueprint.route('/resend-otp',methods=['POST'])
 def resend_otp():
+    pass
+
+@home_blueprint.route('/account-management',methods=['GET', 'POST'])
+def account_management():
+    pass
+
+@home_blueprint.route('/bill-payment',methods=['GET', 'POST'])
+def bill_payment():
+    pass
+
+@home_blueprint.route('/top-up',methods=['GET', 'POST'])
+def top_up():
+    pass
+
+@home_blueprint.route('/card-management',methods=['GET', 'POST'])
+def card_management():
+    pass
+
+@home_blueprint.route('/investment-savings',methods=['GET', 'POST'])
+def investment_savings():
+    pass
+
+@home_blueprint.route('/loan-management',methods=['GET', 'POST'])
+def loan_management():
+    pass
+
+@home_blueprint.route('/settings-security',methods=['GET', 'POST'])
+def settings_security():
+    pass
+
+@home_blueprint.route('/other-services',methods=['GET', 'POST'])
+def other_services():
     pass
