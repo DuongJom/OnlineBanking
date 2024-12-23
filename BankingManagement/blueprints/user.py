@@ -65,8 +65,6 @@ def home():
                             account=account,
                             transactions_list=transactions_of_account)
 
-from flask import session
-
 @home_blueprint.route('/confirm-otp', methods=["GET", "POST"])
 @login_required
 def confirm_otp():

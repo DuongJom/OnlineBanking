@@ -3,6 +3,7 @@ from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from datetime import datetime as dt
 
+from BankingManagement.blueprints import user
 from init_app import init
 from init_data import initialize_data
 
@@ -14,10 +15,10 @@ mail = Mail(app)
 # initialize csrf protect
 csrf = CSRFProtect(app)
 
-from blueprints import account, admin, employee, home
+from blueprints import account, admin, employee
 
 app.register_blueprint(account.account_blueprint)
-app.register_blueprint(home.home_blueprint)
+app.register_blueprint(user.home_blueprint)
 app.register_blueprint(employee.employee_blueprint)
 app.register_blueprint(admin.admin_blueprint)
 initialize_data(app)
