@@ -17,10 +17,10 @@ class Transaction(BaseModel):
         self.SenderId = kwargs["sender"] if "sender" in kwargs.keys() else None
         self.ReceiverId = kwargs["receiver"] if "receiver" in kwargs.keys() else None
         self.Message = kwargs["message"] if "message" in kwargs.keys() else None
-        self.Currency = kwargs["currency"] if "currency" in kwargs.keys() else CurrencyType.VND.value()
-        self.TransactionType = kwargs["transaction_type"] if "transaction_type" in kwargs.keys() else TransactionType.WITHDRAWAL.value()
+        self.Currency = kwargs["currency"] if "currency" in kwargs.keys() else CurrencyType.VND.value
+        self.TransactionType = kwargs["transaction_type"] if "transaction_type" in kwargs.keys() else TransactionType.WITHDRAWAL.value
         self.Amount = float(kwargs["amount"]) if "amount" in kwargs.keys() else 0
-        self.Status = kwargs["status"] if "status" in kwargs.keys() else TransactionStatus.DOING.value()
+        self.Status = kwargs["status"] if "status" in kwargs.keys() else TransactionStatus.SUCCESS.value
         self.CurrentBalance = kwargs["balance"] if "balance" in kwargs.keys() else 0
         self.TransactionDate = kwargs["transactionDate"] if "transactionDate" in kwargs.keys() else dt.now()
 

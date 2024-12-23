@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
+from datetime import datetime as dt
 
 from init_app import init
 from init_data import initialize_data
@@ -26,6 +27,13 @@ def currency_format(value):
     if value is None:
         value = 0
     return "{:,.3f}".format(float(value))
+
+@app.template_filter('datetimeformat')
+def datetimeformat(value, format='%Y-%m-%d %H:%M:%S'):
+    if isinstance(value, dt):
+        return value.strftime(format)
+    value = dt.strptime(value, '%Y-%m-%dT%H:%M:%S.%f').strftime('%Y-%m-%d %H:%M:%S')
+    return value
 
 if __name__ == '__main__':
     app.run(debug=True)
