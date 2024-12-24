@@ -1,0 +1,132 @@
+{% extends "user/layout.html" %}
+
+{% block title %}
+    Transfer money
+{% endblock %}
+
+{% block user_content %}
+<div class="flex flex-col w-full h-full bg-gray-100 -mt-5">
+    <form method="post" action="/money-transfer" 
+        class="sm:w-1/3 w-11/12 mx-auto my-auto p-4 border border-gray-300 shadow-md rounded-lg bg-white">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <h2 class="text-xl font-semibold text-center mb-4">Domestic Money Transfer</h2>
+        
+        <!-- Source Account Info -->
+        <div class="flex flex-col border border-gray-300 bg-green-50 p-4 rounded-md mb-4">
+            <div class="flex justify-between items-center mb-2">
+                <span class="font-medium">Source Account:</span> 
+                <span class="border bg-green-200 px-2 py-1 rounded-md">{{ account.AccountNumber }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="font-medium">Balance:</span>
+                <span class="text-red-500 font-semibold">
+                    <span>{{ account.Balance | currency_format }}</span>
+                    {% if account.Currency == 0 %} 
+                    <sup>VND</sup>
+                    {% elif account.Currency == 1 %}
+                    <sup>USD</sup>
+                    {% elif account.Currency == 2 %}
+                    <sup>EUR</sup>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Receiver Information -->
+        <h3 class="text-lg font-semibold mb-2">Receiver Information</h3>
+        
+        <div class="space-y-4">
+            <!-- Receiver Bank -->
+            <div class="flex flex-col">
+                <label for="receiver_bank" class="text-sm font-medium mb-1">Receiver Bank</label>
+                <div class="relative inline-block w-full">
+                    <button id="dropdownBank" type="button" class="w-full text-left text-sm px-4 py-2 bg-gray-200 rounded-md border border-gray-300">
+                        Select a Bank
+                    </button>
+                    <input id="receiver_bank" type="hidden" name="receiver_bank">
+                    <ul id="dropdownMenu" class="absolute left-0 w-full h-48 mt-2 bg-white border border-gray-300 rounded-md shadow-lg hidden overflow-y-auto">
+                        {% for bank in banks %}
+                        <li class="px-4 py-2 hover:bg-gray-100 flex items-center text-sm cursor-pointer" data-value="{{ bank.shortName }} - {{ bank.name }}" data-logo="{{ bank.logo }}">
+                            <img src="{{ bank.logo }}" alt="logo-{{ bank.shortName }}" class="w-auto h-6 rounded-full mr-2">
+                            {{ bank.shortName }} - {{ bank.name }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Receiver Account -->
+            <div class="flex flex-col">
+                <label for="receiver_account" class="text-sm font-medium mb-1">Receiver Account Number</label>
+                <input type="number" id="receiver_account" name="receiver_account" 
+                    placeholder="Enter receiver account number"
+                    class="border border-gray-300 rounded-md h-10 text-sm px-2" />
+            </div>
+        </div>
+
+        <!-- Transaction Information -->
+        <h3 class="text-lg font-semibold mt-6 mb-2">Transaction Information</h3>
+        
+        <div class="space-y-4">
+            <!-- Amount -->
+            <div class="flex flex-col">
+                <label for="amount" class="text-sm font-medium mb-1">Amount</label>
+                <div class="flex">
+                    <input id="amount" type="number" name="amount" 
+                        placeholder="Enter amount"
+                        class="border border-gray-300 rounded-l-md h-10 text-sm px-2 w-full" />
+                    <select id="currency" name="currency" 
+                        class="border border-gray-300 rounded-r-md h-10 text-sm">
+                        <option value="0">VND</option>
+                        <option value="1">USD</option>
+                        <option value="2">EUR</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Message -->
+            <div class="flex flex-col">
+                <label for="message" class="text-sm font-medium mb-1">Message</label>
+                <input type="text" id="message" name="message" 
+                    value="{{ account.AccountOwner.Name }} transfer money"
+                    class="border border-gray-300 rounded-md h-10 text-sm px-2" />
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" 
+            class="w-full mt-6 bg-green-200 hover:bg-green-300 text-center py-2 rounded-md text-sm font-medium">
+            Continue
+        </button>
+    </form>
+</div>
+
+<script>
+    const dropdownButton = document.getElementById('dropdownBank');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const dropdownItems = document.querySelectorAll('#dropdownMenu li');
+
+    // Toggle dropdown visibility
+    dropdownButton.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('hidden');
+    });
+
+    // Set button text to selected bank name and close dropdown
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const bankName = item.getAttribute('data-value'); // Get the bank name
+            dropdownButton.textContent = bankName; // Update button text
+            document.getElementById('receiver_bank').value = bankName.split('-')[1];
+            dropdownMenu.classList.add('hidden'); // Close the dropdown
+        });
+    });
+
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', (event) => {
+        const isClickInside = dropdownButton.contains(event.target) || dropdownMenu.contains(event.target);
+        if (!isClickInside) {
+            dropdownMenu.classList.add('hidden'); // Close the dropdown if clicked outside
+        }
+    });
+</script>
+{% endblock %}

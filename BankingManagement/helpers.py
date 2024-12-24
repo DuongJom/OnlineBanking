@@ -1,12 +1,15 @@
+import os
 import random
-
+import requests
 from flask import redirect, session
 from functools import wraps
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
+from dotenv import load_dotenv
 
 from app import app, mail
 from enums.mime_type import MIMEType
+load_dotenv()
 
 def login_required(f):
     @wraps(f)
@@ -119,4 +122,23 @@ def paginator(page, items_list):
 
     return {'render_items' : render_items, 'total_pages' : total_pages}
 
+def get_banks():
+    try:
+        headers = {
+            'Authorization': f'Bearer {os.getenv("VIETQR_API_KEY")}',
+            'Content-Type': 'application/json'
+        }
+        response = requests.get(os.getenv("VIETQR_API_GET_BANKS_URL"), headers=headers)
+        response.raise_for_status()  # Kiểm tra lỗi HTTP
+        # Parse kết quả trả về từ VietQR API
+        banks_data = response.json()
 
+        # Giả sử dữ liệu trả về có dạng {'banks': [list of banks]}
+        banks = banks_data.get('data', [])
+        return banks
+    except:
+        pass
+
+# Function to generate a random OTP
+def generate_otp():
+    return str(random.randint(100000, 999999))
