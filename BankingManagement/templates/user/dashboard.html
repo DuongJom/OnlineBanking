@@ -47,7 +47,7 @@
                 <tbody>
                     {% for transaction in transactions_list %}
                     <tr class="bg-gray-50 text-gray-700">
-                        <td class="border px-6 py-4">{{ transaction.date|datetimeformat }}</td>
+                        <td class="border px-6 py-4">{{ transaction.date|datetime_format }}</td>
                         <td class="border px-6 py-4">{{ transaction.description }}</td>
                         <td class="border px-6 py-4 space-x-1 {{ 'text-red-600' if transaction.amount < 0 else 'text-green-600' }}">
                             <span>{{ transaction.amount|currency_format }}</span>

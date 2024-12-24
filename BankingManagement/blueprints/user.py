@@ -12,9 +12,9 @@ accounts = db['accounts']
 transactions = db['transactions']
 users = db['users']
 
-home_blueprint = Blueprint('home', __name__)
+user_blueprint = Blueprint('huserome', __name__)
 
-@home_blueprint.route("/money-transfer", methods=["GET", "POST"])
+@user_blueprint.route("/money-transfer", methods=["GET", "POST"])
 @login_required
 def transfer_money():
     account_id = ObjectId(session.get("account_id"))
@@ -43,7 +43,7 @@ def transfer_money():
 
     return render_template("/user/transfer.html", account=account, banks=banks)
 
-@home_blueprint.route("/", methods=["GET"])
+@user_blueprint.route("/", methods=["GET"])
 @login_required
 def home():
     account_id = ObjectId(session.get("account_id"))
@@ -65,7 +65,7 @@ def home():
                             account=account,
                             transactions_list=transactions_of_account)
 
-@home_blueprint.route('/confirm-otp', methods=["GET", "POST"])
+@user_blueprint.route('/confirm-otp', methods=["GET", "POST"])
 @login_required
 def confirm_otp():
     account_id = ObjectId(session.get("account_id"))
@@ -141,30 +141,30 @@ def confirm_otp():
         flash(messages_failure['OTP_invalid'], 'error')
         return redirect(request.path)
 
-@home_blueprint.route('/bill-payment',methods=['GET', 'POST'])
+@user_blueprint.route('/bill-payment',methods=['GET', 'POST'])
 def bill_payment():
     pass
 
-@home_blueprint.route('/top-up',methods=['GET', 'POST'])
+@user_blueprint.route('/top-up',methods=['GET', 'POST'])
 def top_up():
     pass
 
-@home_blueprint.route('/card-management',methods=['GET', 'POST'])
+@user_blueprint.route('/card-management',methods=['GET', 'POST'])
 def card_management():
     pass
 
-@home_blueprint.route('/investment-savings',methods=['GET', 'POST'])
+@user_blueprint.route('/investment-savings',methods=['GET', 'POST'])
 def investment_savings():
     pass
 
-@home_blueprint.route('/loan-management',methods=['GET', 'POST'])
+@user_blueprint.route('/loan-management',methods=['GET', 'POST'])
 def loan_management():
     pass
 
-@home_blueprint.route('/settings-security',methods=['GET', 'POST'])
+@user_blueprint.route('/settings-security',methods=['GET', 'POST'])
 def settings_security():
     pass
 
-@home_blueprint.route('/other-services',methods=['GET', 'POST'])
+@user_blueprint.route('/other-services',methods=['GET', 'POST'])
 def other_services():
     pass
