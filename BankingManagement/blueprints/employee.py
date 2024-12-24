@@ -144,6 +144,7 @@ def get_working_time_data():
 
             # Execute the query and convert the cursor to a list
             data_list = list(employees.find(query))
+            print(data_list)
             
             if not data_list:
                 print("No documents found for the given query.")
