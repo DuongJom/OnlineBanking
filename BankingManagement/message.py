@@ -21,7 +21,7 @@ messages_success = {
     'success' : 'Successfully registered',
     'login_success' : 'You have login successfully!',
     'register_success' : 'Account have been successfully created',
-    'delete_success' : '{0} deleted successfully'
+    'delete_success' : '{0} deleted successfully',
     'send_otp_success': 'OTP has been sent to the email {0}!',
     'transfer_money_success': 'Transfer money successfully!'
 }
