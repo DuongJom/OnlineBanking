@@ -97,4 +97,12 @@
     .admin_sidebar_item {
         @apply py-2 border-b border-white font-bold text-gray-300 hover:text-white pl-2
     }
+
+    .custom-heading {
+        @apply text-green-600 text-center text-2xl font-bold;
+    }
+
+    .user_bar_item {
+        @apply hover:text-white hover:bg-light-green-800 border rounded-lg text-white bg-green-300 p-2 flex flex-row space-x-2 items-center;
+    }
 }

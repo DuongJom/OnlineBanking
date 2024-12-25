@@ -10,6 +10,8 @@ messages_failure = {
     'document_not_found' : 'No document matching the filter criteria',
     'login_failure' : 'Login failed!',
     'null_data': '{0} can not null',
+    'send_otp_failure': "OTP hasn't send to your email!",
+    'OTP_invalid': 'OTP code is invalid!'
 }
 
 messages_success = {
@@ -20,4 +22,6 @@ messages_success = {
     'login_success' : 'You have login successfully!',
     'register_success' : 'Account have been successfully created',
     'delete_success' : '{0} deleted successfully'
+    'send_otp_success': 'OTP has been sent to the email {0}!',
+    'transfer_money_success': 'Transfer money successfully!'
 }
