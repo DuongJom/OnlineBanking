@@ -3,7 +3,7 @@ from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from datetime import datetime as dt
 
-from BankingManagement.blueprints import user
+from blueprints import user
 from init_app import init
 from init_data import initialize_data
 
