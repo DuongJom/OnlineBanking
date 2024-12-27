@@ -2,8 +2,6 @@ from flask import Flask
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from datetime import datetime as dt
-
-from blueprints import user
 from init_app import init
 from init_data import initialize_data
 
@@ -15,10 +13,10 @@ mail = Mail(app)
 # initialize csrf protect
 csrf = CSRFProtect(app)
 
-from blueprints import account, admin, employee
+from blueprints import account, admin, employee, user
 
 app.register_blueprint(account.account_blueprint)
-app.register_blueprint(user.home_blueprint)
+app.register_blueprint(user.user_blueprint)
 app.register_blueprint(employee.employee_blueprint)
 app.register_blueprint(admin.admin_blueprint)
 initialize_data(app)
@@ -29,8 +27,8 @@ def currency_format(value):
         value = 0
     return "{:,.3f}".format(float(value))
 
-@app.template_filter('datetimeformat')
-def datetimeformat(value, format='%Y-%m-%d %H:%M:%S'):
+@app.template_filter()
+def datetime_format(value, format='%Y-%m-%d %H:%M:%S'):
     if isinstance(value, dt):
         return value.strftime(format)
     value = dt.strptime(value, '%Y-%m-%dT%H:%M:%S.%f').strftime('%Y-%m-%d %H:%M:%S')
