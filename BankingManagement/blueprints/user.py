@@ -146,17 +146,14 @@ def bill_payment():
     if request.method == "GET":
         return render_template("/user/billpayment.html")
 
-@user_blueprint.route('/top-up',methods=['GET', 'POST'])
-def top_up():
-    pass
-
 @user_blueprint.route('/card-management',methods=['GET', 'POST'])
 def card_management():
     pass
 
 @user_blueprint.route('/investment-savings',methods=['GET', 'POST'])
 def investment_savings():
-    pass
+    if request.method == "GET":
+        return render_template("/user/investment_savings.html")
 
 @user_blueprint.route('/loan-management',methods=['GET', 'POST'])
 def loan_management():

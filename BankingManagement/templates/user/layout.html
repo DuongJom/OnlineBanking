@@ -21,14 +21,14 @@
                 <span>Bill Payment</span>
             </li>
             <li class="mt-2 user_bar_item
-                {% if request.path == '/top-up' %} hightlight {% endif %}" onclick="window.location.href='/top-up'">
-                <img src="{{ url_for('static', filename='img/top-up.png') }}" alt="top-up-icon" class="w-6 h-6">
-                <span>Top-up</span>
-            </li>
-            <li class="mt-2 user_bar_item
                 {% if request.path == '/investment-savings' %} hightlight {% endif %}" onclick="window.location.href='/investment-savings'">
                 <img src="{{ url_for('static', filename='img/investing.png') }}" alt="investment-savings-icon" class="w-6 h-6">
                 <span>Investment/Savings</span>
+            </li>
+            <li class="mt-2 user_bar_item
+                {% if request.path == '/card-management' %} hightlight {% endif %}" onclick="window.location.href='/card-management'">
+                <img src="{{ url_for('static', filename='img/card-management.png') }}" alt="card-management-icon" class="w-6 h-6">
+                <span>Card Management</span>
             </li>
             <li class="mt-2 user_bar_item
                 {% if request.path == '/loan-management' %} hightlight {% endif %}" onclick="window.location.href='/loan-management'">
