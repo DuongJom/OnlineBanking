@@ -12,7 +12,7 @@ accounts = db['accounts']
 transactions = db['transactions']
 users = db['users']
 
-user_blueprint = Blueprint('huserome', __name__)
+user_blueprint = Blueprint('user', __name__)
 
 @user_blueprint.route("/money-transfer", methods=["GET", "POST"])
 @login_required
@@ -143,7 +143,8 @@ def confirm_otp():
 
 @user_blueprint.route('/bill-payment',methods=['GET', 'POST'])
 def bill_payment():
-    pass
+    if request.method == "GET":
+        return render_template("/user/billpayment.html")
 
 @user_blueprint.route('/top-up',methods=['GET', 'POST'])
 def top_up():
