@@ -144,7 +144,7 @@ def confirm_otp():
 @user_blueprint.route('/bill-payment',methods=['GET', 'POST'])
 def bill_payment():
     if request.method == "GET":
-        return render_template("/user/billpayment.html")
+        return render_template("/user/bill_payment.html")
 
 @user_blueprint.route('/card-management',methods=['GET', 'POST'])
 def card_management():
