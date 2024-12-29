@@ -148,7 +148,8 @@ def bill_payment():
 
 @user_blueprint.route('/card-management',methods=['GET', 'POST'])
 def card_management():
-    pass
+    if request.method == 'GET':
+        return render_template("/user/card_management.html")
 
 @user_blueprint.route('/investment-savings',methods=['GET', 'POST'])
 def investment_savings():
