@@ -4,7 +4,7 @@ from bson import ObjectId
 
 from models import database
 
-from helpers import login_required, paginator
+from helpers.helpers import login_required, paginator
 from datetime import datetime, date
 
 db = database.Database().get_db()
