@@ -1,0 +1,77 @@
+{% extends 'user/layout.html' %}
+
+{% block title %}
+    Settings and Security
+{% endblock %}
+
+{% block user_content %}
+<!-- Main Content Section -->
+<div class="max-w-7xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6">Account Settings & Security</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Account Settings -->
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">Account Settings</h2>
+            <form action="#" method="POST">
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <label for="fullName" class="block text-gray-700">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" placeholder="John Doe" required>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-700">Email Address</label>
+                        <input type="email" id="email" name="email" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" placeholder="johndoe@example.com" required>
+                    </div>
+                    <div>
+                        <label for="phoneNumber" class="block text-gray-700">Phone Number</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" placeholder="+1 234 567 890" required>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <button type="submit" class="mt-6 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">Save Changes</button>
+                        <button type="button" class="mt-6 bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">Security Settings</h2>
+            <form action="#" method="POST">
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Change Password -->
+                    <div>
+                        <label for="currentPassword" class="block text-gray-700">Current Password</label>
+                        <input type="password" id="currentPassword" name="currentPassword" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" placeholder="Enter current password" required>
+                    </div>
+                    <div>
+                        <label for="newPassword" class="block text-gray-700">New Password</label>
+                        <input type="password" id="newPassword" name="newPassword" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" placeholder="Enter new password" required>
+                    </div>
+                    <div>
+                        <label for="confirmPassword" class="block text-gray-700">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" placeholder="Confirm new password" required>
+                    </div>
+
+                    <!-- Two-Factor Authentication -->
+                    <div>
+                        <label for="twoFactor" class="block text-gray-700">Enable Two-Factor Authentication</label>
+                        <div class="flex items-center space-x-4">
+                            <input type="checkbox" id="twoFactor" name="twoFactor" class="w-5 h-5 text-blue-500 border-gray-300 rounded" />
+                            <span class="text-gray-700">Enable 2FA</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <button type="submit" class="mt-6 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">Update Security</button>
+                        <button type="button" class="mt-6 bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -158,12 +158,10 @@ def investment_savings():
 
 @user_blueprint.route('/loan-management',methods=['GET', 'POST'])
 def loan_management():
-    pass
+    if request.method == 'GET':
+        return render_template('/user/loan_management.html')
 
 @user_blueprint.route('/settings-security',methods=['GET', 'POST'])
 def settings_security():
-    pass
-
-@user_blueprint.route('/other-services',methods=['GET', 'POST'])
-def other_services():
-    pass
+    if request.method == 'GET':
+        return render_template('/user/settings_security.html')

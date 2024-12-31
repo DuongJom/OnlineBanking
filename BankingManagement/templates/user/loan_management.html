@@ -1,0 +1,85 @@
+{% extends 'user/layout.html' %}
+
+{% block title %}
+    Loan Management
+{% endblock %}
+
+{% block user_content %}
+<!-- Main Content Section -->
+<div class="max-w-7xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-2">Loan Management</h1>
+
+    <!-- Loan Form -->
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-2">
+        <h2 class="text-xl font-semibold mb-4">Add New Loan</h2>
+        <form action="#" method="POST">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <label for="borrowerName" class="block text-gray-700">Borrower Name</label>
+                    <input type="text" id="borrowerName" name="borrowerName"
+                        class="mt-1 p-2 w-full border border-gray-300 rounded-lg" placeholder="John Doe" required>
+                </div>
+                <div>
+                    <label for="loanAmount" class="block text-gray-700">Loan Amount ($)</label>
+                    <input type="number" id="loanAmount" name="loanAmount"
+                        class="mt-1 p-2 w-full border border-gray-300 rounded-lg" placeholder="5000" required>
+                </div>
+                <div>
+                    <label for="interestRate" class="block text-gray-700">Interest Rate (%)</label>
+                    <input type="number" id="interestRate" name="interestRate"
+                        class="mt-1 p-2 w-full border border-gray-300 rounded-lg" placeholder="5" required>
+                </div>
+                <div>
+                    <label for="loanTerm" class="block text-gray-700">Loan Term (Months)</label>
+                    <input type="number" id="loanTerm" name="loanTerm"
+                        class="mt-1 p-2 w-full border border-gray-300 rounded-lg" placeholder="12" required>
+                </div>
+            </div>
+            <button type="submit"
+                class="mt-6 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">Add Loan</button>
+        </form>
+    </div>
+
+    <!-- Loan Records Table -->
+    <div class="bg-white shadow-lg rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Loan Records</h2>
+        <table class="min-w-full table-auto">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="py-2 px-4 text-left">ID</th>
+                    <th class="py-2 px-4 text-left">Borrower</th>
+                    <th class="py-2 px-4 text-left">Loan Amount</th>
+                    <th class="py-2 px-4 text-left">Interest Rate</th>
+                    <th class="py-2 px-4 text-left">Loan Term</th>
+                    <th class="py-2 px-4 text-left">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-b">
+                    <td class="py-2 px-4">1</td>
+                    <td class="py-2 px-4">John Doe</td>
+                    <td class="py-2 px-4">$5000</td>
+                    <td class="py-2 px-4">5%</td>
+                    <td class="py-2 px-4">12 Months</td>
+                    <td class="py-2 px-4">
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">Edit</button>
+                        <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Delete</button>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="py-2 px-4">2</td>
+                    <td class="py-2 px-4">Jane Smith</td>
+                    <td class="py-2 px-4">$3000</td>
+                    <td class="py-2 px-4">4%</td>
+                    <td class="py-2 px-4">24 Months</td>
+                    <td class="py-2 px-4">
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">Edit</button>
+                        <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Delete</button>
+                    </td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
