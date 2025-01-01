@@ -37,17 +37,21 @@
         <div class="overflow-x-auto">
             <table class="min-w-full table-auto border-collapse">
                 <thead>
-                    <tr class="bg-gray-200 text-gray-700">
-                        <th class="px-6 py-3 text-left">Date</th>
-                        <th class="px-6 py-3 text-left">Description</th>
-                        <th class="px-6 py-3 text-left">Amount</th>
-                        <th class="px-6 py-3 text-left">Balance</th>
+                    <tr class="bg-green-300 text-white">
+                        <th class="px-6 py-3 text-left border-2">Date</th>
+                        <th class="px-6 py-3 text-left border-2">Source Account</th>
+                        <th class="px-6 py-3 text-left border-2">Destination Account</th>
+                        <th class="px-6 py-3 text-left border-2">Description</th>
+                        <th class="px-6 py-3 text-left border-2">Amount</th>
+                        <th class="px-6 py-3 text-left border-2">Balance</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for transaction in transactions_list %}
-                    <tr class="bg-gray-50 text-gray-700">
+                    <tr class="bg-gray-50 text-gray-700 text-sm border-2 hover:bg-gray-300">
                         <td class="border px-6 py-4">{{ transaction.date|datetime_format }}</td>
+                        <td class="border px-6 py-4">{{ transaction.info.SenderId }}</td>
+                        <td class="border px-6 py-4">{{ transaction.info.ReceiverId }}</td>
                         <td class="border px-6 py-4">{{ transaction.description }}</td>
                         <td class="border px-6 py-4 space-x-1 {{ 'text-red-600' if transaction.amount < 0 else 'text-green-600' }}">
                             <span>{{ transaction.amount|currency_format }}</span>

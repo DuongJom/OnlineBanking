@@ -2217,6 +2217,11 @@ select {
   background-color: rgb(165 214 167 / var(--tw-bg-opacity));
 }
 
+.bg-green-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(129 199 132 / var(--tw-bg-opacity));
+}
+
 .bg-green-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(232 245 233 / var(--tw-bg-opacity));
@@ -2572,6 +2577,11 @@ select {
   letter-spacing: 0.1em;
 }
 
+.text-blue-500 {
+  --tw-text-opacity: 1;
+  color: rgb(33 150 243 / var(--tw-text-opacity));
+}
+
 .text-blue-600 {
   --tw-text-opacity: 1;
   color: rgb(30 136 229 / var(--tw-text-opacity));
@@ -2650,11 +2660,6 @@ select {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.text-blue-500 {
-  --tw-text-opacity: 1;
-  color: rgb(33 150 243 / var(--tw-text-opacity));
 }
 
 .shadow {

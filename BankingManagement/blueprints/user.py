@@ -1,19 +1,50 @@
 from flask import Blueprint, render_template, session, redirect, request, flash
 from bson import ObjectId
 import time
+from datetime import date
 
 from models import database, transaction
 from message import messages_success, messages_failure
 from helpers.helpers import login_required, get_banks, generate_otp, send_email
 from enums.transaction_type import TransactionType
+from enums.bill_status import BillStatusType
 
 db = database.Database().get_db()
 accounts = db['accounts']
 transactions = db['transactions']
 users = db['users']
+bills = db['bills']
 
 user_blueprint = Blueprint('user', __name__)
 
+@user_blueprint.route("/", methods=["GET"])
+@login_required
+def home():
+    account_id = ObjectId(session.get("account_id"))
+    account = accounts.find_one({"_id": account_id})
+    if account:
+        query = {
+            "$or": [
+                {"SenderId": account['AccountNumber']},
+                {"ReceiverId": account['AccountNumber']}
+            ]
+        }
+        transactions_data = transactions.find(query)
+        transactions_of_account = [
+            {
+                "date": transaction["TransactionDate"], 
+                "description": transaction["Message"], 
+                "amount": transaction["Amount"], 
+                "balance": transaction["CurrentBalance"], 
+                "info": transaction
+            }
+            for transaction in transactions_data
+        ]
+
+        return render_template('/user/dashboard.html', 
+                            account=account,
+                            transactions_list=transactions_of_account)
+    
 @user_blueprint.route("/money-transfer", methods=["GET", "POST"])
 @login_required
 def transfer_money():
@@ -42,28 +73,6 @@ def transfer_money():
         return redirect("/confirm-otp")
 
     return render_template("/user/transfer.html", account=account, banks=banks)
-
-@user_blueprint.route("/", methods=["GET"])
-@login_required
-def home():
-    account_id = ObjectId(session.get("account_id"))
-    account = accounts.find_one({"_id": account_id})
-    if account:
-        query = {
-            "$or": [
-                {"SenderId": account['AccountNumber']},
-                {"ReceiverId": account['AccountNumber']}
-            ]
-        }
-        transactions_data = transactions.find(query)
-        transactions_of_account = [
-            {"date": transaction["TransactionDate"], "description": transaction["Message"], "amount": transaction["Amount"], "balance": transaction["CurrentBalance"]}
-            for transaction in transactions_data
-        ]
-
-        return render_template('/user/dashboard.html', 
-                            account=account,
-                            transactions_list=transactions_of_account)
 
 @user_blueprint.route('/confirm-otp', methods=["GET", "POST"])
 @login_required
@@ -144,7 +153,14 @@ def confirm_otp():
 @user_blueprint.route('/bill-payment',methods=['GET', 'POST'])
 def bill_payment():
     if request.method == "GET":
-        return render_template("/user/bill_payment.html")
+        today = date.today()
+        start_date = date(today.year, today.month, 1)
+        lst_bills = list(bills.find({ "Status": BillStatusType.UNPAID.value }))
+        return render_template(
+            "/user/bill_payment.html",
+            bills=lst_bills,
+            start_date=start_date,
+            end_date=today)
 
 @user_blueprint.route('/card-management',methods=['GET', 'POST'])
 def card_management():
