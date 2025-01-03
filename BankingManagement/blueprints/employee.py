@@ -1,11 +1,9 @@
-import random
 from flask import Blueprint, render_template, request, jsonify, session
 from bson import ObjectId
+from datetime import datetime, date
 
 from models import database
-
 from helpers import login_required, paginator
-from datetime import datetime, date
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -14,7 +12,7 @@ salary = db['salary']
 
 employee_blueprint = Blueprint('employee', __name__)
 
-years = list( range(2000, date.today().year + 1) )
+years = list(range(2000, date.today().year + 1))
 months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -63,9 +61,8 @@ def employee_home():
         start_date_iso = start_date.isoformat()
         end_date_iso = end_date.isoformat()
 
-        query = {'CreatedDate': {'$gte': start_date_iso, '$lt': end_date_iso}}
-        data = list(db.employee.find(query))
-        data = convert_objectid(data)
+        query = {'CreatedDate': {'$gte': start_date_iso, '$lte': end_date_iso}}
+        data = list(db['employee'].find(query))
         return render_template('employee/home.html', current_month = current_month, current_year = current_year, months=months, years=years, fake_data=data)
 
 #return home data

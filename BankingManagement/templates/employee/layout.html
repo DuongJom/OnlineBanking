@@ -11,28 +11,25 @@
 </style>
 {% block content %}
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<div class="flex flex-col min-h-full relative top-16 min-w-full bg-white">
-    
+<div class="flex flex-row min-h-full relative top-16 min-w-full bg-white">
     <!-- Sidebar -->
-    <aside class="flex h-screen bg-gray-600 text-gray-500 border rounded-md sm:w-60 sm:fixed sm:left-0">
-        <div class="p-4 flex flex-col">
+    <aside class="flex h-screen bg-green-500 text-gray-500 border rounded-md sm:w-48 sm:fixed sm:left-0">
+        <div class="p-2 flex flex-col">
             <h1 class="text-xl font-bold text-white mb-4">Banking App</h1>
             <ul class="list-none">
-                <li class="relative mb-2 group"></li>
-                    <a href="{{url_for('employee.employee_home')}}" class="block py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700">
-                        <i class="fa-solid fa-house mr-2"></i> Home
+                <li class="relative mb-2 group w-full"></li>
+                    <a href="{{url_for('employee.employee_home')}}" class="block p-2 text-white hover:bg-green-300 rounded-lg">
+                        <i class="fa-solid fa-house"></i> Home
                     </a>
                 </li>
 
                 <!-- News Item with Notification Icon -->
                 <li class="relative mb-2 group">
-                    <a href="#" class="flex py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700 
-                    items-center">
+                    <a href="#" class="flex p-2 text-white hover:bg-green-300 items-center rounded-lg">
                         <!-- Notification Icon Container -->
                         <div class="relative">
                             <!-- Notification Badge -->
-                            <div class="absolute -top-1 right-0 bg-red-600 h-3 w-3 rounded-full flex items-center 
-                            justify-center text-xs">
+                            <div class="absolute -top-1 right-0 bg-red-600 h-3 w-3 rounded-full flex items-center justify-center text-xs">
                                 2
                             </div>
                             <!-- Bell Icon -->
@@ -44,37 +41,33 @@
                 </li>
                 
                 <li class="relative mb-2 group">
-                    <a href="{{url_for('employee.employee_working_time')}}" class="block py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700">
+                    <a href="{{url_for('employee.employee_working_time')}}" class="block p-2 text-white hover:bg-green-300 rounded-lg">
                         <i class="fa-regular fa-calendar-check mr-2"></i> Working time
                     </a>
                 </li>
 
                 <li class="relative mb-2 group">
-                    <a href="{{url_for('employee.employee_salary')}}" class="block py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700">
+                    <a href="{{url_for('employee.employee_salary')}}" class="block p-2 text-white hover:bg-green-300 rounded-lg">
                         <i class="fa-solid fa-dollar-sign mr-2"></i> Salary
                     </a>
                 </li>
 
                 <li class="relative mb-2 group">
-                    <a href="#" class="block py-2 px-4 text-gray-300">
+                    <a href="#" class="block p-2 text-white rounded-lg">
                         <i class="fas fa-exchange-alt mr-2"></i> Transactions
                     </a>
-                    <div class="absolute hidden left-0 top-full group-hover:block bg-gray-700 text-gray-300 
-                    min-w-full rounded shadow-lg">
-                        <a href="#" class="block px-4 py-2 hover:bg-blue-gray-700 hover:text-white">Create Account</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-blue-gray-700 hover:text-white">Delete Account</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-blue-gray-700 hover:text-white">History</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-blue-gray-700 hover:text-white">Deposit</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-blue-gray-700 hover:text-white">Withdraw</a>
+                    <div class="absolute hidden left-5 top-full group-hover:block bg-white text-black min-w-full rounded-lg shadow-lg">
+                        <a href="#" class="block p-2 text-gray-700 hover:text-white hover:bg-green-300">Create Account</a>
+                        <a href="#" class="block p-2 text-gray-700 hover:text-white hover:bg-green-300">Delete Account</a>
+                        <a href="#" class="block p-2 text-gray-700 hover:text-white hover:bg-green-300">History</a>
+                        <a href="#" class="block p-2 text-gray-700 hover:text-white hover:bg-green-300">Deposit</a>
+                        <a href="#" class="block p-2 text-gray-700 hover:text-white hover:bg-green-300">Withdraw</a>
                     </div>
                 </li>
             </ul>
         </div>
     </aside>
-
     {% block employee_content %}
     {% endblock %}
-
-{% include "general/footer.html" %}
 </div>
 {% endblock %}

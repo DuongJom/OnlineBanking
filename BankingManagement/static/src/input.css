@@ -36,14 +36,14 @@
     }
 
     .employee_th {
-        @apply border border-black px-4 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider
+        @apply border border-black px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider w-auto
     }
 
     .employee_tr {
         @apply border border-black px-3 py-2 whitespace-nowrap
     }
     .employee_table {
-        @apply xl:min-w-full table-fixed border border-collapse border-gray-500 divide-y divide-gray-500
+        @apply w-full border border-collapse border-gray-500 divide-y divide-gray-500
     }
 
     .employee_working_table {
