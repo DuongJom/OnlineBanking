@@ -3,7 +3,7 @@ from bson import ObjectId
 from datetime import datetime
 
 from models import database
-from helpers.helpers import login_required, export_data
+from helpers.helpers import login_required
 
 admin_blueprint = Blueprint('admin', __name__)   
 
@@ -148,14 +148,3 @@ def admin_news():
 def import_data():
     if request.method == 'GET':
         return render_template('admin/general/import.html')
-
-
-@admin_blueprint.route('/admin/export-data/<collection>', methods=['GET'])
-def export(collection):
-    now = datetime.now()
-    export_data(
-        file_path=f"C:/Users/ASUS/Desktop/{now.year}{now.month}{now.day}_{collection}.xlsx", 
-        data=db[collection].find({}),
-        nested_columns=["AccountOwner", "Role"]
-    )
-    return ''

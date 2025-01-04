@@ -53,8 +53,12 @@
                         <td class="border px-6 py-4">{{ transaction.info.SenderId }}</td>
                         <td class="border px-6 py-4">{{ transaction.info.ReceiverId }}</td>
                         <td class="border px-6 py-4">{{ transaction.description }}</td>
-                        <td class="border px-6 py-4 space-x-1 {{ 'text-red-600' if transaction.amount < 0 else 'text-green-600' }}">
-                            <span>{{ transaction.amount|currency_format }}</span>
+                        <td class="border px-6 py-4 space-x-1 {{ 'text-red-600' if transaction.ReceiverId != account.AccountNumber else 'text-green-600' }}">
+                            {% if transaction.ReceiverId != account.AccountNumber %}
+                            <span>-{{ transaction.amount|currency_format }}</span>
+                            {% else %}
+                            <span>+{{ transaction.amount|currency_format }}</span>
+                            {% endif %}
                             {% if account.Currency == 0 %} 
                             <span>VND</span>
                             {% elif account.Currency == 1 %}

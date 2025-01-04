@@ -7,9 +7,9 @@ from models.datetime_encoder import DateTimeEncoder
 class BaseModel:
     def __init__(self, **kwargs):
         self.CreatedDate = datetime.now()
-        self.CreatedBy = str(kwargs['createdBy']) if 'createdBy' in kwargs.keys() else None
+        self.CreatedBy = kwargs['createdBy'] if 'createdBy' in kwargs.keys() else None
         self.ModifiedDate = datetime.now()
-        self.ModifiedBy = str(kwargs['modifiedBy']) if 'modifiedBy' in kwargs.keys() else None
+        self.ModifiedBy = kwargs['modifiedBy'] if 'modifiedBy' in kwargs.keys() else None
         self.IsDeleted = DeletedType.AVAILABLE.value
 
     def to_json(self):

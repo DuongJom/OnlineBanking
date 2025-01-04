@@ -13,7 +13,8 @@ messages_failure = {
     'OTP_invalid': 'OTP code is invalid!',
     'account_not_found': 'Account does not exist!',
     'internal_server_error': 'Internal Server Error!',
-    'balance_not_enough': 'Balance is not enough to pay the bill!'
+    'balance_not_enough': 'Balance is not enough to {0}!',
+    'must_input_value': 'Please fill in all information!'
 }
 
 messages_success = {
@@ -23,5 +24,6 @@ messages_success = {
     'login_success' : 'You have login successfully!',
     'send_otp_success': 'OTP has been sent to the email {0}!',
     'transfer_money_success': 'Transfer money successfully!',
-    'payment_bill_success': 'Payment is processed successfully!'
+    'payment_bill_success': 'Payment is processed successfully!',
+    'investment_savings_created_success': 'Investment/Savings is created successfully!'
 }

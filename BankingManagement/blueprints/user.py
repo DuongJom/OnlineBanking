@@ -1,19 +1,23 @@
+import time
+import random
 from flask import Blueprint, render_template, session, redirect, request, flash
 from bson import ObjectId
-import time
-from datetime import date, datetime as dt
+from datetime import datetime as dt
 
-from models import database, transaction
+from models import database, transaction, investment as investmnt
 from message import messages_success, messages_failure
 from helpers.helpers import login_required, get_banks, generate_otp, send_email
 from enums.transaction_type import TransactionType
 from enums.bill_status import BillStatusType
+from enums.investment import InvestmentType
+from enums.currency import CurrencyType
 
 db = database.Database().get_db()
 accounts = db['accounts']
 transactions = db['transactions']
 users = db['users']
 bills = db['bills']
+investments = db['investments']
 
 user_blueprint = Blueprint('user', __name__)
 
@@ -137,7 +141,7 @@ def confirm_otp():
         trans = transaction.Transaction(
             sender = account['AccountNumber'],
             receiver = receiver_account,
-            amount = float(amount)*(-1),
+            amount = float(amount),
             currency = currency,
             message = message,
             transaction_type = TransactionType.TRANSFER.value,
@@ -222,11 +226,9 @@ def payment():
         bill_id = request.form.get('bill')
         payment_method = request.form.get('payment_method')
         amount = request.form.get('amount')
-        print(bill_id)
 
         if bill_id != -1:
             bill = bills.find_one({"_id": ObjectId(bill_id)})
-            print(bill)
             account_number = request.form.get('account_number')
             if bill:
                 find_query = {
@@ -242,7 +244,7 @@ def payment():
                     return redirect(request.referrer)
                 
                 if account["Balance"] < float(amount):
-                    flash(messages_failure['balance_not_enough'], 'error')
+                    flash(messages_failure['balance_not_enough'].format('pay the bill'), 'error')
                     return redirect(request.referrer)
                 
                 bills.update_one(
@@ -267,7 +269,7 @@ def payment():
                 trans = transaction.Transaction(
                     sender = account['AccountNumber'],
                     receiver = bill_id,
-                    amount = float(amount)*(-1),
+                    amount = float(amount),
                     currency = account['Currency'],
                     message = f"Payment for {bill['BillType']} bill of {bill['InvoiceDate'].strftime('%Y/%m/%d')}",
                     transaction_type = TransactionType.PAYMENT.value,
@@ -281,17 +283,134 @@ def payment():
         return redirect(request.referrer)
     return redirect('/bill-payment')
 
+@user_blueprint.route('/investment-savings',methods=['GET'])
+@login_required
+def investment_savings():
+    if request.method == "GET":
+        account_id = ObjectId(session.get("account_id"))
+        currency = None
+        if account_id:
+            account = accounts.find_one({'_id':ObjectId(account_id)})
+            currency_value = account['Currency']
+            if currency_value == CurrencyType.VND.value:
+                currency = CurrencyType.VND.name
+            elif currency_value == CurrencyType.USD.value:
+                currency = CurrencyType.USD.name
+            else:
+                currency = CurrencyType.EUR.name
+        else:
+            currency = 'USD'
+        
+        today = dt.today()
+        lst_investments = list(investments.find({}))
+        
+        for investment in lst_investments:
+            lasted_update = dt.strptime(investment['ModifiedDate'],'%Y-%m-%dT%H:%M:%S.%f').date()
+            if lasted_update != today.date():
+                current_investment_rate = round(random.uniform(-10,10),2)
+                investments.update_one(
+                    {"_id": investment["_id"]},
+                    {
+                        "$set": {
+                            "CurrentRate": current_investment_rate,
+                            "CurrentAmount": investment['CurrentAmount'] + investment['CurrentAmount']*(current_investment_rate)/100
+                        }
+                    }
+                )
+
+        return render_template(
+            "/user/investment_savings.html", 
+            investment_date=today.date(),
+            investments=lst_investments,
+            currency=currency
+        )
+
+@user_blueprint.route('/add-investment-savings',methods=['POST'])
+@login_required
+def add_new_investment():
+    try:
+        account_id = ObjectId(session.get("account_id"))
+        if account_id:
+            account = accounts.find_one({'_id':ObjectId(account_id)})
+            if not account:
+                flash(messages_failure['account_not_found'], 'error')
+                return redirect(request.referrer)
+            
+            owner = account['AccountOwner']
+            investment_name = request.form.get('investment_name')
+            investment_type = request.form.get('investment_type')
+            investment_amount = request.form.get('investment_amount')
+            investment_date = request.form.get('investment_date')
+            investment_rate = float(request.form.get('rate')) if request.form.get('rate') else 0
+
+            if not investment_name or not investment_type or int(investment_type) < InvestmentType.STOCK.value or \
+                not investment_amount or not investment_date:
+                flash(messages_failure['must_input_value'], 'error')
+                return redirect(request.referrer)
+            
+            if account["Balance"] < float(investment_amount):
+                flash(messages_failure['balance_not_enough'].format('investment/savings'), 'error')
+                return redirect(request.referrer)
+            
+            type_name = None
+            if int(investment_type) == InvestmentType.STOCK.value:
+                type_name = "Stock"
+            elif int(investment_type) == InvestmentType.BONDS.value:
+                type_name = "Bonds"
+            elif int(investment_type) == InvestmentType.REAL_ESTATE.value:
+                type_name = "Real Estate"
+            else:
+                type_name = "Crypto"
+
+            investment_date = dt.strptime(investment_date, '%Y-%m-%d')
+            investment_date = investment_date.replace(hour=0, minute=0, second=0, microsecond=0)
+
+            investment = investmnt.Investment(
+                owner=owner,
+                name=investment_name,
+                type=type_name,
+                investment_amount=investment_amount,
+                investment_date= investment_date.isoformat(),
+                rate=investment_rate,
+                current_amount= float(investment_amount) + float(investment_amount)*investment_rate/100,
+                createdBy=owner,
+                modifiedBy=owner
+            )
+            result = investments.insert_one(investment.to_json())
+            investment = investments.find_one({'_id': result.inserted_id})
+
+            accounts.update_one(
+                {"_id": ObjectId(account_id)},
+                {
+                    "$set": {
+                        "Balance": account["Balance"] - float(investment_amount),
+                    }
+                }
+            )
+
+            trans = transaction.Transaction(
+                sender = account['AccountNumber'],
+                receiver = result.inserted_id,
+                amount = float(investment_amount),
+                currency = account['Currency'],
+                message = f"Investment for {investment['Name']} of {dt.strptime(investment['InvestmentDate'],'%Y-%m-%dT%H:%M:%S').strftime('%Y/%m/%d')}",
+                transaction_type = TransactionType.INVESTMENT.value,
+                balance = account['Balance'] - float(investment_amount)
+            )
+            transactions.insert_one(trans.to_json())
+            flash(messages_success['investment_savings_created_success'], 'success')
+    except Exception as e:
+        print(e)
+        flash(messages_failure['internal_server_error'], "error")
+        return redirect(request.referrer)
+    return redirect('/investment-savings')
+
 @user_blueprint.route('/card-management',methods=['GET', 'POST'])
 @login_required
 def card_management():
     if request.method == 'GET':
-        return render_template("/user/card_management.html")
-
-@user_blueprint.route('/investment-savings',methods=['GET', 'POST'])
-@login_required
-def investment_savings():
-    if request.method == "GET":
-        return render_template("/user/investment_savings.html")
+        lst_investment = investments.find({})
+        return render_template("/user/card_management.html", investments=lst_investment)
 
 @user_blueprint.route('/loan-management',methods=['GET', 'POST'])
 @login_required

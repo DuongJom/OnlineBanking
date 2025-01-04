@@ -57,7 +57,7 @@
                         <label for="bill" class="block text-gray-700 font-semibold mb-2">Select Bill</label>
                         <select id="bill" name="bill" class="w-full border border-gray-300 rounded-lg p-3 text-gray-700 
                                 focus:outline-none focus:ring-2 focus:ring-green-500">
-                            <option value="-1" selected>Choose a bill</option>
+                            <option value="-1" disabled selected>Choose a bill</option>
                             {% for bill in bills %}
                             <option value="{{bill._id}}" data-amount="{{bill.TotalAmount}}">{{bill.BillType}}</option>
                             {% endfor %}
