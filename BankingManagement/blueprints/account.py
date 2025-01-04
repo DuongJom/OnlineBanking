@@ -116,7 +116,7 @@ def register():
                                         loginMethod=[loginMethod])
         accounts.insert_one(new_account.to_json())
 
-        flash(messages_success['success'], 'success')
+        flash(messages_success['register_success'], 'success')
         return redirect(url_for("account.login"))
     
     elif request.method == 'GET':
