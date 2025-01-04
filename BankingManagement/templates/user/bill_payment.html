@@ -11,11 +11,12 @@
         <!-- Recent Transactions -->
         <div>
             <div class="flex flex-row w-full">
-                <form action="post" method="/bill-payment" class="w-full flex flex-row items-center space-x-2">
+                <form action="/bill-payment" method="post" class="w-full flex flex-row items-center space-x-2">
+                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
                     <input type="date" name="start_date" id="start_date" class="border rounded-lg w-1/3 h-8" value="{{start_date}}">
                     <span class="px-2">~</span>
                     <input type="date" name="end_date" id="end_date" class="border rounded-lg w-1/3 h-8" value="{{end_date}}">
-                    <button type="submit" class="border rounded-lg bg-green-500 p-1 w-auto h-auto">
+                    <button id="filterBtn" type="submit" class="border rounded-lg bg-green-500 p-1 w-auto h-auto">
                         <img src="{{ url_for('static', filename='img/filter.png') }}" class="w-6 h-6">
                     </button>
                 </form>
@@ -29,10 +30,10 @@
                     <li class="flex justify-between items-center p-4 mb-4 bg-white rounded-lg shadow">
                         <div>
                             <p class="text-gray-700">{{bill.BillType}}</p>
-                            <p class="text-sm text-gray-500">{{bill.InvoiceDate|datetime_format}}</p>
+                            <p class="text-sm text-gray-500">{{bill.InvoiceDate|datetime_format('%Y-%m-%d')}}</p>
                         </div>
                         <p class="font-semibold flex flex-row justify-between">
-                            <div>{{bill.TotalAmount}}</div>
+                            <div>{{bill.TotalAmount|currency_format}}</div>
                             <span> - </span>
                             {% if bill.Status == 0 %}
                             <span class="text-red-500">Unpaid</span>
@@ -50,25 +51,30 @@
         <div>
             <h2 class="text-2xl font-bold mb-6">Pay Your Bill</h2>
             <div class="bg-white shadow-lg rounded-lg p-6">
-                <form>
+                <form method="post" action="{{url_for('user.payment')}}">
+                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
                     <div class="mb-4">
-                        <label for="bill-type" class="block text-gray-700 font-semibold mb-2">Select Bill Type</label>
-                        <select id="bill-type" class="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                            <option value="-1" selected>Choose a bill type</option>
+                        <label for="bill" class="block text-gray-700 font-semibold mb-2">Select Bill</label>
+                        <select id="bill" name="bill" class="w-full border border-gray-300 rounded-lg p-3 text-gray-700 
+                                focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="-1" selected>Choose a bill</option>
                             {% for bill in bills %}
-                            <option value="{{bill._id}}">{{bill.BillType}}</option>
+                            <option value="{{bill._id}}" data-amount="{{bill.TotalAmount}}">{{bill.BillType}}</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="mb-4">
                         <label for="amount" class="block text-gray-700 font-semibold mb-2">Amount</label>
-                        <input type="number" id="amount" placeholder="Enter amount" class="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <input type="number" id="amount" name="amount" placeholder="Enter amount" 
+                            class="w-full border border-gray-300 rounded-lg p-3 text-gray-700 
+                                focus:outline-none focus:ring-2 focus:ring-green-500" readonly>
                     </div>
 
                     <div class="mb-4">
                         <label for="payment-method" class="block text-gray-700 font-semibold mb-2">Payment Method</label>
-                        <select id="payment-method" class="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <select id="payment-method" name="payment_method" class="w-full border border-gray-300 rounded-lg p-3 
+                            text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                             <option disabled selected>Choose payment method</option>
                             <option>Visa</option>
                             <option>MasterCard</option>
@@ -78,10 +84,13 @@
 
                     <div class="mb-4">
                         <label for="card-number" class="block text-gray-700 font-semibold mb-2">Card/Account Number</label>
-                        <input type="text" id="card-number" placeholder="Enter your card/account number" class="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <input type="text" id="card-number" name="account_number" placeholder="Enter your card/account number" 
+                            class="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none 
+                                focus:ring-2 focus:ring-green-500">
                     </div>
 
-                    <button type="submit" class="w-full bg-green-500 text-white rounded-lg py-3 font-semibold hover:bg-green-600 transition duration-300">
+                    <button type="submit" class="w-full bg-green-500 text-white rounded-lg py-3 font-semibold 
+                        hover:bg-green-600 transition duration-300">
                         Pay Bill
                     </button>
                 </form>
@@ -100,4 +109,37 @@
         </div>
     </div>
 </main>
+<script>
+    const start_date_filter = document.getElementById('start_date');
+    const end_date_filter = document.getElementById('end_date');
+    const filterButton = document.getElementById('filterBtn');
+    const billSelect = document.getElementById('bill');
+
+    start_date_filter.addEventListener('keyup', (e) =>{
+        if(e.keyCode === 13){
+            e.preventDefault();
+            filterButton.click();
+        }
+    })
+
+    end_date_filter.addEventListener('keyup', (e) =>{
+        if(e.keyCode === 13){
+            e.preventDefault();
+            filterButton.click();
+        }
+    })
+
+    billSelect.addEventListener('change', () => {
+        const amount = document.getElementById('amount');
+        const selectedOption = billSelect.options[billSelect.selectedIndex];
+        const billAmount = selectedOption.getAttribute('data-amount');
+
+        // Set the amount input with the value from selected bill
+        if (billAmount) {
+            amount.value = Number(billAmount);
+        } else {
+            amount.value = '';  // Clear the amount if no valid option is selected
+        }
+    });
+</script>
 {% endblock %}

@@ -15,6 +15,7 @@ class Bill(BaseModel):
         self.Status = kwargs["status"] if "status" in kwargs.keys() else BillStatusType.UNPAID.value
         self.InvoiceDate = kwargs["invoice_date"] if "invoice_date" in kwargs.keys() else None
         self.PaymentDate = kwargs["payment_date"] if "payment_date" in kwargs.keys() else None
+        self.PaymentMethod = kwargs["payment_method"] if "payment_method" in kwargs.keys() else None
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, request, flash
 from bson import ObjectId
 import time
-from datetime import date
+from datetime import date, datetime as dt
 
 from models import database, transaction
 from message import messages_success, messages_failure
@@ -151,33 +151,156 @@ def confirm_otp():
         return redirect(request.path)
 
 @user_blueprint.route('/bill-payment',methods=['GET', 'POST'])
+@login_required
 def bill_payment():
     if request.method == "GET":
-        today = date.today()
-        start_date = date(today.year, today.month, 1)
-        lst_bills = list(bills.find({ "Status": BillStatusType.UNPAID.value }))
+        today = dt.today()
+        start_date = dt(today.year, today.month, 1)
+        query = {
+            "$and": [
+                { "Status": BillStatusType.UNPAID.value},
+                { "InvoiceDate": { "$gte": start_date}},
+                { "InvoiceDate": { "$lte": today}}
+            ]
+        }
+
+        lst_bills = list(bills.find(query))
         return render_template(
             "/user/bill_payment.html",
             bills=lst_bills,
-            start_date=start_date,
-            end_date=today)
+            start_date=start_date.date(),
+            end_date=today.date())
+    
+    start_date = request.form['start_date']
+    end_date = request.form['end_date']
+
+    if start_date:
+        start_date = dt.strptime(start_date, "%Y-%m-%d")
+        start_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    if end_date:
+        end_date = dt.strptime(end_date, "%Y-%m-%d")
+        # Set the time to 23:59:59 to include the full end date
+        end_date = end_date.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+    query = {"Status": BillStatusType.UNPAID.value}
+    if start_date and end_date:
+        query = {
+            "$and": [
+                { "Status": BillStatusType.UNPAID.value},
+                { "InvoiceDate": { "$gte": start_date}},
+                { "InvoiceDate": { "$lte": end_date}}
+            ]
+        }
+    elif start_date and not end_date:
+        query = {
+            "$and": [
+                { "Status": BillStatusType.UNPAID.value},
+                { "InvoiceDate": { "$gte": start_date}}
+            ]
+        }
+    elif not start_date and end_date:
+        query = {
+            "$and": [
+                { "Status": BillStatusType.UNPAID.value},
+                { "InvoiceDate": { "$lte": end_date}}
+            ]
+        }
+
+    lst_bills = list(bills.find(query))
+    return render_template(
+            "/user/bill_payment.html",
+            bills=lst_bills,
+            start_date=start_date.date(),
+            end_date=end_date.date())
+
+@user_blueprint.route('/payment', methods=['POST'])
+@login_required
+def payment():
+    try:
+        account_id = ObjectId(session.get("account_id"))
+        bill_id = request.form.get('bill')
+        payment_method = request.form.get('payment_method')
+        amount = request.form.get('amount')
+        print(bill_id)
+
+        if bill_id != -1:
+            bill = bills.find_one({"_id": ObjectId(bill_id)})
+            print(bill)
+            account_number = request.form.get('account_number')
+            if bill:
+                find_query = {
+                    "$and":[
+                        {"_id": ObjectId(account_id)},
+                        {"AccountNumber": account_number}
+                    ]
+                }
+                account = accounts.find_one(find_query)
+
+                if not account:
+                    flash(messages_failure['account_not_found'], 'error')
+                    return redirect(request.referrer)
+                
+                if account["Balance"] < float(amount):
+                    flash(messages_failure['balance_not_enough'], 'error')
+                    return redirect(request.referrer)
+                
+                bills.update_one(
+                    {"_id": ObjectId(bill_id)},
+                    {
+                        "$set": {
+                            "Status": BillStatusType.PAID.value,
+                            "PaymentMethod": payment_method
+                        }
+                    }
+                )
+
+                accounts.update_one(
+                    {"_id": ObjectId(account_id)},
+                    {
+                        "$set": {
+                            "Balance": account["Balance"] - float(amount),
+                        }
+                    }
+                )
+
+                trans = transaction.Transaction(
+                    sender = account['AccountNumber'],
+                    receiver = bill_id,
+                    amount = float(amount)*(-1),
+                    currency = account['Currency'],
+                    message = f"Payment for {bill['BillType']} bill of {bill['InvoiceDate'].strftime('%Y/%m/%d')}",
+                    transaction_type = TransactionType.PAYMENT.value,
+                    balance = account['Balance'] - float(amount)
+                )
+                transactions.insert_one(trans.to_json())
+                flash(messages_success['payment_bill_success'], 'success')
+    except Exception as e:
+        print(e)
+        flash(messages_failure['internal_server_error'], "error")
+        return redirect(request.referrer)
+    return redirect('/bill-payment')
 
 @user_blueprint.route('/card-management',methods=['GET', 'POST'])
+@login_required
 def card_management():
     if request.method == 'GET':
         return render_template("/user/card_management.html")
 
 @user_blueprint.route('/investment-savings',methods=['GET', 'POST'])
+@login_required
 def investment_savings():
     if request.method == "GET":
         return render_template("/user/investment_savings.html")
 
 @user_blueprint.route('/loan-management',methods=['GET', 'POST'])
+@login_required
 def loan_management():
     if request.method == 'GET':
         return render_template('/user/loan_management.html')
 
 @user_blueprint.route('/settings-security',methods=['GET', 'POST'])
+@login_required
 def settings_security():
     if request.method == 'GET':
         return render_template('/user/settings_security.html')

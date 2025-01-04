@@ -10,7 +10,10 @@ messages_failure = {
     'document_not_found' : 'No document matching the filter criteria',
     'login_failure' : 'Login failed!',
     'send_otp_failure': "OTP hasn't send to your email!",
-    'OTP_invalid': 'OTP code is invalid!'
+    'OTP_invalid': 'OTP code is invalid!',
+    'account_not_found': 'Account does not exist!',
+    'internal_server_error': 'Internal Server Error!',
+    'balance_not_enough': 'Balance is not enough to pay the bill!'
 }
 
 messages_success = {
@@ -19,5 +22,6 @@ messages_success = {
     'success' : 'Successfully registered',
     'login_success' : 'You have login successfully!',
     'send_otp_success': 'OTP has been sent to the email {0}!',
-    'transfer_money_success': 'Transfer money successfully!'
+    'transfer_money_success': 'Transfer money successfully!',
+    'payment_bill_success': 'Payment is processed successfully!'
 }
