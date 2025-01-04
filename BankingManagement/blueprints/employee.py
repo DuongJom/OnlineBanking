@@ -1,4 +1,3 @@
-import random
 from flask import Blueprint, render_template, request, jsonify, session
 from bson import ObjectId
 from datetime import datetime, date
@@ -44,9 +43,8 @@ def employee_home():
         start_date_iso = start_date.isoformat()
         end_date_iso = end_date.isoformat()
 
-        query = {'CreatedDate': {'$gte': start_date_iso, '$lt': end_date_iso}}
-        data = list(db.employee.find(query))
-        data = convert_objectid(data)
+        query = {'CreatedDate': {'$gte': start_date_iso, '$lte': end_date_iso}}
+        data = list(db['employee'].find(query))
         return render_template('employee/home.html', current_month = current_month, current_year = current_year, months=months, years=years, fake_data=data)
 
 
