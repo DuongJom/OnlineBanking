@@ -1,14 +1,16 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, flash, session
+from flask import Blueprint, render_template, request, jsonify, redirect, flash, session, send_file
 from bson import ObjectId
 from datetime import datetime
 from io import BytesIO
+import io
 import pandas as pd
 
 from models import database, address, user as u, card, account as acc
-from helpers import login_required, issueNewCard, generate_login_info, send_email, create_accounts
+from helpers import login_required, issueNewCard, generate_login_info, send_email, create_accounts, getMIMETypeValue
 from enums.card_type import CardType
 from enums.deleted_type import DeletedType
 from enums.data_type import DataType
+from enums.mime_type import MIMEType
 from message import messages_success, messages_failure
 
 admin_blueprint = Blueprint('admin', __name__)   
@@ -57,8 +59,6 @@ def admin():
         collection = employees
     elif dataType == DataType.NEWS.value:
         collection = news
-    else:
-        return jsonify({"error": "Invalid dataType"}), 400
 
     # Calculate total pages and fetch items
     per_page = 10
@@ -260,19 +260,6 @@ def edit_account():
         flash(messages_success["update_success"].format("Account"), 'success')
         return redirect("/admin/account")
 
-@admin_blueprint.route('/admin/<data_type>/import', methods=['POST'])
-@login_required
-def import_accounts(data_type):
-    if request.method == 'POST':
-        data = []
-        excel = request.files['file']
-        df = pd.read_excel(BytesIO(excel.read()), engine='openpyxl')
-
-        data = df.to_dict(orient='records')
-
-        res = create_accounts(data)
-    return jsonify(res)
-
 # End admin_account
 
 @admin_blueprint.route('/admin/user', defaults={'page': None, 'id': None}, methods=['GET'])
@@ -345,11 +332,55 @@ def admin_news():
     if request.method == 'GET':
         return render_template('admin/news/news.html')
     
-        
-@admin_blueprint.route('/admin/import', methods = ['GET','POST'])
-def import_data():
-    if request.method == 'GET':
-        return render_template('admin/general/import_result.html')
+@admin_blueprint.route('/admin/<data_type>/import', methods=['POST'])
+@login_required
+def import_accounts(data_type):
+    if request.method == 'POST':
+        data = []
+        excel = request.files['file']
+        df = pd.read_excel(BytesIO(excel.read()), engine='openpyxl')
 
+        data = df.to_dict(orient='records')
 
+        res = create_accounts(data)
+    return jsonify(res)
 
+@admin_blueprint.route('/admin/export-data/<dataType>', methods=['POST'])
+@login_required
+def export_data(dataType):
+    filters = request.json.get('filter')
+    file_type = request.json.get('file_type')
+    now = datetime.now()
+    file_name = f"{now.year}{now.month}{now.day}_{dataType}"
+
+    if dataType == DataType.ACCOUNT.value:
+        collection = accounts
+    elif dataType == DataType.USER.value:
+        collection = users
+    elif dataType == DataType.BRANCH.value:
+        collection = branches
+    elif dataType == DataType.EMPLOYEE.value:
+        collection = employees
+    elif dataType == DataType.NEWS.value:
+        collection = news
+
+    items = list(collection.find(filters))
+    df = pd.json_normalize(items) 
+    output = io.BytesIO()
+    mime = None
+
+    if file_type == str(MIMEType.CSV.value):
+        df.to_csv(output, index=False, encoding='utf-8')
+        output.seek(0) 
+        mime = getMIMETypeValue(MIMEType.CSV)
+    elif file_type == str(MIMEType.JSON.value):
+        df = df.applymap(lambda x: x if isinstance(x, str) else str(x))
+        df = df.applymap(lambda x: x.encode('utf-8', errors='replace').decode('utf-8'))
+        df.to_json(output, index=False, force_ascii=False, orient='records', lines=True)
+        output.seek(0)
+        mime = getMIMETypeValue(MIMEType.JSON)
+    elif file_type == str(MIMEType.EXCEL_XLSX.value):
+        df.to_excel(output, index=False, engine='openpyxl')
+        output.seek(0)
+        mime = getMIMETypeValue(MIMEType.EXCEL_XLSX)
+    return send_file(output, as_attachment=True, download_name=file_name, mimetype=mime)

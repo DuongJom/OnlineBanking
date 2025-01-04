@@ -6,6 +6,7 @@ from models import database, transaction
 from message import messages_success, messages_failure
 from helpers import login_required, get_banks, generate_otp, send_email
 from enums.transaction_type import TransactionType
+from enums.role_type import RoleType
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -48,6 +49,12 @@ def transfer_money():
 def home():
     account_id = ObjectId(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
+
+    if account["Role"] == RoleType.ADMIN.value:
+        return redirect("/admin/account")
+    elif account["Role"] == RoleType.EMPLOYEE.value:
+        return redirect("/employee/home")
+    
     if account:
         query = {
             "$or": [

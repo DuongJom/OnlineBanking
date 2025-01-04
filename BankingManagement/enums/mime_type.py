@@ -16,3 +16,5 @@ class MIMEType(Enum):
     HTML = 13
     AUDIO = 14
     VIDEO = 15
+    JSON = 16
+    CSV = 17

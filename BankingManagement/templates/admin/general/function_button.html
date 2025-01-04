@@ -1,4 +1,5 @@
 <div class="sm:ml-14 mb-2 sm:mb-0">
+
     {% if not 'user' in request.path %}
     <button class="h-7 w-24 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar font-bold">
         <a href="#" id="add_button">Add</a>
@@ -10,9 +11,14 @@
         Import
     </button>
 
-    <button class="h-7 w-24 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar font-bold">
-        Export
-    </button>
+    <select class="h-7 w-28 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar p-0 pl-5 font-bold"
+            onchange="export_data()"
+            id="export-btn">
+        <option disabled selected>Export</option>
+        <option value="17">CSV</option>
+        <option value="16">JSON</option>
+        <option value="3">XLSX</option>
+    </select>
 
     {% include 'admin/general/import.html' %}
 </div>

@@ -2,6 +2,8 @@ import os
 import random
 import requests
 import hashlib
+import pandas as pd
+import ast
 
 from flask import redirect, session
 from functools import wraps
@@ -127,6 +129,12 @@ def getMIMETypeValue(mime_type: MIMEType):
     if mime_type == MIMEType.VIDEO:
         return 'video/mpeg'
     
+    if mime_type == MIMEType.CSV:
+        return 'text/csv'
+    
+    if mime_type == MIMEType.JSON:
+        return prefix + 'json'
+    
     
 def paginator(page, items_list):
     per_page = 10
@@ -244,12 +252,6 @@ def create_accounts(data):
         response_data["logs"].append(res)
         response_data.update({"success_create": counter})
     return response_data
-            
-
-            
-            
-        
-
 
 def get_banks():
     try:
@@ -271,3 +273,59 @@ def get_banks():
 # Function to generate a random OTP
 def generate_otp():
     return str(random.randint(100000, 999999))
+
+def get_file_extension(file_name):
+    return file_name.split('.')[1] if len(file_name.split('.')) > 0 else None
+
+def flatten_nested_columns(df, nested_columns):
+    """
+    Flattens nested columns in a DataFrame.
+    
+    Parameters:
+    df (pd.DataFrame): The input DataFrame with potential nested columns.
+    nested_columns (list): List of column names that contain nested data (e.g., stringified dictionaries).
+    
+    Returns:
+    pd.DataFrame: The DataFrame with flattened nested columns.
+    """
+    for col in nested_columns:
+        def parse_column(value):
+            if isinstance(value, (dict, list)):
+                return value
+            try:
+                return ast.literal_eval(value)
+            except (ValueError, SyntaxError):
+                return value
+
+        df[col] = df[col].apply(parse_column)
+        nested_df = pd.json_normalize(df[col])
+        nested_df = nested_df.add_prefix(f'{col}.')
+        df = df.drop(columns=[col])
+        df = pd.concat([df, nested_df], axis=1)
+    
+    return df
+
+def import_data(file_path, collection_name, database, nested_columns=None):
+    try:
+        file_ext = get_file_extension(file_name=file_path)
+        if not file_ext:
+            return False
+        
+        df = None
+        if file_ext.lower() == MIMEType.CSV.name.lower():
+            df = pd.read_csv(file_path)
+        elif file_ext.lower() == MIMEType.JSON.name.lower():
+            df = pd.read_json(file_path)
+        elif file_ext.lower() == MIMEType.EXCEL.name.lower():
+            df = pd.read_excel(file_path)
+        
+        if nested_columns:
+            df = flatten_nested_columns(df, nested_columns=nested_columns)
+
+        data = df.to_dict(orient="records")
+        collection = database[collection_name.lower()]
+        collection.insert_many(data)
+        return True
+    except Exception as e:
+        print(e)
+        return False

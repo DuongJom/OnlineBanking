@@ -482,3 +482,65 @@ export async function filter(data_type) {
     console.error("There was a problem with loading the items:", error);
   }
 }
+
+window.export_data = function() {
+  const exportBtn = document.getElementById("export-btn");
+  const data_type = document.getElementById("dataType").value;
+  const file_type = exportBtn.value;
+  const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+  fetch(`/admin/export-data/${data_type}`, {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
+    },
+    body: JSON.stringify({
+      filter: JSON.parse(localStorage.getItem("filterCondition")),
+      file_type: file_type
+    })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+    return response.blob();
+  })
+  .then(blob => {
+    if (blob.size === 0) {
+      throw new Error('The file is empty. No data to download.');
+    }
+
+    // Create the download URL for the blob
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    // Determine file extension based on file type
+    let ext = '';
+    if (file_type == '3') {
+      ext = '.xlsx';
+    } else if (file_type == '16') {
+      ext = '.json';
+    } else {
+      ext = '.csv';
+    }
+
+    // Create the file name using the current timestamp
+    const fileName = "data_" + new Date().toISOString() + ext;
+
+    // Create a temporary <a> tag to trigger download
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // Cleanup the created Object URL
+    window.URL.revokeObjectURL(downloadUrl);
+  })
+  .catch(error => {
+    // Display the error message if something goes wrong
+    console.error("An error occurred:", error);
+    alert(`Failed to download the file: ${error.message}`);
+  });
+}
