@@ -14,7 +14,8 @@ messages_failure = {
     'account_not_found': 'Account does not exist!',
     'internal_server_error': 'Internal Server Error!',
     'balance_not_enough': 'Balance is not enough to {0}!',
-    'must_input_value': 'Please fill in all information!'
+    'must_input_value': 'Please fill in all information!',
+    'investment_not_exist': 'Investment does not exist!'
 }
 
 messages_success = {
@@ -25,5 +26,6 @@ messages_success = {
     'send_otp_success': 'OTP has been sent to the email {0}!',
     'transfer_money_success': 'Transfer money successfully!',
     'payment_bill_success': 'Payment is processed successfully!',
-    'investment_savings_created_success': 'Investment/Savings is created successfully!'
+    'investment_savings_created_success': 'Investment/Savings is created successfully!',
+    'withdraw_cancel_success': '{0} investment successfully!'
 }

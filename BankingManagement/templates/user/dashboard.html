@@ -38,12 +38,12 @@
             <table class="min-w-full table-auto border-collapse">
                 <thead>
                     <tr class="bg-green-300 text-white">
-                        <th class="px-6 py-3 text-left border-2">Date</th>
-                        <th class="px-6 py-3 text-left border-2">Source Account</th>
-                        <th class="px-6 py-3 text-left border-2">Destination Account</th>
-                        <th class="px-6 py-3 text-left border-2">Description</th>
-                        <th class="px-6 py-3 text-left border-2">Amount</th>
-                        <th class="px-6 py-3 text-left border-2">Balance</th>
+                        <th class="px-6 py-3 text-center border-2">Date</th>
+                        <th class="px-6 py-3 text-center border-2">Source Account</th>
+                        <th class="px-6 py-3 text-center border-2">Destination Account</th>
+                        <th class="px-6 py-3 text-center border-2">Description</th>
+                        <th class="px-6 py-3 text-center border-2">Amount</th>
+                        <th class="px-6 py-3 text-center border-2">Balance</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,8 +53,8 @@
                         <td class="border px-6 py-4">{{ transaction.info.SenderId }}</td>
                         <td class="border px-6 py-4">{{ transaction.info.ReceiverId }}</td>
                         <td class="border px-6 py-4">{{ transaction.description }}</td>
-                        <td class="border px-6 py-4 space-x-1 {{ 'text-red-600' if transaction.ReceiverId != account.AccountNumber else 'text-green-600' }}">
-                            {% if transaction.ReceiverId != account.AccountNumber %}
+                        <td class="border px-6 py-4 space-x-1 {{ 'text-red-600' if transaction.info.ReceiverId != account.AccountNumber else 'text-green-600' }}">
+                            {% if transaction.info.ReceiverId != account.AccountNumber %}
                             <span>-{{ transaction.amount|currency_format }}</span>
                             {% else %}
                             <span>+{{ transaction.amount|currency_format }}</span>

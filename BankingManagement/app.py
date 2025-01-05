@@ -25,7 +25,7 @@ initialize_data(app)
 def currency_format(value):
     if value is None:
         value = 0
-    return "{:,.3f}".format(float(value))
+    return "{:,.2f}".format(float(value))
 
 @app.template_filter()
 def datetime_format(value, format='%Y-%m-%d %H:%M:%S'):

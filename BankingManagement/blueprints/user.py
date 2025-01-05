@@ -11,6 +11,7 @@ from enums.transaction_type import TransactionType
 from enums.bill_status import BillStatusType
 from enums.investment import InvestmentType
 from enums.currency import CurrencyType
+from enums.investment_status import InvestmentStatus
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -305,7 +306,7 @@ def investment_savings():
         lst_investments = list(investments.find({}))
         
         for investment in lst_investments:
-            lasted_update = dt.strptime(investment['ModifiedDate'],'%Y-%m-%dT%H:%M:%S.%f').date()
+            lasted_update = dt.strptime(str(investment['ModifiedDate']), '%Y-%m-%d %H:%M:%S.%f').date()
             if lasted_update != today.date():
                 current_investment_rate = round(random.uniform(-10,10),2)
                 investments.update_one(
@@ -313,7 +314,8 @@ def investment_savings():
                     {
                         "$set": {
                             "CurrentRate": current_investment_rate,
-                            "CurrentAmount": investment['CurrentAmount'] + investment['CurrentAmount']*(current_investment_rate)/100
+                            "CurrentAmount": investment['CurrentAmount'] + investment['InvestmentAmount']*(current_investment_rate)/100,
+                            "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f')
                         }
                     }
                 )
@@ -378,12 +380,14 @@ def add_new_investment():
             )
             result = investments.insert_one(investment.to_json())
             investment = investments.find_one({'_id': result.inserted_id})
+            today = dt.today()
 
             accounts.update_one(
                 {"_id": ObjectId(account_id)},
                 {
                     "$set": {
                         "Balance": account["Balance"] - float(investment_amount),
+                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f')
                     }
                 }
             )
@@ -405,7 +409,88 @@ def add_new_investment():
         return redirect(request.referrer)
     return redirect('/investment-savings')
 
-@user_blueprint.route('/card-management',methods=['GET', 'POST'])
+@user_blueprint.route('/edit-investment', methods=['POST'])
+@login_required
+def edit_investment():
+    try:
+        today = dt.today()
+        account_id = ObjectId(session.get("account_id"))
+        if account_id:
+            account = accounts.find_one({'_id':ObjectId(account_id)})
+            if not account:
+                flash(messages_failure['account_not_found'], 'error')
+                return redirect(request.referrer)
+        
+        investment_id = request.form.get('investment_id')
+        edit_type = request.form.get('edit_type')
+
+        if investment_id:
+            investment = investments.find_one({'_id': ObjectId(investment_id)})
+            if not investment:
+                flash(messages_failure['investment_not_exist'], 'error')
+                return redirect(request.referrer)
+
+            account_balance = 0
+            edit_type_name = None
+            set_query = {}
+            amount = 0
+            if int(edit_type) == InvestmentStatus.WITH_DRAW.value:
+                set_query = {
+                    "$set": {
+                        "CurrentAmount": 0,
+                        "Status": InvestmentStatus.WITH_DRAW.value,
+                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f')
+                    }
+                }
+                edit_type_name = "Withdraw"
+                amount = investment['CurrentAmount']
+            elif int(edit_type) == InvestmentStatus.CANCEL.value:
+                set_query = {
+                    "$set": {
+                        "CurrentAmount": 0,
+                        "Status": InvestmentStatus.CANCEL.value,
+                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f')
+                    }
+                }
+                edit_type_name = "Cancel"
+                amount = investment['InvestmentAmount']
+            account_balance = account['Balance'] + amount
+
+            accounts.update_one(
+                {'_id':ObjectId(account_id)},
+                {
+                    "$set": {
+                        "Balance": account_balance,
+                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f')
+                    }
+                }
+            )
+
+            trans = transaction.Transaction(
+                sender = "DHC Bank",
+                receiver = account['AccountNumber'],
+                amount = amount,
+                currency = account['Currency'],
+                message = f"{edit_type_name} from {investment['Name']} of {dt.strptime(investment['InvestmentDate'],'%Y-%m-%dT%H:%M:%S').strftime('%Y/%m/%d')}",
+                transaction_type = TransactionType.WITHDRAWAL.value,
+                balance = account_balance
+            )
+            transactions.insert_one(trans.to_json())
+
+            investments.update_one(
+                {'_id': ObjectId(investment_id)},
+                set_query
+            )
+            flash(messages_success['withdraw_cancel_success'].format(edit_type_name), 'success')
+
+    except Exception as e:
+        print(e)
+        flash(messages_failure['internal_server_error'], 'error')
+    
+    return redirect(request.referrer)
+
+
+@user_blueprint.route('/card-management', methods=['GET', 'POST'])
 @login_required
 def card_management():
     if request.method == 'GET':
