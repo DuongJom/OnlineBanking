@@ -2,7 +2,7 @@ const dataType = document.getElementById("dataType").value;
 var excelFile = null;
 
 function getLogType(logType, row_index, log) {
-    let icon = 'check_circel.svg';
+    let icon = 'check_circle.svg';
     if(logType == "error") {
         icon = "error.svg";
     }

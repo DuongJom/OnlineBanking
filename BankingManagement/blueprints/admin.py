@@ -2,15 +2,14 @@ from flask import Blueprint, render_template, request, jsonify, redirect, flash,
 from bson import ObjectId
 from datetime import datetime
 from io import BytesIO
-import io
 import pandas as pd
 
 from models import database, address, user as u, card, account as acc
-from helpers import login_required, issueNewCard, generate_login_info, send_email, create_accounts, getMIMETypeValue
+from helpers.helpers import login_required, issueNewCard, generate_login_info, send_email,get_file_extension
+from helpers.admin import create_accounts, generate_export_data
 from enums.card_type import CardType
 from enums.deleted_type import DeletedType
 from enums.data_type import DataType
-from enums.mime_type import MIMEType
 from message import messages_success, messages_failure
 
 admin_blueprint = Blueprint('admin', __name__)   
@@ -334,14 +333,17 @@ def admin_news():
     
 @admin_blueprint.route('/admin/<data_type>/import', methods=['POST'])
 @login_required
-def import_accounts(data_type):
+def import_data(data_type):
     if request.method == 'POST':
-        data = []
-        excel = request.files['file']
-        df = pd.read_excel(BytesIO(excel.read()), engine='openpyxl')
+        file = request.files['file']
+        ext = get_file_extension(file.filename)
 
+        if ext == 'csv':
+            df = pd.read_csv(BytesIO(file.read()))
+        elif ext == 'xlsx':
+            df = pd.read_excel(BytesIO(file.read()), engine='openpyxl')
+        
         data = df.to_dict(orient='records')
-
         res = create_accounts(data)
     return jsonify(res)
 
@@ -352,35 +354,5 @@ def export_data(dataType):
     file_type = request.json.get('file_type')
     now = datetime.now()
     file_name = f"{now.year}{now.month}{now.day}_{dataType}"
-
-    if dataType == DataType.ACCOUNT.value:
-        collection = accounts
-    elif dataType == DataType.USER.value:
-        collection = users
-    elif dataType == DataType.BRANCH.value:
-        collection = branches
-    elif dataType == DataType.EMPLOYEE.value:
-        collection = employees
-    elif dataType == DataType.NEWS.value:
-        collection = news
-
-    items = list(collection.find(filters))
-    df = pd.json_normalize(items) 
-    output = io.BytesIO()
-    mime = None
-
-    if file_type == str(MIMEType.CSV.value):
-        df.to_csv(output, index=False, encoding='utf-8')
-        output.seek(0) 
-        mime = getMIMETypeValue(MIMEType.CSV)
-    elif file_type == str(MIMEType.JSON.value):
-        df = df.applymap(lambda x: x if isinstance(x, str) else str(x))
-        df = df.applymap(lambda x: x.encode('utf-8', errors='replace').decode('utf-8'))
-        df.to_json(output, index=False, force_ascii=False, orient='records', lines=True)
-        output.seek(0)
-        mime = getMIMETypeValue(MIMEType.JSON)
-    elif file_type == str(MIMEType.EXCEL_XLSX.value):
-        df.to_excel(output, index=False, engine='openpyxl')
-        output.seek(0)
-        mime = getMIMETypeValue(MIMEType.EXCEL_XLSX)
-    return send_file(output, as_attachment=True, download_name=file_name, mimetype=mime)
+    data = generate_export_data(dataType=dataType, file_type=file_type, filters=filters)
+    return send_file(data['output'], as_attachment=True, download_name=file_name, mimetype=data['mime'])
