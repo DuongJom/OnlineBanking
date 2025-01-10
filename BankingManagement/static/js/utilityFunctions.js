@@ -24,8 +24,7 @@ function navBarToggle () {
     down.classList.toggle('hidden');
 }
 
-function change_status_value(event) {
-  event.preventDefault()
+function change_status_value() {
   const input = document.getElementById("status_input");
   const status_checkbox = document.getElementById("status_checkbox");
   const status_text = document.getElementById("status_text");

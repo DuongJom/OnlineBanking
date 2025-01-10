@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   localStorage.setItem("admin_page", 1);
 
   try {
+    localStorage.setItem("filterCondition", JSON.stringify({IsDeleted: 0}));
     const data = await getAdminData(1, dataType);
 
     lazyLoading.classList.add('hidden');

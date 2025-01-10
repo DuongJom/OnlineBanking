@@ -166,7 +166,7 @@ export function renderTable(items, data_type) {
         data_type,
         items[i][identifier[data_type]]
       );
-      createStatusCol(row, true, items[i]["IsDeleted"]);
+      // createStatusCol(row, true, items[i]["IsDeleted"]);
       tbody.appendChild(row);
     }
     table_wrapper.appendChild(table);
@@ -257,7 +257,7 @@ export function renderTable(items, data_type) {
       data_type,
       items[i][identifier[data_type]]
     );
-    createStatusCol(row, items[i]["IsDeleted"]);
+    // createStatusCol(row, items[i]["IsDeleted"]);
     tbody2.appendChild(row);
   }
 
@@ -299,14 +299,14 @@ function createTableHeader(col_names, table, isFixed, data_type) {
     
     thead.appendChild(action_col);
 
-    const status_col = document.createElement("th");
-    status_col.innerHTML = "Status";
-    if(col_names.length > 3) {
-      status_col.classList.add("admin_th");
-    }else {
-      status_col.classList.add("less_admin_th");
-    }
-    thead.appendChild(status_col);
+    // const status_col = document.createElement("th");
+    // status_col.innerHTML = "Status";
+    // if(col_names.length > 3) {
+    //   status_col.classList.add("admin_th");
+    // }else {
+    //   status_col.classList.add("less_admin_th");
+    // }
+    // thead.appendChild(status_col);
     
   }
   table.appendChild(thead);
@@ -448,6 +448,7 @@ export function closeImportForm() {
 function getFilterCondition() {
   const dynamicKey = document.getElementById("dynamicKey").value; 
   const dynamicValue = document.getElementById("dynamicValue").value; 
+  const status_value = document.getElementById("status_input").value;
 
   let filterCondition = {};
 
@@ -467,11 +468,14 @@ function getFilterCondition() {
   if (dynamicValue !== "" && dynamicKey !== "") {
     filterCondition[dynamicKey] = {$regex: `^${dynamicValue}`, $options: 'i'};
   }
-  console.log(filterCondition);
+
+  filterCondition["IsDeleted"] = status_value;
+
   localStorage.setItem("filterCondition", JSON.stringify(filterCondition));
 }
 
 export async function filter(data_type) {
+  console.log("ok");
   getFilterCondition();
   localStorage.setItem("admin_page", 1);
   try {

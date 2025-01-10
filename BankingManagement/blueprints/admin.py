@@ -42,8 +42,6 @@ def admin():
         elif isinstance(value, (int, float)):  
             filters[key] = int(value)
 
-    filters.update({"IsDeleted": DeletedType.AVAILABLE.value})
-
     collection = None
     items = []
     total_pages = 0
