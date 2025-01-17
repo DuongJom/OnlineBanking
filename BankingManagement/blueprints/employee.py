@@ -1,11 +1,11 @@
-import random
 from flask import Blueprint, render_template, request, jsonify, session
 from bson import ObjectId
+from datetime import datetime, date
 
 from models import database
-
 from helpers import login_required, paginator
-from datetime import datetime, date
+from enums.month_type import MonthType
+
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -15,29 +15,9 @@ salary = db['salary']
 employee_blueprint = Blueprint('employee', __name__)
 
 years = list( range(2000, date.today().year + 1) )
-months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-]
-# document = emp.Employee(employeeName = 'Jake', position = 'CSC', role = 'admin', sex = 'male', phone = '12345678', email = 'nguyenvancong74185@gmail.com', 
-#                         address = 'hanoi', checkIn = datetime.now().strftime("%H:%M"), checkOut = datetime.now().strftime("%H:%M"), workingStatus = 'present', workingDays = 20, dayOffs = 10).to_json()
-# employee.insert_one(document)
-
-# Mapping of month names to numbers
-month_map = {
-    'January': 1,
-    'February': 2,
-    'March': 3,
-    'April': 4,
-    'May': 5,
-    'June': 6,
-    'July': 7,
-    'August': 8,
-    'September': 9,
-    'October': 10,
-    'November': 11,
-    'December': 12
-}
+months = []
+for month in MonthType:
+    months.append(month.name.capitalize())
 
 def convert_objectid(data):
     if isinstance(data, list):
@@ -56,17 +36,17 @@ def employee_home():
         current_month = today.strftime("%B")
         current_year = today.year
 
-         # Construct MongoDB query to filter documents based on month and year
+        # Construct MongoDB query to filter documents based on month and year
         start_date = datetime(today.year, today.month, 1)
         end_date = datetime(today.year, today.month + 1, 1) if today.month < 12 else datetime(today.year + 1, 1, 1)
 
         start_date_iso = start_date.isoformat()
         end_date_iso = end_date.isoformat()
 
-        query = {'CreatedDate': {'$gte': start_date_iso, '$lt': end_date_iso}}
-        data = list(db.employee.find(query))
-        data = convert_objectid(data)
+        query = {'CreatedDate': {'$gte': start_date_iso, '$lte': end_date_iso}}
+        data = list(db['employee'].find(query))
         return render_template('employee/home.html', current_month = current_month, current_year = current_year, months=months, years=years, fake_data=data)
+
 
 #return home data
 @employee_blueprint.route('/get-home-data', methods=['POST'])
@@ -76,12 +56,12 @@ def get_home_data():
         try:
             # get json from body of the request
             data = request.get_json()
-            month_str = data['month']
+            month_str = data['month'].upper()
+            for item in (MonthType):
+                if month_str == item.name:
+                    month = item.value
+
             year = int(data['year'])
-            
-            if month_str not in month_map.keys():
-                return jsonify({'error': 'Invalid month name'}), 400
-            month = month_map[month_str]
             
             # Construct MongoDB query to filter documents based on month and year
             start_date = datetime(year, month, 1)

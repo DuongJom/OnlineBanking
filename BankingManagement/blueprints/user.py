@@ -57,7 +57,7 @@ def home():
         }
         transactions_data = transactions.find(query)
         transactions_of_account = [
-            {"date": transaction["TransactionDate"], "description": transaction["Message"], "amount": transaction["Amount"], "balance": transaction["CurrentBalance"]}
+            {"date": transaction["TransactionDate"], "description": transaction["Message"], "amount": transaction["Amount"], "balance": transaction["CurrentBalance"]} 
             for transaction in transactions_data
         ]
 
