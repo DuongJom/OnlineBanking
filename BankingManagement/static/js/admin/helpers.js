@@ -1,6 +1,6 @@
 import { tableStructure, identifier } from "./config.js";
 
-export function getAdminData(page, dataType) {
+const getAdminData = (page, dataType) => {
   const csrfToken = document.querySelector('input[name="csrf_token"]').value;
   return fetch(`/admin`, {
     method: "POST",
@@ -28,12 +28,12 @@ export function getAdminData(page, dataType) {
     });
 }
 
-export function closeDeleteModal() {
+const closeDeleteModal = () => {
   const delete_modal = document.getElementById("delete_modal");
   delete_modal.classList.add("hidden");
 }
 
-function renderDeleteModal(id, object_name, data_type) {
+const renderDeleteModal = (id, object_name, data_type) => {
   const delete_modal = document.getElementById("delete_modal");
   const deleteConfirmMessage = document.getElementById("deleteConfirmMessage");
   const deleteForm = document.getElementById("delete_form");
@@ -46,7 +46,7 @@ function renderDeleteModal(id, object_name, data_type) {
   
 }
 
-function createActionButton(row, _id, data_type, object_name) {
+const createActionButton = (row, _id, data_type, object_name) => {
   // UI for action button
   const action_cell = document.createElement("td");
   const view_btn = document.createElement("a");
@@ -97,7 +97,7 @@ function createActionButton(row, _id, data_type, object_name) {
   row.appendChild(action_cell);
 }
 
-function createStatusCol(row, isActive) {
+const createStatusCol = (row, isActive) => {
   const status_cell = document.createElement("td");
   const div = document.createElement("div");
 
@@ -109,7 +109,7 @@ function createStatusCol(row, isActive) {
   row.appendChild(status_cell);
 }
 
-export function renderTable(items, data_type) {
+const renderTable = (items, data_type) => {
   const tables = document.querySelectorAll("table");
   const table_wrapper = document.getElementById("table_wrapper");
   const col_names = tableStructure[data_type];
@@ -268,7 +268,7 @@ export function renderTable(items, data_type) {
   adjustTableMargin();
 }
 
-function createTableHeader(col_names, table, isFixed, data_type) {
+const createTableHeader = (col_names, table, isFixed, data_type) => {
   const thead = document.createElement("thead");
   thead.classList.add("admin_thead");
   if(col_names.length > 3 || isFixed == true) {
@@ -312,7 +312,7 @@ function createTableHeader(col_names, table, isFixed, data_type) {
   table.appendChild(thead);
 }
 
-function generateObjectSign(cell) {
+const generateObjectSign = (cell) => {
   const icon = document.createElement("div");
 
   icon.innerHTML = "i";
@@ -331,7 +331,7 @@ function generateObjectSign(cell) {
   cell.classList.add("cursor-pointer", "hover:bg-gray-400");
 }
 
-export async function goNext(data_type) {
+const goNext = async(data_type) => {
   var page = localStorage.getItem("admin_page");
   var max_page = localStorage.getItem("admin_maxPage");
 
@@ -349,7 +349,7 @@ export async function goNext(data_type) {
   }
 }
 
-export async function goPrevious(data_type, page) {
+const goPrevious = async(data_type, page) => {
   var page = localStorage.getItem("admin_page");
 
   if (page > 1) {
@@ -365,7 +365,7 @@ export async function goPrevious(data_type, page) {
   }
 }
 
-export function adjustTableMargin() {
+const adjustTableMargin = () => {
   const table1 = document.getElementById("table1");
   const table2 = document.getElementById("table2");
   if(table1 != null) {
@@ -377,13 +377,13 @@ export function adjustTableMargin() {
   }
 }
 
-function addStyle(element, classes) {
+const addStyle = (element, classes) => {
   classes.split(" ").forEach(function (cls) {
     element.classList.add(cls);
   });
 }
 
-function create_toggle_button(parent, isActive) {
+const create_toggle_button = (parent, isActive) => {
   const wrapper_style = "inline-flex items-center me-5";
   const input_style = "sr-only peer";
   const text_style =
@@ -422,7 +422,7 @@ function create_toggle_button(parent, isActive) {
   parent.appendChild(wrapper);
 }
 
-export function decide_button_type(data_type) {
+const decide_button_type = (data_type) => {
   const addBtn = document.getElementById("add_button");
 
   if(addBtn != null)
@@ -431,21 +431,21 @@ export function decide_button_type(data_type) {
   }
 }
 
-export function openImportForm() {
+const openImportForm = () => {
   const importForm = document.getElementById("importForm");
   
   importForm.classList.remove('hidden');
   importForm.classList.add('flex');
 }
 
-export function closeImportForm() {
+const closeImportForm = () => {
   const importForm = document.getElementById("importForm");
   
   importForm.classList.remove('flex');
   importForm.classList.add('hidden');
 }
 
-function getFilterCondition() {
+const getFilterCondition = () => {
   const dynamicKey = document.getElementById("dynamicKey").value; 
   const dynamicValue = document.getElementById("dynamicValue").value; 
   const status_value = document.getElementById("status_input").value;
@@ -474,7 +474,7 @@ function getFilterCondition() {
   localStorage.setItem("filterCondition", JSON.stringify(filterCondition));
 }
 
-export async function filter(data_type) {
+const filter = async(data_type) => {
   console.log("ok");
   getFilterCondition();
   localStorage.setItem("admin_page", 1);
@@ -548,3 +548,16 @@ window.export_data = function() {
     alert(`Failed to download the file: ${error.message}`);
   });
 }
+
+export {
+  getAdminData,
+  closeDeleteModal,
+  renderTable,
+  goNext,
+  goPrevious,
+  adjustTableMargin,
+  decide_button_type,
+  openImportForm,
+  closeImportForm,
+  filter
+};

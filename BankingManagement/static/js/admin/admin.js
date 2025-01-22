@@ -10,10 +10,8 @@ import {
   closeImportForm,
   filter,
 } from "./helpers.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
-  window.filter = filter;
-  localStorage.setItem("filterCondition", JSON.stringify({}));
-  window.addEventListener("resize", adjustTableMargin);
   const dataType = document.getElementById("dataType").value;
   const btnNext = document.getElementById("next-btn");
   const btnPrevious = document.getElementById("previous-btn");
@@ -23,6 +21,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const closeImportFormBtn = document.getElementById("closeImportFormButton");
   const dynamicValue = document.getElementById("dynamicValue");
   let timeout = null;
+  
+  window.filter = filter;
+  localStorage.setItem("filterCondition", JSON.stringify({}));
+  window.addEventListener("resize", adjustTableMargin);
   localStorage.setItem("admin_page", 1);
 
   try {

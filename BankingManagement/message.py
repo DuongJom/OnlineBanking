@@ -11,7 +11,8 @@ messages_failure = {
     'login_failure' : 'Login failed!',
     'null_data': '{0} can not null',
     'send_otp_failure': "OTP hasn't send to your email!",
-    'OTP_invalid': 'OTP code is invalid!'
+    'OTP_invalid': 'OTP code is invalid!',
+    'internal_error': 'Internal network error!'
 }
 
 messages_success = {

@@ -1,32 +1,28 @@
-import pandas as pd
+from flask import Blueprint, render_template, request, jsonify, redirect, flash, session, send_file
 from bson import ObjectId
 from datetime import datetime
 from io import BytesIO
-from flask import Blueprint, render_template, jsonify, redirect, flash, send_file, request, session
+import pandas as pd
 
-from models.database import Database
-from models.address import Address
-from models.user import User
-from models.card import Card
-from models.account import Account
+from models import database, address, user as u, card, account as acc
+from helpers.helpers import login_required, issueNewCard, generate_login_info, send_email,get_file_extension
+from helpers.admin import create_accounts, generate_export_data
 from enums.card_type import CardType
 from enums.deleted_type import DeletedType
 from enums.data_type import DataType
-from enums.admin_page_type import PageType
-from enums.file_type import FileType
 from message import messages_success, messages_failure
-from helpers.helpers import login_required, issueNewCard, generate_login_info, send_email,get_file_extension
-from helpers.admin import create_accounts, generate_export_data
 
-admin_blueprint = Blueprint('admin', __name__)
+admin_blueprint = Blueprint('admin', __name__)   
 
-db = Database().get_db()
+db = database.Database().get_db()
 accounts = db['accounts']
-addresses = db['addresses']
+addresses = db['address']
 users = db['users']
 branches = db['branches']
 cards = db['cards']
-employees = db['employees']
+transferMethods = db['transferMethods']
+loginMethods = db['loginMethods']
+employees = db['employee']
 news = db['news']
 login_methods = db['login_methods']
 transfer_methods = db['transfer_methods']
@@ -37,42 +33,45 @@ card_types = db['card_types']
 @login_required
 def admin():
     page = request.json.get('page', 1)
-    data_type = request.json.get('data_type')
-    criteria = request.json.get('filter')
+    dataType = request.json.get('dataType')
+    filters = request.json.get('filter')
 
-    for key, value in criteria.items():
+    for key, value in filters.items():
         if isinstance(value, str) and value.isdigit(): 
-            criteria[key] = int(value)
+            filters[key] = int(value)
         elif isinstance(value, (int, float)):  
-            criteria[key] = int(value)
+            filters[key] = int(value)
 
     collection = None
-    lst_display_items = []
+    items = []
     total_pages = 0
 
-    if data_type == DataType.ACCOUNT.value:
+    if dataType == DataType.ACCOUNT.value:
         collection = accounts
-    elif data_type == DataType.USER.value:
+    elif dataType == DataType.USER.value:
         collection = users
-    elif data_type == DataType.BRANCH.value:
+    elif dataType == DataType.BRANCH.value:
         collection = branches
-    elif data_type == DataType.EMPLOYEE.value:
+    elif dataType == DataType.EMPLOYEE.value:
         collection = employees
-    elif data_type == DataType.NEWS.value:
+    elif dataType == DataType.NEWS.value:
         collection = news
 
     # Calculate total pages and fetch items
-    items_per_page = 10
+    per_page = 10
     total_documents = collection.count_documents({})
-    total_pages = (total_documents + items_per_page - 1) // items_per_page
-    items = collection.find(criteria).skip((page - 1) * items_per_page).limit(items_per_page)
+    total_pages = (total_documents + per_page - 1) // per_page
+    items_cursor = collection.find(filters).skip((page - 1) * per_page).limit(per_page)
 
     # Convert ObjectId to string for JSON response
-    for item in items:
+    for item in items_cursor:
         if '_id' in item:
             item['_id'] = str(item['_id'])
-        lst_display_items.append(item)
-    return jsonify({'items': lst_display_items, 'total_pages': total_pages})
+        items.append(item)
+
+    return jsonify({'items': items, 'total_pages': total_pages})
+
+# Start admin_account
 
 @admin_blueprint.route('/admin/account', defaults={'page': None, 'id': None}, methods=['GET', 'POST'])
 @admin_blueprint.route('/admin/account/<page>', defaults={'id': None}, methods=['GET'])
@@ -80,19 +79,17 @@ def admin():
 @login_required
 def account(page, id):
     if request.method == 'GET':
-        lst_login_methods = login_methods.find()
-        lst_transfer_methods = transfer_methods.find()
-        lst_roles = roles.find()
-        lst_branches = branches.find()
-
-        if page == PageType.ADD.value:
+        loginMethods = login_methods.find()
+        transferMethods = transfer_methods.find()
+        _roles = roles.find()
+        _branches = branches.find()
+        if page == "add":
             return render_template('admin/account/add_account.html', 
-                                   login_methods = lst_login_methods, 
-                                   transfer_methods = lst_transfer_methods, 
-                                   roles = lst_roles,
-                                   branches = lst_branches)
-        
-        if page == PageType.VIEW.value and id is not None:
+                                   loginMethods = loginMethods, 
+                                   transferMethods = transferMethods, 
+                                   roles = _roles,
+                                   branches = _branches)
+        elif page == "view" and id is not None:
             account_id = ObjectId(id)
             viewed_account = accounts.find_one({"_id": account_id})
             login_values = [method["Value"] for method in viewed_account["LoginMethod"]]
@@ -102,183 +99,165 @@ def account(page, id):
                                    account = viewed_account,
                                    login_values = login_values,
                                    transfer_values = transfer_values,
-                                   login_methods = lst_login_methods, 
-                                   transfer_methods = lst_transfer_methods)
-        
-        if page == PageType.EDIT.value and id is not None:
+                                   loginMethods = loginMethods, 
+                                   transferMethods = transferMethods,)
+        elif page == "edit" and id is not None:
             account_id = ObjectId(id)
             edited_account = accounts.find_one({"_id": account_id})
+            login_values = []
+            transfer_values = []
             login_values = [method["Value"] for method in edited_account["LoginMethod"]]
             transfer_values = [method["Value"] for method in edited_account["TransferMethod"]]
 
             return render_template('admin/account/edit_account.html', 
                                    account = edited_account,
-                                   login_methods = lst_login_methods, 
-                                   transfer_methods = lst_transfer_methods, 
-                                   roles = lst_roles,
-                                   branches = lst_branches,
+                                   loginMethods = loginMethods, 
+                                   transferMethods = transferMethods, 
+                                   roles = _roles,
+                                   branches = _branches,
                                    login_values = login_values,
                                    transfer_values = transfer_values)
         return render_template('admin/account/account.html')
-
-    try:
-        log_in_id = session.get("account_id")
+    elif request.method == 'POST':
+        admin_id = session.get("account_id")
         # Account info
         card_type = card_types.find_one({"TypeValue": CardType.CREDITS.value}, {"_id":0})
         card_info = issueNewCard()
         role = roles.find_one({"Value": int(request.form['role'])}, {"_id":0})
 
-        lst_login_method_type = list(map(int, request.form.getlist("loginMethod")))
-        lst_transfer_method_type = list(map(int, request.form.getlist("transferMethod")))
+        loginMethodTypeList = list(map(int, request.form.getlist("loginMethod")))
+        transferMethodTypeList = list(map(int, request.form.getlist("transferMethod")))
 
-        lst_login_methods = list(login_methods.find(
-            {'Value': {'$in': lst_login_method_type}}, 
+        loginMethods = list(login_methods.find(
+            {'Value': {'$in': loginMethodTypeList}}, 
             {'_id': 0}  
         ))
 
-        lst_transfer_methods = list(transfer_methods.find(
-            {'Value': {'$in': lst_transfer_method_type}}, 
+        transferMethods = list(transfer_methods.find(
+            {'Value': {'$in': transferMethodTypeList}}, 
             {'_id': 0}  
         ))
+        request_branch = None
 
-        request_branch = branches.find_one({"BranchName": request.form['branch']}, {"_id":0})
+        try:
+            request_branch = branches.find_one({"BranchName": request.form['branch']}, {"_id":0})
+        except KeyError:
+            request_branch = None
+
         # User info
-        name = request.form.get('name')
-        sex = request.form.get('gender')
-        phone = request.form.get('phone')
-        email = request.form.get('email') 
+        name = request.form['name']
+        sex = request.form['gender']
+        phone = request.form['phone']
+        email = request.form['email']    
 
         #Login info
-        login_info = generate_login_info(email, phone)
+        loginInfo = generate_login_info(email, phone)
 
         # Address
-        street = request.form.get('street')
-        ward = request.form.get('ward')
-        district = request.form.get('district')
-        city = request.form.get('city')
-        country = request.form.get('country')
+        street = request.form['street']
+        ward = request.form['ward']
+        district = request.form['district']
+        city = request.form['city']
+        country = request.form['country']
 
         # check if user input email and password or not
-        error_message = None
+        error = None
         # check if email or username already exist
-        is_exist_email = True if users.find_one({"Email": email}) else False
-        is_exist_phone = True if users.find_one({"Phone": phone}) else False
+        existEmail = users.find_one({"Email": email})
+        existPhone = users.find_one({"Phone": phone})
+
+        if existEmail:
+            error = messages_failure['email_existed'].format(email) 
+        elif existPhone:
+            error = messages_failure['phone_existed'].format(phone)
         
-        if is_exist_email:
-            error_message = messages_failure['email_existed'].format(email) 
-        elif is_exist_phone:
-            error_message = messages_failure['phone_existed'].format(phone)
-            
-        if error_message:
-            flash(error_message, 'error')
+        if error:
+            flash(error, 'error')
             return redirect("/admin/account/add")
-            
-        new_card = Card(
-            cardNumber = card_info['cardNumber'], 
-            cvv = card_info['cvvNumber'], 
-            type = card_type, 
-            createdBy = log_in_id
-        )
-            
-        new_address = Address(
-            street = street, 
-            ward = ward, 
-            district = district, 
-            city = city, 
-            country = country, 
-            createdBy = log_in_id
-        )
+        
+        new_card = card.Card(cardNumber=card_info['cardNumber'], cvv=card_info['cvvNumber'], type=card_type, createdBy = admin_id)
+        
+        new_address = address.Address(street = street, ward = ward, district = district, city = city, country = country, createdBy = admin_id)
 
-        new_user = User(
-            name = name, 
-            sex = sex, 
-            address = new_address.to_json(), 
-            phone = phone, 
-            email = email, 
-            card = new_card.to_json(),
-            createdBy = log_in_id
-        )
+        new_user = u.User(name = name, sex = sex, address = new_address.to_json(), phone = phone, email = email, card = new_card.to_json(),
+                          createdBy = admin_id)
 
-        new_account = Account(
-            accountNumber = card_info['accountNumber'], 
-            branch = request_branch, 
-            user = new_user.to_json(),
-            username = login_info['Username'], 
-            password = login_info['Password'], 
-            role = role,
-            transferMethod = lst_transfer_methods, 
-            loginMethod = lst_login_methods, 
-            createdBy = log_in_id
-        )
+        new_account = acc.Account(accountNumber = card_info['accountNumber'], branch = request_branch, user = new_user.to_json(),
+                                  username = loginInfo['Username'], password = loginInfo['Password'], role = role,
+                                  transferMethod = transferMethods, loginMethod = loginMethods, createdBy = admin_id)
 
         cards.insert_one(new_card.to_json())
         addresses.insert_one(new_address.to_json())
         users.insert_one(new_user.to_json())
         accounts.insert_one(new_account.to_json())
 
-        html = render_template('email/send_login_info.html', username = login_info['Username'], password = login_info['Password'])
+        html = render_template('email/send_Login_Info.html', username = loginInfo['Username'], password = loginInfo['Password'])
         attachments = [{'path': './static/img/bank.png', 'filename':'bank.png', 'mime_type': 'image/png'}]
         subject = "Send login information"
         send_email(email, subject, html, attachments=attachments)
         flash(messages_success['register_success'].format(email), 'success')
-    except KeyError:
-        flash(messages_failure['internal_error'], 'error')
-    return redirect('/admin/account/add')   
+        return redirect('/admin/account/add')
     
 @admin_blueprint.route('/admin/account/delete/<id>', methods=['POST'])
 @login_required
 def delete_account(id):
-    account_id = ObjectId(id)
-    account = accounts.find_one({"_id": account_id})
-    accounts.update_one(
-        {'_id': account_id},
-        {"$set": {"IsDeleted": DeletedType.DELETED.value}
-    })      
-    flash(messages_success['delete_success'].format(account["Username"]), 'success')    
+    if request.method == 'POST':
+        account_id = ObjectId(id)
+        _account = accounts.find_one({"_id": account_id})
+        accounts.update_one(
+            {'_id': account_id},
+            {"$set": {"IsDeleted": DeletedType.DELETED.value}
+        })      
+        flash(messages_success['delete_success'].format(_account["Username"]), 'success') 
     return redirect('/admin/account')
 
 @admin_blueprint.route('/admin/edit_account', methods=['POST'])
 @login_required
 def edit_account():
-    try:
-        log_in_id = session.get("account_id")
-        account_id = request.form.get("account_id")
-        id = ObjectId(account_id)
+    if request.method == 'POST':
+        admin_id = session.get("account_id")
+        _id = request.form.get("account_id")
+        id = ObjectId(_id)
         role = roles.find_one({"Value": int(request.form['role'])}, {"_id":0})
 
-        lst_login_method_type = list(map(int, request.form.getlist("loginMethod")))
-        lst_transfer_method_type = list(map(int, request.form.getlist("transferMethod")))
+        loginMethodTypeList = list(map(int, request.form.getlist("loginMethod")))
+        transferMethodTypeList = list(map(int, request.form.getlist("transferMethod")))
 
         status = int(request.form.get("status"))
 
-        lst_login_methods = list(login_methods.find(
-            {'Value': {'$in': lst_login_method_type}}, 
+        loginMethods = list(login_methods.find(
+            {'Value': {'$in': loginMethodTypeList}}, 
             {'_id': 0}  
         ))
 
-        lst_transfer_methods = list(transfer_methods.find(
-            {'Value': {'$in': lst_transfer_method_type}}, 
+        transferMethods = list(transfer_methods.find(
+            {'Value': {'$in': transferMethodTypeList}}, 
             {'_id': 0}  
         ))
 
-        request_branch = branches.find_one({"BranchName": request.form['branch']}, {"_id": 0})
+        request_branch = None
+
+        try:
+            request_branch = branches.find_one({"BranchName": request.form['branch']}, {"_id": 0})
+        except KeyError:
+            request_branch = None
 
         accounts.update_one(
             {'_id': id},
             {"$set": {
                 "Role": role,
-                "LoginMethod": lst_login_methods,
-                "TransferMethod": lst_transfer_methods,
+                "LoginMethod": loginMethods,
+                "TransferMethod": transferMethods,
                 "Branch": request_branch,
                 "IsDeleted": status,
-                "ModifiedBy": log_in_id
+                "ModifiedBy": admin_id
             }}
         )
 
         flash(messages_success["update_success"].format("Account"), 'success')
-    except Exception:
-        flash(messages_failure['internal_error'], 'error')
-    return redirect("/admin/account")
+        return redirect("/admin/account")
+
+# End admin_account
 
 @admin_blueprint.route('/admin/user', defaults={'page': None, 'id': None}, methods=['GET'])
 @admin_blueprint.route('/admin/user/<page>', defaults={'id': None}, methods=['GET'])
@@ -353,28 +332,18 @@ def admin_news():
 @admin_blueprint.route('/admin/<data_type>/import', methods=['POST'])
 @login_required
 def import_data(data_type):
-    file = request.files['file']
-    ext = get_file_extension(file.filename)
+    if request.method == 'POST':
+        file = request.files['file']
+        ext = get_file_extension(file.filename)
 
-    if ext == FileType.CSV.value:
-        df = pd.read_csv(BytesIO(file.read()))
-    elif ext == FileType.XLSX.value:
-        df = pd.read_excel(BytesIO(file.read()), engine='openpyxl')
+        if ext == 'csv':
+            df = pd.read_csv(BytesIO(file.read()))
+        elif ext == 'xlsx':
+            df = pd.read_excel(BytesIO(file.read()), engine='openpyxl')
         
-    data = df.to_dict(orient='records')
-    res = None
-
-    if data_type == DataType.ACCOUNT.value:
+        data = df.to_dict(orient='records')
         res = create_accounts(data)
-    elif data_type == DataType.BRANCH.value:
-        pass
-    elif data_type == DataType.USER.value:
-        pass
-    elif data_type == DataType.EMPLOYEE.value:
-        pass
-    elif data_type == DataType.NEWS.value:
-        pass
-    return jsonify(res) 
+    return jsonify(res)
 
 @admin_blueprint.route('/admin/export-data/<dataType>', methods=['POST'])
 @login_required
