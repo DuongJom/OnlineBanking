@@ -37,7 +37,7 @@ card_types = db['card_types']
 @login_required
 def admin():
     page = request.json.get('page', 1)
-    data_type = request.json.get('data_type')
+    data_type = request.json.get('dataType')
     criteria = request.json.get('filter')
 
     for key, value in criteria.items():

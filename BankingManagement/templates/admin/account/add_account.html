@@ -87,10 +87,10 @@
                 <h2 class="admin_label">Login Method</h2>
               </div>
               <div class="pl-5 text-white">
-                {% for loginMethod in loginMethods %}
+                {% for method in login_methods %}
                   <div>
-                    <input type="checkbox" value="{{loginMethod.Value}}" class="rounded-full" name="loginMethod"/>
-                    <label>{{loginMethod.MethodName}}</label>
+                    <input type="checkbox" value="{{method.Value}}" class="rounded-full" name="loginMethod"/>
+                    <label>{{method.MethodName}}</label>
                   </div>
                 {% endfor %}
               </div>
@@ -101,10 +101,10 @@
                 <h2 class="admin_label">Tranfer Method</h2>
               </div>
               <div class="pl-5 text-white">
-                {% for transferMethod in transferMethods %}
+                {% for method in transfer_methods %}
                   <div>
-                    <input type="checkbox" value="{{transferMethod.Value}}" class="rounded-full" name="transferMethod"/>
-                    <label>{{transferMethod.MethodName}}</label>
+                    <input type="checkbox" value="{{method.Value}}" class="rounded-full" name="transferMethod"/>
+                    <label>{{method.MethodName}}</label>
                   </div>
                 {% endfor %}
               </div>
