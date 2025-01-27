@@ -15,7 +15,7 @@ messages_failure = {
     'internal_server_error': 'Internal Server Error!',
     'balance_not_enough': 'Balance is not enough to {0}!',
     'must_input_value': 'Please fill in all information!',
-    'investment_not_exist': 'Investment does not exist!'
+    'investment_not_exist': 'Investment does not exist!',
 }
 
 messages_success = {

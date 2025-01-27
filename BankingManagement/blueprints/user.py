@@ -1,6 +1,6 @@
 import time
 import random
-from flask import Blueprint, render_template, session, redirect, request, flash
+from flask import Blueprint, render_template, session, redirect, request, flash, url_for
 from bson import ObjectId
 from datetime import datetime as dt
 
@@ -484,27 +484,6 @@ def edit_investment():
             flash(messages_success['withdraw_cancel_success'].format(edit_type_name), 'success')
 
     except Exception as e:
-        print(e)
         flash(messages_failure['internal_server_error'], 'error')
     
     return redirect(request.referrer)
-
-
-@user_blueprint.route('/card-management', methods=['GET', 'POST'])
-@login_required
-def card_management():
-    if request.method == 'GET':
-        lst_investment = investments.find({})
-        return render_template("/user/card_management.html", investments=lst_investment)
-
-@user_blueprint.route('/loan-management',methods=['GET', 'POST'])
-@login_required
-def loan_management():
-    if request.method == 'GET':
-        return render_template('/user/loan_management.html')
-
-@user_blueprint.route('/settings-security',methods=['GET', 'POST'])
-@login_required
-def settings_security():
-    if request.method == 'GET':
-        return render_template('/user/settings_security.html')
