@@ -1,8 +1,6 @@
 import os
-
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session, current_app
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime
 from itsdangerous import URLSafeTimedSerializer
 
 from models import account, user, card as model_card , database
@@ -231,73 +229,78 @@ def logout():
 
 @account_blueprint.route('/confirm-email', methods=['GET', 'POST'])
 def confirm_email():
-    if request.method == 'POST':
-        user_email = request.form.get('email')
-        # verify if user exist, send reset password page to the user's email
-        user = users.find_one({'Email': user_email})
+    if request.method == 'GET':
+        return render_template('email/confirm_email.html')
+    
+    user_email = request.form.get('email')
+    # verify if user exist, send reset password page to the user's email
+    user = users.find_one({'Email': user_email})
 
-        if not user:
-            flash(messages_failure['invalid_email'].format(user_email), 'error')
-            return render_template('email/confirm_email.html')
+    if not user:
+        flash(messages_failure['invalid_email'].format(user_email), 'error')
+        return render_template('email/confirm_email.html')
         
-        token = get_token(app=app, user_email=user_email, salt=app.salt)
-        subject = "Reset Password"
-        recover_url = url_for('account.reset_password',token=token, _external=True)
-        html = render_template('email/activate.html',recover_url=recover_url)
-        attachments = [{'path': './static/img/bank.png', 'filename':'bank.png', 'mime_type': 'image/png'}]
-        send_email(app=app, mail=mail, recipients=[user_email], subject=subject, html=html, attachments=attachments)
-        flash(messages_success['link_sent'].format(user_email), 'success')
-        return redirect(url_for('account.login'))
-    return render_template('email/confirm_email.html')
+    token = get_token(app=app, user_email=user_email, salt=app.salt)
+    subject = "Reset Password"
+    recover_url = url_for('account.reset_password',token=token, _external=True)
+    html = render_template('email/activate.html',recover_url=recover_url)
+    attachments = [{'path': './static/img/bank.png', 'filename':'bank.png', 'mime_type': 'image/png'}]
+    send_email(app=app, mail=mail, recipients=[user_email], subject=subject, html=html, attachments=attachments)
+    flash(messages_success['link_sent'].format(user_email), 'success')
+    return redirect(url_for('account.login'))
 
 @account_blueprint.route('/reset-password/<token>', methods=["GET", "POST"])
 def reset_password(token):
-    if request.method == 'POST':
-        try:
-            ts = URLSafeTimedSerializer(app.secret_key)
-            user_email = ts.loads(token, salt=app.salt, max_age=86400)
-            new_password = generate_password_hash(request.form.get('password'))
-            user = users.find_one({'Email': user_email},{'_id':0})
+    if request.method == 'GET':
+        return render_template('general/reset_password.html', token=token)
+        
+    try:
+        ts = URLSafeTimedSerializer(app.secret_key)
+        user_email = ts.loads(token, salt=app.salt, max_age=86400)
+        new_password = generate_password_hash(request.form.get('password'))
+        user = users.find_one({'Email': user_email},{'_id':1})
 
-            update_account_result = accounts.update_one(
-                {'AccountOwner': user["_id"]},
-                {"$set": {"Password": new_password}}
-            )
+        update_account_result = accounts.update_one(
+            {'AccountOwner': user["_id"]},
+            {"$set": {"Password": new_password}}
+        )
                 
-            # Check if the update was successful
-            if update_account_result.modified_count > 0:
-                flash(messages_success['update_success'].format('password'), 'success')
-                return redirect(url_for('account.login'))
-                
-            flash(messages_failure['document_not_found'], 'error')
-            return redirect(url_for('account.reset_password', token=token))
-        except:
-            flash(messages_failure['token_expired'], 'error')
+        # Check if the update was successful
+        if update_account_result.modified_count > 0:
+            flash(messages_success['update_success'].format('password'), 'success')
             return redirect(url_for('account.login'))
-    return render_template('general/reset_password.html', token=token)
+                
+        flash(messages_failure['document_not_found'], 'error')
+    except Exception as e:
+        print(e)
+        flash(messages_failure['token_expired'], 'error')
+        return redirect(url_for('account.login'))
+    return redirect(url_for('account.reset_password', token=token))
 
 @account_blueprint.route('/change-password', methods=["GET", "POST"])
 @login_required
 def change_password():
-    if request.method == "POST":
-        current_password = request.form.get("current_password")
-        new_password = generate_password_hash(request.form.get("new_password"))
-        confirm_password = request.form.get("confirmPassword")
-        current_user = accounts.find_one({"_id": int(session.get("account_id"))})
+    if request.method == "GET":
+        return render_template("general/change_password.html")
+        
+    current_password = request.form.get("current_password")
+    new_password = generate_password_hash(request.form.get("new_password"))
+    confirm_password = request.form.get("confirmPassword")
+    current_user = accounts.find_one({"_id": int(session.get("account_id"))})
 
-        if not check_password_hash(current_user["Password"], current_password):
-            flash(messages_failure["invalid_password"], "error")
-            return redirect("/change-password")
+    if not check_password_hash(current_user["Password"], current_password):
+        flash(messages_failure["invalid_password"], "error")
+        return redirect("/change-password")
         
-        if not check_password_hash(new_password, confirm_password):
-            flash(messages_failure["password_not_matched"], "error")
-            return redirect("/change-password")
+    if not check_password_hash(new_password, confirm_password):
+        flash(messages_failure["password_not_matched"], "error")
+        return redirect("/change-password")
         
-        accounts.update_one(
-            {'_id': int(session.get("account_id"))},
-            {"$set": {"Password": new_password}
-        })
-        session.clear()
-        flash(messages_success['update_success'].format('password'), 'success')
-        return redirect("/login")
-    return render_template("general/change_password.html")
+    accounts.update_one(
+        {'_id': int(session.get("account_id"))},
+        {"$set": {"Password": new_password}
+    })
+
+    session.clear()
+    flash(messages_success['update_success'].format('password'), 'success')
+    return redirect("/login")
