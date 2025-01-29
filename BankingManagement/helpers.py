@@ -7,7 +7,6 @@ from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
 from dotenv import load_dotenv
 
-from app import app, mail
 from enums.mime_type import MIMEType
 load_dotenv()
 
@@ -19,7 +18,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-def issueNewCard():
+def issue_new_card():
     cardNum = str(random.randint(10**13,(10**14)-1))
     accountNum = str(random.randint(10**13,(10**14)-1))
     cvvNum = str(random.randint(100,999))
@@ -29,13 +28,13 @@ def issueNewCard():
         'accountNumber': accountNum
     }
 
-ts = URLSafeTimedSerializer(app.secret_key)
-def get_token(user_email, salt):
+def get_token(app, user_email, salt):
+      ts = URLSafeTimedSerializer(app.secret_key)
     # dumps convert python object to JSON string
       token = ts.dumps(user_email, salt)
       return token
 
-def send_email(recipients, subject, html, cc=None, bcc=None, attachments = None):
+def send_email(app, mail, recipients, subject, html, cc=None, bcc=None, attachments = None):
     msg = Message()
     msg.sender = (app.config['MAIL_DEFAULT_SENDER'], app.config['MAIL_USERNAME'])
     msg.subject = subject
@@ -142,3 +141,19 @@ def get_banks():
 # Function to generate a random OTP
 def generate_otp():
     return str(random.randint(100000, 999999))
+
+def get_max_id(database, collection_name):
+    collection = database[collection_name]
+    lst_data = list(collection.find({}))
+
+    if len(lst_data) < 1:
+        return 1
+    
+    # Sort the list of documents by the '_id' field
+    lst_data.sort(key=lambda x: int(x['_id']))
+
+    for i in range(1, len(lst_data)):
+        if int(lst_data[i]['_id']) - 1 != int(lst_data[i-1]['_id']):
+            return int(lst_data[i-1]['_id']) + 1
+    
+    return int(lst_data[-1]['_id']) + 1

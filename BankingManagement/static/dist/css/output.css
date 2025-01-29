@@ -2442,6 +2442,10 @@ select {
   text-align: center;
 }
 
+.text-start {
+  text-align: start;
+}
+
 .font-sans {
   font-family: Roboto, sans-serif;
 }

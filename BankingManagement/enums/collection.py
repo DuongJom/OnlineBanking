@@ -1,0 +1,20 @@
+from enum import Enum
+
+class CollectionType(Enum):
+    ACCOUNTS = 'accounts'
+    ADDRESSES = 'addresses'
+    ATTACHMENTS = 'attachments'
+    BRANCHES = 'branches'
+    CARD_TYPES = 'card_types'
+    CARDS = 'cards'
+    DAY_OFF_INFOS = 'day_off_infos'
+    DEPARTMENTS = 'departments'
+    EMPLOYEES = 'employees'
+    LOGIN_METHODS = 'login_methods'
+    NEWS = 'news'
+    POSITIONS = 'positions'
+    ROLES = 'roles'
+    TRANSACTIONS = 'transactions'
+    TRANSFER_METHODS = 'transfer_methods'
+    USERS = 'users'
+    WORKING_DAY_INFOS = 'working_day_infos'
