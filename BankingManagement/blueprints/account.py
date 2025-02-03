@@ -270,3 +270,7 @@ def change_password():
         return redirect("/login")
     return render_template("general/change_password.html")
 
+@account_blueprint.route('/re-design-register', methods=["GET"])
+def design_register():
+    return render_template('general/re_design_register.html')
+
