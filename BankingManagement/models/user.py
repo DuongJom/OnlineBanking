@@ -2,15 +2,20 @@ import json, os, jwt
 
 from time import time
 
+from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.sex_type import SexType
+from enums.collection import CollectionType
+
+db = Database().get_db()
 
 class User(BaseModel):
     def __init__(self, **kwargs):
         created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
         modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        super().__init__(createdBy=created_by, modifiedBy=modified_by)
+        id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.USERS.value)
         
         self.Name = str(kwargs["name"]).strip() if "name" in kwargs.keys() else None
         self.Sex = kwargs["sex"] if "sex" in kwargs.keys() else SexType.MALE.value
