@@ -1,14 +1,19 @@
 import json
 from datetime import date, timedelta
 
+from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
+from enums.collection import CollectionType
+
+db = Database().get_db()
 
 class News(BaseModel):
     def __init__(self, **kwargs):
         created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
         modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        super().__init__(createdBy=created_by, modifiedBy=modified_by)
+        id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.NEWS.value)
         
         self.Title = str(kwargs["title"]).strip() if "title" in kwargs.keys() else "News-{0}".format(date.today())
         self.Content = str(kwargs["content"]).strip() if "content" in kwargs.keys() else None

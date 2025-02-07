@@ -36,9 +36,9 @@
                       focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
                       focus:ring-offset-gray-800"
                 onclick="navBarToggle()">
-                  {% if session["sex"] == '0' %}
+                  {% if session["sex"] == '1' %}
                     <img width="30px" height="30px" src="../static/img/avt_man.png" alt="user avatar"/>
-                  {% else %}
+                  {% elif session["sex"] == '2' %}
                     <img width="30px" height="30px" src="../static/img/avt_woman.png" alt="user avatar"/>
                   {% endif %}
 

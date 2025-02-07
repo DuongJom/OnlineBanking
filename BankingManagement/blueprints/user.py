@@ -53,7 +53,7 @@ def home():
 @user_blueprint.route("/money-transfer", methods=["GET", "POST"])
 @login_required
 def transfer_money():
-    account_id = ObjectId(session.get("account_id"))
+    account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
     banks = get_banks()
 
@@ -79,10 +79,32 @@ def transfer_money():
 
     return render_template("/user/transfer.html", account=account, banks=banks)
 
+@user_blueprint.route("/", methods=["GET"])
+@login_required
+def home():
+    account_id = int(session.get("account_id"))
+    account = accounts.find_one({"_id": account_id})
+    if account:
+        query = {
+            "$or": [
+                {"SenderId": account['AccountNumber']},
+                {"ReceiverId": account['AccountNumber']}
+            ]
+        }
+        transactions_data = transactions.find(query)
+        transactions_of_account = [
+            {"date": transaction["TransactionDate"], "description": transaction["Message"], "amount": transaction["Amount"], "balance": transaction["CurrentBalance"]}
+            for transaction in transactions_data
+        ]
+
+        return render_template('/user/dashboard.html', 
+                            account=account,
+                            transactions_list=transactions_of_account)
+
 @user_blueprint.route('/confirm-otp', methods=["GET", "POST"])
 @login_required
 def confirm_otp():
-    account_id = ObjectId(session.get("account_id"))
+    account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
 
     if request.method == 'GET':

@@ -1,14 +1,19 @@
 import json
 
+from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.day_off_type import DayOffType
+from enums.collection import CollectionType
+
+db = Database().get_db()
 
 class DayOffInfo(BaseModel):
     def __init__(self, **kwargs):
         created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
         modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        super().__init__(createdBy=created_by, modifiedBy=modified_by)
+        id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.DAY_OFF_INFOS.value)
         
         self.EmployeeId = kwargs["employeeId"] if "employeeId" in kwargs.keys() else None
         self.Day = kwargs["day"] if "day" in kwargs.keys() else None

@@ -34,5 +34,13 @@ def datetime_format(value, format='%Y-%m-%d %H:%M:%S'):
     value = dt.strptime(value, '%Y-%m-%dT%H:%M:%S.%f').strftime('%Y-%m-%d %H:%M:%S')
     return value
 
+@app.template_filter()
+def date_format(value):
+    return dt.fromisoformat(value).date()
+
+@app.template_filter()
+def strip(value):
+    return str(value).strip()
+
 if __name__ == '__main__':
     app.run(debug=True)
