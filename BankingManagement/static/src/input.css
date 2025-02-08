@@ -105,4 +105,22 @@
     .user_bar_item {
         @apply hover:text-white hover:bg-light-green-800 border rounded-lg text-white bg-green-300 p-2 flex flex-row space-x-2 items-center;
     }
+
+    .process_bar {
+        @apply w-12 h-12 flex justify-center items-center border-2 border-gray-200 rounded-full text-2xl font-medium text-gray-200 mr-5
+    }
+
+    .register_input {
+        @apply rounded-md focus:ring-green-500 w-full
+    }
+
+    .radio_input {
+        @apply w-5 h-5 accent-green-500 appearance-none border-2 border-gray-400 checked:bg-green-500 checked:border-green-500 rounded-full
+    }
+
+    .register_checkbox {
+        @apply w-24 h-24 border-2 border-gray-300 rounded-md 
+        peer-checked:bg-green-200 transition-colors duration-300
+        hover:border-green-600 peer-checked:border-green-600 p-2
+    }
 }

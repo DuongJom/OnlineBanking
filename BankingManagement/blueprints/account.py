@@ -55,36 +55,33 @@ def login():
     if acc["Role"] == RoleType.EMPLOYEE.value:
         return redirect("/employee/home")
     return redirect("/admin/account")
-    
 
 @account_blueprint.route('/register', methods=['GET','POST'])
 def register():
+    card_info = issue_new_card()
     if request.method == 'GET':
         branch_list = branches.find()
-        loginMethod_list = loginMethods.find()
-        transferMethod_list = transferMethods.find()
-        card_info = issue_new_card()
         return render_template('general/register.html', 
                                branch_list=branch_list, 
-                               loginMethod_list=loginMethod_list,
-                               transferMethod_list=transferMethod_list, 
                                card_info=card_info)
     
     # get the data from post request
     username = request.form['username']
-    fullName = request.form['fullName']
+    fullName = request.form['fullname']
     branch_id = request.form['branch']
     password = request.form['password']
-    address = request.form['address']
-    transfer_method_id = request.form['transferMethod']
+    country = request.form['country']
+    city = request.form['city']
+    distinct = request.form['district']
+    ward = request.form['ward']
+    street = request.form['street']
+    address = f'{street}, {ward}, {distinct}, {city}, {country}'
+    transfer_method_ids = [int(id) for id in request.form.getlist('transferMethod') if id.isdigit()]
     confirm_password = request.form['confirmPassword']
     phone = request.form['phone']
-    login_method_id = request.form['loginMethod']
+    login_method_ids = [int(id) for id in request.form.getlist('loginMethod') if id.isdigit()]
     email = request.form['email']
-    sex = request.form['sex']
-    card = request.form['card']
-    accountNumber = request.form['accountNumber']
-    cvvNumber = request.form['cvvNumber']
+    sex = request.form['gender']
 
     # check if user input email and password or not
     error_message = None
@@ -111,8 +108,8 @@ def register():
     new_card_id = get_max_id(database=db, collection_name=CollectionType.CARDS.value)
     new_card = model_card.Card(
         id=new_card_id, 
-        cardNumber=card, 
-        cvv=cvvNumber, 
+        cardNumber=card_info['cardNumber'], 
+        cvv=card_info['cvvNumber'], 
         type=CardType.CREDITS.value
     )
 
@@ -135,18 +132,18 @@ def register():
     new_account_id = get_max_id(database=db, collection_name=CollectionType.ACCOUNTS.value)
     new_account = account.Account(
         id=new_account_id,
-        accountNumber=accountNumber, 
+        accountNumber=card_info['accountNumber'], 
         branch=int(branch_id), 
         user=new_user_id, 
         username=username, 
         password=password, 
         role=RoleType.USER.value, 
-        transferMethod=[int(transfer_method_id),], 
-        loginMethod=[int(login_method_id),]
+        transferMethod=transfer_method_ids, 
+        loginMethod=login_method_ids
     )
     accounts.insert_one(new_account.to_json())
 
-    flash(messages_success['success'], 'success')
+    # flash(messages_success['success'], 'success')
     return redirect(url_for("account.login"))
     
 @account_blueprint.route('/view-profile',  methods=['GET', 'POST'])
@@ -306,6 +303,3 @@ def change_password():
     return redirect("/login")
 
 
-@account_blueprint.route('/re-design-register', methods=["GET"])
-def design_register():
-    return render_template('general/re_design_register.html')
