@@ -3,7 +3,8 @@
 {% block content %}
    <div class="fixed inset-0 flex items-center justify-center bg-popup-bg">
         <div class="lg:w-2/3 w-11/12 bg-white rounded-xl h-4/5 p-3 flex">
-            <div class="hidden md:block flex-1 rounded-xl bg-[url('/static/img/green-background.png')] bg-cover bg-center pt-8 pl-8 space-y-10">
+            <div class="hidden md:block flex-1 rounded-xl bg-[url('/static/img/green-background.png')] 
+                bg-cover bg-center pt-8 pl-8 space-y-10">
                  <div class="flex cursor-none">
                     <div class="process_bar bg-green-200" id="process_bar_step1">
                         <p>1</p>
@@ -59,10 +60,11 @@
                     </div>
                  </div>
             </div>
-            <form class="flex-2 rounded-r-xl md:p-6" action="{{ url_for('account.register') }}" method="post">
+            <form class="flex-2 rounded-r-xl md:p-6 relative" action="{{ url_for('account.register') }}" method="post">
                 <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />
                 <!-- Login info -->
-                <div class="h-full w-full flex flex-col relative" id="form-step1">
+                <div class="h-full w-full flex flex-col relative
+                        transition-all duration-300 scale-100 opacity-100" id="form-step1">
                     <!-- Step title -->
                     <div class="w-full md:p-6">
                         <h1 class="font-bold text-5xl">
@@ -77,19 +79,34 @@
                      <div class="w-full space-y-4 md:p-6">
                         <div class="flex flex-col">
                             <label class="font-semibold" for="username">Username</label>
-                            <input class="register_input step-1" placeholder="e.g.Thomas123" type="text" id="username" name="username" required/>
+                            <input class="register_input step-1" 
+                                    placeholder="e.g.Thomas123" 
+                                    type="text" 
+                                    id="username" 
+                                    name="username" 
+                                    required/>
                             <span class="text-red-500 text-sm" id="usernameError"></span>
                         </div>
         
                         <div class="flex flex-col">
                             <label class="font-semibold" for="password">Password</label>
-                            <input class="register_input step-1" placeholder="********" id="password" name="password" type="password" required/>
+                            <input class="register_input step-1" 
+                                    placeholder="********" 
+                                    id="password" 
+                                    name="password" 
+                                    type="password" 
+                                    required/>
                             <span class="text-red-500 text-sm" id="passwordError"></span>
                         </div>
         
                         <div class="flex flex-col">
                             <label class="font-semibold" for="confirmPassword">Password again</label>
-                            <input class="register_input step-1" placeholder="********" id="confirmPassword" name="confirmPassword" type="password" required/>
+                            <input class="register_input step-1" 
+                                    placeholder="********" 
+                                    id="confirmPassword" 
+                                    name="confirmPassword" 
+                                    type="password" 
+                                    required/>
                             <span class="text-red-500 text-sm" id="confirmPasswordError"></span>
                         </div>
                      </div>
@@ -104,8 +121,10 @@
                      </div>
                 </div>
 
-                <!-- Personal info -->
-                <div class="h-full w-full hidden flex-col relative transition-opacity duration-500 ease-in-out" id="form-step2">
+                <!-- Personal info --> 
+                <div class="hidden h-full w-full flex-col relative
+                            transform scale-90 opacity-0 transition-all duration-300" 
+                            id="form-step2">
                     <!-- Step title -->
                     <div class="w-full md:p-6">
                         <h1 class="font-bold text-5xl">
@@ -120,19 +139,34 @@
                      <div class="w-full space-y-4 md:p-6">
                         <div class="flex flex-col">
                             <label class="font-semibold" for="fullName">Full name</label>
-                            <input class="register_input step-2" placeholder="e.g.Thomas Edison" id="fullname" name="fullname" type="text" required/>
+                            <input class="register_input step-2" 
+                                placeholder="e.g.Thomas Edison" 
+                                id="fullname" 
+                                name="fullname" 
+                                type="text" 
+                                required/>
                             <span class="text-red-500 text-sm" id="fullnameError"></span>
                         </div>
         
                         <div class="flex flex-col">
                             <label class="font-semibold" for="phone">Phone number</label>
-                            <input class="register_input step-2" placeholder="e.g.0768552941" id="phone" name="phone" type="text" required/>
+                            <input class="register_input step-2" 
+                                placeholder="e.g.0768552941" 
+                                id="phone" 
+                                name="phone" 
+                                type="text" 
+                                required/>
                             <span class="text-red-500 text-sm" id="phoneError"></span>
                         </div>
         
                         <div class="flex flex-col">
                             <label class="font-semibold" for="email">Email</label>
-                            <input class="register_input step-2" placeholder="e.g.thomas123@gmail.com" id="email" name="email" type="email" required>
+                            <input class="register_input step-2" 
+                                placeholder="e.g.thomas123@gmail.com" 
+                                id="email" 
+                                name="email" 
+                                type="email" 
+                                required>
                             <span class="text-red-500 text-sm" id="emailError"></span>
                         </div>
 
@@ -158,7 +192,11 @@
 
                     <!-- submit button -->
                      <div class="w-full md:p-6 flex justify-between absolute bottom-0">
-                        <button class="font-bold text-gray-600 hover:text-black" onclick="goPreviousStep()" type="button">Go Back</button>
+                        <button class="font-bold text-gray-600 hover:text-black" 
+                                onclick="goPreviousStep()" 
+                                type="button">
+                                Go Back
+                        </button>
                         <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
                                 onclick="goNextStep()" 
                                 type="button">
@@ -168,7 +206,9 @@
                 </div>
 
                 <!-- Address -->
-                <div class="h-full w-full hidden flex-col relative transition-opacity duration-500 ease-in-out" id="form-step3">
+                <div class="h-full w-full hidden flex-col relative 
+                            transform scale-90 opacity-0 transition-all duration-300" 
+                            id="form-step3">
                     <!-- Step title -->
                     <div class="w-full md:p-6">
                         <h1 class="font-bold text-5xl">
@@ -183,32 +223,56 @@
                      <div class="w-full space-y-4 md:p-6">
                         <div class="flex flex-col">
                             <label class="font-semibold" for="country">Country</label>
-                            <input class="register_input step-3" placeholder="e.g.Viet Nam" id="country" name="country" type="text" required/>
+                            <input class="register_input step-3" 
+                                    placeholder="e.g.Viet Nam" 
+                                    id="country" 
+                                    name="country" 
+                                    type="text" 
+                                    required/>
                             <span class="text-red-500 text-sm" id="countryError"></span>
                         </div>
         
                         <div class="flex flex-col">
                             <label class="font-semibold" for="district">City</label>
-                            <input class="register_input step-3" placeholder="e.g.Ho Chi Minh" id="city" name="city" type="text" required/>
+                            <input class="register_input step-3" 
+                                    placeholder="e.g.Ho Chi Minh" 
+                                    id="city" 
+                                    name="city" type="text" 
+                                    required/>
                             <span class="text-red-500 text-sm" id="cityError"></span>
                         </div>
         
                         <div class="flex flex-col">
                             <label class="font-semibold" for="district">District</label>
-                            <input class="register_input step-3" placeholder="e.g.Thu Duc" id="district" name="district" type="text" required/>
+                            <input class="register_input step-3" 
+                                    placeholder="e.g.Thu Duc" 
+                                    id="district" 
+                                    name="district" 
+                                    type="text" 
+                                    required/>
                             <span class="text-red-500 text-sm" id="districtError"></span>
                         </div>
 
                         <div class="flex justify-between">
                             <div class="flex flex-col">
                                 <label class="font-semibold" for="ward">Ward</label>
-                                <input class="register_input step-3" placeholder="e.g.Hiep Phu" id="ward" name="ward" type="text" required/>
-                                <span class="text-red-500 text-sm" id="wardError"></span>
+                                <input class="register_input step-3" 
+                                    placeholder="e.g.Hiep Phu" 
+                                    id="ward" 
+                                    name="ward" 
+                                    type="text" 
+                                    required/>
+                                    <span class="text-red-500 text-sm" id="wardError"></span>
                             </div>
     
                             <div class="flex flex-col">
                                 <label class="font-semibold" for="street">Street</label>
-                                <input class="register_input step-3" placeholder="Man Thien" id="street" name="street" type="text" required/>
+                                <input class="register_input step-3" 
+                                    placeholder="Man Thien" 
+                                    id="street" 
+                                    name="street" 
+                                    type="text" 
+                                    required/>
                                 <span class="text-red-500 text-sm" id="streetError"></span>
                             </div>
                         </div>
@@ -216,7 +280,11 @@
 
                     <!-- submit button -->
                      <div class="w-full md:p-6 flex justify-between absolute bottom-0">
-                        <button class="font-bold text-gray-600 hover:text-black" onclick="goPreviousStep()" type="button">Go Back</button>
+                        <button class="font-bold text-gray-600 hover:text-black" 
+                            onclick="goPreviousStep()" 
+                            type="button">
+                            Go Back
+                        </button>
                         <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
                                 onclick="goNextStep()"
                                 type="button">
@@ -226,7 +294,9 @@
                 </div>
 
                 <!-- Account info -->
-                <div class="h-full w-full hidden flex-col relative transition-opacity duration-500 ease-in-out" id="form-step4">
+                <div class="h-full w-full hidden flex-col relative 
+                            transform scale-90 opacity-0 transition-all duration-300" 
+                            id="form-step4">
                     <!-- Step title -->
                     <div class="w-full md:p-6">
                         <h1 class="font-bold text-5xl">
@@ -327,7 +397,9 @@
                 </div>
 
                 <!-- Summary -->
-                <div class="h-full w-full hidden flex-col relative transition-opacity duration-500 ease-in-out" id="form-step5">
+                <div class="h-full w-full hidden flex-col relative 
+                            transform scale-90 opacity-0 transition-all duration-300" 
+                            id="form-step5">
                     <!-- Step title -->
                     <div class="w-full md:p-6">
                         <h1 class="font-bold text-5xl">
@@ -370,7 +442,11 @@
 
                     <!-- submit button -->
                     <div class="w-full md:p-6 flex justify-between absolute bottom-0">
-                        <button class="font-bold text-gray-600 hover:text-black" onclick="goPreviousStep()" type="button">Go Back</button>
+                        <button class="font-bold text-gray-600 hover:text-black" 
+                            onclick="goPreviousStep()" 
+                            type="button">
+                            Go Back
+                        </button>
                         <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
                                 type="submit">
                             Sign up

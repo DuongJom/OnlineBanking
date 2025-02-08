@@ -6,12 +6,16 @@ const form_step2 = document.getElementById("form-step2");
 const form_step3 = document.getElementById("form-step3");
 const form_step4 = document.getElementById("form-step4");
 const form_step5 = document.getElementById("form-step5");
+const form_lst = [form_step1, form_step2, form_step3, form_step4, form_step5]
 
 const process_bar_step1 = document.getElementById("process_bar_step1");
 const process_bar_step2 = document.getElementById("process_bar_step2");
 const process_bar_step3 = document.getElementById("process_bar_step3");
 const process_bar_step4 = document.getElementById("process_bar_step4");
 const process_bar_step5 = document.getElementById("process_bar_step5");
+const process_bar_lst = [process_bar_step1, process_bar_step2, process_bar_step3, process_bar_step4, process_bar_step5]
+
+
 
 function isValidEmail(email) {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -130,89 +134,52 @@ function fillStepFiveContent () {
 }
 
 function goNextStep() {
-    if(current_step === 1) {
-        if(validateStep(current_step)) {
-            form_step1.classList.remove('flex');
-            form_step1.classList.add('hidden');
-            form_step2.classList.add('opacity-100');
-            form_step2.classList.remove('hidden');
-            form_step2.classList.add('flex');
-            process_bar_step1.classList.remove(hightlight_color);
-            process_bar_step2.classList.add(hightlight_color);
-            current_step++;
+    if(validateStep(current_step)) {
+        if(current_step === 4) {
+            fillStepFiveContent();
         }
-    }else if (current_step === 2) {
-        if(validateStep(current_step)) {
-            form_step2.classList.remove('flex');
-            form_step2.classList.add('hidden');
-            form_step2.classList.remove('opacity-100');
-            form_step3.classList.add('opacity-100');
-            form_step3.classList.remove('hidden');
-            form_step3.classList.add('flex');
-            process_bar_step2.classList.remove(hightlight_color);
-            process_bar_step3.classList.add(hightlight_color);
-            current_step++;
-        }
-    }else if (current_step === 3) {
-        if(validateStep(current_step)) {
-            form_step3.classList.remove('flex');
-            form_step3.classList.add('hidden');
-            form_step3.classList.remove('opacity-100');
-            form_step4.classList.add('opacity-100');
-            form_step4.classList.remove('hidden');
-            form_step4.classList.add('flex');
-            process_bar_step3.classList.remove(hightlight_color);
-            process_bar_step4.classList.add(hightlight_color);
-            current_step++;
-        }
-    }else {
-        if(validateStep(current_step)) {
-            form_step4.classList.remove('flex');
-            form_step4.classList.add('hidden');
-            fillStepFiveContent ();
-            form_step3.classList.remove('opacity-100');
-            form_step4.classList.add('opacity-100');
-            form_step5.classList.remove('hidden');
-            form_step5.classList.add('flex');
-            process_bar_step4.classList.remove(hightlight_color);
-            process_bar_step5.classList.add(hightlight_color);
-            current_step++;
-        }
+        const current_form = form_lst[current_step-1]
+        const next_form = form_lst[current_step]
+    
+        const current_process_bar = process_bar_lst[current_step-1]
+        const next_process_bar = process_bar_lst[current_step]
+    
+        next_form.classList.remove("hidden"); // Xóa `hidden` trước khi chạy hiệu ứng
+    
+        // Thêm hiệu ứng xuất hiện sau 10ms (tránh bị bỏ qua do DOM update)
+        setTimeout(() => {
+            next_form.classList.remove("opacity-0", "scale-90");
+            next_form.classList.add("opacity-100", "scale-100", "flex");
+        }, 10);
+    
+        // Ẩn Form 1
+        current_form.classList.add("opacity-0", "scale-90", "hidden");
+        current_form.classList.remove('flex');
+        next_process_bar.classList.add(hightlight_color);
+        current_process_bar.classList.remove(hightlight_color);
+        current_step++;
     }
 }
 
 function goPreviousStep() {
-    if(current_step === 5) {
-        form_step5.classList.remove('flex');
-        form_step5.classList.add('hidden');
-        form_step4.classList.remove('hidden');
-        form_step4.classList.add('flex');
-        process_bar_step5.classList.remove(hightlight_color);
-        process_bar_step4.classList.add(hightlight_color);
-        current_step--;
-    }else if (current_step === 4) {
-        form_step4.classList.remove('flex');
-        form_step4.classList.add('hidden');
-        form_step3.classList.remove('hidden');
-        form_step3.classList.add('flex');
-        process_bar_step4.classList.remove(hightlight_color);
-        process_bar_step3.classList.add(hightlight_color);
-        current_step--;
-    }else if (current_step === 3) {
-        form_step3.classList.remove('flex');
-        form_step3.classList.add('hidden');
-        form_step2.classList.remove('hidden');
-        form_step2.classList.add('flex');
-        process_bar_step3.classList.remove(hightlight_color);
-        process_bar_step2.classList.add(hightlight_color);
-        current_step--;
-    }else {
-        form_step2.classList.remove('flex');
-        form_step2.classList.add('hidden');
-        form_step1.classList.remove('hidden');
-        form_step1.classList.add('flex');
-        process_bar_step2.classList.remove(hightlight_color);
-        process_bar_step1.classList.add(hightlight_color);
-        current_step--;
-    } 
+    const current_form = form_lst[current_step-1]
+    const prev_form = form_lst[current_step-2]
+
+    const current_process_bar = process_bar_lst[current_step-1]
+    const prev_process_bar = process_bar_lst[current_step-2]
+
+    // Ẩn Form 2 với hiệu ứng
+    current_form.classList.remove("opacity-100", "scale-100", "flex");
+    current_form.classList.add("opacity-0", "scale-90");
+
+    // Sau khi hiệu ứng chạy xong (500ms), thêm lại `hidden`
+    setTimeout(() => {
+        current_form.classList.add("hidden");
+        prev_form.classList.remove("opacity-0", "scale-90", "hidden");
+        prev_form.classList.add("flex");
+    }, 300);
+
+    current_process_bar.classList.remove(hightlight_color);
+    prev_process_bar.classList.add(hightlight_color);
+    current_step--;
 }
