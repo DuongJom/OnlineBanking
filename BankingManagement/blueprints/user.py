@@ -1,31 +1,32 @@
 import time
 import random
-from flask import Blueprint, render_template, session, redirect, request, flash, url_for
-from bson import ObjectId
+from flask import Blueprint, render_template, redirect, flash, url_for, session, request
 from datetime import datetime as dt
 
 from models import database, transaction, investment as investmnt
 from message import messages_success, messages_failure
-from helpers.helpers import login_required, get_banks, generate_otp, send_email
+from helpers.helpers import login_required, get_banks, generate_otp, send_email, get_max_id
 from enums.transaction_type import TransactionType
 from enums.bill_status import BillStatusType
 from enums.investment import InvestmentType
 from enums.currency import CurrencyType
 from enums.investment_status import InvestmentStatus
+from enums.collection import CollectionType
+from app import app, mail
 
 db = database.Database().get_db()
-accounts = db['accounts']
-transactions = db['transactions']
-users = db['users']
-bills = db['bills']
-investments = db['investments']
+accounts = db[CollectionType.ACCOUNTS.value]
+transactions = db[CollectionType.TRANSACTIONS.value]
+users = db[CollectionType.USERS.value]
+bills = db[CollectionType.BILLS.value]
+investments = db[CollectionType.INVESTMENTS_SAVINGS.value]
 
 user_blueprint = Blueprint('user', __name__)
 
 @user_blueprint.route("/", methods=["GET"])
 @login_required
 def home():
-    account_id = ObjectId(session.get("account_id"))
+    account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
     if account:
         query = {
@@ -45,9 +46,14 @@ def home():
             }
             for transaction in transactions_data
         ]
+        
+        owner = None
+        if account["AccountOwner"]:
+            owner = users.find_one({"_id": int(account["AccountOwner"])})
 
         return render_template('/user/dashboard.html', 
                             account=account,
+                            owner=owner,
                             transactions_list=transactions_of_account)
     
 @user_blueprint.route("/money-transfer", methods=["GET", "POST"])
@@ -56,6 +62,9 @@ def transfer_money():
     account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
     banks = get_banks()
+    owner = None
+    if account["AccountOwner"]:
+        owner = users.find_one({"_id": int(account["AccountOwner"])})
 
     if request.method == "POST":
         # Collect form data
@@ -77,29 +86,7 @@ def transfer_money():
         # Redirect to OTP confirmation
         return redirect("/confirm-otp")
 
-    return render_template("/user/transfer.html", account=account, banks=banks)
-
-@user_blueprint.route("/", methods=["GET"])
-@login_required
-def home():
-    account_id = int(session.get("account_id"))
-    account = accounts.find_one({"_id": account_id})
-    if account:
-        query = {
-            "$or": [
-                {"SenderId": account['AccountNumber']},
-                {"ReceiverId": account['AccountNumber']}
-            ]
-        }
-        transactions_data = transactions.find(query)
-        transactions_of_account = [
-            {"date": transaction["TransactionDate"], "description": transaction["Message"], "amount": transaction["Amount"], "balance": transaction["CurrentBalance"]}
-            for transaction in transactions_data
-        ]
-
-        return render_template('/user/dashboard.html', 
-                            account=account,
-                            transactions_list=transactions_of_account)
+    return render_template("/user/transfer.html", account=account, banks=banks, owner=owner)
 
 @user_blueprint.route('/confirm-otp', methods=["GET", "POST"])
 @login_required
@@ -113,24 +100,27 @@ def confirm_otp():
                 otp = generate_otp()  # Generate the OTP
                 session['otp'] = otp  # Store the OTP in the session
                 session['otp_expiration'] = time.time() + 60  # Store OTP expiration time
-
+                owner = None
+                if account["AccountOwner"]:
+                    owner = users.find_one({"_id": int(account["AccountOwner"])})
                 # Send OTP email
                 html = render_template(
                     '/email/verify_otp.html',
                     otp_code=otp,
                     otp_expiration_time=60,
-                    customer_name=account['AccountOwner']['Name']
+                    customer_name=owner['Name']
                 )
                 send_email(
-                    recipients=account['AccountOwner']['Email'],
+                    app=app,
+                    mail=mail,
+                    recipients=owner['Email'],
                     subject="OTP For Money Transfer",
                     html=html
                 )
-                flash(messages_success['send_otp_success'].format(account['AccountOwner']['Email']), 'success')
+                flash(messages_success['send_otp_success'].format(owner['Email']), 'success')
                 return render_template("/user/otp_confirmation.html")
         
         except Exception as e:
-            print(e)  # Log the error
             flash(messages_failure['send_otp_failure'], 'error')
             return redirect('/money-transfer')
 
@@ -146,8 +136,7 @@ def confirm_otp():
     if otp_code == stored_otp:
         # Retrieve transfer data from session
         transfer_data = session.get('transfer_data', {})
-        receiver_account = transfer_data.get('receiver_account')
-        receiver_bank = transfer_data.get('receiver_bank')
+        receiver_account_number = transfer_data.get('receiver_account')
         amount = transfer_data.get('amount')
         currency = transfer_data.get('currency')
         message = transfer_data.get('message')
@@ -156,19 +145,37 @@ def confirm_otp():
             {"AccountNumber": account["AccountNumber"]},
             {
                 "$set": {
-                    "Balance": account['Balance'] - float(amount)
+                    "Balance": account['Balance'] - float(amount),
+                    "ModifiedBy": int(account['AccountOwner']),
+                    "ModifiedDate": dt.today()
                 }
             }
         )
 
+        receiver_account = accounts.find_one({"AccountNumber": receiver_account_number})
+        if receiver_account:
+            accounts.update_one(
+                {"AccountNumber": receiver_account_number},
+                {
+                    "$set": {
+                        "Balance": receiver_account['Balance'] + float(amount),
+                        "ModifiedBy": int(account['AccountOwner']),
+                        "ModifiedDate": dt.today()
+                    }
+                }
+            )
+        transaction_id = get_max_id(database=db, collection_name=CollectionType.TRANSACTIONS.value)
         trans = transaction.Transaction(
+            id=transaction_id,
             sender = account['AccountNumber'],
-            receiver = receiver_account,
+            receiver = receiver_account_number,
             amount = float(amount),
             currency = currency,
             message = message,
             transaction_type = TransactionType.TRANSFER.value,
-            balance = account['Balance'] - float(amount)
+            balance = account['Balance'] - float(amount),
+            createdBy = int(account['AccountOwner']),
+            modifiedBy = int(account['AccountOwner'])
         )
         transactions.insert_one(trans.to_json())
         flash(messages_success['transfer_money_success'], 'success')
@@ -245,18 +252,18 @@ def bill_payment():
 @login_required
 def payment():
     try:
-        account_id = ObjectId(session.get("account_id"))
+        account_id = int(session.get("account_id"))
         bill_id = request.form.get('bill')
         payment_method = request.form.get('payment_method')
         amount = request.form.get('amount')
 
-        if bill_id != -1:
-            bill = bills.find_one({"_id": ObjectId(bill_id)})
+        if int(bill_id) != -1:
+            bill = bills.find_one({"_id": int(bill_id)})
             account_number = request.form.get('account_number')
             if bill:
                 find_query = {
                     "$and":[
-                        {"_id": ObjectId(account_id)},
+                        {"_id": account_id},
                         {"AccountNumber": account_number}
                     ]
                 }
@@ -271,37 +278,44 @@ def payment():
                     return redirect(request.referrer)
                 
                 bills.update_one(
-                    {"_id": ObjectId(bill_id)},
+                    {"_id": int(bill_id)},
                     {
                         "$set": {
                             "Status": BillStatusType.PAID.value,
-                            "PaymentMethod": payment_method
+                            "PaymentMethod": payment_method,
+                            "ModifiedDate": dt.today(),
+                            "ModifiedBy": int(account["AccountOwner"])
                         }
                     }
                 )
 
                 accounts.update_one(
-                    {"_id": ObjectId(account_id)},
+                    {"_id": int(account_id)},
                     {
                         "$set": {
                             "Balance": account["Balance"] - float(amount),
+                            "ModifiedDate": dt.today(),
+                            "ModifiedBy": int(account["AccountOwner"])
                         }
                     }
                 )
 
+                transaction_id = get_max_id(database=db, collection_name=CollectionType.TRANSACTIONS.value)
                 trans = transaction.Transaction(
+                    id = transaction_id,
                     sender = account['AccountNumber'],
                     receiver = bill_id,
                     amount = float(amount),
                     currency = account['Currency'],
                     message = f"Payment for {bill['BillType']} bill of {bill['InvoiceDate'].strftime('%Y/%m/%d')}",
                     transaction_type = TransactionType.PAYMENT.value,
-                    balance = account['Balance'] - float(amount)
+                    balance = account['Balance'] - float(amount),
+                    createdBy = int(account['AccountOwner']),
+                    modifiedBy = int(account['AccountOwner'])
                 )
                 transactions.insert_one(trans.to_json())
                 flash(messages_success['payment_bill_success'], 'success')
     except Exception as e:
-        print(e)
         flash(messages_failure['internal_server_error'], "error")
         return redirect(request.referrer)
     return redirect('/bill-payment')
@@ -310,11 +324,12 @@ def payment():
 @login_required
 def investment_savings():
     if request.method == "GET":
-        account_id = ObjectId(session.get("account_id"))
+        account_id = int(session.get("account_id"))
+        account = None
         currency = None
         if account_id:
-            account = accounts.find_one({'_id':ObjectId(account_id)})
-            currency_value = account['Currency']
+            account = accounts.find_one({'_id': account_id})
+            currency_value = int(account['Currency'])
             if currency_value == CurrencyType.VND.value:
                 currency = CurrencyType.VND.name
             elif currency_value == CurrencyType.USD.value:
@@ -328,7 +343,7 @@ def investment_savings():
         lst_investments = list(investments.find({}))
         
         for investment in lst_investments:
-            lasted_update = dt.strptime(str(investment['ModifiedDate']), '%Y-%m-%d %H:%M:%S.%f').date()
+            lasted_update = dt.strptime(str(investment['ModifiedDate']), '%Y-%m-%dT%H:%M:%S.%f').date() if "T" in str(investment['ModifiedDate']) else dt.strptime(str(investment['ModifiedDate']), '%Y-%m-%d %H:%M:%S.%f').date()
             if lasted_update != today.date():
                 current_investment_rate = round(random.uniform(-10,10),2)
                 investments.update_one(
@@ -337,7 +352,8 @@ def investment_savings():
                         "$set": {
                             "CurrentRate": current_investment_rate,
                             "CurrentAmount": investment['CurrentAmount'] + investment['InvestmentAmount']*(current_investment_rate)/100,
-                            "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f')
+                            "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                            "ModifiedBy": int(account["AccountOwner"])
                         }
                     }
                 )
@@ -353,14 +369,14 @@ def investment_savings():
 @login_required
 def add_new_investment():
     try:
-        account_id = ObjectId(session.get("account_id"))
+        account_id = int(session.get("account_id"))
         if account_id:
-            account = accounts.find_one({'_id':ObjectId(account_id)})
+            account = accounts.find_one({'_id': account_id})
             if not account:
                 flash(messages_failure['account_not_found'], 'error')
                 return redirect(request.referrer)
             
-            owner = account['AccountOwner']
+            owner_id = account['AccountOwner']
             investment_name = request.form.get('investment_name')
             investment_type = request.form.get('investment_type')
             investment_amount = request.form.get('investment_amount')
@@ -389,39 +405,47 @@ def add_new_investment():
             investment_date = dt.strptime(investment_date, '%Y-%m-%d')
             investment_date = investment_date.replace(hour=0, minute=0, second=0, microsecond=0)
 
+            investment_id = get_max_id(database=db, collection_name=CollectionType.INVESTMENTS_SAVINGS.value)
             investment = investmnt.Investment(
-                owner=owner,
-                name=investment_name,
-                type=type_name,
-                investment_amount=investment_amount,
-                investment_date= investment_date.isoformat(),
-                rate=investment_rate,
-                current_amount= float(investment_amount) + float(investment_amount)*investment_rate/100,
-                createdBy=owner,
-                modifiedBy=owner
+                id = investment_id,
+                owner = int(owner_id),
+                name = investment_name,
+                type = type_name,
+                investment_amount = float(investment_amount),
+                investment_date = investment_date.isoformat(),
+                rate = investment_rate,
+                current_amount = float(investment_amount) + float(investment_amount)*investment_rate/100,
+                createdBy = int(owner_id),
+                modifiedBy = int(owner_id)
             )
-            result = investments.insert_one(investment.to_json())
-            investment = investments.find_one({'_id': result.inserted_id})
+
+            investments.insert_one(investment.to_json())
+            investment = investments.find_one({'_id': investment_id})
             today = dt.today()
 
             accounts.update_one(
-                {"_id": ObjectId(account_id)},
+                {"_id": account_id},
                 {
                     "$set": {
                         "Balance": account["Balance"] - float(investment_amount),
-                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f')
+                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                        "ModifiedBy": int(owner_id)
                     }
                 }
             )
 
+            transaction_id = get_max_id(database=db, collection_name=CollectionType.TRANSACTIONS.value)
             trans = transaction.Transaction(
+                id = transaction_id,
                 sender = account['AccountNumber'],
-                receiver = result.inserted_id,
+                receiver = investment_id,
                 amount = float(investment_amount),
                 currency = account['Currency'],
                 message = f"Investment for {investment['Name']} of {dt.strptime(investment['InvestmentDate'],'%Y-%m-%dT%H:%M:%S').strftime('%Y/%m/%d')}",
                 transaction_type = TransactionType.INVESTMENT.value,
-                balance = account['Balance'] - float(investment_amount)
+                balance = account['Balance'] - float(investment_amount),
+                createdBy = int(owner_id),
+                modifiedBy = int(owner_id)
             )
             transactions.insert_one(trans.to_json())
             flash(messages_success['investment_savings_created_success'], 'success')
@@ -436,9 +460,11 @@ def add_new_investment():
 def edit_investment():
     try:
         today = dt.today()
-        account_id = ObjectId(session.get("account_id"))
+        account_id = int(session.get("account_id"))
+        account = None
+
         if account_id:
-            account = accounts.find_one({'_id':ObjectId(account_id)})
+            account = accounts.find_one({'_id':account_id})
             if not account:
                 flash(messages_failure['account_not_found'], 'error')
                 return redirect(request.referrer)
@@ -447,7 +473,7 @@ def edit_investment():
         edit_type = request.form.get('edit_type')
 
         if investment_id:
-            investment = investments.find_one({'_id': ObjectId(investment_id)})
+            investment = investments.find_one({'_id': int(investment_id)})
             if not investment:
                 flash(messages_failure['investment_not_exist'], 'error')
                 return redirect(request.referrer)
@@ -461,7 +487,8 @@ def edit_investment():
                     "$set": {
                         "CurrentAmount": 0,
                         "Status": InvestmentStatus.WITH_DRAW.value,
-                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f')
+                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                        "ModifiedBy": int(account["AccountOwner"])
                     }
                 }
                 edit_type_name = "Withdraw"
@@ -471,7 +498,8 @@ def edit_investment():
                     "$set": {
                         "CurrentAmount": 0,
                         "Status": InvestmentStatus.CANCEL.value,
-                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f')
+                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                        "ModifiedBy": int(account["AccountOwner"])
                     }
                 }
                 edit_type_name = "Cancel"
@@ -479,16 +507,19 @@ def edit_investment():
             account_balance = account['Balance'] + amount
 
             accounts.update_one(
-                {'_id':ObjectId(account_id)},
+                {'_id': account_id},
                 {
                     "$set": {
                         "Balance": account_balance,
-                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f')
+                        "ModifiedDate": today.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                        "ModifiedBy": int(account["AccountOwner"])
                     }
                 }
             )
 
+            trans_id = get_max_id(database=db, collection_name=CollectionType.TRANSACTIONS.value)
             trans = transaction.Transaction(
+                id = trans_id,
                 sender = "DHC Bank",
                 receiver = account['AccountNumber'],
                 amount = amount,
@@ -500,7 +531,7 @@ def edit_investment():
             transactions.insert_one(trans.to_json())
 
             investments.update_one(
-                {'_id': ObjectId(investment_id)},
+                {'_id': int(investment_id)},
                 set_query
             )
             flash(messages_success['withdraw_cancel_success'].format(edit_type_name), 'success')

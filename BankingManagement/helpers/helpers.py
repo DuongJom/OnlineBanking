@@ -146,6 +146,11 @@ def generate_otp():
     return str(random.randint(100000, 999999))
 
 def get_max_id(database, collection_name):
+    lst_collection_name = list(database.list_collection_names())
+
+    if not collection_name in lst_collection_name:
+        return 1
+    
     collection = database[collection_name]
     lst_data = list(collection.find({}))
 

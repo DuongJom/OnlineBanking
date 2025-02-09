@@ -5,7 +5,7 @@ from datetime import datetime
 from models.database import Database
 from enums.deleted_type import DeletedType
 from models.datetime_encoder import DateTimeEncoder
-from helpers import get_max_id
+from helpers.helpers import get_max_id
 
 class BaseModel:
     def __init__(self, **kwargs):
