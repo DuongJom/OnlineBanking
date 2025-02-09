@@ -122,5 +122,10 @@
         @apply w-24 h-24 border-2 border-gray-300 rounded-md 
         peer-checked:bg-green-200 transition-colors duration-300
         hover:border-green-600 peer-checked:border-green-600 p-2
+        text-xs flex flex-col justify-center items-center text-center
+    }
+
+    .option_icon {
+        @apply h-4/5
     }
 }

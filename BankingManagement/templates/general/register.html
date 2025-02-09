@@ -60,13 +60,13 @@
                     </div>
                  </div>
             </div>
-            <form class="flex-2 rounded-r-xl md:p-6 relative" action="{{ url_for('account.register') }}" method="post">
+            <form class="flex-2 rounded-r-xl relative" action="{{ url_for('account.register') }}" method="post">
                 <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />
                 <!-- Login info -->
                 <div class="h-full w-full flex flex-col relative
                         transition-all duration-300 scale-100 opacity-100" id="form-step1">
                     <!-- Step title -->
-                    <div class="w-full md:p-6">
+                    <div class="w-full md:pl-6 md:pt-6">
                         <h1 class="font-bold text-5xl">
                             Login Info
                         </h1>
@@ -112,7 +112,7 @@
                      </div>
 
                     <!-- submit button -->
-                     <div class="w-full md:p-6 pt-4 justify-between absolute bottom-0">
+                     <div class="w-full md:pb-6 md:pr-6 pt-4 justify-between absolute bottom-0">
                         <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 float-end" 
                                 onclick="goNextStep()" 
                                 type="button">
@@ -126,7 +126,7 @@
                             transform scale-90 opacity-0 transition-all duration-300" 
                             id="form-step2">
                     <!-- Step title -->
-                    <div class="w-full md:p-6">
+                    <div class="w-full md:pl-6 md:pt-6">
                         <h1 class="font-bold text-5xl">
                             Personal Info
                         </h1>
@@ -138,7 +138,7 @@
                     <!-- Input field -->
                      <div class="w-full space-y-4 md:p-6">
                         <div class="flex flex-col">
-                            <label class="font-semibold" for="fullName">Full name</label>
+                            <label class="font-semibold" for="fullname">Full name</label>
                             <input class="register_input step-2" 
                                 placeholder="e.g.Thomas Edison" 
                                 id="fullname" 
@@ -171,7 +171,7 @@
                         </div>
 
                         <div class="flex flex-col">
-                            <label class="font-semibold" for="gender">Gender</label>
+                            <label class="font-semibold">Gender</label>
                             <div class="space-x-10">
                                 <label>
                                     <input type="radio" name="gender" value="0" class="radio_input"/>
@@ -191,7 +191,7 @@
                      </div>
 
                     <!-- submit button -->
-                     <div class="w-full md:p-6 flex justify-between absolute bottom-0">
+                     <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
                         <button class="font-bold text-gray-600 hover:text-black" 
                                 onclick="goPreviousStep()" 
                                 type="button">
@@ -210,7 +210,7 @@
                             transform scale-90 opacity-0 transition-all duration-300" 
                             id="form-step3">
                     <!-- Step title -->
-                    <div class="w-full md:p-6">
+                    <div class="w-full md:pl-6 md:pt-6">
                         <h1 class="font-bold text-5xl">
                             Address
                         </h1>
@@ -279,7 +279,7 @@
                      </div>
 
                     <!-- submit button -->
-                     <div class="w-full md:p-6 flex justify-between absolute bottom-0">
+                     <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
                         <button class="font-bold text-gray-600 hover:text-black" 
                             onclick="goPreviousStep()" 
                             type="button">
@@ -298,7 +298,7 @@
                             transform scale-90 opacity-0 transition-all duration-300" 
                             id="form-step4">
                     <!-- Step title -->
-                    <div class="w-full md:p-6">
+                    <div class="w-full md:pl-6 md:pt-6">
                         <h1 class="font-bold text-5xl">
                             Account info
                         </h1>
@@ -310,7 +310,7 @@
                     <!-- Input field -->
                      <div class="w-full space-y-4 md:p-6">
                         <div class="flex flex-col">
-                            <label class="font-semibold" for="loginMethod">
+                            <label class="font-semibold">
                                 Login Methods
                                 <span class="text-red-500" id="loginMethodError"></span>
                             </label>
@@ -318,15 +318,15 @@
                                 <label>
                                     <input type="checkbox" class="hidden peer" name="loginMethod" value="1"/>
                                     <div class="register_checkbox">
-                                        <img src="../../static/img/password.svg" class="h-6 w-6"/>
-                                        <p>Username Password</p>
+                                        <img src="../../static/img/password.svg" class="option_icon"/>
+                                        <p>Username Password</p>    
                                     </div>
                                 </label>
 
-                                <label class="cursor-pointer">
+                                <label>
                                     <input type="checkbox" class="hidden peer" name="loginMethod" value="2"/>
                                     <div class="register_checkbox">
-                                        <img src="../../static/img/face-id.svg" class="w-6 h-6"/>
+                                        <img src="../../static/img/face-id.svg" class="option_icon"/>
                                         <p>Face ID</p>
                                     </div>
                                 </label>
@@ -334,7 +334,7 @@
                                 <label>
                                     <input type="checkbox" class="hidden peer" name="loginMethod" value="3"/>
                                     <div class="register_checkbox">
-                                        <img src="../../static/img/finger-print.svg" class="w-6 h-6"/>
+                                        <img src="../../static/img/finger-print.svg" class="option_icon"/>
                                         <p>Finger Print</p>
                                     </div>
                                 </label>
@@ -342,7 +342,7 @@
                         </div>
 
                         <div class="flex flex-col">
-                            <label class="font-semibold" for="phone">
+                            <label class="font-semibold">
                                 Transfer Methods 
                                 <span class="text-red-500" id="transferMethodError"></span>
                             </label>
@@ -350,7 +350,7 @@
                                 <label>
                                     <input type="checkbox" class="hidden peer" name="transferMethod" value="1"/>
                                     <div class="register_checkbox" name="transferMethod">
-                                        <img src="../../static/img/sms.svg" class="h-6 w-6"/>
+                                        <img src="../../static/img/sms.svg" class="option_icon"/>
                                         <p>SMS</p>
                                     </div>
                                 </label>
@@ -358,7 +358,7 @@
                                 <label class="cursor-pointer">
                                     <input type="checkbox" class="hidden peer" name="transferMethod" value="2"/>
                                     <div class="register_checkbox">
-                                        <img src="../../static/img/face-id.svg" class="w-6 h-6"/>
+                                        <img src="../../static/img/face-id.svg" class="option_icon"/>
                                         <p>Face ID</p>
                                     </div>
                                 </label>
@@ -366,7 +366,7 @@
                                 <label>
                                     <input type="checkbox" class="hidden peer" name="transferMethod" value="3"/>
                                     <div class="register_checkbox">
-                                        <img src="../../static/img/password.svg" class="h-6 w-6"/>
+                                        <img src="../../static/img/password.svg" class="option_icon"/>
                                         <p>Pin Code</p>
                                     </div>
                                 </label>
@@ -386,8 +386,12 @@
                      </div>
 
                     <!-- submit button -->
-                     <div class="w-full md:p-6 flex justify-between absolute bottom-0">
-                        <button class="font-bold text-gray-600 hover:text-black" onclick="goPreviousStep()" type="button">Go Back</button>
+                     <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
+                        <button class="font-bold text-gray-600 hover:text-black" 
+                                onclick="goPreviousStep()" 
+                                type="button">
+                                Go Back
+                        </button>
                         <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
                                 onclick="goNextStep()"
                                 type="button">
@@ -401,7 +405,7 @@
                             transform scale-90 opacity-0 transition-all duration-300" 
                             id="form-step5">
                     <!-- Step title -->
-                    <div class="w-full md:p-6">
+                    <div class="w-full md:pl-6 md:pt-6">
                         <h1 class="font-bold text-5xl">
                             Finish Up
                         </h1>
@@ -412,36 +416,36 @@
 
                     <!-- Input field -->
                     <div class="w-full space-y-4 md:p-6">
-                        <div class="w-full bg-green-200 rounded-md p-6 space-y-4">
+                        <div class="w-full bg-green-200 rounded-md p-6 md:space-y-4 space-y-2">
                             <div class="flex flex-col">
-                                <label class="font-semibold" for="gender">Username</label>
+                                <label class="font-semibold">Username</label>
                                 <p id="reUsername"></p>
                             </div>
 
                             <div class="flex flex-col">
-                                <label class="font-semibold" for="gender">Email</label>
+                                <label class="font-semibold">Email</label>
                                 <p id="reEmail"></p>
                             </div>
 
                             <div class="flex flex-col">
-                                <label class="font-semibold" for="gender">Phone</label>
+                                <label class="font-semibold">Phone</label>
                                 <p id="rePhone"></p>
                             </div>
 
                             <div class="flex flex-col">
-                                <label class="font-semibold" for="gender">Branch</label>
+                                <label class="font-semibold">Branch</label>
                                 <p id="reBranch"></p>
                             </div>
 
                             <div class="flex flex-col">
-                                <label class="font-semibold" for="gender">Card Number</label>
+                                <label class="font-semibold">Card Number</label>
                                 <p id="cardNumber">{{card_info.cardNumber}}</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- submit button -->
-                    <div class="w-full md:p-6 flex justify-between absolute bottom-0">
+                    <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
                         <button class="font-bold text-gray-600 hover:text-black" 
                             onclick="goPreviousStep()" 
                             type="button">
