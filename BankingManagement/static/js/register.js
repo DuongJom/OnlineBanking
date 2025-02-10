@@ -1,4 +1,11 @@
-let current_step = 1;
+const RegisterSteps = Object.freeze({
+    LOGIN_INFO: 1,
+    PERSONAL_INFO: 2,
+    ADDRESS_INFO: 3,
+    ACCOUNT_INFO: 4
+});
+
+let current_step = RegisterSteps.LOGIN_INFO;
 let hightlight_color = 'bg-green-200';
 
 const form_step1 = document.getElementById("form-step1");
@@ -14,8 +21,6 @@ const process_bar_step3 = document.getElementById("process_bar_step3");
 const process_bar_step4 = document.getElementById("process_bar_step4");
 const process_bar_step5 = document.getElementById("process_bar_step5");
 const process_bar_lst = [process_bar_step1, process_bar_step2, process_bar_step3, process_bar_step4, process_bar_step5]
-
-
 
 function isValidEmail(email) {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -44,7 +49,7 @@ function checkRequiredField(step) {
         }
     });
 
-    if(step === 2) {
+    if(step === RegisterSteps.PERSONAL_INFO) {
         const genderError = document.getElementById('genderError');
         genderError.textContent = "";
         if(!isRadioSelected('gender')) {
@@ -53,7 +58,7 @@ function checkRequiredField(step) {
         }
     }
 
-    if(step === 4) {
+    if(step === RegisterSteps.ACCOUNT_INFO) {
         const loginMethodError = document.getElementById('loginMethodError');
         const transferMethodError = document.getElementById('transferMethodError');
         const branchError = document.getElementById('branchError');
@@ -84,7 +89,7 @@ function checkRequiredField(step) {
 function validateStep(step) {
     let isValid = true;
     if(checkRequiredField(step)) {
-        if(step === 1) {     
+        if(step === RegisterSteps.LOGIN_INFO) {     
             const confirmPasswordError = document.getElementById('confirmPasswordError'); 
             confirmPasswordError.textContent = "";
             if (document.getElementById('password').value != document.getElementById('confirmPassword').value) {
@@ -93,7 +98,7 @@ function validateStep(step) {
             }
         }
 
-        if(step === 2) {
+        if(step === RegisterSteps.PERSONAL_INFO) {
             const emailError = document.getElementById('emailError');
             const phoneError = document.getElementById('phoneError');
             emailError.textContent = "";
@@ -135,7 +140,7 @@ function fillStepFiveContent () {
 
 function goNextStep() {
     if(validateStep(current_step)) {
-        if(current_step === 4) {
+        if(current_step === RegisterSteps.ACCOUNT_INFO) {
             fillStepFiveContent();
         }
         const current_form = form_lst[current_step-1]
@@ -144,15 +149,13 @@ function goNextStep() {
         const current_process_bar = process_bar_lst[current_step-1]
         const next_process_bar = process_bar_lst[current_step]
     
-        next_form.classList.remove("hidden"); // Xóa `hidden` trước khi chạy hiệu ứng
+        next_form.classList.remove("hidden");
     
-        // Thêm hiệu ứng xuất hiện sau 10ms (tránh bị bỏ qua do DOM update)
         setTimeout(() => {
             next_form.classList.remove("opacity-0", "scale-90");
             next_form.classList.add("opacity-100", "scale-100", "flex");
         }, 10);
     
-        // Ẩn Form 1
         current_form.classList.add("opacity-0", "scale-90", "hidden");
         current_form.classList.remove('flex');
         next_process_bar.classList.add(hightlight_color);
@@ -168,11 +171,9 @@ function goPreviousStep() {
     const current_process_bar = process_bar_lst[current_step-1]
     const prev_process_bar = process_bar_lst[current_step-2]
 
-    // Ẩn Form 2 với hiệu ứng
     current_form.classList.remove("opacity-100", "scale-100", "flex");
     current_form.classList.add("opacity-0", "scale-90");
 
-    // Sau khi hiệu ứng chạy xong (500ms), thêm lại `hidden`
     setTimeout(() => {
         current_form.classList.add("hidden");
         prev_form.classList.remove("opacity-0", "scale-90", "hidden");

@@ -16,7 +16,7 @@ messages_failure = {
 messages_success = {
     'link_sent' : 'A reset password link is sent to {0}',
     'update_success' : 'You have successfully update your {0}',
-    'success' : 'Successfully registered',
+    'register_success' : 'Successfully registered',
     'login_success' : 'You have login successfully!',
     'send_otp_success': 'OTP has been sent to the email {0}!',
     'transfer_money_success': 'Transfer money successfully!'

@@ -375,7 +375,7 @@
 
                         <div class="flex flex-col">
                             <label class="font-semibold" for="branch">Branch</label>
-                            <select id="branch" name="branch" class="register_input">
+                            <select id="branch" name="branch" class="register_input" required>
                                 <option selected value="-1">Choose a branch</option>
                                 {% for branch in branch_list %}
                                 <option value="{{branch._id}}">{{branch.BranchName}} - {{branch.Address}}</option>
