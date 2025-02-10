@@ -273,7 +273,7 @@ def payment():
                     flash(messages_failure['account_not_found'], 'error')
                     return redirect(request.referrer)
                 
-                if account["Balance"] < float(amount):
+                if float(account["Balance"]) < float(amount):
                     flash(messages_failure['balance_not_enough'].format('pay the bill'), 'error')
                     return redirect(request.referrer)
                 
