@@ -13,14 +13,14 @@ const form_step2 = document.getElementById("form-step2");
 const form_step3 = document.getElementById("form-step3");
 const form_step4 = document.getElementById("form-step4");
 const form_step5 = document.getElementById("form-step5");
-const form_lst = [form_step1, form_step2, form_step3, form_step4, form_step5]
+const form_lst = [form_step1, form_step2, form_step3, form_step4, form_step5];
 
 const process_bar_step1 = document.getElementById("process_bar_step1");
 const process_bar_step2 = document.getElementById("process_bar_step2");
 const process_bar_step3 = document.getElementById("process_bar_step3");
 const process_bar_step4 = document.getElementById("process_bar_step4");
 const process_bar_step5 = document.getElementById("process_bar_step5");
-const process_bar_lst = [process_bar_step1, process_bar_step2, process_bar_step3, process_bar_step4, process_bar_step5]
+const process_bar_lst = [process_bar_step1, process_bar_step2, process_bar_step3, process_bar_step4, process_bar_step5];
 
 function isValidEmail(email) {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
