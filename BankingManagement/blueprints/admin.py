@@ -15,7 +15,7 @@ from enums.data_type import DataType
 from enums.admin_page_type import PageType
 from enums.file_type import FileType
 from message import messages_success, messages_failure
-from helpers.helpers import login_required, issueNewCard, generate_login_info, send_email,get_file_extension
+from helpers.helpers import login_required, issue_new_card, generate_login_info, send_email,get_file_extension
 from helpers.admin import create_accounts, generate_export_data
 
 admin_blueprint = Blueprint('admin', __name__)
@@ -125,7 +125,7 @@ def account(page, id):
         log_in_id = session.get("account_id")
         # Account info
         card_type = card_types.find_one({"TypeValue": CardType.CREDITS.value}, {"_id":0})
-        card_info = issueNewCard()
+        card_info = issue_new_card()
         role = roles.find_one({"Value": int(request.form['role'])}, {"_id":0})
 
         lst_login_method_type = list(map(int, request.form.getlist("loginMethod")))
@@ -162,7 +162,7 @@ def account(page, id):
         error_message = None
         # check if email or username already exist
         is_exist_email = True if users.find_one({"Email": email}) else False
-        is_exist_phone = True if users.find_one({"Phone": phone}) else False
+        is_exist_phone = True if users.find_one({"Phossne": phone}) else False
         
         if is_exist_email:
             error_message = messages_failure['email_existed'].format(email) 
@@ -289,7 +289,7 @@ def user(page, id):
         if page == "view" and id is not None:
             expiredDate = None
             issuanceDate = None
-            user_id = ObjectId(id)
+            user_id = int(id)
             viewed_user = users.find_one({"_id": user_id})
             if viewed_user and viewed_user['Card']:
                 expiredDate = datetime.fromisoformat(viewed_user['Card']['ExpiredDate']).date()
@@ -299,7 +299,7 @@ def user(page, id):
                                    expiredDate = expiredDate, 
                                    issuanceDate = issuanceDate)
         elif page == "edit" and id is not None:
-            user_id = ObjectId(id)
+            user_id = int(id)
             edited_user = users.find_one({"_id": user_id}) 
             return render_template('admin/user/edit_user.html', user = edited_user)
         return render_template('admin/user/user.html')
@@ -313,11 +313,11 @@ def employee(page, id):
         if page == "add":
             return render_template('admin/employee/add_employee.html')
         elif page == "view" and id is not None:
-            employee_id = ObjectId(id)
+            employee_id = int(id)
             viewed_employee = users.find_one({"_id": employee_id})
             return render_template('admin/employee/view_employee.html', employee = viewed_employee)
         elif page == "edit" and id is not None:
-            employee_id = ObjectId(id)
+            employee_id = int(id)
             edited_employee = users.find_one({"_id": employee_id}) 
             return render_template('admin/employee/edit_employee.html', employee = edited_employee)
         return render_template('admin/employee/employee.html')
@@ -331,11 +331,11 @@ def branch(page, id):
         if page == "add":
             return render_template('admin/branch/add_branch.html')
         elif page == "view" and id is not None:
-            branch_id = ObjectId(id)
+            branch_id = int(id)
             viewed_branch = users.find_one({"_id": branch_id})
             return render_template('admin/branch/view_branch.html', branch = viewed_branch)
         elif page == "edit" and id is not None:
-            branch_id = ObjectId(id)
+            branch_id = int(id)
             edited_branch = users.find_one({"_id": branch_id}) 
             return render_template('admin/branch/edit_branch.html', branch = edited_branch)
         return render_template('admin/branch/branch.html')

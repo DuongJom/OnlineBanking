@@ -1,161 +1,465 @@
 {% extends 'general/layout.html' %}
 {% block title %} Register {% endblock %} 
 {% block content %}
-<div class="flex mt-20 flex-col px-6 py-10 lg:px-8">
-	<div class="sm:mx-auto sm:w-full sm:max-w-sm">
-		<img
-			class="mx-auto h-10 w-auto"
-			src="../static/img/bank.png"
-			alt="Company" />
-		<h2 class="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-			Register for an account
-		</h2>
-	</div>
+   <div class="fixed inset-0 flex items-center justify-center bg-popup-bg">
+        <div class="lg:w-2/3 w-11/12 bg-white rounded-xl h-4/5 p-3 flex">
+            <div class="hidden md:block flex-1 rounded-xl bg-[url('/static/img/green-background.png')] 
+                bg-cover bg-center pt-8 pl-8 space-y-10">
+                 <div class="flex cursor-none">
+                    <div class="process_bar bg-green-200" id="process_bar_step1">
+                        <p>1</p>
+                    </div>
 
-	<form class="sm:grid sm:grid-cols-3 sm:content-start sm:gap-x-6 sm:justify-center flex flex-col mb-0 items-center" 
-			action="{{ url_for('account.register') }}" method="post">
-		<input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
-		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label for="username" class="label_field">Username</label>
-			</div>
-			<div>
-				<input id="username" name="username" type="text" autocomplete="off" class="input_field" required />
-			</div>
-		</div>
+                    <div>
+                        <p class="text-sm text-gray-500">STEP 1</p>
+                        <div class="text-gray-200">LOGIN INFO</div>
+                    </div>
+                 </div>
 
-		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label for="fullName" class="label_field">Full Name</label>
-			</div>
-			<div>
-				<input id="fullName" name="fullName" type="text" autocomplete="off" class="input_field" required />
-			</div>
-		</div>
+                <div class="flex cursor-none">
+                    <div class="process_bar" id="process_bar_step2">
+                        <p>2</p>
+                    </div>
 
-		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label for="branch" class="label_field">Branch</label>
-			</div>
-			<select id="branch" name="branch" class="select_field">
-				<option selected value="-1">Choose a branch</option>
-				{% for branch in branch_list %}
-				<option value="{{branch._id}}">{{branch.BranchName}}</option>
-				{% endfor %}
-			</select>
-		</div>
+                    <div>
+                        <p class="text-sm text-gray-500">STEP 2</p>
+                        <div class="text-gray-200">PERSONAL INFO</div>
+                    </div>
+                 </div>
 
-		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label for="password" class="label_field">Password</label>
-			</div>
-			<div>
-				<input id="password" name="password" type="password" autocomplete="off" class="input_field" required/>
-			</div>
-		</div>
+                 <div class="flex cursor-none">
+                    <div class="process_bar" id="process_bar_step3">
+                        <p>3</p>
+                    </div>
 
-		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label for="address" class="label_field">Address</label>
-			</div>
-			<div>
-				<textarea id="address" name="address" type="text" autocomplete="off" class="input_field" required></textarea>
-			</div>
-		</div>
+                    <div>
+                        <p class="text-sm text-gray-500">STEP 3</p>
+                        <div class="text-gray-200">ADDRESS</div>
+                    </div>
+                 </div>
 
-		<div class="w-1/2 sm:w-full">
-			<label for="transferMethod" class="label_field">Transfer Method</label>
-			<select id="transferMethod" name="transferMethod" class="select_field">
-				<option selected value="-1">Choose a Transfer Method</option>
-				{% for transferMethod in transferMethod_list %}
-				<option value="{{transferMethod._id}}">{{transferMethod.MethodName}}</option>
-				{% endfor %}
-			</select>
-		</div>
+                 <div class="flex cursor-none" >
+                    <div class="process_bar" id="process_bar_step4">
+                        <p>4</p>
+                    </div>
 
-		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label for="confirmPassword" class="label_field">Confirmation Password</label>
-			</div>
-			<div>
-				<input id="confirmPassword" name="confirmPassword" type="password" 
-					autocomplete="off" class="input_field" required/>
-			</div>
-		</div>
+                    <div>
+                        <p class="text-sm text-gray-500">STEP 4</p>
+                        <div class="text-gray-200">ACCOUNT INFO</div>
+                    </div>
+                 </div>
 
-		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label for="phone" class="label_field">Phone Number</label>
-			</div>
-			<div>
-				<input id="phone" name="phone" type="text" autocomplete="off" class="input_field" required/>
-			</div>
-		</div>
+                 <div class="flex cursor-none">
+                    <div class="process_bar" id="process_bar_step5">
+                        <p>5</p>
+                    </div>
 
-		<div class="w-1/2 sm:w-full">
-			<label for="loginMethod" class="label_field">Login Method</label>
-			<select id="loginMethod" name="loginMethod" class="select_field">
-				<option selected  value="-1">Choose a Login Method</option>
-				{% for loginMethod in loginMethod_list %}
-				<option value="{{loginMethod._id}}">{{loginMethod.MethodName}}</option>
-				{% endfor %}
-			</select>
-		</div>
+                    <div>
+                        <p class="text-sm text-gray-500">STEP 5</p>
+                        <div class="text-gray-200">SUMMARY</div>
+                    </div>
+                 </div>
+            </div>
+            <form class="flex-2 rounded-r-xl relative" action="{{ url_for('account.register') }}" method="post">
+                <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />
+                <!-- Login info -->
+                <div class="h-full w-full flex flex-col relative
+                        transition-all duration-300 scale-100 opacity-100" id="form-step1">
+                    <!-- Step title -->
+                    <div class="w-full md:pl-6 md:pt-6">
+                        <h1 class="font-bold text-5xl">
+                            Login Info
+                        </h1>
+                        <h3 class="text-gray-500">
+                            Please provide your username and password
+                        </h3>
+                    </div>
 
-		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label for="email" class="label_field">Email</label>
-			</div>
-			<div>
-				<input id="email" name="email" type="email" autocomplete="off" class="input_field" required/>
-			</div>
-		</div>
+                    <!-- Input field -->
+                     <div class="w-full space-y-4 md:p-6">
+                        <div class="flex flex-col">
+                            <label class="font-semibold" for="username">Username</label>
+                            <input class="register_input step-1" 
+                                    placeholder="e.g.Thomas123" 
+                                    type="text" 
+                                    id="username" 
+                                    name="username" 
+                                    required/>
+                            <span class="text-red-500 text-sm" id="usernameError"></span>
+                        </div>
+        
+                        <div class="flex flex-col">
+                            <label class="font-semibold" for="password">Password</label>
+                            <input class="register_input step-1" 
+                                    placeholder="********" 
+                                    id="password" 
+                                    name="password" 
+                                    type="password" 
+                                    required/>
+                            <span class="text-red-500 text-sm" id="passwordError"></span>
+                        </div>
+        
+                        <div class="flex flex-col">
+                            <label class="font-semibold" for="confirmPassword">Password again</label>
+                            <input class="register_input step-1" 
+                                    placeholder="********" 
+                                    id="confirmPassword" 
+                                    name="confirmPassword" 
+                                    type="password" 
+                                    required/>
+                            <span class="text-red-500 text-sm" id="confirmPasswordError"></span>
+                        </div>
+                     </div>
 
-		<div class="w-1/4 sm:w-full">
-			<div class="flex items-center">
-				<label class="label_field">Sex</label>
-			</div>
-			<div class="flex items-center space-x-4 px-2 input_field">
-				<div>
-					<input id="male" name="sex" type="radio" value="1" class="w-4 h-4 text-blue-600
-						bg-gray-100 border-gray-400 rounded-full focus:ring-blue-500" />
-					<label for="male" class="text-sm font-medium text-gray-900">Male</label>
-				</div>
-				<div>
-					<input id="female" name="sex" type="radio" value="2" class="w-4 h-4 text-blue-600
-						bg-gray-100 border-gray-400 rounded-full focus:ring-blue-500" />
-					<label for="female" class="text-sm font-medium text-gray-900">Female</label>
-				</div>
-				<div>
-					<input id="others" name="sex" type="radio" value="0" class="w-4 h-4 text-blue-600
-						bg-gray-100 border-gray-400 rounded-full focus:ring-blue-500" />
-					<label for="others" class="text-sm font-medium text-gray-900">Others</label>
-				</div>
-			</div>
-		</div>
+                    <!-- submit button -->
+                     <div class="w-full md:pb-6 md:pr-6 pt-4 justify-between absolute bottom-0">
+                        <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 float-end" 
+                                onclick="goNextStep()" 
+                                type="button">
+                            Next Step
+                        </button>
+                     </div>
+                </div>
 
-		<div class="w-1/2 sm:w-full">
-			<div class="flex items-center">
-				<label for="card" class="label_field">Card</label>
-			</div>
-			<div>
-				<input id="card" name="card" type="text" autocomplete="off" value="{{card_info.cardNumber}}"
-					class="input_field text-gray-400" readonly/>
-				<input id="accountNumber" name="accountNumber" type="text" autocomplete="off"
-					value="{{card_info.accountNumber}}" hidden/>
-				<input id="cvvNumber" name="cvvNumber" type="text" autocomplete="off"
-					value="{{card_info.cvvNumber}}" hidden/>
-			</div>
-		</div>
+                <!-- Personal info --> 
+                <div class="hidden h-full w-full flex-col relative
+                            transform scale-90 opacity-0 transition-all duration-300" 
+                            id="form-step2">
+                    <!-- Step title -->
+                    <div class="w-full md:pl-6 md:pt-6">
+                        <h1 class="font-bold text-5xl">
+                            Personal Info
+                        </h1>
+                        <h3 class="text-gray-500">
+                            Please provide your detail info
+                        </h3>
+                    </div>
 
-		<div class="sm:col-end-4 flex justify-end">
-			<button
-				type="submit"
-				class="bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-600 hover:to-blue-800 
-				text-white font-semibold py-2 px-6 rounded-md shadow-md focus:outline-none focus:ring-2 
-				focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">Register
-			</button>
-		</div>
-	</form>
-</div>
+                    <!-- Input field -->
+                     <div class="w-full space-y-4 md:p-6">
+                        <div class="flex flex-col">
+                            <label class="font-semibold" for="fullname">Full name</label>
+                            <input class="register_input step-2" 
+                                placeholder="e.g.Thomas Edison" 
+                                id="fullname" 
+                                name="fullname" 
+                                type="text" 
+                                required/>
+                            <span class="text-red-500 text-sm" id="fullnameError"></span>
+                        </div>
+        
+                        <div class="flex flex-col">
+                            <label class="font-semibold" for="phone">Phone number</label>
+                            <input class="register_input step-2" 
+                                placeholder="e.g.0768552941" 
+                                id="phone" 
+                                name="phone" 
+                                type="text" 
+                                required/>
+                            <span class="text-red-500 text-sm" id="phoneError"></span>
+                        </div>
+        
+                        <div class="flex flex-col">
+                            <label class="font-semibold" for="email">Email</label>
+                            <input class="register_input step-2" 
+                                placeholder="e.g.thomas123@gmail.com" 
+                                id="email" 
+                                name="email" 
+                                type="email" 
+                                required>
+                            <span class="text-red-500 text-sm" id="emailError"></span>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="font-semibold">Gender</label>
+                            <div class="space-x-10">
+                                <label>
+                                    <input type="radio" name="gender" value="0" class="radio_input"/>
+                                    <span>Male</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="gender" value="1" class="radio_input"/>
+                                    <span>Female</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="gender" value="2" class="radio_input"/>
+                                    <span>Other</span>
+                                </label>
+                            </div>
+                            <span class="text-red-500 text-sm" id="genderError"></span>
+                        </div>
+                     </div>
+
+                    <!-- submit button -->
+                     <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
+                        <button class="font-bold text-gray-600 hover:text-black" 
+                                onclick="goPreviousStep()" 
+                                type="button">
+                                Go Back
+                        </button>
+                        <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
+                                onclick="goNextStep()" 
+                                type="button">
+                            Next Step
+                        </button>
+                     </div>
+                </div>
+
+                <!-- Address -->
+                <div class="h-full w-full hidden flex-col relative 
+                            transform scale-90 opacity-0 transition-all duration-300" 
+                            id="form-step3">
+                    <!-- Step title -->
+                    <div class="w-full md:pl-6 md:pt-6">
+                        <h1 class="font-bold text-5xl">
+                            Address
+                        </h1>
+                        <h3 class="text-gray-500">
+                            Please provide your address
+                        </h3>
+                    </div>
+
+                    <!-- Input field -->
+                     <div class="w-full space-y-4 md:p-6">
+                        <div class="flex flex-col">
+                            <label class="font-semibold" for="country">Country</label>
+                            <input class="register_input step-3" 
+                                    placeholder="e.g.Viet Nam" 
+                                    id="country" 
+                                    name="country" 
+                                    type="text" 
+                                    required/>
+                            <span class="text-red-500 text-sm" id="countryError"></span>
+                        </div>
+        
+                        <div class="flex flex-col">
+                            <label class="font-semibold" for="district">City</label>
+                            <input class="register_input step-3" 
+                                    placeholder="e.g.Ho Chi Minh" 
+                                    id="city" 
+                                    name="city" type="text" 
+                                    required/>
+                            <span class="text-red-500 text-sm" id="cityError"></span>
+                        </div>
+        
+                        <div class="flex flex-col">
+                            <label class="font-semibold" for="district">District</label>
+                            <input class="register_input step-3" 
+                                    placeholder="e.g.Thu Duc" 
+                                    id="district" 
+                                    name="district" 
+                                    type="text" 
+                                    required/>
+                            <span class="text-red-500 text-sm" id="districtError"></span>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <div class="flex flex-col">
+                                <label class="font-semibold" for="ward">Ward</label>
+                                <input class="register_input step-3" 
+                                    placeholder="e.g.Hiep Phu" 
+                                    id="ward" 
+                                    name="ward" 
+                                    type="text" 
+                                    required/>
+                                    <span class="text-red-500 text-sm" id="wardError"></span>
+                            </div>
+    
+                            <div class="flex flex-col">
+                                <label class="font-semibold" for="street">Street</label>
+                                <input class="register_input step-3" 
+                                    placeholder="Man Thien" 
+                                    id="street" 
+                                    name="street" 
+                                    type="text" 
+                                    required/>
+                                <span class="text-red-500 text-sm" id="streetError"></span>
+                            </div>
+                        </div>
+                     </div>
+
+                    <!-- submit button -->
+                     <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
+                        <button class="font-bold text-gray-600 hover:text-black" 
+                            onclick="goPreviousStep()" 
+                            type="button">
+                            Go Back
+                        </button>
+                        <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
+                                onclick="goNextStep()"
+                                type="button">
+                            Next Step
+                        </button>
+                     </div>
+                </div>
+
+                <!-- Account info -->
+                <div class="h-full w-full hidden flex-col relative 
+                            transform scale-90 opacity-0 transition-all duration-300" 
+                            id="form-step4">
+                    <!-- Step title -->
+                    <div class="w-full md:pl-6 md:pt-6">
+                        <h1 class="font-bold text-5xl">
+                            Account info
+                        </h1>
+                        <h3 class="text-gray-500">
+                            Please choose your basic account setup
+                        </h3>
+                    </div>
+
+                    <!-- Input field -->
+                     <div class="w-full space-y-4 md:p-6">
+                        <div class="flex flex-col">
+                            <label class="font-semibold">
+                                Login Methods
+                                <span class="text-red-500" id="loginMethodError"></span>
+                            </label>
+                            <div class="w-full flex justify-start space-x-4 md:space-x-10">
+                                <label>
+                                    <input type="checkbox" class="hidden peer" name="loginMethod" value="1"/>
+                                    <div class="register_checkbox">
+                                        <img src="../../static/img/password.svg" class="option_icon"/>
+                                        <p>Username Password</p>    
+                                    </div>
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" class="hidden peer" name="loginMethod" value="2"/>
+                                    <div class="register_checkbox">
+                                        <img src="../../static/img/face-id.svg" class="option_icon"/>
+                                        <p>Face ID</p>
+                                    </div>
+                                </label>
+                                
+                                <label>
+                                    <input type="checkbox" class="hidden peer" name="loginMethod" value="3"/>
+                                    <div class="register_checkbox">
+                                        <img src="../../static/img/finger-print.svg" class="option_icon"/>
+                                        <p>Finger Print</p>
+                                    </div>
+                                </label>
+                            </div>          
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="font-semibold">
+                                Transfer Methods 
+                                <span class="text-red-500" id="transferMethodError"></span>
+                            </label>
+                            <div class="w-full flex justify-start space-x-4 md:space-x-10">
+                                <label>
+                                    <input type="checkbox" class="hidden peer" name="transferMethod" value="1"/>
+                                    <div class="register_checkbox" name="transferMethod">
+                                        <img src="../../static/img/sms.svg" class="option_icon"/>
+                                        <p>SMS</p>
+                                    </div>
+                                </label>
+
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" class="hidden peer" name="transferMethod" value="2"/>
+                                    <div class="register_checkbox">
+                                        <img src="../../static/img/face-id.svg" class="option_icon"/>
+                                        <p>Face ID</p>
+                                    </div>
+                                </label>
+ 
+                                <label>
+                                    <input type="checkbox" class="hidden peer" name="transferMethod" value="3"/>
+                                    <div class="register_checkbox">
+                                        <img src="../../static/img/password.svg" class="option_icon"/>
+                                        <p>Pin Code</p>
+                                    </div>
+                                </label>
+                            </div>         
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="font-semibold" for="branch">Branch</label>
+                            <select id="branch" name="branch" class="register_input" required>
+                                <option selected value="-1">Choose a branch</option>
+                                {% for branch in branch_list %}
+                                <option value="{{branch._id}}">{{branch.BranchName}} - {{branch.Address}}</option>
+                                {% endfor %}
+                            </select>
+                            <span class="text-red-500 text-sm" id="branchError"></span>
+                        </div>
+                     </div>
+
+                    <!-- submit button -->
+                     <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
+                        <button class="font-bold text-gray-600 hover:text-black" 
+                                onclick="goPreviousStep()" 
+                                type="button">
+                                Go Back
+                        </button>
+                        <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
+                                onclick="goNextStep()"
+                                type="button">
+                            Next Step
+                        </button>
+                     </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="h-full w-full hidden flex-col relative 
+                            transform scale-90 opacity-0 transition-all duration-300" 
+                            id="form-step5">
+                    <!-- Step title -->
+                    <div class="w-full md:pl-6 md:pt-6">
+                        <h1 class="font-bold text-5xl">
+                            Finish Up
+                        </h1>
+                        <h3 class="text-gray-500">
+                            Double-check everything looks OK before signing up
+                        </h3>
+                    </div>
+
+                    <!-- Input field -->
+                    <div class="w-full space-y-4 md:p-6">
+                        <div class="w-full bg-green-200 rounded-md p-6 md:space-y-4 space-y-2">
+                            <div class="flex flex-col">
+                                <label class="font-semibold">Username</label>
+                                <p id="reUsername"></p>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <label class="font-semibold">Email</label>
+                                <p id="reEmail"></p>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <label class="font-semibold">Phone</label>
+                                <p id="rePhone"></p>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <label class="font-semibold">Branch</label>
+                                <p id="reBranch"></p>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <label class="font-semibold">Card Number</label>
+                                <p id="cardNumber">{{card_info.cardNumber}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- submit button -->
+                    <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
+                        <button class="font-bold text-gray-600 hover:text-black" 
+                            onclick="goPreviousStep()" 
+                            type="button">
+                            Go Back
+                        </button>
+                        <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
+                                type="submit">
+                            Sign up
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+   </div>
+   <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 {% endblock %}
+

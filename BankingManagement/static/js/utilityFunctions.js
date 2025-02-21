@@ -1,4 +1,3 @@
-
 function onClose(){
     document.getElementById("alert").style.display = "none";
 }
@@ -14,7 +13,7 @@ function toggle() {
     toggledElement.classList.toggle('hidden');
 }
 
-function navBarToggle () {
+function navBarToggle() {
     const mainDropdown = document.getElementById("mainDropdown");
     const right = document.getElementById("navbar_right_arrow");
     const down = document.getElementById("navbar_down_arrow");
@@ -53,4 +52,4 @@ document.addEventListener('DOMContentLoaded', function() {
         dropdownList.classList.add('hidden');
       }
     });
-  });
+});

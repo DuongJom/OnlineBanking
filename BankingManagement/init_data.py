@@ -1,84 +1,103 @@
 from models import database, account as a, role as r, login_method as lm
 from models import transfer_method as tm, card_type as t
+from models.branch import Branch
 from enums.role_type import RoleType
 from enums.login_type import LoginType
 from enums.transfer_type import TransferType
 from enums.card_type import CardType
+from enums.collection import CollectionType
 
 db = database.Database().get_db()
-accounts = db['accounts']
-roles = db['roles']
-login_methods = db['login_methods']
-transfer_methods = db['transfer_methods']
-card_types = db['card_types']
+accounts = db[CollectionType.ACCOUNTS.value]
+roles = db[CollectionType.ROLES.value]
+login_methods = db[CollectionType.LOGIN_METHODS.value]
+transfer_methods = db[CollectionType.TRANSFER_METHODS.value]
+card_types = db[CollectionType.CARD_TYPES.value]
+branches = db[CollectionType.BRANCHES.value]
 
-admin = accounts.find_one({'Role.Value': RoleType.ADMIN.value})
 lst_collections = db.list_collection_names()
-admin_id = admin["_id"]
 
 def initialize_data(app):
     init_accounts(app)
+    init_branches()
     init_roles()
     init_login_methods()
     init_transfer_methods()
     init_card_types()
 
 def init_accounts(app):
-    acc = a.Account(username=app.username_adm01, password=app.password_adm01, role=RoleType.ADMIN.value)
-
-    if "accounts" not in lst_collections:
+    if CollectionType.ACCOUNTS.value not in lst_collections:
         lstAccounts = [
-            a.Account(username=app.username_usr01, password=app.password_usr01, role=RoleType.USER.value),
-            a.Account(username=app.username_emp01, password=app.password_emp01, role=RoleType.EMPLOYEE.value),
-            acc
+            a.Account(id=1, username=app.username_usr01, password=app.password_usr01, role=RoleType.USER.value),
+            a.Account(id=2, username=app.username_emp01, password=app.password_emp01, role=RoleType.EMPLOYEE.value),
+            a.Account(id=3, username=app.username_adm01, password=app.password_adm01, role=RoleType.ADMIN.value)
         ]
 
         for account in lstAccounts:
             accounts.insert_one(account.to_json())
-        return
-    
-    admin_account = accounts.find_one({"Role":RoleType.ADMIN.value, "Username":app.username_adm01})
-    if not admin_account:
-        accounts.insert_one(acc.to_json())
+
+def init_branches():
+    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"])
+
+    if CollectionType.BRANCHES.value not in lst_collections:
+        lst_branches = [
+            Branch(id=1, branchName="Branch 1", address="So 01, duong Vo Van Ngan, phuong Linh Chieu, TP.Thu Duc, TP.HCM", createdBy=admin_id, modifiedBy=admin_id),
+            Branch(id=2, branchName="Transaction Office 1", address="So 137, duong Pham Van Dong, phuong Linh Trung, TP.Thu Duc, TP.HCM", createdBy=admin_id, modifiedBy=admin_id)
+        ]
+        for branch in lst_branches:
+            branches.insert_one(branch.to_json())
 
 def init_roles():
-    if "roles" not in lst_collections:
+    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"])
+
+    if CollectionType.ROLES.value not in lst_collections:
         lstRoles = [
-            r.Role(roleName='User', value=RoleType.USER.value, createdBy=admin_id, modifiedBy=admin_id),
-            r.Role(roleName='Employee', value=RoleType.EMPLOYEE.value, createdBy=admin_id, modifiedBy=admin_id),
-            r.Role(roleName='Administrator', value=RoleType.ADMIN.value, createdBy=admin_id, modifiedBy=admin_id)
+            r.Role(id=1, roleName='User', value=RoleType.USER.value, createdBy=admin_id, modifiedBy=admin_id),
+            r.Role(id=2, roleName='Employee', value=RoleType.EMPLOYEE.value, createdBy=admin_id, modifiedBy=admin_id),
+            r.Role(id=3, roleName='Administrator', value=RoleType.ADMIN.value, createdBy=admin_id, modifiedBy=admin_id)
         ]
 
         for role in lstRoles:
             roles.insert_one(role.to_json())
 
 def init_login_methods():
-    if "login_methods" not in lst_collections:
+    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"])
+
+    if CollectionType.LOGIN_METHODS.value not in lst_collections:
         lstMethods = [
-            lm.LoginMethod(methodName="By Username with password", value=LoginType.NORMAL.value, createdBy=admin_id, modifiedBy=admin_id),
-            lm.LoginMethod(methodName="By face identifier", value=LoginType.FACE_ID.value, createdBy=admin_id, modifiedBy=admin_id),
-            lm.LoginMethod(methodName="By finger print", value=LoginType.FINGER_PRINT.value, createdBy=admin_id, modifiedBy=admin_id)
+            lm.LoginMethod(id=1, methodName="By Username with password", value=LoginType.NORMAL.value, createdBy=admin_id, modifiedBy=admin_id),
+            lm.LoginMethod(id=2, methodName="By face identifier", value=LoginType.FACE_ID.value, createdBy=admin_id, modifiedBy=admin_id),
+            lm.LoginMethod(id=3, methodName="By finger print", value=LoginType.FINGER_PRINT.value, createdBy=admin_id, modifiedBy=admin_id)
         ]
 
         for method in lstMethods:
             login_methods.insert_one(method.to_json())
 
 def init_transfer_methods():
-    if "transfer_methods" not in lst_collections:
+    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"])
+
+    if CollectionType.TRANSFER_METHODS.value not in lst_collections:
         lstMethods = [
-            tm.TransferMethod(methodName="SMS", value=TransferType.SMS.value, createdBy=admin_id, modifiedBy=admin_id),
-            tm.TransferMethod(methodName="Face Identification", value=TransferType.FACE_ID.value, createdBy=admin_id, modifiedBy=admin_id),
-            tm.TransferMethod(methodName="Pin code", value=TransferType.PIN_CODE.value, createdBy=admin_id, modifiedBy=admin_id)
+            tm.TransferMethod(id=1, methodName="SMS", value=TransferType.SMS.value, createdBy=admin_id, modifiedBy=admin_id),
+            tm.TransferMethod(id=2, methodName="Face Identification", value=TransferType.FACE_ID.value, createdBy=admin_id, modifiedBy=admin_id),
+            tm.TransferMethod(id=3, methodName="Pin code", value=TransferType.PIN_CODE.value, createdBy=admin_id, modifiedBy=admin_id)
         ]
 
         for method in lstMethods:
             transfer_methods.insert_one(method.to_json())
 
 def init_card_types():
-    if "card_types" not in lst_collections:
+    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"])
+
+    if CollectionType.CARD_TYPES.value not in lst_collections:
         lstTypes = [
-            t.CardType(typeName="Credit Card", typeValue=CardType.CREDITS.value, createdBy=admin_id, modifiedBy=admin_id),
-            t.CardType(typeName="Debit Card", typeValue=CardType.DEBITS.value, createdBy=admin_id, modifiedBy=admin_id),
+            t.CardType(id=1, typeName="Credit Card", typeValue=CardType.CREDITS.value, createdBy=admin_id, modifiedBy=admin_id),
+            t.CardType(id=2, typeName="Debit Card", typeValue=CardType.DEBITS.value, createdBy=admin_id, modifiedBy=admin_id),
         ]
 
         for type in lstTypes:

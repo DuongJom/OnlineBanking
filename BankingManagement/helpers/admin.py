@@ -9,7 +9,7 @@ from enums.card_type import CardType
 from enums.mime_type import MIMEType
 from message import messages_success, messages_failure
 from models import database, user as u, address, card, account as acc
-from helpers.helpers import issueNewCard, generate_login_info, getMIMETypeValue
+from helpers.helpers import issue_new_card, generate_login_info, getMIMETypeValue
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -71,7 +71,7 @@ def create_accounts(data):
         request_branch = None
 
         card_type = card_types.find_one({"TypeValue": CardType.CREDITS.value}, {"_id":0})
-        card_info = issueNewCard()
+        card_info = issue_new_card()
         new_card = card.Card(cardNumber=card_info['cardNumber'], cvv=card_info['cvvNumber'], type=card_type, createdBy = admin_id)
         loginInfo = generate_login_info(email, phone)            
 

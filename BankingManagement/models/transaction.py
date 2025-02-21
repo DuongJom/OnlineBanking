@@ -1,18 +1,23 @@
 import json
 from datetime import datetime as dt
 
+from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 
 from enums.currency import CurrencyType
 from enums.transaction_type import TransactionType
 from enums.transaction_status import TransactionStatus
+from enums.collection import CollectionType
+
+db = Database().get_db()
 
 class Transaction(BaseModel):
     def __init__(self, **kwargs):
         created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
         modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        super().__init__(createdBy=created_by, modifiedBy=modified_by)
+        id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.TRANSACTIONS.value)
 
         self.SenderId = kwargs["sender"] if "sender" in kwargs.keys() else None
         self.ReceiverId = kwargs["receiver"] if "receiver" in kwargs.keys() else None

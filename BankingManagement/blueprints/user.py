@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, session, redirect, request, flash
-from bson import ObjectId
 import time
+from flask import Blueprint, render_template, redirect, flash, session, request
 
 from models import database, transaction
 from message import messages_success, messages_failure
@@ -18,7 +17,7 @@ user_blueprint = Blueprint('huserome', __name__)
 @user_blueprint.route("/money-transfer", methods=["GET", "POST"])
 @login_required
 def transfer_money():
-    account_id = ObjectId(session.get("account_id"))
+    account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
     banks = get_banks()
 
@@ -47,7 +46,7 @@ def transfer_money():
 @user_blueprint.route("/", methods=["GET"])
 @login_required
 def home():
-    account_id = ObjectId(session.get("account_id"))
+    account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
 
     if account["Role"] == RoleType.ADMIN.value:
@@ -75,7 +74,7 @@ def home():
 @user_blueprint.route('/confirm-otp', methods=["GET", "POST"])
 @login_required
 def confirm_otp():
-    account_id = ObjectId(session.get("account_id"))
+    account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
 
     if request.method == 'GET':
