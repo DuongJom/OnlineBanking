@@ -13,12 +13,14 @@ mail = Mail(app)
 # initialize csrf protect
 csrf = CSRFProtect(app)
 
-from blueprints import account, admin, employee, user
+from blueprints import account, employee, user
+from blueprints.admin import admin_account
 
 app.register_blueprint(account.account_blueprint)
 app.register_blueprint(user.user_blueprint)
 app.register_blueprint(employee.employee_blueprint)
-app.register_blueprint(admin.admin_blueprint)
+app.register_blueprint(admin_account.admin_account_blueprint)
+
 initialize_data(app)
 
 @app.template_filter()

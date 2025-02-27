@@ -1,5 +1,5 @@
 import time
-from flask import Blueprint, render_template, redirect, flash, session, request
+from flask import Blueprint, render_template, redirect, flash, session, request, url_for
 
 from models import database, transaction
 from message import messages_success, messages_failure
@@ -50,7 +50,7 @@ def home():
     account = accounts.find_one({"_id": account_id})
 
     if account["Role"] == RoleType.ADMIN.value:
-        return redirect("/admin/account")
+        return redirect(url_for('admin_account.admin_account', page_no=1))
     elif account["Role"] == RoleType.EMPLOYEE.value:
         return redirect("/employee/home")
     

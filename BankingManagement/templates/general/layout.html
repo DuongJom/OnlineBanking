@@ -22,7 +22,7 @@
             <div class="w-12 h-12 p-1 
               focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
               focus:ring-offset-gray-800">
-              <img src="../static/img/bank.png" 
+              <img src="{{ url_for('static', filename='img/bank.png') }}" 
                 class="rounded-full bg-white w-full h-full object-contain"/>   
             </div>
           </div>
@@ -37,18 +37,18 @@
                       focus:ring-offset-gray-800"
                 onclick="navBarToggle()">
                   {% if session["sex"] == '0' %}
-                    <img width="30px" height="30px" src="../static/img/avt_man.png" alt="user avatar"/>
+                    <img width="30px" height="30px" src="{{ url_for('static', filename='img/avt_man.png') }}" alt="user avatar"/>
                   {% else %}
-                    <img width="30px" height="30px" src="../static/img/avt_woman.png" alt="user avatar"/>
+                    <img width="30px" height="30px" src="{{ url_for('static', filename='img/avt_woman.png') }}" alt="user avatar"/>
                   {% endif %}
 
                   <div class="h-4 w-4 ml-2" id="navAvatar">
                     <img
-                    src="../static/img/right-arrow.png"
+                    src="{{ url_for('static', filename='img/right-arrow.png') }}"
                     id="navbar_right_arrow"
                     />
                   <img
-                    src="../static/img/down-arrow.png"
+                    src="{{ url_for('static', filename='img/down-arrow.png') }}"
                     id="navbar_down_arrow" 
                     class="hidden" />
                   </div>
