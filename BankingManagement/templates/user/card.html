@@ -1,0 +1,75 @@
+{% extends "user/layout.html" %}
+
+{% block title %}
+  Card Management
+{% endblock %}
+
+{% block user_content %}
+<!-- Main Content -->
+<main class="container mx-auto px-4 mt-8">
+    <!-- Existing Cards Section -->
+    <section>
+        <h2 class="text-xl font-semibold mb-4">Your Cards</h2>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Visa Card Item -->
+            <div class="bg-blue-500 text-white shadow-md rounded-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium">Visa Card</h3>
+                    <span class="text-sm">Exp: 12/2025</span>
+                </div>
+                <div class="flex flex-row">
+                    <div class="flex flex-col w-5/6">
+                        <p class="text-white mb-2">**** **** **** 1234</p>
+                        <p class="text-gray-200 text-sm mb-4">Card Holder: John Doe</p>
+                    </div>
+                    <img src="{{ url_for('static', filename='img/visa.png') }}" class="w-16 h-16">
+                </div>
+                <div class="flex justify-between">
+                    <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Edit</button>
+                    <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Delete</button>
+                </div>
+            </div>
+            
+
+            <!-- Master Card Item -->
+            <div class="bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-md rounded-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium">MasterCard</h3>
+                    <span class="text-sm">Exp: 11/2024</span>
+                </div>
+                <div class="flex flex-row">
+                    <div class="flex flex-col w-5/6">
+                        <p class="text-white mb-2">**** **** **** 5678</p>
+                        <p class="text-gray-200 text-sm mb-4">Card Holder: John Doe</p>
+                    </div>
+                    <img src="{{ url_for('static', filename='img/master_card.png') }}" class="w-16 h-16">
+                </div>
+                <div class="flex justify-between">
+                    <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Edit</button>
+                    <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Delete</button>
+                </div>
+            </div>
+            
+            <!-- Debit Card Item-->
+            <div class="bg-gray-800 text-white shadow-md rounded-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium">Debit Card</h3>
+                    <span class="text-sm">Exp: 09/2026</span>
+                </div>
+                <div class="flex flex-row">
+                    <div class="flex flex-col w-5/6">
+                        <p class="text-white mb-2">**** **** **** 9876</p>
+                        <p class="text-gray-400 text-sm mb-4">Card Holder: John Doe</p>
+                    </div>
+                    <img src="{{ url_for('static', filename='img/debit.png') }}" class="w-16 h-16">
+                </div>
+                
+                <div class="flex justify-between">
+                    <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Edit</button>
+                    <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Delete</button>
+                </div>
+            </div>            
+        </div>
+    </section>
+</main>
+{% endblock %}
