@@ -1,6 +1,6 @@
 import time
 import random
-from flask import Blueprint, render_template, redirect, flash, url_for, session, request
+from flask import Blueprint, render_template, redirect, flash, session, request
 from datetime import datetime as dt
 
 from models import database, transaction, investment as investmnt
@@ -20,6 +20,7 @@ transactions = db[CollectionType.TRANSACTIONS.value]
 users = db[CollectionType.USERS.value]
 bills = db[CollectionType.BILLS.value]
 investments = db[CollectionType.INVESTMENTS_SAVINGS.value]
+cards = db[CollectionType.CARDS.value]
 
 user_blueprint = Blueprint('user', __name__)
 
@@ -67,14 +68,12 @@ def transfer_money():
         owner = users.find_one({"_id": int(account["AccountOwner"])})
 
     if request.method == "POST":
-        # Collect form data
         receiver_account = request.form['receiver_account']
         receiver_bank = request.form['receiver_bank']
         amount = request.form['amount']
         currency = request.form['currency']
         message = request.form['message']
 
-        # Store form data in session before redirecting to OTP confirmation
         session['transfer_data'] = {
             'receiver_account': receiver_account,
             'receiver_bank': receiver_bank,
@@ -83,7 +82,6 @@ def transfer_money():
             'message': message
         }
 
-        # Redirect to OTP confirmation
         return redirect("/confirm-otp")
 
     return render_template("/user/transfer.html", account=account, banks=banks, owner=owner)
@@ -97,13 +95,14 @@ def confirm_otp():
     if request.method == 'GET':
         try:
             if account:
-                otp = generate_otp()  # Generate the OTP
-                session['otp'] = otp  # Store the OTP in the session
-                session['otp_expiration'] = time.time() + 60  # Store OTP expiration time
+                otp = generate_otp()
+                session['otp'] = otp
+                session['otp_expiration'] = time.time() + 60
                 owner = None
+
                 if account["AccountOwner"]:
                     owner = users.find_one({"_id": int(account["AccountOwner"])})
-                # Send OTP email
+                    
                 html = render_template(
                     '/email/verify_otp.html',
                     otp_code=otp,
@@ -124,17 +123,15 @@ def confirm_otp():
             flash(messages_failure['send_otp_failure'], 'error')
             return redirect('/money-transfer')
 
-    otp_code = ''.join([request.form.get(f'otp{i}') for i in range(1, 7)])  # Concatenate the OTP inputs
-    stored_otp = session.get('otp')  # Get the stored OTP
+    otp_code = ''.join([request.form.get(f'otp{i}') for i in range(1, 7)])
+    stored_otp = session.get('otp')
     expiration_time = session.get('otp_expiration')
 
-    # Validate OTP
     if time.time() > expiration_time:
         flash("OTP has expired. Please request a new one.", 'error')
         return redirect(request.path)
 
     if otp_code == stored_otp:
-        # Retrieve transfer data from session
         transfer_data = session.get('transfer_data', {})
         receiver_account_number = transfer_data.get('receiver_account')
         amount = transfer_data.get('amount')
@@ -536,7 +533,29 @@ def edit_investment():
             )
             flash(messages_success['withdraw_cancel_success'].format(edit_type_name), 'success')
 
-    except Exception as e:
+    except Exception:
         flash(messages_failure['internal_server_error'], 'error')
     
     return redirect(request.referrer)
+
+@user_blueprint.route('/card-management',methods=['GET', 'POST'])
+@login_required
+def card_management():
+    account_id = int(session.get("account_id"))
+    if request.method == "GET":
+        account = accounts.find_one({"_id": account_id})
+        user = users.find_one({"_id": int(account["AccountOwner"])})
+        lst_card = [cards.find_one({"_id": int(card_id)}) for card_id in user["Card"]]
+        return render_template("/user/card.html", cards=lst_card)
+
+@user_blueprint.route('/loan-management',methods=['GET', 'POST'])
+def loan_management():
+    pass
+
+@user_blueprint.route('/settings-security',methods=['GET', 'POST'])
+def settings_security():
+    pass
+
+@user_blueprint.route('/other-services',methods=['GET', 'POST'])
+def other_services():
+    pass
