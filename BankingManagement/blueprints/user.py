@@ -538,15 +538,36 @@ def edit_investment():
     
     return redirect(request.referrer)
 
-@user_blueprint.route('/card-management',methods=['GET', 'POST'])
+@user_blueprint.route('/card-management', methods=['GET', 'POST'])
 @login_required
 def card_management():
     account_id = int(session.get("account_id"))
     if request.method == "GET":
         account = accounts.find_one({"_id": account_id})
         user = users.find_one({"_id": int(account["AccountOwner"])})
-        lst_card = [cards.find_one({"_id": int(card_id)}) for card_id in user["Card"]]
-        return render_template("/user/card.html", cards=lst_card)
+        lst_card = []
+        
+        for card_id in list(user["Card"]):
+            pipeline = [
+                {"$match": {"_id": card_id}},  # Ensure we only retrieve the specific card
+                {
+                    "$lookup": {
+                        "from": "card_types",
+                        "localField": "Type",
+                        "foreignField": "_id",
+                        "as": "card_info"
+                    }
+                },
+                {
+                    "$unwind": "$card_info"  # Unwind the card_info list to flatten the result
+                }
+            ]
+
+            result = list(cards.aggregate(pipeline=pipeline))
+            if result:
+                lst_card.append(result[0])  # Append only the first (and expected only) card object
+        
+        return render_template("/user/card.html", cards=lst_card, user=user)
 
 @user_blueprint.route('/loan-management',methods=['GET', 'POST'])
 def loan_management():
