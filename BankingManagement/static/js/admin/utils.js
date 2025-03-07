@@ -1,3 +1,6 @@
+const ID_INDEX = 0
+const OBJECT_NAME_INDEX = 1
+
 window.export_data = function() {
     const exportBtn = document.getElementById("export-btn");
     const data_type = document.getElementById("dataType").value;
@@ -90,123 +93,136 @@ localStorage.setItem("filterCondition", JSON.stringify(filterCondition));
 }
 
 const renderDeleteModal = (id, object_name, data_type) => {
-const delete_modal = document.getElementById("delete_modal");
-const deleteConfirmMessage = document.getElementById("deleteConfirmMessage");
-const deleteForm = document.getElementById("delete_form");
+  const page = localStorage.getItem("admin_page");
+  const delete_modal = document.getElementById("delete_modal");
+  const deleteConfirmMessage = document.getElementById("deleteConfirmMessage");
+  const deleteForm = document.getElementById("delete_form");
+  const page_input = document.createElement("input");
+  page_input.value = page;
+  page_input.name = "current_page";
+  page_input.classList.add('hidden');
 
-deleteConfirmMessage.innerHTML = `Are you sure you want to delete <b style="color:red">${object_name}</b>?`;
-delete_modal.classList.remove("hidden");
-delete_modal.classList.add("flex");
+  deleteConfirmMessage.innerHTML = `Are you sure you want to delete <b style="color:red">${object_name}</b>?`;
+  delete_modal.classList.remove("hidden");
+  delete_modal.classList.add("flex");
 
-deleteForm.action = `/admin/${data_type}/delete/${id}`
-
+  deleteForm.action = `/admin/${data_type}/delete/${id}`
+  deleteForm.appendChild(page_input);
 }
 
-const createActionButton = (row, _id, data_type, object_name) => {
-// UI for action button
-const action_cell = document.createElement("td");
-const view_btn = document.createElement("a");
-const delete_btn = document.createElement("a");
-const edit_btn = document.createElement("a");
-const div = document.createElement("div");
+const generateActionButton = (row, _id, data_type, object_name) => {
+  // UI for action button
+  const action_cell = document.createElement("td");
+  const view_btn = document.createElement("a");
+  const delete_btn = document.createElement("a");
+  const edit_btn = document.createElement("a");
+  const div = document.createElement("div");
 
-const btn_list = [view_btn, delete_btn, edit_btn];
-const icon_list = ["visibility", "delete", "edit"];
-let i = 0;
+  const btn_list = [view_btn, delete_btn, edit_btn];
+  const icon_list = ["visibility", "delete", "edit"];
+  let i = 0;
 
-action_cell.classList.add("border-x", "border-black");
-div.classList.add("flex", "justify-center");
+  action_cell.classList.add("border-x", "border-black");
+  div.classList.add("flex", "justify-center");
 
-btn_list.forEach((btn) => {
-    const span = document.createElement("span");
+  btn_list.forEach((btn) => {
+      const span = document.createElement("span");
 
-    btn.classList.add("flex", "items-center", "justify-center");
-    span.classList.add(
-    "material-symbols-outlined",
-    "hover:bg-gray-500",
-    "rounded",
-    "cursor-pointer"
-    );
+      btn.classList.add("flex", "items-center", "justify-center");
+      span.classList.add(
+      "material-symbols-outlined",
+      "hover:bg-gray-500",
+      "rounded",
+      "cursor-pointer"
+      );
 
-    span.style.fontWeight = "300";
-    span.innerHTML = icon_list[i];
-    btn.appendChild(span);
-    div.appendChild(btn);
+      span.style.fontWeight = "300";
+      span.innerHTML = icon_list[i];
+      btn.appendChild(span);
+      div.appendChild(btn);
 
-    switch (icon_list[i]) {
-    case "visibility":
-        btn.href = `/admin/${data_type}/view/${_id}`;
-        break;
-    case "edit":
-        btn.href = `/admin/${data_type}/edit/${_id}`;
-        break;
-    case "delete":
-        btn.addEventListener("click", () => {
-        renderDeleteModal(_id, object_name, data_type);
-        });
-        break;
-    }
-    i++;
-});
+      switch (icon_list[i]) {
+      case "visibility":
+          btn.href = `/admin/${data_type}/view/${_id}`;
+          break;
+      case "edit":
+          btn.href = `/admin/${data_type}/edit/${_id}`;
+          break;
+      case "delete":
+          btn.addEventListener("click", () => {
+          renderDeleteModal(_id, object_name, data_type);
+          });
+          break;
+      }
+      i++;
+  });
 
-    action_cell.appendChild(div);
-    row.appendChild(action_cell);
+      action_cell.appendChild(div);
+      row.appendChild(action_cell);
 }
 
-    const createStatusCol = (row, isActive) => {
-    const status_cell = document.createElement("td");
-    const div = document.createElement("div");
+const generateTableHeader = (table, lst_field, is_right_table) => {
+  console.log(lst_field);
+  const thead = document.createElement('thead');
+  const tr = document.createElement('tr');
+  lst_field.forEach((field) => {
+    const th = document.createElement('th');
+    th.innerText = field['name'];
+    th.classList.add('admin_cell');
+    tr.appendChild(th);
+  })
 
-    status_cell.classList.add("border-x", "border-black");
-    div.classList.add("flex", "justify-center");
-
-    create_toggle_button(div, isActive);
-    status_cell.appendChild(div);
-    row.appendChild(status_cell);
-}
-
-const createTableHeader = (col_names, table, isFixed, data_type) => {
-  const thead = document.createElement("thead");
-  thead.classList.add("admin_thead");
-  if(col_names.length > 3 || isFixed == true) {
-    col_names.forEach((col_name) => {
-      var th = document.createElement("th");
-      th.classList.add("admin_th"); 
-      th.innerHTML = col_name.name;
-      thead.appendChild(th); 
-    });
-  }else {
-    col_names.forEach((col_name) => {
-      const th = document.createElement("th");
-      th.classList.add("less_admin_th"); 
-      th.innerHTML = col_name.name;
-      thead.appendChild(th); 
-    });
+  if (is_right_table) {
+    const th = document.createElement('th');
+    th.innerText = "Action";
+    th.classList.add('admin_cell');
+    tr.appendChild(th);
   }
 
-  if (!isFixed) {
-    const action_col = document.createElement("th");
+  thead.classList.add('admin_thead');
 
-    action_col.innerHTML = "Action";
-    if(col_names.length > 3) {
-      action_col.classList.add("admin_th");
-    }else {
-      action_col.classList.add("less_admin_th");
-    }  
-    
-    thead.appendChild(action_col);
-
-    // const status_col = document.createElement("th");
-    // status_col.innerHTML = "Status";
-    // if(col_names.length > 3) {
-    //   status_col.classList.add("admin_th");
-    // }else {
-    //   status_col.classList.add("less_admin_th");
-    // }
-    // thead.appendChild(status_col);
-    
-  }
+  thead.appendChild(tr);
   table.appendChild(thead);
+}
+
+const generateTableBody = (table, data_type, lst_field, lst_item, is_right_table) => {
+  const table_body = document.createElement('tbody');
+  let count = 0;
+  let actual_lst_item = [];
+  if (lst_field.length <= 3 && is_right_table) {
+    actual_lst_item = lst_item.slice(0);
+  } else {
+    if(is_right_table) {
+      lst_item.forEach(item => {
+        actual_lst_item.push(item.slice(4));
+      })
+    } else {
+      lst_item.forEach(item => {
+        actual_lst_item.push(item.slice(1, 4));
+      })
+    }
+  }
+  actual_lst_item.forEach((item) => {
+    const tr = document.createElement('tr');
+    for (let i = 0; i < lst_field.length; i++) {
+      const td = document.createElement('td');
+      if (lst_field[i]['isObject']) {
+        generateObjectSign(td);
+      }
+      td.innerText = item[i];
+      td.classList.add('admin_cell');
+      tr.appendChild(td);
+    }
+    if(count % 2 != 0) {
+      tr.classList.add('bg-green-200');
+    }
+    if(is_right_table) {
+      generateActionButton(tr, lst_item[count][ID_INDEX], data_type, lst_item[count][OBJECT_NAME_INDEX])
+    }
+    table_body.appendChild(tr);
+    count++;
+  })
+  table.appendChild(table_body);
 }
 
 const generateObjectSign = (cell) => {
@@ -224,7 +240,7 @@ const generateObjectSign = (cell) => {
     "leading-5",
     "mr-3"
   );
-  cell.insertBefore(icon, cell.firstChild);
+  cell.appendChild(icon);
   cell.classList.add("cursor-pointer", "hover:bg-gray-400");
 }
 
@@ -271,14 +287,15 @@ const addStyle = (element, classes) => {
     classes.split(" ").forEach(function (cls) {
       element.classList.add(cls);
     });
-  }
+}
 
 export {
     generateObjectSign,
     create_toggle_button,
-    createActionButton,
-    createTableHeader,
+    generateActionButton,
     addStyle,
     getFilterCondition,
     renderDeleteModal,
+    generateTableBody,
+    generateTableHeader,
 }

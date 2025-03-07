@@ -6,7 +6,7 @@
 
 {% block content %}
 <div
-  class="z-1000 relative top-0 left-0 h-screen w-screen bg-gradient-to-t from-pink-200 to-purple-400 overflow-y-auto">
+  class="z-1000 relative top-0 left-0 h-screen w-screen bg-gradient-to-br from-green-400 via-lime-300 to-green-700 overflow-y-auto">
   <button
     onclick="goBack()"
     class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
@@ -17,7 +17,7 @@
 
   <div
     class="w-11/12 bg-bg-color absolute left-1/2 -translate-x-1/2 lg:top-1/2 lg:-translate-y-1/2 rounded-xl">
-    <form class="h-full w-full flex lg:flex-row flex-col pb-20" action="{{ url_for('admin.account') }}" method="post">
+    <form class="h-full w-full flex lg:flex-row flex-col pb-20" action="{{ url_for('admin_account.add_account') }}" method="post">
       <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
       <div class="flex flex-1">
         <div class="w-full flex flex-col items-center border-r-2r mt-20">
@@ -67,8 +67,8 @@
             <div class="flex flex-col w-full">
               <label for="role" class="admin_label">Role</label>
               <select id="role" class="admin_input" name="role">
-                {% for role in roles %}
-                <option value="{{role.Value}}">{{role.RoleName}}</option>
+                {% for role in lst_role %}
+                  <option value="{{role._id}}">{{role.RoleName}}</option>
                 {% endfor %}
               </select>
             </div>
@@ -76,8 +76,8 @@
             <div class="flex flex-col w-full">
               <label for="branch" class="admin_label">Branch</label>
               <select id="branch" class="admin_input" name="branch">
-                {% for branch in branches %}
-                <option value="{{branch.BranchName}}">{{branch.BranchName}}</option>
+                {% for branch in lst_branch %}
+                  <option value="{{branch._id}}">{{branch.BranchName}}</option>
                 {% endfor %}
               </select>
             </div>
@@ -87,9 +87,9 @@
                 <h2 class="admin_label">Login Method</h2>
               </div>
               <div class="pl-5 text-white">
-                {% for method in login_methods %}
+                {% for method in lst_login_method %}
                   <div>
-                    <input type="checkbox" value="{{method.Value}}" class="rounded-full" name="loginMethod"/>
+                    <input type="checkbox" value="{{method._id}}" class="rounded-full" name="loginMethod"/>
                     <label>{{method.MethodName}}</label>
                   </div>
                 {% endfor %}
@@ -101,9 +101,9 @@
                 <h2 class="admin_label">Tranfer Method</h2>
               </div>
               <div class="pl-5 text-white">
-                {% for method in transfer_methods %}
+                {% for method in lst_transfer_method %}
                   <div>
-                    <input type="checkbox" value="{{method.Value}}" class="rounded-full" name="transferMethod"/>
+                    <input type="checkbox" value="{{method._id}}" class="rounded-full" name="transferMethod"/>
                     <label>{{method.MethodName}}</label>
                   </div>
                 {% endfor %}

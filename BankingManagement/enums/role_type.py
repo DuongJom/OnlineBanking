@@ -1,6 +1,6 @@
 from enum import Enum
 
 class RoleType(Enum):
-    USER = 0
-    EMPLOYEE = 1
-    ADMIN = 2
+    USER = 1
+    EMPLOYEE = 2
+    ADMIN = 3

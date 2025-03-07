@@ -93,7 +93,23 @@
         @apply h-4/5
     }
 
-    .admin_tr {
-        @apply h-10
+    .admin_left_table {
+        @apply border-2 border-green-700 border-collapse rounded-md sm:fixed z-10 whitespace-nowrap bg-green-200
+    }
+
+    .admin_right_table {
+        @apply flex-1 border-2 border-green-700 border-collapse rounded-md whitespace-nowrap
+    }
+
+    .admin_thead {
+        @apply bg-green-400 h-10
+    }
+
+    .admin_cell {
+        @apply border-x-2 border-green-700 h-12 max-w-60 overflow-hidden px-2
+    }
+
+    .admin_table_wrapper {
+        @apply w-99% flex absolute top-20 overflow-x-auto
     }
 }

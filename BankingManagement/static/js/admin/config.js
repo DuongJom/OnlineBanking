@@ -1,12 +1,15 @@
 export const tableStructure = {
   account: [
-    { key: "Username", name: "Username", isObject: false},
-    { key: "AccountNumber", name: "Account Number", isObject: false },
-    { key: "Branch", name: "Branch", isObject: false },
-    { key: "AccountOwner", name: "Owner", object_key: "Name", isObject: true },
-    { key: "Role", name: "Role", object_key: "RoleName", isObject: false },
-    { key: "TransferMethod", name: "Transfer Method", object_key: "MethodName", isObject: true},
-    { key: "LoginMethod", name: "Login Method", object_key: "MethodName", isObject: true}
+    { name: "Username", isObject: false},
+    { name: "Account Number", isObject: false },
+    { name: "Balance", isObject: false },
+    { name: "Owner ID", isObject: false },
+    { name: "Owner", isObject: true},
+    { name: "Branch ID", isObject: false},
+    { name: "Branch", isObject: true},
+    { name: "Role", isObject: false },
+    { name: "Transfer Method", isObject: false},
+    { name: "Login Method", isObject: false}
   ],
   user: [
     { key: "Name", name: "Name", isObject: false },

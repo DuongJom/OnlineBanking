@@ -1,12 +1,12 @@
-import { tableStructure, identifier } from "./config.js";
-import { createTableHeader, createActionButton } from "./utils.js";
+import { generateTableHeader, generateTableBody, getFilterCondition } from "./utils.js";
+import { tableStructure } from "./config.js";
 
-const getAdminData = (page_no) => {
+const getAdminData = (page_no, data_type) => {
   const filterCondition = localStorage.getItem("filterCondition");
   const filter = filterCondition ? JSON.parse(filterCondition) : {};
   const queryParams = new URLSearchParams({criteria: JSON.stringify(filter)}).toString();
 
-    return fetch(`/admin/account/${page_no}?${queryParams}`, {
+    return fetch(`/admin/${data_type}/${page_no}?${queryParams}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -28,9 +28,40 @@ const getAdminData = (page_no) => {
     });
 };
 
+const renderTable = (data_type, lst_item) => {
+  const tables = document.querySelectorAll("table");
+  tables.forEach((table) => {
+    table.remove();
+  });
 
-const renderTable = (items, data_type) => {
-  
+  document.getElementById('lazyLoading').classList.add('hidden');
+  const table_wrapper = document.getElementById("table_wrapper");
+  table_wrapper.classList.add('admin_table_wrapper');
+  if (tableStructure[data_type].length <= 3) {
+    const table = document.createElement('table');
+    generateTableHeader(table, tableStructure[data_type]);
+    generateTableBody(table, tableStructure[data_type, lst_item]);
+    table_wrapper.appendChild(table);
+    return;
+  }
+  const left_table = document.createElement('table');
+  const right_table = document.createElement('table');
+  left_table.id = "left_table";
+  right_table.id = "right_table";
+  const left_table_structure = tableStructure[data_type].slice(0, 3);
+  const right_table_structure = tableStructure[data_type].slice(3);
+
+  generateTableHeader(left_table, left_table_structure, false);
+  generateTableBody(left_table, data_type, left_table_structure, lst_item, false);
+
+  generateTableHeader(right_table, right_table_structure, true);
+  generateTableBody(right_table, data_type, right_table_structure, lst_item, true);
+
+  left_table.classList.add('admin_left_table');
+  right_table.classList.add('admin_right_table');
+  table_wrapper.appendChild(left_table);
+  table_wrapper.appendChild(right_table);
+  adjustTableMargin();
 }
 
 const goNext = async(data_type) => {
@@ -72,7 +103,7 @@ const decide_button_type = (data_type) => {
 
   if(addBtn != null)
   {
-    addBtn.href = `/admin/${data_type}/add`;
+    addBtn.href = `/admin/${data_type}/new`;
   }
 }
 
@@ -90,27 +121,21 @@ const closeImportForm = () => {
   importForm.classList.add('hidden');
 }
 
-const filter = async(data_type) => {
-  console.log("ok");
+window.filter = async(data_type) => {
   getFilterCondition();
   localStorage.setItem("admin_page", 1);
   try {
     const data = await getAdminData(1, data_type);
     localStorage.setItem("admin_maxPage", data.total_pages);
-    renderTable(data.items, data_type);
+    renderTable(data_type, data.items);
   } catch (error) {
     console.error("There was a problem with loading the items:", error);
   }
 }
 
-const closeDeleteModal = () => {
-  const delete_modal = document.getElementById("delete_modal");
-  delete_modal.classList.add("hidden");
-}
-
 const adjustTableMargin = () => {
-  const table1 = document.getElementById("table1");
-  const table2 = document.getElementById("table2");
+  const table1 = document.getElementById("left_table");
+  const table2 = document.getElementById("right_table");
   if(table1 != null) {
     if (innerWidth >= 540) {
       table2.style.marginLeft = `${table1.offsetWidth - 2}px`;
@@ -122,7 +147,6 @@ const adjustTableMargin = () => {
 
 export {
   getAdminData,
-  closeDeleteModal,
   renderTable,
   goNext,
   goPrevious,
@@ -130,5 +154,4 @@ export {
   decide_button_type,
   openImportForm,
   closeImportForm,
-  filter
 };

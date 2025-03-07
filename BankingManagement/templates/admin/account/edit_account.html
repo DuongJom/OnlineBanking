@@ -12,7 +12,7 @@
             class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
             <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
         </button>
-        <form class="w-3/4 bg-bg-color flex flex-col justify-center items-center py-16 rounded-lg" method="post" action="{{ url_for('admin.edit_account') }}">
+        <form class="w-3/4 bg-bg-color flex flex-col justify-center items-center py-16 rounded-lg" method="post" action="{{ url_for('admin_account.edit_account', id=account._id) }}">
             <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" /> 
             <input type="hidden" value="{{account._id}}" name="account_id" id="account_id"/>
             <div class="w-full flex justify-center">
@@ -37,18 +37,18 @@
                     <div class="flex flex-col mb-4">
                         <label class="admin_label" for="accountOwner">Owner</label>
                         <div id="accountOwner" class="admin_readonly">
-                            <div>{{account.AccountOwner.Name}}</div>
+                            <div>{{account.Owner_name}}</div>
                         </div>
                     </div>
 
                     <div class="flex flex-col mb-4">
                         <label for="role" class="admin_label">Role</label>
                         <select id="role" class="admin_input" name="role" required>
-                            {% for role in roles %}
-                                {% if role.Value == account.Role.Value %}
-                                    <option value="{{role.Value }}" selected>{{ role.RoleName }}</option>
+                            {% for role in lst_role %}
+                                {% if role.RoleName == account.Role_name %}
+                                    <option value="{{role._id}}" selected>{{ role.RoleName }}</option>
                                 {% else %}
-                                    <option value="{{role.Value }}">{{ role.RoleName }}</option>
+                                    <option value="{{role._id}}">{{ role.RoleName }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
@@ -59,8 +59,12 @@
                     <div class="flex flex-col mb-4">
                         <label for="branch" class="admin_label">Branch</label>
                         <select id="branch" class="admin_input" name="branch">
-                          {% for branch in branches %}
-                          <option value="{{branch.BranchName}}">{{branch.BranchName}}</option>
+                          {% for branch in lst_branch %}
+                                {% if branch.BranchName == account.Branch_name %}
+                                    <option value="{{branch._id}}" selected>{{ branch.BranchName }}</option>
+                                {% else %}
+                                    <option value="{{branch._id}}">{{ branch.BranchName }}</option>
+                                {% endif %}
                           {% endfor %}
                         </select>
                     </div>
@@ -70,10 +74,10 @@
                           <h2 class="admin_label">Login Method</h2>
                         </div>
                         <div class="pl-5 text-white">
-                            {% for loginMethod in loginMethods %}
+                            {% for loginMethod in lst_login_method %}
                                 <div>
-                                    <input type="checkbox" value="{{loginMethod.Value}}" class="rounded-full" name="loginMethod"
-                                    {% if loginMethod.Value in login_values %}checked{% endif %}/>
+                                    <input type="checkbox" value="{{loginMethod._id}}" class="rounded-full" name="loginMethod"
+                                    {% if loginMethod.MethodName in account.lst_login_method %}checked{% endif %}/>
                                     <label>{{loginMethod.MethodName}}</label>
                                 </div>
                             {% endfor %}
@@ -85,10 +89,10 @@
                             <h2 class="admin_label">Tranfer Method</h2>
                         </div>
                         <div class="pl-5 text-white">
-                            {% for transferMethod in transferMethods %}
+                            {% for transferMethod in lst_transfer_method %}
                             <div>
-                                <input type="checkbox" value="{{transferMethod.Value}}" class="rounded-full" name="transferMethod"
-                                {% if transferMethod.Value in transfer_values %}checked{% endif %}/>
+                                <input type="checkbox" value="{{transferMethod._id}}" class="rounded-full" name="transferMethod"
+                                {% if transferMethod.MethodName in account.lst_transfer_method %}checked{% endif %}/>
                                 <label>{{transferMethod.MethodName}}</label>
                             </div>
                             {% endfor %}

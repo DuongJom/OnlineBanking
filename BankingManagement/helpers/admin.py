@@ -141,3 +141,88 @@ def generate_export_data(dataType, file_type, filters):
         mime = getMIMETypeValue(MIMEType.EXCEL_XLSX)
 
     return {'mime': mime, 'output': output}
+
+def get_account(id):
+    pipeline = [
+        {
+            "$match": {
+                "_id": id
+            }
+        },
+        # Join với collection login_methods cho LoginMethod
+        {"$lookup": {
+            "from": "login_methods",
+            "localField": "LoginMethod",
+            "foreignField": "_id",
+            "as": "login_method_docs"
+        }},
+        # Join với collection transfer_methods cho TransferMethod
+        {"$lookup": {
+            "from": "transfer_methods",
+            "localField": "TransferMethod",
+            "foreignField": "_id",
+            "as": "transfer_method_docs"
+        }},
+        # Join với collection users cho AccountOwner
+        {"$lookup": {
+            "from": "users",
+            "localField": "AccountOwner",
+            "foreignField": "_id",
+            "as": "owner_doc"
+        }},
+        # Join với collection branches cho Branch
+        {"$lookup": {
+            "from": "branches",
+            "localField": "Branch",
+            "foreignField": "_id",
+            "as": "branch_doc"
+        }},
+        # Join với collection roles cho Role
+        {"$lookup": {
+            "from": "roles",
+            "localField": "Role",
+            "foreignField": "_id",
+            "as": "role_doc"
+        }},
+        
+        # Project kết quả cần thiết
+        {"$project": {
+            "_id": 1,
+            "Username": 1,
+            "AccountNumber": 1,
+            "Balance": 1,
+            "Owner_name": {
+                "$ifNull": [{"$arrayElemAt": ["$owner_doc.Name", 0]}, None]
+            },
+
+            "Branch_name": {
+                "$ifNull": [{"$arrayElemAt": ["$branch_doc.BranchName", 0]}, None]
+            },
+
+            "Role_name": {
+                "$ifNull": [{"$arrayElemAt": ["$role_doc.RoleName", 0]}, None]
+            },
+
+            "lst_login_method": {
+                "$ifNull": [{
+                    "$map": {
+                        "input": "$login_method_docs",
+                        "as": "method",
+                        "in": "$$method.MethodName"
+                    }
+                }, []]
+            },
+
+            "lst_transfer_method": {
+                "$ifNull": [{
+                    "$map": {
+                        "input": "$transfer_method_docs",
+                        "as": "method",
+                        "in": "$$method.MethodName"
+                    }
+                }, []]
+            }
+        }}
+    ]
+    account = dict(next(accounts.aggregate(pipeline)))
+    return account

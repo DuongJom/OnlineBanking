@@ -1165,8 +1165,58 @@ select {
   height: 80%;
 }
 
-.admin_tr {
+.admin_left_table {
+  z-index: 10;
+  border-collapse: collapse;
+  white-space: nowrap;
+  border-radius: 0.375rem;
+  border-width: 2px;
+  --tw-border-opacity: 1;
+  border-color: rgb(56 142 60 / var(--tw-border-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgb(165 214 167 / var(--tw-bg-opacity));
+}
+
+@media (min-width: 540px) {
+  .admin_left_table {
+    position: fixed;
+  }
+}
+
+.admin_right_table {
+  flex: 1 1 0%;
+  border-collapse: collapse;
+  white-space: nowrap;
+  border-radius: 0.375rem;
+  border-width: 2px;
+  --tw-border-opacity: 1;
+  border-color: rgb(56 142 60 / var(--tw-border-opacity));
+}
+
+.admin_thead {
   height: 2.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(102 187 106 / var(--tw-bg-opacity));
+}
+
+.admin_cell {
+  height: 3rem;
+  max-width: 15rem;
+  overflow: hidden;
+  border-left-width: 2px;
+  border-right-width: 2px;
+  --tw-border-opacity: 1;
+  border-color: rgb(56 142 60 / var(--tw-border-opacity));
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.admin_table_wrapper {
+  position: absolute;
+  top: 5rem;
+  display: flex;
+  width: 99%;
+  overflow-x: auto;
 }
 
 .sr-only {
@@ -1291,10 +1341,6 @@ select {
 
 .top-full {
   top: 100%;
-}
-
-.top-28 {
-  top: 7rem;
 }
 
 .z-0 {
@@ -1874,6 +1920,10 @@ select {
   resize: none;
 }
 
+.resize {
+  resize: both;
+}
+
 .list-none {
   list-style-type: none;
 }
@@ -2052,6 +2102,11 @@ select {
   border-bottom-left-radius: 1rem;
 }
 
+.rounded-l-lg {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
 .rounded-l-md {
   border-top-left-radius: 0.375rem;
   border-bottom-left-radius: 0.375rem;
@@ -2060,6 +2115,11 @@ select {
 .rounded-r-2xl {
   border-top-right-radius: 1rem;
   border-bottom-right-radius: 1rem;
+}
+
+.rounded-r-lg {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
 }
 
 .rounded-r-md {
@@ -2108,11 +2168,6 @@ select {
 .border-x {
   border-left-width: 1px;
   border-right-width: 1px;
-}
-
-.border-x-2 {
-  border-left-width: 2px;
-  border-right-width: 2px;
 }
 
 .border-b {
@@ -2179,11 +2234,6 @@ select {
 .border-green-300 {
   --tw-border-opacity: 1;
   border-color: rgb(129 199 132 / var(--tw-border-opacity));
-}
-
-.border-green-700 {
-  --tw-border-opacity: 1;
-  border-color: rgb(56 142 60 / var(--tw-border-opacity));
 }
 
 .border-purple-300 {
@@ -2300,9 +2350,9 @@ select {
   background-color: rgb(165 214 167 / var(--tw-bg-opacity));
 }
 
-.bg-green-400 {
+.bg-green-300 {
   --tw-bg-opacity: 1;
-  background-color: rgb(102 187 106 / var(--tw-bg-opacity));
+  background-color: rgb(129 199 132 / var(--tw-bg-opacity));
 }
 
 .bg-green-50 {
@@ -2372,11 +2422,6 @@ select {
   background-color: rgb(255 249 196 / var(--tw-bg-opacity));
 }
 
-.bg-green-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(129 199 132 / var(--tw-bg-opacity));
-}
-
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
 }
@@ -2387,6 +2432,10 @@ select {
 
 .bg-gradient-to-b {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+}
+
+.bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
 }
 
 .bg-gradient-to-r {
@@ -2403,6 +2452,12 @@ select {
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
+.from-green-400 {
+  --tw-gradient-from: #66bb6a var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(102 187 106 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
 .from-pink-200 {
   --tw-gradient-from: #f48fb1 var(--tw-gradient-from-position);
   --tw-gradient-to: rgb(244 143 177 / 0) var(--tw-gradient-to-position);
@@ -2415,8 +2470,17 @@ select {
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
+.via-lime-300 {
+  --tw-gradient-to: rgb(220 231 117 / 0)  var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), #dce775 var(--tw-gradient-via-position), var(--tw-gradient-to);
+}
+
 .to-blue-500 {
   --tw-gradient-to: #2196f3 var(--tw-gradient-to-position);
+}
+
+.to-green-700 {
+  --tw-gradient-to: #388e3c var(--tw-gradient-to-position);
 }
 
 .to-purple-400 {

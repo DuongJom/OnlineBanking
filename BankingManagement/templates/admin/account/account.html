@@ -11,19 +11,17 @@
             {% include "admin/general/import_result.html" %}
             <div class="mr-14 flex flex-1 items-center justify-end ">
                 
-                <div class="border border-black border-r-0 h-8 w-10 p-1 flex items-center justify-center rounded-l-2xl">
+                <div class="border border-black border-r-0 h-8 w-10 p-1 flex items-center justify-center rounded-l-lg">
                     <span class="material-symbols-outlined">search</span>
                 </div>
-                <input type="text" class="h-8 w-1/3 border-black focus:ring-0 focus:border-black" id="dynamicValue"/>   
-                <select class="h-8 text-sm pe-8 py-0 border border-black focus:ring-0 focus:border-black rounded-r-2xl" id="dynamicKey">
-                    <option selected value="" >Search By</option>
-                    <option value="Username">Username</option>
-                    <option value="Branch.BranchName">Branch</option>
+                <input type="text" class="h-8 w-1/3 border-black focus:ring-0 focus:border-black rounded-r-lg" id="dynamicValue"/>   
+                <select class="hidden" id="dynamicKey">
+                    <option value="Username" selected>Username</option>
                 </select>
             
                 <select 
                 class="h-8 text-sm pe-8 py-0 border border-black focus:ring-0 focus:border-black ml-5 rounded-lg fixedCondition" 
-                name="Role.Value"
+                name="Role"
                 onchange="filter('account')">
                     <option value="" selected >All</option>
                     <option value="2">Admin</option>
@@ -45,51 +43,9 @@
         
         <!-- table -->
        <div id="table_wrapper">
-            <!-- <div class="animate-spin h-10 w-10 rounded-full border-4 border-dotted border-black" id="lazyLoading">
+            <div class="animate-spin h-10 w-10 rounded-full border-4 border-dotted border-black" id="lazyLoading">
 
-            </div> -->
-            <table class="border-2 border-green-700 border-collapse rounded-md sm:fixed z-10 whitespace-nowrap bg-green-200">
-                <thead class="bg-green-400 h-10">
-                    <tr>
-                        <td class="border-x-2 border-green-700">Username</td>
-                        <td class="border-x-2 border-green-700">AccountNumber</td>
-                        <td class="border-x-2 border-green-700">Owner ID</td>
-                    </tr>
-                </thead>
-                <tbody> 
-                    {% for i in range(10) %}
-                    <tr class="admin_tr">
-                        <td class="border-x-2 border-green-700">Dang Huu Hieu</td>
-                        <td class="border-x-2 border-green-700">6546546599</td>
-                        <td class="border-x-2 border-green-700">1</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <table class="flex-1 border-2 border-green-700 border-collapse rounded-md whitespace-nowrap">
-                <thead class="bg-green-400 h-10">
-                    <tr>
-                        <td class="border-x-2 border-green-700">Owner Name</td>
-                        <td class="border-x-2 border-green-700">Phone</td>
-                        <td class="border-x-2 border-green-700">Login Method</td>
-                        <td class="border-x-2 border-green-700">Transfer Method</td>
-                        <td class="border-x-2 border-green-700">Branch Id</td>
-                        <td class="border-x-2 border-green-700">Branch Name</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for i in range(10) %}
-                        <tr class="admin_tr">
-                            <td class="border-x-2 border-green-700">Dang Huu Hieu</td>
-                            <td class="border-x-2 border-green-700">6546546599</td>
-                            <td class="border-x-2 border-green-700">Finger print</td>
-                            <td class="border-x-2 border-green-700">Face ID, Password</td>
-                            <td class="border-x-2 border-green-700">3</td>
-                            <td class="border-x-2 border-green-700">Chi nhanh Mo Cay Nam</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            </div>
        </div>
 
         <!-- pagination -->
