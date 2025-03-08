@@ -191,6 +191,7 @@ def get_account(id):
             "Username": 1,
             "AccountNumber": 1,
             "Balance": 1,
+            "IsDeleted": 1,
             "Owner_name": {
                 "$ifNull": [{"$arrayElemAt": ["$owner_doc.Name", 0]}, None]
             },

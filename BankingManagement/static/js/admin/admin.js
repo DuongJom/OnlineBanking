@@ -12,6 +12,8 @@ import {
 document.addEventListener("DOMContentLoaded", async () => {
   const dataType = document.getElementById("dataType").value;
   const dynamicValue = document.getElementById("dynamicValue");
+  const openImportFormBtn = document.getElementById("openImportFormButton");
+  const closeImportFormBtn = document.getElementById("closeImportFormButton");
   let timeout = null;
   window.addEventListener("resize", adjustTableMargin);
   localStorage.setItem("admin_page", 1);
@@ -27,6 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById('cancel-btn').addEventListener('click', () => {
     document.getElementById('delete_modal').classList.add('hidden');
   })
+
   dynamicValue.addEventListener('keyup', function () {
     clearTimeout(timeout);
 
@@ -34,5 +37,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       filter(dataType);
     }, 1000);
   });
+
+  openImportFormBtn.addEventListener("click", () => openImportForm());
+  closeImportFormBtn.addEventListener("click", () => closeImportForm());
+
 });
  

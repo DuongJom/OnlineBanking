@@ -1,10 +1,12 @@
-from flask import Blueprint, request, jsonify, render_template, flash, redirect, session
+from flask import Blueprint, request, jsonify, render_template, flash, redirect, session, url_for
 import json
+import pandas as pd
+from io import BytesIO
 
-from helpers.helpers import login_required, issue_new_card, get_max_id, generate_login_info, send_email
-from helpers.admin import get_account
+from helpers.helpers import login_required, issue_new_card, get_max_id, generate_login_info, send_email, get_file_extension
+from helpers.admin import get_account, create_accounts
 from models import database, card as model_card, user, account
-from enums import deleted_type, collection, card_type
+from enums import deleted_type, collection, card_type, file_type
 from message import messages_success, messages_failure
 from app import app, mail
 
@@ -257,7 +259,50 @@ def edit_account(id):
                                lst_login_method = lst_login_method,
                                lst_transfer_method = lst_transfer_method,
                                lst_role = lst_role)
-        
+    try:
+        log_in_id = int(session.get("account_id"))
+        new_role = int(request.form['role'])
+        new_branch = int(request.form['branch'])
+        lst_new_login_method = [int(method) for method in request.form.getlist('loginMethod')]
+        lst_new_transfer_method = [int(method) for method in request.form.getlist('transferMethod')]
+        new_status = int(request.form['status'])
+
+        accounts.update_one(
+            {'_id': id},
+            {"$set": {
+                "Role": new_role,
+                "LoginMethod": lst_new_login_method,
+                "TransferMethod": lst_new_transfer_method,
+                "Branch": new_branch,
+                "IsDeleted": new_status,
+                "ModifiedBy": log_in_id
+            }}
+        )
+
+        flash(messages_success["update_success"].format("Account"), 'success')
+    except Exception:
+        flash(messages_failure['internal_error'], 'error')
+    return redirect(url_for("admin_account.admin_account", page_no = 1))
+
+@admin_account_blueprint.route('/admin/account/import', methods=['POST'])
+@login_required
+def import_data(data_type):
+    file = request.files['file']
+    ext = get_file_extension(file.filename)
+
+    if ext == file_type.FileType.CSV.value:
+        df = pd.read_csv(BytesIO(file.read()))
+    elif ext == file_type.FileType.XLSX.value:
+        df = pd.read_excel(BytesIO(file.read()), engine='openpyxl')     
+         
+    data = df.to_dict(orient='records')
+    res = None
+    res = create_accounts(data)
+    return jsonify(res) 
+
+
+
+            
     
 
 

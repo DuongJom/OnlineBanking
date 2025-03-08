@@ -8,6 +8,7 @@
         <span class="ms-3 text-sm font-bold text-white dark:text-gray-300" id="status_text">Active</span>
     </label>
     {% else %}
+    <div>{{account.IsDeleted}}</div>
     <label class="inline-flex items-center me-5 cursor-pointer" onclick="change_status_value(event)">
         <input type="hidden" value="{{ account.IsDeleted }}" name="status" id="status_input"/>
         <input type="checkbox" class="sr-only peer" id="status_checkbox" value="{{ account.IsDeleted }}"/>
