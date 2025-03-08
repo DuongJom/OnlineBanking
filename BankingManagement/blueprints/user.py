@@ -22,6 +22,7 @@ users = db[CollectionType.USERS.value]
 bills = db[CollectionType.BILLS.value]
 investments = db[CollectionType.INVESTMENTS_SAVINGS.value]
 cards = db[CollectionType.CARDS.value]
+loans = db[CollectionType.LOANS.value]
 
 user_blueprint = Blueprint('user', __name__)
 
@@ -610,9 +611,12 @@ def unlock_card(id):
     finally:
         return redirect(url_for("user.card_management"))
 
-@user_blueprint.route('/loan-management',methods=['GET', 'POST'])
+@user_blueprint.route('/loan-management',methods=['GET'])
 def loan_management():
-    pass
+    account_id = int(session.get("account_id"))
+    account = accounts.find_one({"_id": account_id})
+    lst_loan = list(loans.find({"Owner": int(account["AccountOwner"])}))
+    return render_template("/user/loan.html", loans=lst_loan)
 
 @user_blueprint.route('/settings-security',methods=['GET', 'POST'])
 def settings_security():

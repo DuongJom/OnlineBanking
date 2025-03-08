@@ -62,5 +62,9 @@ def format_card_number(card_number):
         return f"**** **** **** {card_number_str[-4:]}"
     return card_number_str
 
+@app.template_filter('format_id')
+def format_id(id, length):
+    return str(id).zfill(length)
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -20,3 +20,4 @@ class CollectionType(Enum):
     TRANSFER_METHODS = 'transfer_methods'
     USERS = 'users'
     WORKING_DAY_INFOS = 'working_day_infos'
+    LOANS = 'loans'
