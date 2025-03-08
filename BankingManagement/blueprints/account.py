@@ -5,7 +5,7 @@ from itsdangerous import URLSafeTimedSerializer
 
 from models import account, user, card as model_card , database
 from message import messages_success, messages_failure
-from helpers import issue_new_card, get_token, send_email, login_required, get_max_id
+from helpers.helpers import issue_new_card, get_token, send_email, login_required, get_max_id
 from enums.role_type import RoleType
 from enums.card_type import CardType
 from enums.collection import CollectionType

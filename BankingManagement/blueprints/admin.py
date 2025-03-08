@@ -3,7 +3,7 @@ from bson import ObjectId
 from datetime import datetime
 
 from models import database
-from helpers import login_required
+from helpers.helpers import login_required
 
 admin_blueprint = Blueprint('admin', __name__)   
 
@@ -148,6 +148,3 @@ def admin_news():
 def import_data():
     if request.method == 'GET':
         return render_template('admin/general/import.html')
-
-
-
