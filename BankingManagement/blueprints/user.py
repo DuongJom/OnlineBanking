@@ -1,6 +1,6 @@
 import time
 import random
-from flask import Blueprint, render_template, redirect, flash, session, request
+from flask import Blueprint, render_template, redirect, flash, url_for, session, request
 from datetime import datetime as dt
 
 from models import database, transaction, investment as investmnt
@@ -12,6 +12,7 @@ from enums.investment import InvestmentType
 from enums.currency import CurrencyType
 from enums.investment_status import InvestmentStatus
 from enums.collection import CollectionType
+from enums.deleted_type import DeletedType
 from app import app, mail
 
 db = database.Database().get_db()
@@ -549,7 +550,7 @@ def card_management():
         
         for card_id in list(user["Card"]):
             pipeline = [
-                {"$match": {"_id": card_id}},  # Ensure we only retrieve the specific card
+                {"$match": {"_id": card_id}},
                 {
                     "$lookup": {
                         "from": "card_types",
@@ -559,15 +560,55 @@ def card_management():
                     }
                 },
                 {
-                    "$unwind": "$card_info"  # Unwind the card_info list to flatten the result
+                    "$unwind": "$card_info"
                 }
             ]
 
             result = list(cards.aggregate(pipeline=pipeline))
             if result:
-                lst_card.append(result[0])  # Append only the first (and expected only) card object
+                lst_card.append(result[0])
         
         return render_template("/user/card.html", cards=lst_card, user=user)
+    
+@user_blueprint.route('/lock-card/<id>', methods=['GET'])
+@login_required
+def lock_card(id):
+    try:
+        cards.update_one(
+            { "_id": int(id)},
+            {
+                "$set": {
+                    "IsDeleted": DeletedType.DELETED.value,
+                    "ModifiedBy": int(session.get("account_id")),
+                    "ModifiedDate": dt.now()
+                }
+            }
+        )
+        flash(messages_success["locking_card_success"], "success")
+    except Exception:
+        flash(messages_failure["internal_server_error"], "error")
+    finally:
+        return redirect(url_for("user.card_management"))
+    
+@user_blueprint.route('/unlock-card/<id>', methods=['GET'])
+@login_required
+def unlock_card(id):
+    try:
+        cards.update_one(
+            { "_id": int(id)},
+            {
+                "$set": {
+                    "IsDeleted": DeletedType.AVAILABLE.value,
+                    "ModifiedBy": int(session.get("account_id")),
+                    "ModifiedDate": dt.now()
+                }
+            }
+        )
+        flash(messages_success["unlocking_card_success"], "success")
+    except Exception:
+        flash(messages_failure["internal_server_error"], "error")
+    finally:
+        return redirect(url_for("user.card_management"))
 
 @user_blueprint.route('/loan-management',methods=['GET', 'POST'])
 def loan_management():

@@ -38,12 +38,16 @@
                     </div>
                     <div class="flex justify-end">
                         {% if card.IsDeleted == 0 %}
-                        <button card-id="{{card._id}}" class="flex flex-row justify-center items-center bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600 space-x-1">
+                        <button id="{{card._id}}" onclick="window.location.href='/lock-card/{{card._id}}'" type="submit"
+                            class="flex flex-row justify-center items-center bg-red-500 text-white 
+                                px-2 py-1 rounded-lg hover:bg-red-600 space-x-1">
                             <img src="{{ url_for('static', filename='img/lock.png') }}" class="w-8 h-8 rounded-full">
                             <span>Lock</span>
                         </button>
                         {% else %}
-                        <button card-id="{{card._id}}" class="flex flex-row justify-center items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 space-x-1">
+                        <button id="{{card._id}}" onclick="window.location.href='/unlock-card/{{card._id}}'" type="submit"
+                            class="flex flex-row justify-center items-center bg-green-500 text-white 
+                                px-2 py-1 rounded-lg hover:bg-green-600 space-x-1">
                             <img src="{{ url_for('static', filename='img/unlock.png') }}" class="w-8 h-8 rounded-full">
                             <span>Unlock</span>
                         </button>

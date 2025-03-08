@@ -27,5 +27,7 @@ messages_success = {
     'transfer_money_success': 'Transfer money successfully!',
     'payment_bill_success': 'Payment is processed successfully!',
     'investment_savings_created_success': 'Investment/Savings is created successfully!',
-    'withdraw_cancel_success': '{0} investment successfully!'
+    'withdraw_cancel_success': '{0} investment successfully!',
+    'locking_card_success': 'Your card is locked successfully!',
+    'unlocking_card_success': 'Your card is unlocked successfully! '
 }
