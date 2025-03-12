@@ -28,7 +28,7 @@
                 <td class="p-4">{{loan._id|format_id(6)}}</td>
                 <td class="p-4">{{loan.Amount|currency_format}}</td>
                 <td class="p-4">{{loan.InterestRate}}%</td>
-                <td class="p-4">{{loan.DueDate|date('%d/%m/%Y')}}</td>
+                <td class="p-4">{{loan.DueDate|format_date('%d/%m/%Y')}}</td>
                 {% if loan.Status == 0 %}
                 <td class="p-4"><span class="text-green-600">Active</span></td>
                 {% else %}

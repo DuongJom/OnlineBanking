@@ -3,7 +3,7 @@ from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from init_app import init
 from init_data import initialize_data
-from filters import currency_format, datetime_format, date_format, strip, format_date, format_card_number, format_id
+from filters import currency_format, datetime_format, date_format, strip, format_date, format_card_number, format_id, currency_to_text
 
 app = Flask(__name__)
 app = init(app)
@@ -29,6 +29,7 @@ app.jinja_env.filters['strip'] = strip
 app.jinja_env.filters['format_date'] = format_date
 app.jinja_env.filters['format_card_number'] = format_card_number
 app.jinja_env.filters['format_id'] = format_id
+app.jinja_env.filters['currency_to_text'] = currency_to_text
 
 if __name__ == '__main__':
     app.run(debug=True)

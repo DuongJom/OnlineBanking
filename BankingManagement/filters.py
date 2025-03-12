@@ -1,4 +1,5 @@
 from datetime import datetime as dt
+from enums.currency import CurrencyType
 
 MAX_CARD_NUMBER_DIGITS = 14
 
@@ -44,3 +45,15 @@ def format_card_number(card_number):
 # Filter to format ID (padded with zeros)
 def format_id(id, length):
     return str(id).zfill(length)
+
+# Filter to convert currency value to text
+def currency_to_text(value):
+    value = int(value)
+    if value == CurrencyType.VND.value:
+        return CurrencyType.VND.name
+    elif value == CurrencyType.EUR.value:
+        return CurrencyType.EUR.name
+    elif value == CurrencyType.USD.value:
+        return CurrencyType.USD.name
+    else:
+        return ""

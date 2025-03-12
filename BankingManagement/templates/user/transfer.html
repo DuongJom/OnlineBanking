@@ -21,13 +21,7 @@
                 <span class="font-medium">Balance:</span>
                 <span class="text-red-500 font-semibold">
                     <span>{{ account.Balance | currency_format }}</span>
-                    {% if account.Currency == 0 %} 
-                    <sup>VND</sup>
-                    {% elif account.Currency == 1 %}
-                    <sup>USD</sup>
-                    {% elif account.Currency == 2 %}
-                    <sup>EUR</sup>
-                    {% endif %}
+                    <sup>{{ account.Currency|currency_to_text}}</sup>
                 </span>
             </div>
         </div>
