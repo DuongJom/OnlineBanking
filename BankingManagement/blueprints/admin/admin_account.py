@@ -133,94 +133,101 @@ def add_account():
                                lst_role = lst_role,
                                lst_branch = lst_branch,
                                is_hidden=True)
-    log_in_id = session.get("account_id")
-    card_info = issue_new_card()
-    country = request.form['country']
-    city = request.form['city']
-    distinct = request.form['district']
-    ward = request.form['ward']
-    street = request.form['street']
-    address = f'{street}, {ward}, {distinct}, {city}, {country}'
-    role = request.form['role']
-    branch = request.form['branch']
-    name = request.form.get('name')
-    sex = request.form.get('gender')
-    phone = request.form.get('phone')
-    email = request.form.get('email') 
-    transfer_method_ids = [int(id) for id in request.form.getlist('transferMethod') if id.isdigit()]
-    phone = request.form['phone']
-    login_method_ids = [int(id) for id in request.form.getlist('loginMethod') if id.isdigit()]
-    email = request.form['email']
+    try:
+        log_in_id = session.get("account_id")
+        card_info = issue_new_card()
+        country = request.form['country']
+        city = request.form['city']
+        distinct = request.form['district']
+        ward = request.form['ward']
+        street = request.form['street']
+        address = f'{street}, {ward}, {distinct}, {city}, {country}'
+        role = request.form['role']
+        branch = request.form['branch']
+        name = request.form.get('name')
+        sex = request.form.get('gender')
+        phone = request.form.get('phone')
+        email = request.form.get('email') 
+        transfer_method_ids = [int(id) for id in request.form.getlist('transferMethod') if id.isdigit()]
+        phone = request.form['phone']
+        login_method_ids = [int(id) for id in request.form.getlist('loginMethod') if id.isdigit()]
+        email = request.form['email']
 
-    error_message = None
-    is_exist_email = True if users.find_one({"Email": email}) else False
-    is_exist_phone = True if users.find_one({"Phone": phone}) else False
-    
-    if is_exist_email:
-        error_message = messages_failure['email_existed'].format(email) 
-    elif is_exist_phone:
-        error_message = messages_failure['phone_existed'].format(phone)
+        error_message = None
+        is_exist_email = True if users.find_one({"Email": email}) else False
+        is_exist_phone = True if users.find_one({"Phone": phone}) else False
         
-    if error_message:
-        flash(error_message, 'error')
-        return redirect("/admin/account/new")
-    
-    new_card_id = get_max_id(database=db, collection_name=collection.CollectionType.CARDS.value)
-    new_card = model_card.Card(
-        id=new_card_id, 
-        cardNumber=card_info['cardNumber'], 
-        cvv=card_info['cvvNumber'], 
-        type=card_type.CardType.CREDITS.value,
-        createdBy = log_in_id
-    )
+        if is_exist_email:
+            error_message = messages_failure['email_existed'].format(email) 
+        elif is_exist_phone:
+            error_message = messages_failure['phone_existed'].format(phone)
+            
+        if error_message:
+            flash(error_message, 'error')
+            return redirect("/admin/account/new")
+        
+        new_card_id = get_max_id(database=db, collection_name=collection.CollectionType.CARDS.value)
+        new_card = model_card.Card(
+            id=new_card_id, 
+            cardNumber=card_info['cardNumber'], 
+            cvv=card_info['cvvNumber'], 
+            type=card_type.CardType.CREDITS.value,
+            createdBy = log_in_id
+        )
 
-    new_user_id = get_max_id(database=db, collection_name=collection.CollectionType.USERS.value)
-    new_user = user.User(
-        id=new_user_id, 
-        name=name, 
-        sex=int(sex), 
-        address=address.strip(), 
-        phone=phone, 
-        email=email, 
-        card=[new_card_id,],
-        createdBy = log_in_id
-    )
+        new_user_id = get_max_id(database=db, collection_name=collection.CollectionType.USERS.value)
+        new_user = user.User(
+            id=new_user_id, 
+            name=name, 
+            sex=int(sex), 
+            address=address.strip(), 
+            phone=phone, 
+            email=email, 
+            card=[new_card_id,],
+            createdBy = log_in_id
+        )
 
-    login_info = generate_login_info(email, phone)
-    new_account_id = get_max_id(database=db, collection_name=collection.CollectionType.ACCOUNTS.value)
-    new_account = account.Account(
-        id=new_account_id,
-        accountNumber=card_info['accountNumber'], 
-        branch=int(branch), 
-        user=new_user_id, 
-        username=login_info['Username'], 
-        password=login_info['Password'], 
-        role=int(role), 
-        transferMethod=transfer_method_ids, 
-        loginMethod=login_method_ids,
-        createdBy = log_in_id
-    )
-    cards.insert_one(new_card.to_json())
-    users.insert_one(new_user.to_json())
-    accounts.insert_one(new_account.to_json())
+        login_info = generate_login_info(email, phone)
+        new_account_id = get_max_id(database=db, collection_name=collection.CollectionType.ACCOUNTS.value)
+        new_account = account.Account(
+            id=new_account_id,
+            accountNumber=card_info['accountNumber'], 
+            branch=int(branch), 
+            user=new_user_id, 
+            username=login_info['Username'], 
+            password=login_info['Password'], 
+            role=int(role), 
+            transferMethod=transfer_method_ids, 
+            loginMethod=login_method_ids,
+            createdBy = log_in_id
+        )
+        cards.insert_one(new_card.to_json())
+        users.insert_one(new_user.to_json())
+        accounts.insert_one(new_account.to_json())
 
-    html = render_template('email/send_login_info.html', username = login_info['Username'], password = login_info['Password'])
-    attachments = [{'path': './static/img/bank.png', 'filename':'bank.png', 'mime_type': 'image/png'}]
-    subject = "Send login information"
-    send_email(app=app, mail=mail, recipients=[email], subject=subject, html=html, attachments=attachments)
-    flash(messages_success['register_success'].format(email), 'success')
+        html = render_template('email/send_login_info.html', username = login_info['Username'], password = login_info['Password'])
+        attachments = [{'path': './static/img/bank.png', 'filename':'bank.png', 'mime_type': 'image/png'}]
+        subject = "Send login information"
+        send_email(app=app, mail=mail, recipients=[email], subject=subject, html=html, attachments=attachments)
+        flash(messages_success['register_success'].format(email), 'success')
+    except Exception:
+        flash(messages_failure['internal_error'], 'error')
     return redirect('/admin/account/new') 
 
 @admin_account_blueprint.route('/admin/account/delete/<int:id>', methods=['POST'])
 @login_required
 def delete_account(id):
-    account = accounts.find_one({"_id": id})
-    current_page = request.form["current_page"]
-    accounts.update_one(
-        {'_id': id},
-        {"$set": {"IsDeleted": deleted_type.DeletedType.DELETED.value}
-    })      
-    flash(messages_success['delete_success'].format(account["Username"]), 'success')    
+    try:
+        account = accounts.find_one({"_id": id})
+        current_page = request.form["current_page"]
+        accounts.update_one(
+            {'_id': id},
+            {"$set": {"IsDeleted": deleted_type.DeletedType.DELETED.value}
+        })      
+        flash(messages_success['delete_success'].format(account["Username"]), 'success')  
+    except Exception:
+          flash(messages_failure['internal_error'], 'error')
+          return redirect('/admin/account/1')
     return redirect(f'/admin/account/{current_page}')
 
 @admin_account_blueprint.route('/admin/account/edit/<int:id>', methods=['GET','POST'])
@@ -262,6 +269,7 @@ def edit_account(id):
         flash(messages_success["update_success"].format("Account"), 'success')
     except Exception:
         flash(messages_failure['internal_error'], 'error')
+        return redirect(f'admin/account/edit/{id}')
     return redirect(url_for("admin_account.admin_account", page_no = 1))
 
 @admin_account_blueprint.route('/admin/account/import', methods=['POST'])
