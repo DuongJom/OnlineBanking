@@ -1,13 +1,17 @@
 const ID_INDEX = 0
 const OBJECT_NAME_INDEX = 1
 
+function formatId(id, length) {
+  return String(id).padStart(length, '0');
+}
+
 window.export_data = function() {
     const exportBtn = document.getElementById("export-btn");
     const data_type = document.getElementById("dataType").value;
     const file_type = exportBtn.value;
     const csrfToken = document.querySelector('input[name="csrf_token"]').value;
 
-    fetch(`/admin/export-data/${data_type}`, {
+    fetch(`/admin/export_data/${data_type}`, {
         method: 'POST',
         headers: {
         "Content-Type": "application/json",
@@ -209,7 +213,11 @@ const generateTableBody = (table, data_type, lst_field, lst_item, is_right_table
       if (lst_field[i]['isObject']) {
         generateObjectSign(td);
       }
-      td.innerText = item[i];
+      if (lst_field[i]['name'].includes("ID") && item[i] != null) {
+        td.innerText = formatId(item[i], 5);
+      }else {
+        td.appendChild(document.createTextNode(item[i]));
+      }
       td.classList.add('admin_cell');
       tr.appendChild(td);
     }
@@ -241,7 +249,7 @@ const generateObjectSign = (cell) => {
     "mr-3"
   );
   cell.appendChild(icon);
-  cell.classList.add("cursor-pointer", "hover:bg-gray-400");
+  cell.classList.add("cursor-pointer", "hover:bg-light-green-200");
 }
 
 const create_toggle_button = (parent, isActive) => {

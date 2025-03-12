@@ -1,5 +1,6 @@
 from enum import Enum
 
 class FileType(Enum):
-    CSV = "csv"
-    XLSX = "xlsx"
+    CSV = 0
+    JSON = 1
+    XLSX = 2

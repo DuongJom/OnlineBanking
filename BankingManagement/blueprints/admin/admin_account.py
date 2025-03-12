@@ -1,10 +1,11 @@
-from flask import Blueprint, request, jsonify, render_template, flash, redirect, session, url_for
+from flask import Blueprint, request, jsonify, render_template, flash, redirect, session, url_for, send_file
 import json
 import pandas as pd
 from io import BytesIO
+import datetime
 
 from helpers.helpers import login_required, issue_new_card, get_max_id, generate_login_info, send_email, get_file_extension
-from helpers.admin import get_account, create_accounts
+from helpers.admin import get_account, create_accounts, generate_export_data
 from models import database, card as model_card, user, account
 from enums import deleted_type, collection, card_type, file_type
 from message import messages_success, messages_failure
@@ -137,7 +138,7 @@ def admin_account(page_no):
 @login_required
 def view_account(id):
     account = get_account(id)
-    return render_template('admin/account/view_account.html', account = account)
+    return render_template('admin/account/view_account.html', account = account, is_hidden=True)
     
 @admin_account_blueprint.route('/admin/account/new', methods=['GET', 'POST'])
 @login_required
@@ -151,7 +152,8 @@ def add_account():
                                lst_transfer_method = lst_transfer_method,
                                lst_login_method = lst_login_method,
                                lst_role = lst_role,
-                               lst_branch = lst_branch)
+                               lst_branch = lst_branch,
+                               is_hidden=True)
     log_in_id = session.get("account_id")
     card_info = issue_new_card()
     country = request.form['country']
@@ -258,7 +260,8 @@ def edit_account(id):
                                lst_branch = lst_branch,
                                lst_login_method = lst_login_method,
                                lst_transfer_method = lst_transfer_method,
-                               lst_role = lst_role)
+                               lst_role = lst_role,
+                               is_hidden=True)
     try:
         log_in_id = int(session.get("account_id"))
         new_role = int(request.form['role'])
@@ -286,7 +289,7 @@ def edit_account(id):
 
 @admin_account_blueprint.route('/admin/account/import', methods=['POST'])
 @login_required
-def import_data(data_type):
+def import_data():
     file = request.files['file']
     ext = get_file_extension(file.filename)
 
@@ -300,7 +303,13 @@ def import_data(data_type):
     res = create_accounts(data)
     return jsonify(res) 
 
-
+@admin_account_blueprint.route('/admin/export_data/<dataType>', methods=['POST'])
+@login_required
+def export_data(dataType):
+    filters = request.json.get('filter')
+    file_type = request.json.get('file_type')
+    data = generate_export_data(dataType=dataType, file_type=file_type, filters=filters)
+    return send_file(data['output'], as_attachment=True, download_name="", mimetype=data['mime'])
 
             
     

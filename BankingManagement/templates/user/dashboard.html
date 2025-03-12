@@ -8,20 +8,14 @@
 <!-- Main Content -->
 <div class="container mx-auto mt-10 px-4">
     <!-- User Information Section -->
-    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Welcome, {{ account.AccountOwner.Name }}</h2>
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-5">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Welcome, {{ owner.Name }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <h3 class="text-lg font-medium text-gray-700">Account Balance</h3>
                 <p class="flex flex-row text-3xl font-bold text-green-600 items-center space-x-2">
                     <span>{{ account.Balance|currency_format }}</span>
-                    {% if account.Currency == 0 %}
-                    <span>VND</span>
-                    {% elif account.Currency == 1 %}
-                    <span>USD</span>
-                    {% elif account.Currency == 2 %}
-                    <span>EUR</span>
-                    {% endif %}
+                    <span>{{ account.Currency|currency_to_text }}</span>
                 </p>
             </div>
             <div>
@@ -32,42 +26,39 @@
     </div>
 
     <!-- Recent Transactions -->
-    <div class="bg-white shadow-lg rounded-lg p-2 overflow-y-auto h-96">
-        <h3 class="text-2xl font-semibold text-gray-800 mb-6">Recent Transactions</h3>
-        <div class="overflow-x-auto">
+    <div class="bg-white shadow-lg rounded-lg p-2">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">History Transactions</h3>
+        <!-- Scrollable container for table body -->
+        <div class="overflow-y-auto max-h-96">
             <table class="min-w-full table-auto border-collapse">
-                <thead>
-                    <tr class="bg-gray-200 text-gray-700">
-                        <th class="px-6 py-3 text-left">Date</th>
-                        <th class="px-6 py-3 text-left">Description</th>
-                        <th class="px-6 py-3 text-left">Amount</th>
-                        <th class="px-6 py-3 text-left">Balance</th>
+                <thead class="bg-green-300 text-white sticky top-0 z-10">
+                    <tr>
+                        <th class="px-6 py-3 text-center border-2">Date</th>
+                        <th class="px-6 py-3 text-center border-2">Source Account</th>
+                        <th class="px-6 py-3 text-center border-2">Destination Account</th>
+                        <th class="px-6 py-3 text-center border-2">Description</th>
+                        <th class="px-6 py-3 text-center border-2">Amount</th>
+                        <th class="px-6 py-3 text-center border-2">Balance</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for transaction in transactions_list %}
-                    <tr class="bg-gray-50 text-gray-700">
-                        <td class="border px-6 py-4">{{ transaction.date|datetime_format }}</td>
-                        <td class="border px-6 py-4">{{ transaction.description }}</td>
-                        <td class="border px-6 py-4 space-x-1 {{ 'text-red-600' if transaction.amount < 0 else 'text-green-600' }}">
-                            <span>{{ transaction.amount|currency_format }}</span>
-                            {% if account.Currency == 0 %} 
-                            <span>VND</span>
-                            {% elif account.Currency == 1 %}
-                            <span>USD</span>
-                            {% elif account.Currency == 2 %}
-                            <span>EUR</span>
+                    <tr class="bg-gray-50 text-gray-700 text-sm border-2 hover:bg-gray-300">
+                        <td class="border px-6 py-3">{{ transaction.date|datetime_format }}</td>
+                        <td class="border px-6 py-3">{{ transaction.info.SenderId }}</td>
+                        <td class="border px-6 py-3">{{ transaction.info.ReceiverId }}</td>
+                        <td class="border px-6 py-3">{{ transaction.description }}</td>
+                        <td class="border px-6 py-3 space-x-1 {{ 'text-red-600' if transaction.info.ReceiverId != account.AccountNumber else 'text-green-600' }}">
+                            {% if transaction.info.ReceiverId != account.AccountNumber %}
+                            <span>-{{ transaction.amount|currency_format }}</span>
+                            {% else %}
+                            <span>+{{ transaction.amount|currency_format }}</span>
                             {% endif %}
+                            <span>{{ account.Currency|currency_to_text }}</span>
                         </td>
-                        <td class="border px-6 py-4 flex flex-row space-x-1">
+                        <td class="border px-6 py-3 flex flex-row space-x-1">
                             <span>{{ transaction.balance|currency_format }}</span>
-                            {% if account.Currency == 0 %}
-                            <span>VND</span>
-                            {% elif account.Currency == 1 %}
-                            <span>USD</span>
-                            {% elif account.Currency == 2 %}
-                            <span>EUR</span>
-                            {% endif %}
+                            <span>{{ account.Currency|currency_to_text }}</span>
                         </td>
                     </tr>
                     {% endfor %}

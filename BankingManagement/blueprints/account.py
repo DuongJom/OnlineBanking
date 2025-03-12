@@ -25,7 +25,7 @@ account_blueprint = Blueprint('account', __name__)
 @account_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('general/login.html')
+        return render_template('general/login.html', is_hidden=True)
     
     session.clear()
     username = request.form.get("username")
@@ -63,7 +63,8 @@ def register():
         branch_list = branches.find()
         return render_template('general/register.html', 
                                branch_list=branch_list, 
-                               card_info=card_info)
+                               card_info=card_info,
+                               is_hidden = True)
     
     # get the data from post request
     username = request.form['username']
@@ -278,7 +279,7 @@ def reset_password(token):
 @login_required
 def change_password():
     if request.method == "GET":
-        return render_template("general/change_password.html")
+        return render_template("general/change_password.html", is_hidden=True)
         
     current_password = request.form.get("current_password")
     new_password = generate_password_hash(request.form.get("new_password"))

@@ -1,18 +1,17 @@
 import os
 import random
 import requests
-import hashlib
-
+import pandas as pd
+import ast
 from flask import redirect, session
 from functools import wraps
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
 from dotenv import load_dotenv
+import hashlib
 from models import database
 
-
 from enums.mime_type import MIMEType
-
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -186,6 +185,11 @@ def get_file_extension(file_name):
     return file_name.split('.')[1] if len(file_name.split('.')) > 0 else None
 
 def get_max_id(database, collection_name):
+    lst_collection_name = list(database.list_collection_names())
+
+    if not collection_name in lst_collection_name:
+        return 1
+    
     collection = database[collection_name]
     lst_data = list(collection.find({}))
 
@@ -200,3 +204,34 @@ def get_max_id(database, collection_name):
             return int(lst_data[i-1]['_id']) + 1
     
     return int(lst_data[-1]['_id']) + 1
+
+def get_file_extension(file_name):
+    return file_name.split('.')[1] if len(file_name.split('.')) > 0 else None
+
+def flatten_nested_columns(df, nested_columns):
+    """
+    Flattens nested columns in a DataFrame.
+    
+    Parameters:
+    df (pd.DataFrame): The input DataFrame with potential nested columns.
+    nested_columns (list): List of column names that contain nested data (e.g., stringified dictionaries).
+    
+    Returns:
+    pd.DataFrame: The DataFrame with flattened nested columns.
+    """
+    for col in nested_columns:
+        def parse_column(value):
+            if isinstance(value, (dict, list)):
+                return value
+            try:
+                return ast.literal_eval(value)
+            except (ValueError, SyntaxError):
+                return value
+
+        df[col] = df[col].apply(parse_column)
+        nested_df = pd.json_normalize(df[col])
+        nested_df = nested_df.add_prefix(f'{col}.')
+        df = df.drop(columns=[col])
+        df = pd.concat([df, nested_df], axis=1)
+    
+    return df

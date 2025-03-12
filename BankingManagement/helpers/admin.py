@@ -2,14 +2,10 @@ from flask import session
 import io
 import pandas as pd
 
-from enums.data_type import DataType
-from enums.sex_type import SexType
-from enums.role_type import RoleType
-from enums.card_type import CardType
-from enums.mime_type import MIMEType
+from enums import card_type, data_type, mime_type, collection, role_type
 from message import messages_success, messages_failure
-from models import database, user as u, address, card, account as acc
-from helpers.helpers import issue_new_card, generate_login_info, getMIMETypeValue
+from models import database, card as model_card, user, account
+from helpers.helpers import issue_new_card, generate_login_info, getMIMETypeValue, get_max_id
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -22,20 +18,6 @@ cards = db['cards']
 employees = db['employee']
 news = db['news']
 
-def verify_input_data(row_index, **kwargs):
-    for k, v in kwargs.items():
-        if  not isinstance(v,str) or v == None:
-            return {'status': "error", 'message': messages_failure["null_data"].format(k), "row_index": row_index}
-        
-    if accounts.find_one({"Username": kwargs["Username"]}) != None:
-        return {'status': "error", 'message': messages_failure["username_existed"].format(kwargs["Username"]), "row_index": row_index}
-    if users.find_one({"Email": kwargs["Email"]}) != None:
-        return {'status': "error", 'message': messages_failure["email_existed"].format(kwargs["Email"]), "row_index": row_index}
-    if users.find_one({"Phone": kwargs["Phone"]}) != None:
-        return {'status': "error", 'message': messages_failure["phone_existed"].format(kwargs["Phone"]), "row_index": row_index}
-    
-    return {'status': "success", 'message': messages_success["create_success"].format(kwargs["Username"]), "row_index": row_index}
-
 # data is a dictionary account data
 def create_accounts(data):
     admin_id = session.get("account_id")
@@ -46,60 +28,64 @@ def create_accounts(data):
     res = None
 
     for accData in data:
-        # User info
-        username = accData["Username"].strip()
-        gender_text = accData["Gender"].strip()
-        gender = None
-        if gender_text.lower().strip() == "male":
-            gender = SexType.MALE
-        elif gender_text.lower().strip() == "female":
-            gender = SexType.FEMALE
-        else:
-            gender = SexType.OTHER
-
+        fullname = accData["Fullname"]
+        gender = int(accData["Gender"].split('.')[0])
         phone = str(accData["Phone"]).strip()
         email = accData["Email"].strip()
-
-        #account info
-        name = accData["Name"].strip()
-        text_role = accData["Role"]
-        branchName = accData["Branch"].strip()
-        loginMethods = accData["Login Method"]
-        transferMethods = accData["Transfer Method"]
-        text_address = accData["Address"]
-        new_address = None
-        request_branch = None
-
-        card_type = card_types.find_one({"TypeValue": CardType.CREDITS.value}, {"_id":0})
+        branch = int(accData["Branch"].split('.')[0])
+        address = accData["Address"]
         card_info = issue_new_card()
-        new_card = card.Card(cardNumber=card_info['cardNumber'], cvv=card_info['cvvNumber'], type=card_type, createdBy = admin_id)
-        loginInfo = generate_login_info(email, phone)            
+        login_info = generate_login_info(email, phone)     
 
-        roleValue = None
+        is_email_exits = True if users.find_one({"Email": email}) else False
+        is_phone_exits = True if users.find_one({"Phone": phone}) else False
+        is_error = False
+        res = {'status': "success", 'message': messages_success["create_success"].format(login_info['Username']), "row_index": row_index}
 
-        if text_role.lower().strip() == "user":
-            roleValue = RoleType.USER.value
-        elif text_role.lower().strip() == "employee":
-            roleValue = RoleType.EMPLOYEE.value
-        elif text_role.lower().strip() == "admin":
-            roleValue = RoleType.ADMIN.value
-        else:
-            roleValue = RoleType.USER
+        if is_email_exits:
+            is_error = True
+            res = {'status': "error", 'message': messages_failure["email_existed"].format(email), "row_index": row_index}
+        if is_phone_exits:
+            is_error = True
+            res = {'status': "error", 'message': messages_failure["phone_existed"].format(phone), "row_index": row_index}
 
-        mar = list(map(lambda x: x.strip(), text_address.split(',')))
-        new_address = address.Address(street = mar[0], ward = mar[1], district = mar[2], city = mar[3], country = mar[4], createdBy = admin_id).to_json()
-        res = verify_input_data(row_index , Username = username, Email = email, Phone = phone)
+        if not is_error:
+            new_card_id = get_max_id(database=db, collection_name=collection.CollectionType.CARDS.value)
+            new_card = model_card.Card(
+                id=new_card_id, 
+                cardNumber=card_info['cardNumber'], 
+                cvv=card_info['cvvNumber'], 
+                type=card_type.CardType.CREDITS.value,
+                createdBy = admin_id
+            )
 
-        if res["status"] == "success":
-            counter += 1
-            new_user = u.User(name = name, sex = gender, address = new_address, phone = phone, email = email, card = new_card.to_json(), createdBy = admin_id)
-            new_account = acc.Account(accountNumber = card_info['accountNumber'], branch = request_branch, user = new_user.to_json(),
-                                    username = username, password = loginInfo['Password'], role = roleValue,
-                                    transferMethod = transferMethods, loginMethod = loginMethods, createdBy = admin_id)
-            
+            new_user_id = get_max_id(database=db, collection_name=collection.CollectionType.USERS.value)
+            new_user = user.User(
+                id=new_user_id, 
+                name=fullname, 
+                sex=int(gender), 
+                address=address.strip(), 
+                phone=phone, 
+                email=email, 
+                card=[new_card_id,],
+                createdBy = admin_id
+            )
+
+            new_account_id = get_max_id(database=db, collection_name=collection.CollectionType.ACCOUNTS.value)
+            new_account = account.Account(
+                id=new_account_id,
+                accountNumber=card_info['accountNumber'], 
+                branch=int(branch), 
+                user=new_user_id, 
+                username=login_info['Username'], 
+                password=login_info['Password'], 
+                role=role_type.RoleType.USER.value, 
+                transferMethod=[1], 
+                loginMethod=[1],
+                createdBy = admin_id
+            )
+
             cards.insert_one(new_card.to_json())
-            if new_address != None:
-                addresses.insert_one(new_address)
             users.insert_one(new_user.to_json())
             accounts.insert_one(new_account.to_json())
 
@@ -109,15 +95,15 @@ def create_accounts(data):
     return response_data
 
 def generate_export_data(dataType, file_type, filters):
-    if dataType == DataType.ACCOUNT.value:
+    if dataType == data_type.DataType.ACCOUNT.value:
         collection = accounts
-    elif dataType == DataType.USER.value:
+    elif dataType == data_type.DataType.USER.value:
         collection = users
-    elif dataType == DataType.BRANCH.value:
+    elif dataType == data_type.DataType.BRANCH.value:
         collection = branches
-    elif dataType == DataType.EMPLOYEE.value:
+    elif dataType == data_type.DataType.EMPLOYEE.value:
         collection = employees
-    elif dataType == DataType.NEWS.value:
+    elif dataType == data_type.DataType.NEWS.value:
         collection = news
 
     items = list(collection.find(filters))
@@ -125,20 +111,20 @@ def generate_export_data(dataType, file_type, filters):
     output = io.BytesIO()
     mime = None
 
-    if file_type == str(MIMEType.CSV.value):
+    if file_type == str(mime_type.MIMEType.CSV.value):
         df.to_csv(output, index=False, encoding='utf-8')
         output.seek(0) 
-        mime = getMIMETypeValue(MIMEType.CSV)
-    elif file_type == str(MIMEType.JSON.value):
+        mime = getMIMETypeValue(mime_type.MIMEType.CSV)
+    elif file_type == str(mime_type.MIMEType.JSON.value):
         df = df.applymap(lambda x: x if isinstance(x, str) else str(x))
         df = df.applymap(lambda x: x.encode('utf-8', errors='replace').decode('utf-8'))
         df.to_json(output, index=False, force_ascii=False, orient='records', lines=True)
         output.seek(0)
-        mime = getMIMETypeValue(MIMEType.JSON)
-    elif file_type == str(MIMEType.EXCEL_XLSX.value):
+        mime = getMIMETypeValue(mime_type.MIMEType.JSON)
+    elif file_type == str(mime_type.MIMEType.EXCEL_XLSX.value):
         df.to_excel(output, index=False, engine='openpyxl')
         output.seek(0)
-        mime = getMIMETypeValue(MIMEType.EXCEL_XLSX)
+        mime = getMIMETypeValue(mime_type.MIMEType.EXCEL_XLSX)
 
     return {'mime': mime, 'output': output}
 

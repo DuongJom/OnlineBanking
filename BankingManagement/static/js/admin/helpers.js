@@ -29,6 +29,10 @@ const getAdminData = (page_no, data_type) => {
 };
 
 const renderTable = (data_type, lst_item) => {
+  const location = document.getElementById("location");
+  location.innerHTML = `${localStorage.getItem(
+    "admin_page"
+  )}/${localStorage.getItem("admin_maxPage")}`;
   const tables = document.querySelectorAll("table");
   tables.forEach((table) => {
     table.remove();
@@ -75,7 +79,7 @@ const goNext = async(data_type) => {
       const data = await getAdminData(page, data_type);
 
       localStorage.setItem("admin_maxPage", data.total_pages);
-      renderTable(data.items, data_type);
+      renderTable(data_type, data['items']);
     } catch (error) {
       console.error("There was a problem with loading the items:", error);
     }
@@ -91,7 +95,7 @@ const goPrevious = async(data_type, page) => {
     try {
       const data = await getAdminData(page, data_type);
       localStorage.setItem("admin_maxPage", data.total_pages);
-      renderTable(data.items, data_type);
+      renderTable(data_type, data['items']);
     } catch (error) {
       console.error("There was a problem with loading the items:", error);
     }

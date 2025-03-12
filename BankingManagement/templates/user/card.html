@@ -1,0 +1,61 @@
+{% extends "user/layout.html" %}
+
+{% block title %}
+  Card Management
+{% endblock %}
+
+{% block user_content %}
+<!-- Main Content -->
+<main class="container mx-auto px-4 mt-8">
+    <!-- Existing Cards Section -->
+    <section>
+        <h2 class="text-xl font-semibold mb-4">Your Cards</h2>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {% for card in cards %}
+                <div id="{{card._id}}" class="{% if card.card_info.TypeValue == 1 %}bg-blue-500 {% elif card.card_info.TypeValue == 2 %} bg-gray-800 {% else %} bg-gradient-to-r from-red-500 to-orange-500 {% endif %}
+                    text-white shadow-md rounded-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium">{{ card.card_info.TypeName }}</h3>
+                        <span class="text-sm">Expired Date: {{ card.ExpiredDate|format_date('%m/%Y') }}</span>
+                    </div>
+                    <div class="flex flex-row">
+                        <div class="flex flex-col w-5/6">
+                            <p class="text-white mb-2">{{ card.CardNumber|format_card_number }}</p>
+                            <p class="text-gray-200 text-sm mb-4">Card Holder: {{ user.Name }}</p>
+                            {% if card.IsDeleted == 0 %}
+                            <p class="text-gray-200 text-sm mb-4">Status: Active</p>
+                            {% else %}
+                            <p class="text-gray-200 text-sm mb-4">Status: Inactive</p>
+                            {% endif %}
+                        </div>
+                        {% if card.card_info.TypeValue == 1 %}
+                        <img src="{{ url_for('static', filename='img/visa.png') }}" class="w-16 h-16">
+                        {% elif card.card_info.TypeValue == 2 %}
+                        <img src="{{ url_for('static', filename='img/debit.png') }}" class="w-16 h-16">
+                        {% else %}
+                        <img src="{{ url_for('static', filename='img/master_card.png') }}" class="w-16 h-16">
+                        {% endif %}
+                    </div>
+                    <div class="flex justify-end">
+                        {% if card.IsDeleted == 0 %}
+                        <button id="{{card._id}}" onclick="window.location.href='/lock-card/{{card._id}}'" type="submit"
+                            class="flex flex-row justify-center items-center bg-red-500 text-white 
+                                px-2 py-1 rounded-lg hover:bg-red-600 space-x-1">
+                            <img src="{{ url_for('static', filename='img/lock.png') }}" class="w-8 h-8 rounded-full">
+                            <span>Lock</span>
+                        </button>
+                        {% else %}
+                        <button id="{{card._id}}" onclick="window.location.href='/unlock-card/{{card._id}}'" type="submit"
+                            class="flex flex-row justify-center items-center bg-green-500 text-white 
+                                px-2 py-1 rounded-lg hover:bg-green-600 space-x-1">
+                            <img src="{{ url_for('static', filename='img/unlock.png') }}" class="w-8 h-8 rounded-full">
+                            <span>Unlock</span>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}

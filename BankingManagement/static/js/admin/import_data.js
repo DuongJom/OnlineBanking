@@ -11,7 +11,7 @@ function getLogType(logType, row_index, log) {
     <div class="mx-5 mb-2 border-2 border-${logType}_border bg-${logType}_bg flex items-center text-${logType}_text p-1">
         <div class="flex items-center border-r-2 border-${logType}_border pr-1">
             <div>
-                <img src="../static/img/icon/${icon}" height="35px" width="35px"/>
+                <img src="${staticPath}${icon}" height="35px" width="35px"/>
             </div>
             <div>
                 <p class="font-semibold">Row ${row_index}</p>
@@ -67,7 +67,7 @@ function handleImportResponse(logs, total, success) {
 
 window.importData = function() {
     const csrfToken = document.querySelector('input[name="csrf_token"]').value;
-    let url = `${dataType}/import`;
+    let url = 'import';
     const formData = new FormData();
     formData.append('file', excelFile);
 

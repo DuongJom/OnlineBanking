@@ -1,17 +1,17 @@
 <div class="sm:ml-14 mb-2 sm:mb-0">
 
     {% if not 'user' in request.path %}
-    <button class="h-7 w-24 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar font-bold">
+    <button class="h-7 w-24 rounded-sm text-white font-bold bg-green-500 hover:rounded-lg duration-300">
         <a href="#" id="add_button">Add</a>
     </button>
     {% endif %}
 
-    <button class="h-7 w-24 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar font-bold" 
+    <button class="h-7 w-24 bg-green-500 hover:rounded-lg text-white font-bold rounded-sm duration-300" 
             id="openImportFormButton">
         Import
     </button>
 
-    <select class="h-7 w-28 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar p-0 pl-5 font-bold"
+    <select class="h-7 w-28 bg-green-500 text-white p-0 pl-5 font-bold rounded-sm hover:rounded-lg duration-300"
             onchange="export_data()"
             id="export-btn">
         <option disabled selected>Export</option>
@@ -22,3 +22,13 @@
 
     {% include 'admin/general/import.html' %}
 </div>
+<script>
+    document.getElementById('exportBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        const ele_href = window.location.href.split('/');
+        const collection = ele_href[ele_href.length - 1];
+        fetch(`/admin/export-data/${collection}s`,{
+            method: 'GET'
+        })
+    })
+</script>

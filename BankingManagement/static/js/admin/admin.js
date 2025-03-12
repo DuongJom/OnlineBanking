@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const dynamicValue = document.getElementById("dynamicValue");
   const openImportFormBtn = document.getElementById("openImportFormButton");
   const closeImportFormBtn = document.getElementById("closeImportFormButton");
+  const btnNext = document.getElementById("next-btn");
+  const btnPrevious = document.getElementById("previous-btn");
   let timeout = null;
   window.addEventListener("resize", adjustTableMargin);
   localStorage.setItem("admin_page", 1);
@@ -21,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     localStorage.setItem("filterCondition", JSON.stringify({IsDeleted: 0}));
     const data = await getAdminData(1, dataType);
+    localStorage.setItem("admin_maxPage", data['total_pages']);
     renderTable(dataType, data['items']);
   } catch (error) {
     console.error("There was a problem with loading the items:", error);
@@ -38,6 +41,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 1000);
   });
 
+  btnNext.addEventListener("click", () => goNext(dataType));
+  btnPrevious.addEventListener("click", () => goPrevious(dataType));
   openImportFormBtn.addEventListener("click", () => openImportForm());
   closeImportFormBtn.addEventListener("click", () => closeImportForm());
 

@@ -53,7 +53,9 @@ module.exports = withMT({
       boxShadow: {
         'shadowRight': '4px 0 6px rgba(0, 0, 0, 0.3)', 
       },
-      
+      maxHeight: {
+        '430': '430px'
+      }
     },
   },
   plugins: [require("@tailwindcss/forms")],

@@ -1,0 +1,220 @@
+<!-- Investment Portfolio -->
+<div class="md:col-span-2 bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-xl font-semibold mb-4">Investment Portfolio</h2>
+    <div class="space-y-4 max-h-430 overflow-y-auto">
+      <!-- Portfolio Items-->
+      {% if not investments %}
+      <div class="font-bold text-center w-full">No investments information.</div>
+      {% else %}
+          {% for investment in investments %}
+          <form action="/edit-investment" method="post">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+          <div class="bg-gray-50 p-2 rounded-lg shadow-sm">
+            <input type="hidden" name="investment_id" value="{{investment._id}}">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-lg font-semibold">{{investment.Type}}</h3>
+                <p class="text-black underline italic">{{investment.Name}}</p>
+              </div>
+              <span class="{% if investment.CurrentRate >= 0 %}text-green-600 {% else %} text-red-600 {% endif %} font-semibold">{{investment.CurrentRate}}%</span>
+            </div>
+            <p class="text-sm mt-1 flex flex-row">
+              <span class="w-32 text-gray-600">Amount Invested:</span>
+              <span class="text-blue-500 font-semibold">{{investment.InvestmentAmount|currency_format}} {{currency}}</span>
+            </p>
+            <p class="text-sm mt-1 flex flex-row">
+              <span class="w-32 text-gray-600">Current Amount:</span> 
+              <span class="text-green-500 font-semibold">{{investment.CurrentAmount|currency_format}} {{currency}}</span>
+            </p>
+            
+            <p class="flex flex-row space-x-2 justify-end items-center {% if investment.Status == 0 %} hidden line-through {% endif %}">
+              <input type="hidden" name="edit_type" id="edit_type">
+              <button id="withdrawBtn_{{investment._id}}" data-id="{{investment._id}}" type="submit" 
+                  class="w-20 rounded-lg bg-green-500 hover:bg-green-600 p-1">
+                  Withdraw
+              </button>
+              <button id="cancelBtn_{{investment._id}}" data-id="{{investment._id}}" type="submit" 
+                  class="w-20 rounded-lg bg-red-500 hover:bg-red-600 p-1">
+                  Cancel
+              </button>
+            </p>
+          </div>
+          <!-- Withdraw Confirmation Modal -->
+          <div id="withdrawModal_{{investment._id}}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
+            <div class="bg-white rounded-lg text-left shadow-xl transform transition-all sm:max-w-lg w-full max-w-md">
+              <div class="bg-white p-6">
+                <div class="flex justify-between items-center border-b pb-2 mb-4">
+                  <h3 class="text-lg font-semibold text-gray-700">Confirm Withdraw</h3>
+                  <button id="closeWithdrawModalBtn_{{investment._id}}" data-id="{{investment._id}}" class="text-gray-400 hover:text-gray-600">✖</button>
+                </div>
+                <p>Are you sure you want to withdraw your investment?</p>
+                <div class="mt-4 flex justify-end space-x-2">
+                  <button id="cancelWithdrawBtn_{{investment._id}}" data-id="{{investment._id}}" class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500">No</button>
+                  <button id="confirmWithdrawBtn_{{investment._id}}" data-id="{{investment._id}}" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Yes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cancel Investment Confirmation Modal -->
+          <div id="cancelModal_{{investment._id}}" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
+            <div class="bg-white rounded-lg text-left shadow-xl transform transition-all sm:max-w-lg w-full max-w-md">
+              <div class="bg-white p-6">
+                <div class="flex justify-between items-center border-b pb-2 mb-4">
+                  <h3 class="text-lg font-semibold text-gray-700">Confirm Cancel</h3>
+                  <button id="closeCancelModalBtn_{{investment._id}}" data-id="{{investment._id}}" class="text-gray-400 hover:text-gray-600">✖</button>
+                </div>
+                <p>Are you sure you want to cancel this investment?</p>
+                <div class="mt-4 flex justify-end space-x-2">
+                  <button id="cancelCancelBtn_{{investment._id}}" data-id="{{investment._id}}" class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500">No</button>
+                  <button id="confirmCancelBtn_{{investment._id}}" data-id="{{investment._id}}" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Yes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        {% endfor %}
+      {% endif %}
+    </div>
+</div>
+<!-- Add New Investment Modal -->
+<div id="addInvestmentModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
+    <!-- Modal panel -->
+    <div class="bg-white rounded-lg text-left shadow-xl transform transition-all sm:max-w-lg w-full max-w-md">
+        <div class="bg-white p-6">
+            <div class="flex justify-between items-center border-b pb-2 mb-4">
+            <h3 class="text-lg font-semibold text-gray-700">Add New Investment</h3>
+            <button id="closeModalInvestmentBtn" class="text-gray-400 hover:text-gray-600">✖</button>
+            </div>
+            <form method="post" action="/add-investment-savings" class="space-y-4">
+                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                <input type="hidden" name="rate" value="{{investment_rate}}">
+                <!-- Investment Name -->
+                <div>
+                    <label for="investment_name" class="block text-gray-700 font-semibold">Investment Name</label>
+                    <input type="text" id="investment_name" name="investment_name" placeholder="Enter investment name"
+                        class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500" >
+                </div>
+        
+                <!-- Investment Amount -->
+                <div>
+                    <label for="investment_amount" class="block text-gray-700 font-semibold">Investment Amount</label>
+                    <input type="number" id="investment_amount" name="investment_amount" placeholder="Enter amount"
+                        class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500" >
+                </div>
+        
+                <!-- Investment Type -->
+                <div>
+                    <label for="investment_type" class="block text-gray-700 font-semibold">Investment Type</label>
+                    <select id="investment_type" name="investment_type"
+                        class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="-1" disabled selected>Select investment type</option>
+                        <option value="0">Stocks</option>
+                        <option value="1">Bonds</option>
+                        <option value="2">Real Estate</option>
+                        <option value="3">Crypto</option>
+                    </select>
+                </div>
+        
+                <!-- Date -->
+                <div>
+                    <label for="investment_date" class="block text-gray-700 font-semibold">Investment Date</label>
+                    <input type="date" id="investment_date" name="investment_date" value="{{investment_date}}"
+                        class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+        
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-green-500 text-white rounded-lg py-3 font-semibold 
+                    hover:bg-green-600 transition duration-300">
+                    Add Investment
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    // Modal toggling logic
+    const investmentModal = document.getElementById('addInvestmentModal');
+    const openModalInvestmentBtn = document.getElementById('openModalInvestmentBtn');
+    const closeModalInvestmentBtn = document.getElementById('closeModalInvestmentBtn');
+  
+    openModalInvestmentBtn.addEventListener('click', () => {
+      investmentModal.classList.remove('hidden');
+    });
+  
+    closeModalInvestmentBtn.addEventListener('click', () => {
+      investmentModal.classList.add('hidden');
+    });
+  
+    window.addEventListener('click', (e) => {
+      if (e.target == investmentModal) {
+        investmentModal.classList.add('hidden');
+      }
+    });
+  
+    // Event delegation for withdraw and cancel buttons
+    document.addEventListener('click', (e) => {
+      if (e.target && e.target.id.startsWith('withdrawBtn')) {
+        e.preventDefault();
+        const investment_id = e.target.getAttribute('data-id');
+        const withdrawConfirmationModal = document.getElementById(`withdrawModal_${investment_id}`);
+        withdrawConfirmationModal.classList.remove('hidden');
+      }
+  
+      if (e.target && e.target.id.startsWith('cancelBtn')) {
+        e.preventDefault();
+        const investment_id = e.target.getAttribute('data-id');
+        const cancelConfirmationModal = document.getElementById(`cancelModal_${investment_id}`);
+        cancelConfirmationModal.classList.remove('hidden');
+      }
+  
+      // Close Withdraw Confirmation Modal
+      if (e.target && e.target.id.startsWith('closeWithdrawModalBtn')) {
+        e.preventDefault();
+        const investment_id = e.target.getAttribute('data-id');
+        const withdrawConfirmationModal = document.getElementById(`withdrawModal_${investment_id}`);
+        withdrawConfirmationModal.classList.add('hidden');
+      }
+  
+      // Close Cancel Confirmation Modal
+      if (e.target && e.target.id.startsWith('closeCancelModalBtn')) {
+        e.preventDefault();
+        const investment_id = e.target.getAttribute('data-id');
+        const cancelConfirmationModal = document.getElementById(`cancelModal_${investment_id}`);
+        cancelConfirmationModal.classList.add('hidden');
+      }
+  
+      // Confirm withdraw action
+      if (e.target && e.target.id.startsWith('confirmWithdrawBtn')) {
+        const investment_id = e.target.getAttribute('data-id');
+        const form = document.querySelector(`form input[value="${investment_id}"]`).form;
+        const edit_typeInput = form.querySelector('#edit_type');
+        edit_typeInput.value = 2;
+        form.submit(); // Submit the form corresponding to this investment
+      }
+  
+      // Confirm cancel action
+      if (e.target && e.target.id.startsWith('confirmCancelBtn')) {
+        const investment_id = e.target.getAttribute('data-id');
+        const form = document.querySelector(`form input[value="${investment_id}"]`).form;
+        const edit_typeInput = form.querySelector('#edit_type');
+        edit_typeInput.value = 0;
+        form.submit(); // Submit the form corresponding to this investment
+      }
+  
+      // // Cancel button actions inside modals (No button)
+      if (e.target && e.target.id.startsWith('cancelWithdrawBtn')) {
+        e.preventDefault(); // Prevent the form submission
+        const investment_id = e.target.getAttribute('data-id');
+        const withdrawConfirmationModal = document.getElementById(`withdrawModal_${investment_id}`);
+        withdrawConfirmationModal.classList.add('hidden');
+      }
+  
+      if (e.target && e.target.id.startsWith('cancelCancelBtn')) {
+        e.preventDefault(); // Prevent the form submission
+        const investment_id = e.target.getAttribute('data-id');
+        const cancelConfirmationModal = document.getElementById(`cancelModal_${investment_id}`);
+        cancelConfirmationModal.classList.add('hidden');
+      }
+    });
+</script>

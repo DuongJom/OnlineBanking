@@ -1,0 +1,28 @@
+{% extends 'user/layout.html' %}
+{% block title %}
+  Investment and Savings
+{% endblock %}
+{% block user_content %}
+<!-- Header Section -->
+<header class="bg-indigo-600 text-white py-4 shadow-md">
+  <div class="container mx-auto flex justify-between items-center px-4">
+    <h1 class="text-2xl font-bold">Investments & Savings</h1>
+    <div class="absolute right-5 flex flex-row-reverse">
+      <button id="openModalInvestmentBtn" class="bg-green-500 px-4 py-2 rounded-md hover:bg-green-600">
+        Add New Investment
+      </button>
+      <button id="openSavingsModalBtn" class="bg-blue-500 px-4 py-2 rounded-md hover:bg-blue-600 mr-2">
+        Add New Savings
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<div class="container mx-auto py-8 px-4">
+  <div class="grid md:grid-cols-3 gap-6">
+    {% include "user/savings.html" %}
+    {% include "user/investments.html" %}
+  </div>
+</div>
+{% endblock %}

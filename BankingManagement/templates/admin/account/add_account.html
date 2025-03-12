@@ -6,21 +6,22 @@
 
 {% block content %}
 <div
-  class="z-1000 relative top-0 left-0 h-screen w-screen bg-gradient-to-br from-green-400 via-lime-300 to-green-700 overflow-y-auto">
+  class="z-1000 relative top-0 left-0 h-screen w-screen overflow-y-auto bg-popup-bg">
   <button
     onclick="goBack()"
     class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
-    <span class="material-symbols-outlined absolute right-2"
-      >arrow_back_ios</span
-    >
+    <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
   </button>
 
-  <div
-    class="w-11/12 bg-bg-color absolute left-1/2 -translate-x-1/2 lg:top-1/2 lg:-translate-y-1/2 rounded-xl">
-    <form class="h-full w-full flex lg:flex-row flex-col pb-20" action="{{ url_for('admin_account.add_account') }}" method="post">
+  <div class="w-11/12 bg-gradient-to-br from-green-200 to-green-700 absolute left-1/2 -translate-x-1/2 lg:top-1/2 lg:-translate-y-1/2 rounded-xl">
+    <div class="flex items-center w-full justify-center p-10 font-bold text-white">
+      <img src="{{ url_for('static', filename='img/bank.png') }}" class="h-10 w-10 mr-5"/>
+      <h1>ADD NEW ACCOUNT</h1>
+    </div>
+    <form class="h-full w-full flex lg:flex-row flex-col pb-10" action="{{ url_for('admin_account.add_account') }}" method="post">
       <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
       <div class="flex flex-1">
-        <div class="w-full flex flex-col items-center border-r-2r mt-20">
+        <div class="w-full flex flex-col items-center border-r-2r">
           <div>
             <h2 class="font-extrabold text-white mb-4">Address</h2>
           </div>
@@ -58,7 +59,7 @@
 
       <!-- Account Information  -->
       <div class="flex flex-1">
-        <div class="w-full flex flex-col items-center border-r-2r mt-20">
+        <div class="w-full flex flex-col items-center border-r-2r">
           <div>
             <h2 class="font-extrabold text-white mb-4">Account Information</h2>
           </div>
@@ -89,7 +90,7 @@
               <div class="pl-5 text-white">
                 {% for method in lst_login_method %}
                   <div>
-                    <input type="checkbox" value="{{method._id}}" class="rounded-full" name="loginMethod"/>
+                    <input type="checkbox" value="{{method._id}}"  name="loginMethod"/>
                     <label>{{method.MethodName}}</label>
                   </div>
                 {% endfor %}
@@ -103,7 +104,7 @@
               <div class="pl-5 text-white">
                 {% for method in lst_transfer_method %}
                   <div>
-                    <input type="checkbox" value="{{method._id}}" class="rounded-full" name="transferMethod"/>
+                    <input type="checkbox" value="{{method._id}}" name="transferMethod"/>
                     <label>{{method.MethodName}}</label>
                   </div>
                 {% endfor %}
@@ -117,7 +118,7 @@
       <!-- User -->
       <div class="flex flex-1">
         <div
-          class="w-full flex flex-col items-center justify-start border-r-2r mt-20">
+          class="w-full flex flex-col items-center justify-start border-r-2r">
           <div>
             <h2 class="font-extrabold text-white mb-4">Owner Information</h2>
           </div>

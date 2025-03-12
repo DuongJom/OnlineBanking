@@ -1,112 +1,93 @@
-{% extends "general/layout.html" %}
+{% extends "general/layout.html" %} 
 
-{% block title %}
-    View Account
+{% block title %} 
+    View Account 
 {% endblock %}
 
 {% block content %}
-    <div class="z-1000 relative top-0 left-0 h-screen overflow-y-auto flex justify-center items-center
-                bg-gradient-to-t from-pink-200 to-purple-400">
-        <button 
-            onclick="goBack()" 
-            class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
-            <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
-        </button>
-        <div class="w-3/4 bg-bg-color flex flex-col justify-center items-center py-16 rounded-lg">
-            <input type="hidden" value="{{account._id}}" name="account_id" id="account_id"/>
-            <div class="w-full flex justify-center">
-                <h2 class="font-extrabold text-white">Account Information</h2>
-            </div>
-            <div class="w-full flex items-center justify-center">
-                <div class="mr-16 w-96">
-                    <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="accountUsername">Username</label>
-                        <div class="admin_readonly" id="accountUsername">
-                            <div>{{account.Username}}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="accountNumber">Account Number</label>
-                        <div id="accountNumber" class="admin_readonly">
-                            <div>{{account.AccountNumber}}</div>
-                        </div>
-                    </div>
+<div
+  class="z-1000 relative top-0 left-0 h-screen w-screen overflow-y-auto bg-popup-bg">
+  <button
+    onclick="goBack()"
+    class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
+    <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
+  </button>
 
-                    <div class="flex flex-col mb-4">
-                        <label class="admin_label" for="accountOwner">Owner</label>
-                        <div id="accountOwner" class="admin_readonly">
-                            <div>{{account.Owner_name}}</div>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col mb-4">
-                        <label for="role" class="admin_label">Role</label>
-                        <div class="admin_readonly">
-                            <div>{{account.Role_name}}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-96">
-                    <div class="flex flex-col mb-4">
-                        <label for="branch" class="admin_label">Branch</label>
-                        <div class="admin_readonly">
-                            <div>{{account.Branch_name}}</div>
-                        </div>
-                    </div>
-
-                    <div class="flex w-full flex-col">
-                        <div>
-                          <h2 class="admin_label">Login Method</h2>
-                        </div>
-                        <div class="pl-5 text-white">
-                            <ul>
-                                {% for method in account.lst_login_method %}
-                                    <li>{{method}}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="flex w-full flex-col">
-                        <div>
-                            <h2 class="admin_label">Tranfer Method</h2>
-                        </div>
-                        <div class="pl-5 text-white">
-                            <ul>
-                            {% for method in account.lst_transfer_method %}
-                                <li>{{method}}</li>
-                            {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="w-full flex justify-center mt-5">
-                        <button
-                            type="button"
-                            class="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-600 
-                                   hover:to-purle-800 text-white font-semibold py-2 px-6 rounded-md shadow-md 
-                                   focus:outline-none focus:ring-2 focus:ring-purle-500 focus:ring-opacity-50 
-                                   transition-all duration-300 ease-in-out"
-                            onclick="toggle()">
-                            Change
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="hidden h-screen w-screen fixed top-0 left-0 justify-center items-center z-1000" id="toggled_element">
-                <div class="flex flex-col h-40 w-96 justify-center items-center bg-white shadow-2xl rounded">
-                    <div class="font-bold mb-10">Do you want to save changes</div>
-                    <div class="w-full flex justify-evenly">
-                        <div class="w-1/4">
-                            <button class="btn" type="submit">Change</button>
-                        </div>
-                        <div class="w-1/4">
-                            <button class="btn" type="button" onclick="toggle()">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            </div>  
-        </div>
+  <div class="w-11/12 bg-gradient-to-br from-green-200 to-green-700 absolute left-1/2 -translate-x-1/2 lg:top-1/2 lg:-translate-y-1/2 rounded-xl top-28">
+    <div class="flex items-center w-full justify-center p-10 font-bold text-white">
+      <img src="{{ url_for('static', filename='img/bank.png') }}" class="h-10 w-10 mr-5"/>
+      <h1>ACCOUNT INFO</h1>
     </div>
+    <form class="h-full w-full flex lg:flex-row flex-col pb-10" action="{{ url_for('admin_account.add_account') }}" method="post">
+      <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
+      <!-- Account Information  -->
+      <div class="flex flex-1">
+        <div class="w-full flex flex-col items-center border-r-2r">
+          <div class="flex flex-col w-4/5 space-y-4">
+            <div class="flex flex-col w-full">
+              <label for="branch" class="admin_label">Branch</label>
+              <div class="admin_readonly">{{account.Branch_name}}</div>
+            </div>
+
+            <div class="flex w-full flex-col">
+              <div>
+                <h2 class="admin_label">Login Method</h2>
+              </div>
+              <ul class="pl-5 text-white list-disc">
+                {% for method in account.lst_login_method %}
+                  <li>
+                    {{method}}
+                  </li>
+                {% endfor %}
+                </ul>
+            </div>
+
+            <div class="flex w-full flex-col">
+              <div>
+                <h2 class="admin_label">Tranfer Method</h2>
+              </div>
+              <ul class="pl-5 text-white list-disc">
+                {% for method in account.lst_transfer_method %}
+                  <li>
+                    {{method}}
+                  </li>
+                {% endfor %}
+                </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- User -->
+      <div class="flex flex-1">
+        <div class="w-full flex flex-col items-center justify-start border-r-2r">
+
+
+          <div class="flex flex-col w-4/5 space-y-4">
+            <div class="flex flex-col w-full">
+              <label class="admin_label">Username</label>
+              <div class="admin_readonly">{{account.Username}}</div>
+            </div>
+
+            <div class="flex flex-col w-full">
+                <label class="admin_label">Owner</label>
+                <div class="admin_readonly">{{account.Owner_name}}</div>
+              </div>
+
+            <div class="flex flex-col w-full">
+                <label class="admin_label">Role</label>    
+                <div class="admin_readonly">{{account.Role_name}}</div>
+              </div>
+
+            <div class="flex flex-col w-full">
+              <label  class="admin_label">Account Number</label>
+              <div class="admin_readonly">{{account.AccountNumber}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}

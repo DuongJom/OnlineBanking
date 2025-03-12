@@ -15,7 +15,7 @@
     <title>{% block title %}{% endblock %} - DHC Banking System</title>
   </head>
   <body class="h-screen overflow-y-hidden">
-    {% if session["account_id"] %}
+    {% if not is_hidden %}
       <nav class="bg-gray-500 fixed w-full z-10 top-0 right-0 start-0">
         <div class="mx-auto max-w-7xl flex h-16 px-4 sm:px-6 lg:px-8 justify-between">
           <div class="flex items-center">
@@ -157,7 +157,7 @@
     <script type="text/javascript">
       setTimeout(function(){
         $('#alert').css('display','none');
-      }, 2000);
+      }, 3000);
     </script>
   </body>
 </html>
