@@ -43,24 +43,3 @@ export const tableStructure = {
     { key: "PublishedBy", name: "Publisher", isObject: false}
   ]
 };
-
-export const identifier = {
-  account: "Username",
-  user: "Name",
-  branch: "BranchName",
-  employee: "EmployeeName",
-};
-
-export const pages = {
-  account: "Accounts",
-  user: "Users",
-  employee: "Employees",
-  branch: "Branches",
-}
-
-export const filterType = {
-  account: "accountFilterConditons",
-  user: "userFilterConditions",
-  employee: "employeeFilterConditions",
-  branch: "branchFilterConditions"
-}

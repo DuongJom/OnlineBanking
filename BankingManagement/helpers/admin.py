@@ -8,17 +8,13 @@ from models import database, card as model_card, user, account
 from helpers.helpers import issue_new_card, generate_login_info, getMIMETypeValue, get_max_id
 
 db = database.Database().get_db()
-accounts = db['accounts']
-users = db['users']
-card_types = db['card_types']
-branches = db['branches']
-roles = db['roles']
-addresses = db['addresses']
-cards = db['cards']
-employees = db['employee']
-news = db['news']
+accounts = db[collection.CollectionType.ACCOUNTS.value]
+users = db[collection.CollectionType.USERS.value]
+cards = db[collection.CollectionType.CARDS.value]
+branches = db[collection.CollectionType.BRANCHES.value]
+employees = db[collection.CollectionType.EMPLOYEES.value]
+news = db[collection.CollectionType.NEWS.value]
 
-# data is a dictionary account data
 def create_accounts(data):
     admin_id = session.get("account_id")
     total = len(data)
@@ -135,43 +131,36 @@ def get_account(id):
                 "_id": id
             }
         },
-        # Join với collection login_methods cho LoginMethod
         {"$lookup": {
             "from": "login_methods",
             "localField": "LoginMethod",
             "foreignField": "_id",
             "as": "login_method_docs"
         }},
-        # Join với collection transfer_methods cho TransferMethod
         {"$lookup": {
             "from": "transfer_methods",
             "localField": "TransferMethod",
             "foreignField": "_id",
             "as": "transfer_method_docs"
         }},
-        # Join với collection users cho AccountOwner
         {"$lookup": {
             "from": "users",
             "localField": "AccountOwner",
             "foreignField": "_id",
             "as": "owner_doc"
         }},
-        # Join với collection branches cho Branch
         {"$lookup": {
             "from": "branches",
             "localField": "Branch",
             "foreignField": "_id",
             "as": "branch_doc"
         }},
-        # Join với collection roles cho Role
         {"$lookup": {
             "from": "roles",
             "localField": "Role",
             "foreignField": "_id",
             "as": "role_doc"
         }},
-        
-        # Project kết quả cần thiết
         {"$project": {
             "_id": 1,
             "Username": 1,
@@ -181,15 +170,12 @@ def get_account(id):
             "Owner_name": {
                 "$ifNull": [{"$arrayElemAt": ["$owner_doc.Name", 0]}, None]
             },
-
             "Branch_name": {
                 "$ifNull": [{"$arrayElemAt": ["$branch_doc.BranchName", 0]}, None]
             },
-
             "Role_name": {
                 "$ifNull": [{"$arrayElemAt": ["$role_doc.RoleName", 0]}, None]
             },
-
             "lst_login_method": {
                 "$ifNull": [{
                     "$map": {
@@ -199,7 +185,6 @@ def get_account(id):
                     }
                 }, []]
             },
-
             "lst_transfer_method": {
                 "$ifNull": [{
                     "$map": {

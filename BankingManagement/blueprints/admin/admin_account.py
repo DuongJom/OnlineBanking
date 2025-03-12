@@ -2,25 +2,24 @@ from flask import Blueprint, request, jsonify, render_template, flash, redirect,
 import json
 import pandas as pd
 from io import BytesIO
-import datetime
 
 from helpers.helpers import login_required, issue_new_card, get_max_id, generate_login_info, send_email, get_file_extension
 from helpers.admin import get_account, create_accounts, generate_export_data
 from models import database, card as model_card, user, account
-from enums import deleted_type, collection, card_type, file_type
+from enums import deleted_type, collection, card_type, file_type, collection
 from message import messages_success, messages_failure
 from app import app, mail
 
 admin_account_blueprint = Blueprint('admin_account', __name__)
 
 db = database.Database().get_db()
-accounts = db['accounts']
-login_methods = db['login_methods']
-transfer_methods = db['transfer_methods']
-users = db['users']
-branches = db['branches']
-roles = db['roles']
-cards = db['cards']
+accounts = db[collection.CollectionType.ACCOUNTS.value]
+login_methods = db[collection.CollectionType.LOGIN_METHODS.value]
+transfer_methods = db[collection.CollectionType.TRANSFER_METHODS.value]
+users = db[collection.CollectionType.USERS.value]
+branches = db[collection.CollectionType.BRANCHES.value]
+roles = db[collection.CollectionType.ROLES.value]
+cards = db[collection.CollectionType.CARDS.value]
 
 @admin_account_blueprint.route('/admin/account/<int:page_no>', methods=['GET'])
 @login_required
@@ -43,35 +42,30 @@ def admin_account(page_no):
                 {"$skip": (page_no - 1) * items_per_page},
                 {"$limit": items_per_page},
 
-                # Join với collection login_methods cho LoginMethod
                 {"$lookup": {
                     "from": "login_methods",
                     "localField": "LoginMethod",
                     "foreignField": "_id",
                     "as": "login_method_docs"
                 }},
-                # Join với collection transfer_methods cho TransferMethod
                 {"$lookup": {
                     "from": "transfer_methods",
                     "localField": "TransferMethod",
                     "foreignField": "_id",
                     "as": "transfer_method_docs"
                 }},
-                # Join với collection users cho AccountOwner
                 {"$lookup": {
                     "from": "users",
                     "localField": "AccountOwner",
                     "foreignField": "_id",
                     "as": "owner_doc"
                 }},
-                # Join với collection branches cho Branch
                 {"$lookup": {
                     "from": "branches",
                     "localField": "Branch",
                     "foreignField": "_id",
                     "as": "branch_doc"
                 }},
-                # Join với collection roles cho Role
                 {"$lookup": {
                     "from": "roles",
                     "localField": "Role",
@@ -79,32 +73,22 @@ def admin_account(page_no):
                     "as": "role_doc"
                 }},
                 
-                # Project kết quả cần thiết
                 {"$project": {
                     "_id": 1,
                     "Username": 1,
                     "Account_number": "$AccountNumber",
                     "Balance": "$Balance",
                     "Owner_ID": "$AccountOwner",
-
-                    # Trường Owner_name, nếu không có thì trả về null
                     "Owner_name": {
                         "$ifNull": [{"$arrayElemAt": ["$owner_doc.Name", 0]}, None]
                     },
-
                     "Branch_ID": "$Branch",
-
-                    # Trường Branch_name, nếu không có thì trả về null
                     "Branch_name": {
                         "$ifNull": [{"$arrayElemAt": ["$branch_doc.BranchName", 0]}, None]
                     },
-
-                    # Trường Role_name, nếu không có thì trả về null
                     "Role_name": {
                         "$ifNull": [{"$arrayElemAt": ["$role_doc.RoleName", 0]}, None]
                     },
-
-                    # Trường lst_login_method, nếu không có thì trả về danh sách rỗng []
                     "lst_login_method": {
                         "$ifNull": [{
                             "$map": {
@@ -114,8 +98,6 @@ def admin_account(page_no):
                             }
                         }, []]
                     },
-
-                    # Trường lst_transfer_method, nếu không có thì trả về danh sách rỗng []
                     "lst_transfer_method": {
                         "$ifNull": [{
                             "$map": {
@@ -126,11 +108,8 @@ def admin_account(page_no):
                         }, []]
                     }
                 }}
-            ]
-
-            
+            ]            
             lst_results = [list(item.values()) for item in list(accounts.aggregate(pipeline))]
-
             return jsonify({'items': lst_results, 'total_pages': total_pages})
         return render_template('admin/account/account.html')
     
@@ -173,9 +152,7 @@ def add_account():
     login_method_ids = [int(id) for id in request.form.getlist('loginMethod') if id.isdigit()]
     email = request.form['email']
 
-    # check if user input email and password or not
     error_message = None
-    # check if email or username already exist
     is_exist_email = True if users.find_one({"Email": email}) else False
     is_exist_phone = True if users.find_one({"Phone": phone}) else False
     

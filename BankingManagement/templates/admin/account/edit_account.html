@@ -23,28 +23,28 @@
             <div class="w-full flex items-center justify-center md:flex-row flex-col">
                 <div class="md:w-1/2 w-full p-4 pt-0">
                     <div class="flex flex-col mb-4 w-full">
-                        <label class="admin_label" for="accountUsername">Username</label>
+                        <label class="admin_label">Username</label>
                         <div class="admin_readonly" id="accountUsername">
                             <div>{{account.Username}}</div>
                         </div>
                     </div>
                     
                     <div class="flex flex-col mb-4 w-full">
-                        <label class="admin_label" for="accountNumber">Account Number</label>
+                        <label class="admin_label">Account Number</label>
                         <div id="accountNumber" class="admin_readonly">
                             <div>{{account.AccountNumber}}</div>
                         </div>
                     </div>
 
                     <div class="flex flex-col mb-4 w-full">
-                        <label class="admin_label" for="accountOwner">Owner</label>
+                        <label class="admin_label">Owner</label>
                         <div id="accountOwner" class="admin_readonly">
                             <div>{{account.Owner_name}}</div>
                         </div>
                     </div>
 
                     <div class="flex flex-col mb-4 w-full">
-                        <label for="role" class="admin_label">Role</label>
+                        <label class="admin_label">Role</label>
                         <select id="role" class="admin_input" name="role" required>
                             {% for role in lst_role %}
                                 {% if role.RoleName == account.Role_name %}
@@ -57,9 +57,9 @@
                     </div>
                     {% include "admin/general/status_checkbox.html" %}
                 </div>
-                <div class="md:w-1/2 w-full p-4 pt-0 justify-start">
+                <div class="md:w-1/2 w-full p-4 pt-0">
                     <div class="flex flex-col mb-4">
-                        <label for="branch" class="admin_label">Branch</label>
+                        <label class="admin_label">Branch</label>
                         <select id="branch" class="admin_input" name="branch">
                           {% for branch in lst_branch %}
                                 {% if branch.BranchName == account.Branch_name %}
@@ -78,7 +78,7 @@
                         <div class="pl-5 text-white">
                             {% for loginMethod in lst_login_method %}
                                 <div>
-                                    <input type="checkbox" value="{{loginMethod._id}}" class="rounded-full" name="loginMethod"
+                                    <input type="checkbox" value="{{loginMethod._id}}" name="loginMethod"
                                     {% if loginMethod.MethodName in account.lst_login_method %}checked{% endif %}/>
                                     <label>{{loginMethod.MethodName}}</label>
                                 </div>
@@ -93,7 +93,7 @@
                         <div class="pl-5 text-white">
                             {% for transferMethod in lst_transfer_method %}
                             <div>
-                                <input type="checkbox" value="{{transferMethod._id}}" class="rounded-full" name="transferMethod"
+                                <input type="checkbox" value="{{transferMethod._id}}" name="transferMethod"
                                 {% if transferMethod.MethodName in account.lst_transfer_method %}checked{% endif %}/>
                                 <label>{{transferMethod.MethodName}}</label>
                             </div>

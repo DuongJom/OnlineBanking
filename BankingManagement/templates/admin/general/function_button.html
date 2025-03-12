@@ -22,13 +22,3 @@
 
     {% include 'admin/general/import.html' %}
 </div>
-<script>
-    document.getElementById('exportBtn').addEventListener('click', (e) => {
-        e.preventDefault();
-        const ele_href = window.location.href.split('/');
-        const collection = ele_href[ele_href.length - 1];
-        fetch(`/admin/export-data/${collection}s`,{
-            method: 'GET'
-        })
-    })
-</script>

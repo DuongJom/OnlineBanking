@@ -166,7 +166,6 @@ const generateActionButton = (row, _id, data_type, object_name) => {
 }
 
 const generateTableHeader = (table, lst_field, is_right_table) => {
-  console.log(lst_field);
   const thead = document.createElement('thead');
   const tr = document.createElement('tr');
   lst_field.forEach((field) => {
@@ -255,58 +254,8 @@ const generateObjectSign = (cell) => {
   cell.classList.add("cursor-pointer", "hover:bg-light-green-200");
 }
 
-const create_toggle_button = (parent, isActive) => {
-  const wrapper_style = "inline-flex items-center me-5";
-  const input_style = "sr-only peer";
-  const text_style =
-    "ms-3 text-sm font-medium text-gray-900 dark:text-gray-500";
-  const div_style =
-    "relative w-8 h-4 bg-gray-500 rounded-full peer dark:bg-gray-700 peer-focus:ring-4" +
-    "peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 peer-checked:after:translate-x-full " +
-    "rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] " + 
-    "after:absolute after:top-0 after:start-0 after:bg-white after:border-gray-300 after:border " +
-    "after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600";
-
-  const wrapper = document.createElement("label");
-  const input = document.createElement("input");
-  const div = document.createElement("div");
-  const text = document.createElement("span");
-
-  input.type = "checkbox";
-  input.disabled = true;
-
-  if (isActive == 0) {
-    input.checked = true;
-    text.innerHTML = "Active";
-  }else {
-    text.innerHTML = "Inactive";
-  }
-
-  addStyle(wrapper, wrapper_style);
-  addStyle(input, input_style);
-  addStyle(text, text_style);
-  addStyle(div, div_style);
-
-  wrapper.appendChild(input);
-  wrapper.appendChild(div);
-  wrapper.appendChild(text);
-
-  parent.appendChild(wrapper);
-}
-
-const addStyle = (element, classes) => {
-    classes.split(" ").forEach(function (cls) {
-      element.classList.add(cls);
-    });
-}
-
 export {
-    generateObjectSign,
-    create_toggle_button,
-    generateActionButton,
-    addStyle,
     getFilterCondition,
-    renderDeleteModal,
     generateTableBody,
     generateTableHeader,
 }

@@ -20,7 +20,6 @@ const getAdminData = (page_no, data_type) => {
       return response.json();
     })
     .then((data) => {
-      console.log("Received Data:", data);
       return data;
     })
     .catch((error) => {

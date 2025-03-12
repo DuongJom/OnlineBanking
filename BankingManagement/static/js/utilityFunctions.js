@@ -32,7 +32,6 @@ function change_status_value() {
   status_checkbox.value = (status_checkbox.value == 0) ? 9 : 0;
 
   status_checkbox.checked = (input.value == 0);
-
   if(input.value == 0) {
     status_text.innerHTML = "Active";
   }else {

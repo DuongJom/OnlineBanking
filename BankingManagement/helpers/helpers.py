@@ -9,18 +9,14 @@ from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
 from dotenv import load_dotenv
 import hashlib
-from models import database
 
+from models import database
 from enums.mime_type import MIMEType
+from enums.collection import CollectionType
 
 db = database.Database().get_db()
-accounts = db['accounts']
-users = db['users']
-card_types = db['card_types']
-branches = db['branches']
-roles = db['roles']
-addresses = db['addresses']
-cards = db['cards']
+accounts = db[CollectionType.ACCOUNTS.value]
+
 
 load_dotenv()
 
