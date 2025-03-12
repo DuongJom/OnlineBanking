@@ -224,6 +224,9 @@ const generateTableBody = (table, data_type, lst_field, lst_item, is_right_table
     if(count % 2 != 0) {
       tr.classList.add('bg-green-200');
     }
+    else {
+      tr.classList.add('bg-white');
+    }
     if(is_right_table) {
       generateActionButton(tr, lst_item[count][ID_INDEX], data_type, lst_item[count][OBJECT_NAME_INDEX])
     }
