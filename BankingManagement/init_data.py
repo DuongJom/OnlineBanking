@@ -1,6 +1,10 @@
+from datetime import datetime as dt
+from dateutil.relativedelta import relativedelta
+
 from models import database, account as a, role as r, login_method as lm
 from models import transfer_method as tm, card_type as t
 from models.branch import Branch
+from models.loan import Loan
 from enums.role_type import RoleType
 from enums.login_type import LoginType
 from enums.transfer_type import TransferType
@@ -14,6 +18,7 @@ login_methods = db[CollectionType.LOGIN_METHODS.value]
 transfer_methods = db[CollectionType.TRANSFER_METHODS.value]
 card_types = db[CollectionType.CARD_TYPES.value]
 branches = db[CollectionType.BRANCHES.value]
+loans = db[CollectionType.LOANS.value]
 
 lst_collections = db.list_collection_names()
 
@@ -24,6 +29,7 @@ def initialize_data(app):
     init_login_methods()
     init_transfer_methods()
     init_card_types()
+    init_loans()
 
 def init_accounts(app):
     if CollectionType.ACCOUNTS.value not in lst_collections:
@@ -102,3 +108,16 @@ def init_card_types():
 
         for type in lstTypes:
             card_types.insert_one(type.to_json())
+
+def init_loans():
+    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"])
+
+    if CollectionType.LOANS.value not in lst_collections:
+        lstLoans = [
+            Loan(id=1, owner=4, term=6, amount=1000000, interest_rate=5, due_date=dt.now() + relativedelta(months=6), createdBy=admin_id, modifiedBy=admin_id),
+            Loan(id=2, owner=4, term=12, amount=500000, interest_rate=8, due_date=dt.now() + relativedelta(months=12), createdBy=admin_id, modifiedBy=admin_id),
+        ]
+
+        for loan in lstLoans:
+            loans.insert_one(loan.to_json())

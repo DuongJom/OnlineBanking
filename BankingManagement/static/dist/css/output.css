@@ -1381,6 +1381,14 @@ select {
   grid-column: span 2 / span 2;
 }
 
+.col-span-1 {
+  grid-column: span 1 / span 1;
+}
+
+.col-span-3 {
+  grid-column: span 3 / span 3;
+}
+
 .float-end {
   float: inline-end;
 }
@@ -1679,10 +1687,6 @@ select {
   height: 2rem;
 }
 
-.h-96 {
-  height: 24rem;
-}
-
 .h-\[30px\] {
   height: 30px;
 }
@@ -1705,14 +1709,6 @@ select {
 
 .max-h-96 {
   max-height: 24rem;
-}
-
-.max-h-64 {
-  max-height: 16rem;
-}
-
-.max-h-9 {
-  max-height: 2.25rem;
 }
 
 .min-h-full {
@@ -1948,6 +1944,18 @@ select {
 
 .grid-cols-6 {
   grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.grid-cols-8 {
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
+.grid-cols-12 {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.grid-cols-9 {
+  grid-template-columns: repeat(9, minmax(0, 1fr));
 }
 
 .flex-row {
@@ -2190,6 +2198,11 @@ select {
   border-right-width: 1px;
 }
 
+.border-x-2 {
+  border-left-width: 2px;
+  border-right-width: 2px;
+}
+
 .border-b {
   border-bottom-width: 1px;
 }
@@ -2220,6 +2233,10 @@ select {
 
 .border-t-4 {
   border-top-width: 4px;
+}
+
+.border-l-2 {
+  border-left-width: 2px;
 }
 
 .border-dotted {
@@ -2669,6 +2686,10 @@ select {
 
 .text-center {
   text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .font-sans {

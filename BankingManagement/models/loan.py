@@ -21,6 +21,7 @@ class Loan(BaseModel):
         self.InterestRate = float(kwargs["interest_rate"]) if "interest_rate" in kwargs.keys() else 0
         self.DueDate = kwargs["due_date"] if "due_date" in kwargs.keys() else dt.now()
         self.Status = int(kwargs["status"]) if "status" in kwargs.keys() else LoanStatusType.ACTIVE.value
-
+        self.Term = int(kwargs["term"]) if "term" in kwargs.keys() else 6
+        
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

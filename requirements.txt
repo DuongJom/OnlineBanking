@@ -4,3 +4,4 @@ bson
 python-dotenv
 requests
 pandas
+python-dateutil

@@ -614,8 +614,7 @@ def unlock_card(id):
 @user_blueprint.route('/loan-management',methods=['GET'])
 def loan_management():
     account_id = int(session.get("account_id"))
-    account = accounts.find_one({"_id": account_id})
-    lst_loan = list(loans.find({"Owner": int(account["AccountOwner"])}))
+    lst_loan = list(loans.find({"Owner": account_id}))
     return render_template("/user/loan.html", loans=lst_loan)
 
 @user_blueprint.route('/settings-security',methods=['GET', 'POST'])
