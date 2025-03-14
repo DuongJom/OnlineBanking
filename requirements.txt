@@ -3,3 +3,4 @@ functools
 bson
 python-dotenv
 requests
+pandas

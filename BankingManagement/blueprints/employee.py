@@ -3,7 +3,7 @@ from bson import ObjectId
 from datetime import datetime, date
 
 from models import database
-from helpers import login_required, paginator
+from helpers.helpers import login_required, paginator
 from enums.month_type import MonthType
 
 

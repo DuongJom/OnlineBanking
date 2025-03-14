@@ -1,9 +1,9 @@
 from flask import Flask
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
-from datetime import datetime as dt
 from init_app import init
 from init_data import initialize_data
+from filters import currency_format, datetime_format, date_format, strip, format_date, format_card_number, format_id, currency_to_text
 
 app = Flask(__name__)
 app = init(app)
@@ -21,18 +21,15 @@ app.register_blueprint(employee.employee_blueprint)
 app.register_blueprint(admin.admin_blueprint)
 initialize_data(app)
 
-@app.template_filter()
-def currency_format(value):
-    if value is None:
-        value = 0
-    return "{:,.3f}".format(float(value))
-
-@app.template_filter()
-def datetime_format(value, format='%Y-%m-%d %H:%M:%S'):
-    if isinstance(value, dt):
-        return value.strftime(format)
-    value = dt.strptime(value, '%Y-%m-%dT%H:%M:%S.%f').strftime('%Y-%m-%d %H:%M:%S')
-    return value
+# Register the template filters
+app.jinja_env.filters['currency_format'] = currency_format
+app.jinja_env.filters['datetime_format'] = datetime_format
+app.jinja_env.filters['date_format'] = date_format
+app.jinja_env.filters['strip'] = strip
+app.jinja_env.filters['format_date'] = format_date
+app.jinja_env.filters['format_card_number'] = format_card_number
+app.jinja_env.filters['format_id'] = format_id
+app.jinja_env.filters['currency_to_text'] = currency_to_text
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,14 +1,19 @@
 import json
 
+from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.employee_role_type import EmployeeRoleType
+from enums.collection import CollectionType
+
+db = Database().get_db()
 
 class Employee(BaseModel):
     def __init__(self, **kwargs):
         created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
         modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        super().__init__(createdBy=created_by, modifiedBy=modified_by)
+        id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.EMPLOYEES.value)
         
         self.EmployeeName = str(kwargs["employeeName"]).strip() if "employeeName" in kwargs.keys() else None
         self.Position = kwargs["position"] if "position" in kwargs.keys() else None

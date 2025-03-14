@@ -1,5 +1,6 @@
 from enum import Enum
 
 class CardType(Enum):
-    CREDITS = 0
-    DEBITS = 1
+    CREDITS = 1
+    DEBITS = 2
+    MASTER_CARD = 3

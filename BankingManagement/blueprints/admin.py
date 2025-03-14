@@ -3,7 +3,7 @@ from bson import ObjectId
 from datetime import datetime
 
 from models import database
-from helpers import login_required
+from helpers.helpers import login_required
 
 admin_blueprint = Blueprint('admin', __name__)   
 
@@ -62,11 +62,11 @@ def account(page, id):
         if page == "add":
             return render_template('admin/account/add_account.html')
         elif page == "view" and id is not None:
-            account_id = ObjectId(id)
+            account_id = int(id)
             viewed_account = accounts.find_one({"_id": account_id})
             return render_template('admin/account/view_account.html', account = viewed_account)
         elif page == "edit" and id is not None:
-            account_id = ObjectId(id)
+            account_id = int(id)
             edited_account = accounts.find_one({"_id": account_id})
             return render_template('admin/account/edit_account.html', account = edited_account)
         return render_template('admin/account/account.html')
@@ -82,7 +82,7 @@ def user(page, id):
         if page == "view" and id is not None:
             expiredDate = None
             issuanceDate = None
-            user_id = ObjectId(id)
+            user_id = int(id)
             viewed_user = users.find_one({"_id": user_id})
             if viewed_user and viewed_user['Card']:
                 expiredDate = datetime.fromisoformat(viewed_user['Card']['ExpiredDate']).date()
@@ -92,7 +92,7 @@ def user(page, id):
                                    expiredDate = expiredDate, 
                                    issuanceDate = issuanceDate)
         elif page == "edit" and id is not None:
-            user_id = ObjectId(id)
+            user_id = int(id)
             edited_user = users.find_one({"_id": user_id}) 
             return render_template('admin/user/edit_user.html', user = edited_user)
         return render_template('admin/user/user.html')
@@ -106,11 +106,11 @@ def employee(page, id):
         if page == "add":
             return render_template('admin/employee/add_employee.html')
         elif page == "view" and id is not None:
-            employee_id = ObjectId(id)
+            employee_id = int(id)
             viewed_employee = users.find_one({"_id": employee_id})
             return render_template('admin/employee/view_employee.html', employee = viewed_employee)
         elif page == "edit" and id is not None:
-            employee_id = ObjectId(id)
+            employee_id = int(id)
             edited_employee = users.find_one({"_id": employee_id}) 
             return render_template('admin/employee/edit_employee.html', employee = edited_employee)
         return render_template('admin/employee/employee.html')
@@ -124,11 +124,11 @@ def branch(page, id):
         if page == "add":
             return render_template('admin/branch/add_branch.html')
         elif page == "view" and id is not None:
-            branch_id = ObjectId(id)
+            branch_id = int(id)
             viewed_branch = users.find_one({"_id": branch_id})
             return render_template('admin/branch/view_branch.html', branch = viewed_branch)
         elif page == "edit" and id is not None:
-            branch_id = ObjectId(id)
+            branch_id = int(id)
             edited_branch = users.find_one({"_id": branch_id}) 
             return render_template('admin/branch/edit_branch.html', branch = edited_branch)
         return render_template('admin/branch/branch.html')
@@ -148,6 +148,3 @@ def admin_news():
 def import_data():
     if request.method == 'GET':
         return render_template('admin/general/import.html')
-
-
-

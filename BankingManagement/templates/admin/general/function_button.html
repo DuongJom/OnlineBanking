@@ -10,9 +10,19 @@
         Import
     </button>
 
-    <button class="h-7 w-24 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar font-bold">
+    <button id="exportBtn" class="h-7 w-24 bg-side_bar_bg rounded-md text-white hover:bg-hover_side_bar font-bold">
         Export
     </button>
 
     {% include 'admin/general/import.html' %}
 </div>
+<script>
+    document.getElementById('exportBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        const ele_href = window.location.href.split('/');
+        const collection = ele_href[ele_href.length - 1];
+        fetch(`/admin/export-data/${collection}s`,{
+            method: 'GET'
+        })
+    })
+</script>
