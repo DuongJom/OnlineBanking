@@ -5,163 +5,140 @@
 {% endblock %}
 
 {% block content %}
-<div
-  class="z-1000 relative top-0 left-0 h-screen w-screen overflow-y-auto bg-popup-bg">
+<div class="relative h-screen overflow-y-auto flex justify-center items-center bg-green-50">
   <button
     onclick="goBack()"
-    class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
-    <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
+    class="absolute top-12 left-12 bg-green-600 z-10 h-12 w-12 rounded-full flex items-center hover:bg-green-700 transition duration-300">
+    <span class="material-symbols-outlined text-white absolute right-2">arrow_back_ios</span>
   </button>
 
-  <div class="w-11/12 bg-gradient-to-br from-green-200 to-green-700 absolute left-1/2 -translate-x-1/2 lg:top-1/2 lg:-translate-y-1/2 rounded-xl">
-    <div class="flex items-center w-full justify-center p-10 font-bold text-white">
+  <div class="w-11/12 max-w-5xl bg-gradient-to-br from-green-300 to-green-600 rounded-xl shadow-lg p-6">
+    <div class="flex items-center w-full justify-center mb-6 font-bold text-white">
       <img src="{{ url_for('static', filename='img/bank.png') }}" class="h-10 w-10 mr-5"/>
-      <h1>ADD NEW ACCOUNT</h1>
+      <h1 class="text-3xl">ADD NEW ACCOUNT</h1>
     </div>
-    <form class="h-full w-full flex lg:flex-row flex-col pb-10" action="{{ url_for('admin_account.add_account') }}" method="post">
-      <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
-      <div class="flex flex-1">
-        <div class="w-full flex flex-col items-center border-r-2r">
-          <div>
-            <h2 class="font-extrabold text-white mb-4">Address</h2>
+    <form class="flex flex-col lg:flex-row" action="{{ url_for('admin_account.add_account') }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />  
+
+      <!-- Address Information -->
+      <div class="flex-1 p-4 bg-white rounded-md shadow-md border border-green-300">
+        <h2 class="font-extrabold text-green-700 mb-4">Address</h2>
+        <div class="flex flex-col space-y-4">
+          <div class="flex flex-col w-full">
+            <label for="street" class="admin_label">Street</label>
+            <input type="text" name="street" id="street" class="admin_input" />
           </div>
 
-          <div class="flex flex-col w-4/5 space-y-4">
-            <div class="flex flex-col w-full">
-              <label for="street" class="admin_label">Street</label>
-              <input type="text" name="street" id="street" class="admin_input" />
-            </div>
+          <div class="flex flex-col w-full">
+            <label for="ward" class="admin_label">Ward</label>
+            <input type="text" name="ward" id="ward" class="admin_input" />
+          </div>
 
-            <div class="flex flex-col w-full">
-              <label for="ward" class="admin_label">Ward</label>
-              <input type="text" name="ward" id="ward" class="admin_input" />
-            </div>
+          <div class="flex flex-col w-full">
+            <label for="district" class="admin_label">District</label>
+            <input type="text" name="district" id="district" class="admin_input" />
+          </div>
 
-            <div class="flex flex-col w-full">
-              <label for="district" class="admin_label">District</label>
-              <input type="text" name="district" id="district" class="admin_input" />
-            </div>
+          <div class="flex flex-col w-full">
+            <label for="city" class="admin_label">City</label>
+            <input type="text" name="city" id="city" class="admin_input" />
+          </div>
 
-            <div class="flex flex-col w-full">
-              <label for="city" class="admin_label">City</label>
-              <input type="text" name="city" id="city" class="admin_input" />
-            </div>
-
-            <div class="flex flex-col w-full">
-              <label for="country" class="admin_label">Country</label>
-              <input type="text" name="country" id="country" class="admin_input" />
-            </div>
-
+          <div class="flex flex-col w-full">
+            <label for="country" class="admin_label">Country</label>
+            <input type="text" name="country" id="country" class="admin_input" />
           </div>
         </div>
       </div>
 
-
-      <!-- Account Information  -->
-      <div class="flex flex-1">
-        <div class="w-full flex flex-col items-center border-r-2r">
-          <div>
-            <h2 class="font-extrabold text-white mb-4">Account Information</h2>
+      <!-- Account Information -->
+      <div class="flex-1 p-4 bg-white rounded-md shadow-md border border-green-300 lg:ml-4 mt-4 lg:mt-0">
+        <h2 class="font-extrabold text-green-700 mb-4">Account Information</h2>
+        <div class="flex flex-col space-y-4">
+          <div class="flex flex-col w-full">
+            <label for="role" class="admin_label">Role</label>
+            <select id="role" class="admin_input" name="role" required>
+              {% for role in lst_role %}
+                <option value="{{role._id}}">{{role.RoleName}}</option>
+              {% endfor %}
+            </select>
           </div>
 
-          <div class="flex flex-col w-4/5 space-y-4">
-            <div class="flex flex-col w-full">
-              <label for="role" class="admin_label">Role</label>
-              <select id="role" class="admin_input" name="role" required>
-                {% for role in lst_role %}
-                  <option value="{{role._id}}">{{role.RoleName}}</option>
-                {% endfor %}
-              </select>
-            </div>
+          <div class="flex flex-col w-full">
+            <label for="branch" class="admin_label">Branch</label>
+            <select id="branch" class="admin_input" name="branch" required>
+              {% for branch in lst_branch %}
+                <option value="{{branch._id}}">{{branch.BranchName}}</option>
+              {% endfor %}
+            </select>
+          </div>
 
-            <div class="flex flex-col w-full">
-              <label for="branch" class="admin_label">Branch</label>
-              <select id="branch" class="admin_input" name="branch" required>
-                {% for branch in lst_branch %}
-                  <option value="{{branch._id}}">{{branch.BranchName}}</option>
-                {% endfor %}
-              </select>
+          <div class="flex flex-col w-full">
+            <h2 class="admin_label">Login Method</h2>
+            <div class="pl-5">
+              {% for method in lst_login_method %}
+                <div class="flex items-center">
+                  <input type="checkbox" value="{{method._id}}" name="loginMethod"/>
+                  <label class="ml-2">{{method.MethodName}}</label>
+                </div>
+              {% endfor %}
             </div>
+          </div>
 
-            <div class="flex w-full flex-col">
-              <div>
-                <h2 class="admin_label">Login Method</h2>
-              </div>
-              <div class="pl-5 text-white">
-                {% for method in lst_login_method %}
-                  <div>
-                    <input type="checkbox" value="{{method._id}}"  name="loginMethod"/>
-                    <label>{{method.MethodName}}</label>
-                  </div>
-                {% endfor %}
-              </div>
+          <div class="flex flex-col w-full">
+            <h2 class="admin_label">Transfer Method</h2>
+            <div class="pl-5">
+              {% for method in lst_transfer_method %}
+                <div class="flex items-center">
+                  <input type="checkbox" value="{{method._id}}" name="transferMethod"/>
+                  <label class="ml-2">{{method.MethodName}}</label>
+                </div>
+              {% endfor %}
             </div>
-
-            <div class="flex w-full flex-col">
-              <div>
-                <h2 class="admin_label">Tranfer Method</h2>
-              </div>
-              <div class="pl-5 text-white">
-                {% for method in lst_transfer_method %}
-                  <div>
-                    <input type="checkbox" value="{{method._id}}" name="transferMethod"/>
-                    <label>{{method.MethodName}}</label>
-                  </div>
-                {% endfor %}
-              </div>
-            </div>
-
           </div>
         </div>
       </div>
 
-      <!-- User -->
-      <div class="flex flex-1">
-        <div
-          class="w-full flex flex-col items-center justify-start border-r-2r">
-          <div>
-            <h2 class="font-extrabold text-white mb-4">Owner Information</h2>
+      <!-- Owner Information -->
+      <div class="flex-1 p-4 bg-white rounded-md shadow-md border border-green-300 lg:ml-4 mt-4 lg:mt-0">
+        <h2 class="font-extrabold text-green-700 mb-4">Owner Information</h2>
+        <div class="flex flex-col space-y-4">
+          <div class="flex flex-col w-full">
+            <label for="name" class="admin_label">Name</label>
+            <input type="text" name="name" id="name" class="admin_input" required/>
           </div>
 
-          <div class="flex flex-col w-4/5 space-y-4">
-            <div class="flex flex-col w-full">
-              <label for="name" class="admin_label">Name</label>
-              <input type="text" name="name" id="name" class="admin_input" required/>
-            </div>
+          <div class="flex flex-col w-full">
+            <label for="gender" class="admin_label">Gender</label>
+            <select id="gender" class="admin_input" name="gender" required>
+              <option value="0">Male</option>
+              <option value="1">Female</option>
+              <option value="2">Other</option>
+            </select>
+          </div>
 
-            <div class="flex flex-col w-full">
-              <label for="gender" class="admin_label">Gender</label>
-              <select id="gender" class="admin_input" name="gender" required>
-                <option value="0">Male</option>
-                <option value="1">Female</option>
-                <option value="2">Other</option>
-              </select>
-            </div>
+          <div class="flex flex-col w-full">
+            <label for="phone" class="admin_label">Phone</label>
+            <input type="text" name="phone" id="phone" class="admin_input" required/>
+          </div>
 
-            <div class="flex flex-col w-full">
-              <label for="phone" class="admin_label">Phone</label>
-              <input type="text" name="phone" id="phone" class="admin_input" required/>
-            </div>
+          <div class="flex flex-col w-full">
+            <label for="email" class="admin_label">Email</label>
+            <input type="email" name="email" id="email" class="admin_input" required/>
+          </div>
 
-            <div class="flex flex-col w-full">
-              <label for="email" class="admin_label">Email</label>
-              <input type="email" name="email" id="email" class="admin_input" required/>
-            </div>
-
-            <div class="flex justify-end pb-6">
-              <button
-                type="submit"
-                class="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-600 hover:to-purle-800 text-white font-semibold py-2 px-6 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-purle-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">
-                Create
-              </button>
-            </div>
+          <div class="flex justify-end pb-6">
+            <button
+              type="submit"
+              class="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-600 hover:to-green-800 text-white font-semibold py-2 px-6 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out">
+              Create
+            </button>
           </div>
         </div>
       </div>
     </form>
   </div>
 </div>
-<script
-  type="module"
-  src="{{ url_for('static', filename='js/admin/helpers.js') }}"></script>
+
+<script type="module" src="{{ url_for('static', filename='js/admin/helpers.js') }}"></script>
 {% endblock %}

@@ -1,17 +1,17 @@
 <div class="sm:ml-14 mb-2 sm:mb-0">
 
     {% if not 'user' in request.path %}
-    <button class="h-7 w-24 rounded-sm text-white font-bold bg-green-500 hover:rounded-lg duration-300">
+    <button class="text-white font-bold bg-green-500 hover:bg-green-300 duration-300 rounded-lg px-2 py-1 w-24 cursor-pointer">
         <a href="#" id="add_button">Add</a>
     </button>
     {% endif %}
 
-    <button class="h-7 w-24 bg-green-500 hover:rounded-lg text-white font-bold rounded-sm duration-300" 
+    <button class="bg-green-500 hover:bg-green-300 text-white font-bold duration-300 rounded-lg px-2 py-1 w-24 cursor-pointer" 
             id="openImportFormButton">
         Import
     </button>
 
-    <select class="h-7 w-28 bg-green-500 text-white p-0 pl-5 font-bold rounded-sm hover:rounded-lg duration-300"
+    <select class=" bg-green-500 hover:bg-green-300 text-white font-bold duration-300 rounded-lg px-2 py-1 w-24 cursor-pointer"
             onchange="export_data()"
             id="export-btn">
         <option disabled selected>Export</option>

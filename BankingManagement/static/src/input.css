@@ -43,15 +43,15 @@
         @apply px-6 py-2 whitespace-nowrap
     }
     .admin_input {
-        @apply w-full rounded-lg focus:outline-none focus:border-green-300 focus:ring-2 focus:ring-green-300
+        @apply focus:outline-none focus:border-green-300 focus:ring-2 focus:ring-green-300 rounded-md shadow-md p-3
     }
 
     .admin_label {
-        @apply text-white font-medium
+        @apply text-gray-700
     }
 
     .admin_readonly {
-        @apply w-full h-10 flex items-center rounded-md bg-gray-400 pl-3 text-white
+        @apply bg-gray-100 text-green-800 p-3 rounded-md shadow-md
     }
 
     .hightlight {

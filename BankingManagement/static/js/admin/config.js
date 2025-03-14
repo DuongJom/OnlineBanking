@@ -1,5 +1,6 @@
 export const tableStructure = {
   account: [
+    { name: "ID", isObject: false},
     { name: "Username", isObject: false},
     { name: "Account Number", isObject: false },
     { name: "Balance", isObject: false },

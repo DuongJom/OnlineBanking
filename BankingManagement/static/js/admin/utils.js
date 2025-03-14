@@ -174,16 +174,13 @@ const generateTableHeader = (table, lst_field, is_right_table) => {
     th.classList.add('admin_cell');
     tr.appendChild(th);
   })
-
   if (is_right_table) {
     const th = document.createElement('th');
     th.innerText = "Action";
     th.classList.add('admin_cell');
     tr.appendChild(th);
   }
-
   thead.classList.add('admin_thead');
-
   thead.appendChild(tr);
   table.appendChild(thead);
 }
@@ -197,11 +194,11 @@ const generateTableBody = (table, data_type, lst_field, lst_item, is_right_table
   } else {
     if(is_right_table) {
       lst_item.forEach(item => {
-        actual_lst_item.push(item.slice(4));
+        actual_lst_item.push(item.slice(3));
       })
     } else {
       lst_item.forEach(item => {
-        actual_lst_item.push(item.slice(1, 4));
+        actual_lst_item.push(item.slice(0, 3));
       })
     }
   }
@@ -209,13 +206,19 @@ const generateTableBody = (table, data_type, lst_field, lst_item, is_right_table
     const tr = document.createElement('tr');
     for (let i = 0; i < lst_field.length; i++) {
       const td = document.createElement('td');
-      if (lst_field[i]['isObject']) {
-        generateObjectSign(td);
-      }
       if (lst_field[i]['name'].includes("ID") && item[i] != null) {
+        td.classList.add('text-center');
         td.innerText = formatId(item[i], 5);
-      }else {
-        td.appendChild(document.createTextNode(item[i]));
+      }
+      else if (item[i] == null) {
+        td.innerHTML = "";
+      }
+      else if (lst_field[i]['name'].includes("Balance")) {
+        td.classList.add('text-right');
+        td.innerHTML = item[i];
+      }
+      else {
+        td.innerHTML = item[i];
       }
       td.classList.add('admin_cell');
       tr.appendChild(td);
@@ -235,24 +238,24 @@ const generateTableBody = (table, data_type, lst_field, lst_item, is_right_table
   table.appendChild(table_body);
 }
 
-const generateObjectSign = (cell) => {
-  const icon = document.createElement("div");
+// const generateObjectSign = (cell) => {
+//   const icon = document.createElement("div");
 
-  icon.innerHTML = "i";
-  icon.classList.add("font-bold");
-  icon.classList.add(
-    "w-5",
-    "h-5",
-    "bg-popup-bg",
-    "inline-block",
-    "rounded-full",
-    "text-center",
-    "leading-5",
-    "mr-3"
-  );
-  cell.appendChild(icon);
-  cell.classList.add("cursor-pointer", "hover:bg-light-green-200");
-}
+//   icon.innerHTML = "i";
+//   icon.classList.add("font-bold");
+//   icon.classList.add(
+//     "w-5",
+//     "h-5",
+//     "bg-popup-bg",
+//     "inline-block",
+//     "rounded-full",
+//     "text-center",
+//     "leading-5",
+//     "mr-3"
+//   );
+//   cell.appendChild(icon);
+//   cell.classList.add("cursor-pointer", "hover:bg-light-green-200");
+// }
 
 export {
     getFilterCondition,

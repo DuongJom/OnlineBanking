@@ -1,5 +1,5 @@
 <div class="flex mb-4">   
-    <label class="admin_label mr-4" for="status">Status</label>
+    <label class="mr-4 text-gray-700" for="status">Status</label>
     {% if account.IsDeleted == 0 %}
     <label class="inline-flex items-center me-5 cursor-pointer">
         <input type="hidden" value="{{ account.IsDeleted }}" name="status" id="status_input"/>
@@ -10,7 +10,7 @@
           peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 
           after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full 
           after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
-        <span class="ms-3 text-sm font-bold text-white dark:text-gray-300" id="status_text">Active</span>
+        <span class="ms-3 text-sm font-bold text-gray-700 dark:text-gray-300" id="status_text">Active</span>
     </label>
     {% else %}
     <label class="inline-flex items-center me-5 cursor-pointer">
@@ -21,7 +21,7 @@
           peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white
            after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600
             peer-checked:bg-teal-600"></div>
-        <span class="ms-3 text-sm font-bold text-white dark:text-gray-300" id="status_text">Inactive</span>
+        <span class="ms-3 text-sm font-bold text-gray-700 dark:text-gray-300" id="status_text">Inactive</span>
     </label>
     {% endif %}
 </div>

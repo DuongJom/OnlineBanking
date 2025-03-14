@@ -24,9 +24,9 @@
                 name="Role"
                 onchange="filter('account')">
                     <option value="" selected >All</option>
-                    <option value="2">Admin</option>
-                    <option value="1">Employee</option>
-                    <option value="0">User</option>
+                    <option value="3">Admin</option>
+                    <option value="2">Employee</option>
+                    <option value="1">User</option>
                 </select>
 
                 <div class="flex ml-5 min-w-32">   
@@ -49,22 +49,24 @@
        </div>
 
         <!-- pagination -->
-        <div id="pagination" class="flex flex-1 justify-end items-center fixed right-5 bottom-5">         
-            <button 
-                class="bg-green-500 h-7 w-12 hover:rounded-xl duration-300 
-                text-white flex items-center justify-center mr-4"
-                id="previous-btn">
-                <span class="material-symbols-outlined">arrow_left_alt</span>
-            </button>
-            <p id="location"></p>
-        
-            <button 
-                class="bg-green-500 h-7 w-12 hover:rounded-xl duration-300
-                text-white flex items-center justify-center ml-4"
-                id="next-btn">
-                <span class="material-symbols-outlined">arrow_right_alt</span>
-            </button>
-            
+        <div id="pagination" class="flex-1 fixed right-5 bottom-5 justify-end">    
+            <div class="relative flex w-40 justify-center items-center">
+                <button 
+                    class="bg-green-500 h-7 w-12 hover:rounded-xl duration-300 
+                    text-white flex items-center justify-center mr-4 absolute left-0"
+                    id="previous-btn">
+                    <span class="material-symbols-outlined">arrow_left_alt</span>
+                </button>
+                <div class="w-16 text-center">
+                    <p id="location"></p>
+                </div>
+                <button 
+                    class="bg-green-500 h-7 w-12 hover:rounded-xl duration-300
+                    text-white flex items-center justify-center ml-4 absolute right-0"
+                    id="next-btn">
+                    <span class="material-symbols-outlined">arrow_right_alt</span>
+                </button>
+            </div>     
         </div>
         
     </div>

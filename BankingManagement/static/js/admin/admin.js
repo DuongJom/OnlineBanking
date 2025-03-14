@@ -29,13 +29,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("There was a problem with loading the items:", error);
   }
 
+  if(localStorage.getItem('admin_maxPage') == 1) {
+    btnNext.classList.add('hidden');
+  } 
+  btnPrevious.classList.add('hidden');
+
   document.getElementById('cancel-btn').addEventListener('click', () => {
     document.getElementById('delete_modal').classList.add('hidden');
   })
 
   dynamicValue.addEventListener('keyup', function () {
     clearTimeout(timeout);
-
     timeout = setTimeout(function () {
       filter(dataType);
     }, 1000);
@@ -45,6 +49,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   btnPrevious.addEventListener("click", () => goPrevious(dataType));
   openImportFormBtn.addEventListener("click", () => openImportForm());
   closeImportFormBtn.addEventListener("click", () => closeImportForm());
-
 });
  

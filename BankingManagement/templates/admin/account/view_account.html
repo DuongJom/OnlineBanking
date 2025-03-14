@@ -5,85 +5,73 @@
 {% endblock %}
 
 {% block content %}
-<div
-  class="z-1000 relative top-0 left-0 h-screen w-screen overflow-y-auto bg-popup-bg">
+<div class="relative h-screen w-screen overflow-y-auto bg-green-50 flex items-center">
   <button
     onclick="goBack()"
-    class="absolute top-12 left-12 bg-popup-bg z-10 h-12 w-12 rounded-full flex items-center hover:bg-popup-bg-hover">
-    <span class="material-symbols-outlined absolute right-2">arrow_back_ios</span>
+    class="absolute top-12 left-12 bg-green-700 z-10 h-12 w-12 rounded-full flex items-center justify-center hover:bg-green-800 transition duration-300 shadow-lg">
+    <span class="material-symbols-outlined text-white absolute right-2">arrow_back_ios</span>
   </button>
 
-  <div class="w-11/12 bg-gradient-to-br from-green-200 to-green-700 absolute left-1/2 -translate-x-1/2 lg:top-1/2 lg:-translate-y-1/2 rounded-xl top-28">
-    <div class="flex items-center w-full justify-center p-10 font-bold text-white">
-      <img src="{{ url_for('static', filename='img/bank.png') }}" class="h-10 w-10 mr-5"/>
-      <h1>ACCOUNT INFO</h1>
+  <div class="w-11/12 max-w-4xl bg-gradient-to-br from-green-400 to-green-600 mx-auto rounded-xl shadow-2xl top-28 p-8">
+    <div class="flex items-center justify-center mb-6">
+      <img src="{{ url_for('static', filename='img/bank.png') }}" class="h-16 w-16 mr-3"/>
+      <h1 class="text-4xl font-bold text-white">Account Information</h1>
     </div>
-    <form class="h-full w-full flex lg:flex-row flex-col pb-10" action="{{ url_for('admin_account.add_account') }}" method="post">
-      <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
-      <!-- Account Information  -->
-      <div class="flex flex-1">
-        <div class="w-full flex flex-col items-center border-r-2r">
-          <div class="flex flex-col w-4/5 space-y-4">
-            <div class="flex flex-col w-full">
-              <label for="branch" class="admin_label">Branch</label>
-              <div class="admin_readonly">{{account.Branch_name}}</div>
-            </div>
+    
+    <form class="flex flex-col lg:flex-row" action="{{ url_for('admin_account.add_account') }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />  
 
-            <div class="flex w-full flex-col">
-              <div>
-                <h2 class="admin_label">Login Method</h2>
-              </div>
-              <ul class="pl-5 text-white list-disc">
-                {% for method in account.lst_login_method %}
-                  <li>
-                    {{method}}
-                  </li>
-                {% endfor %}
-                </ul>
-            </div>
+      <!-- Account Information -->
+      <div class="flex-1 p-4 bg-white rounded-lg shadow-md">
+        <h2 class="font-extrabold text-green-700 mb-4">Account Information</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="branch" class="admin_label">Branch</label>
+            <div class="admin_readonly">{{account.Branch_name}}</div>
+          </div>
 
-            <div class="flex w-full flex-col">
-              <div>
-                <h2 class="admin_label">Tranfer Method</h2>
-              </div>
-              <ul class="pl-5 text-white list-disc">
-                {% for method in account.lst_transfer_method %}
-                  <li>
-                    {{method}}
-                  </li>
-                {% endfor %}
-                </ul>
-            </div>
+          <div>
+            <h2 class="admin_label">Login Method</h2>
+            <ul class="pl-5 list-disc text-gray-700">
+              {% for method in account.lst_login_method %}
+                <li>{{method}}</li>
+              {% endfor %}
+            </ul>
+          </div>
 
+          <div>
+            <h2 class="admin_label">Transfer Method</h2>
+            <ul class="pl-5 list-disc text-gray-700">
+              {% for method in account.lst_transfer_method %}
+                <li>{{method}}</li>
+              {% endfor %}
+            </ul>
           </div>
         </div>
       </div>
 
-      <!-- User -->
-      <div class="flex flex-1">
-        <div class="w-full flex flex-col items-center justify-start border-r-2r">
+      <!-- User Information -->
+      <div class="flex-1 p-4 bg-white rounded-lg shadow-md lg:ml-4 mt-4 lg:mt-0">
+        <h2 class="font-extrabold text-green-700 mb-4">User  Information</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="admin_label">Username</label>
+            <div class="admin_readonly">{{account.Username}}</div>
+          </div>
 
+          <div>
+            <label class="admin_label">Owner</label>
+            <div class="admin_readonly">{{account.Owner_name}}</div>
+          </div>
 
-          <div class="flex flex-col w-4/5 space-y-4">
-            <div class="flex flex-col w-full">
-              <label class="admin_label">Username</label>
-              <div class="admin_readonly">{{account.Username}}</div>
-            </div>
+          <div>
+            <label class="admin_label">Role</label>    
+            <div class="admin_readonly">{{account.Role_name}}</div>
+          </div>
 
-            <div class="flex flex-col w-full">
-                <label class="admin_label">Owner</label>
-                <div class="admin_readonly">{{account.Owner_name}}</div>
-              </div>
-
-            <div class="flex flex-col w-full">
-                <label class="admin_label">Role</label>    
-                <div class="admin_readonly">{{account.Role_name}}</div>
-              </div>
-
-            <div class="flex flex-col w-full">
-              <label  class="admin_label">Account Number</label>
-              <div class="admin_readonly">{{account.AccountNumber}}</div>
-            </div>
+          <div>
+            <label class="admin_label">Account Number</label>
+            <div class="admin_readonly">{{account.AccountNumber}}</div>
           </div>
         </div>
       </div>

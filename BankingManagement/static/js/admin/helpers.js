@@ -28,10 +28,12 @@ const getAdminData = (page_no, data_type) => {
 };
 
 const renderTable = (data_type, lst_item) => {
-  const location = document.getElementById("location");
-  location.innerHTML = `${localStorage.getItem(
-    "admin_page"
-  )}/${localStorage.getItem("admin_maxPage")}`;
+  if (localStorage.getItem('admin_maxPage') != 1) {
+    const location = document.getElementById("location");
+    location.innerHTML = `${localStorage.getItem(
+      "admin_page"
+    )}/${localStorage.getItem("admin_maxPage")}`;
+  }
   const tables = document.querySelectorAll("table");
   tables.forEach((table) => {
     table.remove();
@@ -70,24 +72,28 @@ const renderTable = (data_type, lst_item) => {
 const goNext = async(data_type) => {
   var page = localStorage.getItem("admin_page");
   var max_page = localStorage.getItem("admin_maxPage");
-
   if (page < max_page) {
     page++;
     localStorage.setItem("admin_page", page);
     try {
       const data = await getAdminData(page, data_type);
-
       localStorage.setItem("admin_maxPage", data.total_pages);
       renderTable(data_type, data['items']);
     } catch (error) {
       console.error("There was a problem with loading the items:", error);
     }
   }
+  if (page == max_page) {
+    document.getElementById('next-btn').classList.add('hidden');
+  }
+  if (page == 2) {
+    document.getElementById('previous-btn').classList.remove('hidden');
+  }
+
 }
 
 const goPrevious = async(data_type, page) => {
   var page = localStorage.getItem("admin_page");
-
   if (page > 1) {
     page--;
     localStorage.setItem("admin_page", page);
@@ -98,7 +104,15 @@ const goPrevious = async(data_type, page) => {
     } catch (error) {
       console.error("There was a problem with loading the items:", error);
     }
+  } 
+  if (page == 1) {
+    document.getElementById('previous-btn').classList.add('hidden');
+  } 
+
+  if (page == (localStorage.getItem('admin_maxPage') - 1)) {
+    document.getElementById('next-btn').classList.remove('hidden');
   }
+  
 }
 
 const decide_button_type = (data_type) => {
