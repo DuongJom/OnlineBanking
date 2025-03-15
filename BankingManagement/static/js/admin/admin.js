@@ -4,7 +4,7 @@ import {
   goNext,
   goPrevious,
   adjustTableMargin,
-  decide_button_type,
+  setAddUrl,
   openImportForm,
   closeImportForm,
 } from "./helpers.js";
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let timeout = null;
   window.addEventListener("resize", adjustTableMargin);
   localStorage.setItem("admin_page", 1);
-  decide_button_type(dataType);
+  setAddUrl(dataType);
   try {
     localStorage.setItem("filterCondition", JSON.stringify({IsDeleted: 0}));
     const data = await getAdminData(1, dataType);

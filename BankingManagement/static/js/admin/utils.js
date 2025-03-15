@@ -1,100 +1,119 @@
-const ID_INDEX = 0
-const OBJECT_NAME_INDEX = 1
+const ID_INDEX = 0;
+const OBJECT_NAME_INDEX = 1;
 
-function formatId(id, length) {
-  return String(id).padStart(length, '0');
-}
+const FileExtension = Object.freeze({
+  EXCEL: "xlsx",
+  CSV: "csv",
+  JSON: "json"
+});
 
-window.export_data = function() {
-    const exportBtn = document.getElementById("export-btn");
-    const data_type = document.getElementById("dataType").value;
-    const file_type = exportBtn.value;
-    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+const FileType = Object.freeze({
+  EXCEL: 3,
+  JSON: 16,
+  CSV: 17
+});
 
-    fetch(`/admin/export_data/${data_type}`, {
-        method: 'POST',
-        headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrfToken,
-        },
-        body: JSON.stringify({
-        filter: JSON.parse(localStorage.getItem("filterCondition")),
-        file_type: file_type
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
+const ActionType = Object.freeze({
+  VIEW: "visibility",
+  EDIT: "edit",
+  DELETE: "delete"
+});
+
+const formatId = (id, length) => {
+  return String(id).padStart(length, "0");
+};
+
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat("en-US").format(value);
+};
+
+window.export_data = () => {
+  const exportBtn = document.getElementById("export-btn");
+  const data_type = document.getElementById("dataType").value;
+  const file_type = exportBtn.value;
+  const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+  fetch(`/admin/export_data/${data_type}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
+    },
+    body: JSON.stringify({
+      filter: JSON.parse(localStorage.getItem("filterCondition")),
+      file_type: file_type,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
         throw new Error(`Failed to fetch data: ${response.statusText}`);
-        }
-        return response.blob();
+      }
+      return response.blob();
     })
-    .then(blob => {
-        if (blob.size === 0) {
-        throw new Error('The file is empty. No data to download.');
-        }
+    .then((blob) => {
+      if (blob.size === 0) {
+        throw new Error("The file is empty. No data to download.");
+      }
 
-        // Create the download URL for the blob
-        const downloadUrl = window.URL.createObjectURL(blob);
+      // Create the download URL for the blob
+      const downloadUrl = window.URL.createObjectURL(blob);
 
-        // Determine file extension based on file type
-        let ext = '';
-        if (file_type == '3') {
-        ext = '.xlsx';
-        } else if (file_type == '16') {
-        ext = '.json';
-        } else {
-        ext = '.csv';
-        }
+      // Determine file extension based on file type
+      let ext = FileExtension.CSV;
+      if (file_type == FileType.EXCEL) {
+        ext = FileExtension.EXCEL;
+      } else if (file_type == FileType.JSON) {
+        ext = FileExtension.JSON;
+      }
 
-        // Create the file name using the current timestamp
-        const fileName = "data_" + new Date().toISOString() + ext;
+      // Create the file name using the current timestamp
+      const fileName = `data_${data_type}_${new Date().toISOString()}.${ext}`;
 
-        // Create a temporary <a> tag to trigger download
-        const a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+      // Create a temporary <a> tag to trigger download
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
 
-        // Cleanup the created Object URL
-        window.URL.revokeObjectURL(downloadUrl);
+      // Cleanup the created Object URL
+      window.URL.revokeObjectURL(downloadUrl);
     })
-    .catch(error => {
-        // Display the error message if something goes wrong
-        console.error("An error occurred:", error);
-        alert(`Failed to download the file: ${error.message}`);
+    .catch((error) => {
+      // Display the error message if something goes wrong
+      console.error("An error occurred:", error);
+      alert(`Failed to download the file: ${error.message}`);
     });
-}
+};
 
 const getFilterCondition = () => {
-const dynamicKey = document.getElementById("dynamicKey").value; 
-const dynamicValue = document.getElementById("dynamicValue").value; 
-const status_value = document.getElementById("status_input").value;
+  const dynamicKey = document.getElementById("dynamicKey").value;
+  const dynamicValue = document.getElementById("dynamicValue").value;
+  const status_value = document.getElementById("status_input").value;
+  let filterCondition = {};
 
-let filterCondition = {};
+  try {
+    const fixedCondition = [
+      ...document.getElementsByClassName("fixedCondition"),
+    ];
 
-try {
-    const fixedCondition = [...document.getElementsByClassName("fixedCondition")];
-    fixedCondition.map(con => {
-    if(con.value !== "") {
+    fixedCondition.map((con) => {
+      if (con.value.toString().trim().length !== 0) {
         filterCondition[con.name] = con.value;
-    }
-    })
-
-}
-catch(error) {
+      }
+    });
+  } catch (error) {
     console.log(error.message);
-}
+  }
 
-if (dynamicValue !== "" && dynamicKey !== "") {
-    filterCondition[dynamicKey] = {$regex: `^${dynamicValue}`, $options: 'i'};
-}
+  if (dynamicValue.toString().trim().length !== 0 && dynamicKey.toString().trim().length !== 0) {
+    filterCondition[dynamicKey] = { $regex: `^${dynamicValue}`, $options: "i" };
+  }
 
-filterCondition["IsDeleted"] = status_value;
-
-localStorage.setItem("filterCondition", JSON.stringify(filterCondition));
-}
+  filterCondition["IsDeleted"] = status_value;
+  localStorage.setItem("filterCondition", JSON.stringify(filterCondition));
+};
 
 const renderDeleteModal = (id, object_name, data_type) => {
   const page = localStorage.getItem("admin_page");
@@ -104,15 +123,15 @@ const renderDeleteModal = (id, object_name, data_type) => {
   const page_input = document.createElement("input");
   page_input.value = page;
   page_input.name = "current_page";
-  page_input.classList.add('hidden');
+  page_input.classList.add("hidden");
 
   deleteConfirmMessage.innerHTML = `Are you sure you want to delete <b style="color:red">${object_name}</b>?`;
   delete_modal.classList.remove("hidden");
   delete_modal.classList.add("flex");
 
-  deleteForm.action = `/admin/${data_type}/delete/${id}`
+  deleteForm.action = `/admin/${data_type}/delete/${id}`;
   deleteForm.appendChild(page_input);
-}
+};
 
 const generateActionButton = (row, _id, data_type, object_name) => {
   // UI for action button
@@ -130,135 +149,131 @@ const generateActionButton = (row, _id, data_type, object_name) => {
   div.classList.add("flex", "justify-center");
 
   btn_list.forEach((btn) => {
-      const span = document.createElement("span");
+    const span = document.createElement("span");
 
-      btn.classList.add("flex", "items-center", "justify-center");
-      span.classList.add(
+    btn.classList.add("flex", "items-center", "justify-center");
+    span.classList.add(
       "material-symbols-outlined",
       "hover:bg-gray-500",
       "rounded",
       "cursor-pointer"
-      );
+    );
 
-      span.style.fontWeight = "300";
-      span.innerHTML = icon_list[i];
-      btn.appendChild(span);
-      div.appendChild(btn);
+    span.style.fontWeight = "300";
+    span.innerHTML = icon_list[i];
+    btn.appendChild(span);
+    div.appendChild(btn);
 
-      switch (icon_list[i]) {
-      case "visibility":
-          btn.href = `/admin/${data_type}/view/${_id}`;
-          break;
-      case "edit":
-          btn.href = `/admin/${data_type}/edit/${_id}`;
-          break;
-      case "delete":
-          btn.addEventListener("click", () => {
+    switch (icon_list[i]) {
+      case ActionType.VIEW:
+        btn.href = `/admin/${data_type}/view/${_id}`;
+        break;
+      case ActionType.EDIT:
+        btn.href = `/admin/${data_type}/edit/${_id}`;
+        break;
+      case ActionType.DELETE:
+        btn.addEventListener("click", () => {
           renderDeleteModal(_id, object_name, data_type);
-          });
-          break;
-      }
-      i++;
+        });
+        break;
+    }
+    i++;
   });
 
-      action_cell.appendChild(div);
-      row.appendChild(action_cell);
-}
+  action_cell.appendChild(div);
+  row.appendChild(action_cell);
+};
 
 const generateTableHeader = (table, lst_field, is_right_table) => {
-  const thead = document.createElement('thead');
-  const tr = document.createElement('tr');
+  const thead = document.createElement("thead");
+  const tr = document.createElement("tr");
+
   lst_field.forEach((field) => {
-    const th = document.createElement('th');
-    th.innerText = field['name'];
-    th.classList.add('admin_cell');
+    const th = document.createElement("th");
+    th.innerText = field["name"];
+    th.classList.add("admin_cell");
     tr.appendChild(th);
-  })
+  });
+
   if (is_right_table) {
-    const th = document.createElement('th');
+    const th = document.createElement("th");
     th.innerText = "Action";
-    th.classList.add('admin_cell');
+    th.classList.add("admin_cell");
     tr.appendChild(th);
   }
-  thead.classList.add('admin_thead');
+
+  thead.classList.add("admin_thead");
   thead.appendChild(tr);
   table.appendChild(thead);
-}
+};
 
 const generateTableBody = (table, data_type, lst_field, lst_item, is_right_table) => {
-  const table_body = document.createElement('tbody');
+  const table_body = document.createElement("tbody");
   let count = 0;
   let actual_lst_item = [];
+
   if (lst_field.length <= 3 && is_right_table) {
     actual_lst_item = lst_item.slice(0);
-  } else {
-    if(is_right_table) {
-      lst_item.forEach(item => {
+  } 
+  else {
+    if (is_right_table) {
+      lst_item.forEach((item) => {
         actual_lst_item.push(item.slice(3));
-      })
-    } else {
-      lst_item.forEach(item => {
+      });
+    } 
+    else {
+      lst_item.forEach((item) => {
         actual_lst_item.push(item.slice(0, 3));
-      })
+      });
     }
   }
+
   actual_lst_item.forEach((item) => {
-    const tr = document.createElement('tr');
+    const tr = document.createElement("tr");
+
     for (let i = 0; i < lst_field.length; i++) {
-      const td = document.createElement('td');
-      if (lst_field[i]['name'].includes("ID") && item[i] != null) {
-        td.classList.add('text-center');
+      const td = document.createElement("td");
+
+      if (lst_field[i]["isObjectId"] && item[i] != null) {
+        td.classList.add("text-center");
         td.innerText = formatId(item[i], 5);
-      }
+      } 
       else if (item[i] == null) {
         td.innerHTML = "";
-      }
-      else if (lst_field[i]['name'].includes("Balance")) {
-        td.classList.add('text-right');
-        td.innerHTML = item[i];
-      }
+      } 
+      else if (lst_field[i]["isNumberFormat"]) {
+        td.classList.add("text-right");
+        // Format balance value as currency using JavaScript
+        td.innerHTML = formatCurrency(item[i]);
+      } 
       else {
         td.innerHTML = item[i];
       }
-      td.classList.add('admin_cell');
+
+      td.classList.add("admin_cell");
       tr.appendChild(td);
     }
-    if(count % 2 != 0) {
-      tr.classList.add('bg-green-200');
-    }
+
+    if (count % 2 !== 0) {
+      tr.classList.add("bg-green-200");
+    } 
     else {
-      tr.classList.add('bg-white');
+      tr.classList.add("bg-white");
     }
-    if(is_right_table) {
-      generateActionButton(tr, lst_item[count][ID_INDEX], data_type, lst_item[count][OBJECT_NAME_INDEX])
+
+    if (is_right_table) {
+      generateActionButton(tr, lst_item[count][ID_INDEX], data_type, lst_item[count][OBJECT_NAME_INDEX]);
     }
+
     table_body.appendChild(tr);
     count++;
-  })
+  });
+
   table.appendChild(table_body);
-}
+};
 
-// const generateObjectSign = (cell) => {
-//   const icon = document.createElement("div");
-
-//   icon.innerHTML = "i";
-//   icon.classList.add("font-bold");
-//   icon.classList.add(
-//     "w-5",
-//     "h-5",
-//     "bg-popup-bg",
-//     "inline-block",
-//     "rounded-full",
-//     "text-center",
-//     "leading-5",
-//     "mr-3"
-//   );
-//   cell.appendChild(icon);
-//   cell.classList.add("cursor-pointer", "hover:bg-light-green-200");
-// }
-
-export {
-    getFilterCondition,
-    generateTableBody,
-    generateTableHeader,
-}
+export { 
+  getFilterCondition, 
+  generateTableBody, 
+  generateTableHeader 
+};

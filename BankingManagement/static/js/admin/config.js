@@ -1,16 +1,16 @@
 export const tableStructure = {
   account: [
-    { name: "ID", isObject: false},
-    { name: "Username", isObject: false},
-    { name: "Account Number", isObject: false },
-    { name: "Balance", isObject: false },
-    { name: "Owner ID", isObject: false },
-    { name: "Owner", isObject: true},
-    { name: "Branch ID", isObject: false},
-    { name: "Branch", isObject: true},
-    { name: "Role", isObject: false },
-    { name: "Transfer Method", isObject: false},
-    { name: "Login Method", isObject: false}
+    { name: "ID", isObject: false, isObjectId: true, isNumberFormat: false },
+    { name: "Username", isObject: false, isObjectId: false, isNumberFormat: false },
+    { name: "Account Number", isObject: false, isObjectId: false, isNumberFormat: false },
+    { name: "Balance", isObject: false, isObjectId: false, isNumberFormat: true },
+    { name: "Owner ID", isObject: false, isObjectId: true, isNumberFormat: false },
+    { name: "Owner", isObject: true, isObjectId: false, isNumberFormat: false },
+    { name: "Branch ID", isObject: false, isObjectId: true, isNumberFormat: false },
+    { name: "Branch", isObject: true, isObjectId: false, isNumberFormat: false },
+    { name: "Role", isObject: false, isObjectId: false, isNumberFormat: false },
+    { name: "Transfer Method", isObject: false, isObjectId: false, isNumberFormat: false },
+    { name: "Login Method", isObject: false, isObjectId: false, isNumberFormat: false }
   ],
   user: [
     { key: "Name", name: "Name", isObject: false },

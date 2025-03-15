@@ -1,7 +1,7 @@
 const dataType = document.getElementById("dataType").value;
 var excelFile = null;
 
-function getLogType(logType, row_index, log) {
+const getLogType = (logType, row_index, log) => {
     let icon = 'check_circle.svg';
     if(logType == "error") {
         icon = "error.svg";
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
 });
 
-function handleImportResponse(logs, total, success) {
+const handleImportResponse = (logs, total, success) => {
 
     const result_panel = document.getElementById("import_result");
     const logs_panel = document.getElementById("response_logs");
@@ -65,7 +65,7 @@ function handleImportResponse(logs, total, success) {
     importForm.classList.add('hidden');
 }
 
-window.importData = function() {
+window.importData = () => {
     const csrfToken = document.querySelector('input[name="csrf_token"]').value;
     let url = 'import';
     const formData = new FormData();

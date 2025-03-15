@@ -115,7 +115,7 @@ const goPrevious = async(data_type, page) => {
   
 }
 
-const decide_button_type = (data_type) => {
+const setAddUrl = (data_type) => {
   const addBtn = document.getElementById("add_button");
 
   if(addBtn != null)
@@ -168,7 +168,7 @@ export {
   goNext,
   goPrevious,
   adjustTableMargin,
-  decide_button_type,
+  setAddUrl,
   openImportForm,
   closeImportForm,
 };
