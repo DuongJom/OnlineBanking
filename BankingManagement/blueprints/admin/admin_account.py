@@ -1,25 +1,31 @@
-from flask import Blueprint, request, jsonify, render_template, flash, redirect, session, url_for, send_file
 import json
 import pandas as pd
+from flask import Blueprint, jsonify, render_template, flash, redirect, url_for, send_file, request, session
 from io import BytesIO
 
 from helpers.helpers import login_required, issue_new_card, get_max_id, generate_login_info, send_email, get_file_extension
 from helpers.admin import get_account, create_accounts, generate_export_data
-from models import database, card as model_card, user, account
-from enums import deleted_type, collection, card_type, file_type, collection
+from models.database import Database
+from models.card import Card
+from models.user import User
+from models.account import Account
+from enums.deleted_type import DeletedType
+from enums.collection import CollectionType
+from enums.card_type import CardType
+from enums.file_type import FileType
 from message import messages_success, messages_failure
 from app import app, mail
 
 admin_account_blueprint = Blueprint('admin_account', __name__)
 
-db = database.Database().get_db()
-accounts = db[collection.CollectionType.ACCOUNTS.value]
-login_methods = db[collection.CollectionType.LOGIN_METHODS.value]
-transfer_methods = db[collection.CollectionType.TRANSFER_METHODS.value]
-users = db[collection.CollectionType.USERS.value]
-branches = db[collection.CollectionType.BRANCHES.value]
-roles = db[collection.CollectionType.ROLES.value]
-cards = db[collection.CollectionType.CARDS.value]
+db = Database().get_db()
+accounts = db[CollectionType.ACCOUNTS.value]
+login_methods = db[CollectionType.LOGIN_METHODS.value]
+transfer_methods = db[CollectionType.TRANSFER_METHODS.value]
+users = db[CollectionType.USERS.value]
+branches = db[CollectionType.BRANCHES.value]
+roles = db[CollectionType.ROLES.value]
+cards = db[CollectionType.CARDS.value]
 
 @admin_account_blueprint.route('/admin/account/<int:page_no>', methods=['GET'])
 @login_required
@@ -28,9 +34,7 @@ def admin_account(page_no):
         if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
             criteria = json.loads(request.args.get('criteria'))
             for key, value in criteria.items():
-                if isinstance(value, str) and value.isdigit(): 
-                    criteria[key] = int(value)
-                elif isinstance(value, (int, float)):  
+                if (isinstance(value, str) and value.isdigit()) or isinstance(value, (int, float)): 
                     criteria[key] = int(value)
 
             items_per_page = 10
@@ -38,76 +42,87 @@ def admin_account(page_no):
             total_pages = (total_documents + items_per_page - 1) // items_per_page
             
             pipeline = [
-                {"$match": criteria},
-                {"$skip": (page_no - 1) * items_per_page},
-                {"$limit": items_per_page},
-
-                {"$lookup": {
-                    "from": "login_methods",
-                    "localField": "LoginMethod",
-                    "foreignField": "_id",
-                    "as": "login_method_docs"
-                }},
-                {"$lookup": {
-                    "from": "transfer_methods",
-                    "localField": "TransferMethod",
-                    "foreignField": "_id",
-                    "as": "transfer_method_docs"
-                }},
-                {"$lookup": {
-                    "from": "users",
-                    "localField": "AccountOwner",
-                    "foreignField": "_id",
-                    "as": "owner_doc"
-                }},
-                {"$lookup": {
-                    "from": "branches",
-                    "localField": "Branch",
-                    "foreignField": "_id",
-                    "as": "branch_doc"
-                }},
-                {"$lookup": {
-                    "from": "roles",
-                    "localField": "Role",
-                    "foreignField": "_id",
-                    "as": "role_doc"
-                }},
-                
-                {"$project": {
-                    "_id": 1,
-                    "Username": 1,
-                    "Account_number": "$AccountNumber",
-                    "Balance": "$Balance",
-                    "Owner_ID": "$AccountOwner",
-                    "Owner_name": {
-                        "$ifNull": [{"$arrayElemAt": ["$owner_doc.Name", 0]}, None]
-                    },
-                    "Branch_ID": "$Branch",
-                    "Branch_name": {
-                        "$ifNull": [{"$arrayElemAt": ["$branch_doc.BranchName", 0]}, None]
-                    },
-                    "Role_name": {
-                        "$ifNull": [{"$arrayElemAt": ["$role_doc.RoleName", 0]}, None]
-                    },
-                    "lst_login_method": {
-                        "$ifNull": [{
-                            "$map": {
-                                "input": "$login_method_docs",
-                                "as": "method",
-                                "in": "$$method.MethodName"
-                            }
-                        }, []]
-                    },
-                    "lst_transfer_method": {
-                        "$ifNull": [{
-                            "$map": {
-                                "input": "$transfer_method_docs",
-                                "as": "method",
-                                "in": "$$method.MethodName"
-                            }
-                        }, []]
+                { "$match": criteria },
+                { "$skip": (page_no - 1) * items_per_page },
+                { "$limit": items_per_page },
+                { 
+                    "$lookup": {
+                        "from": "login_methods",
+                        "localField": "LoginMethod",
+                        "foreignField": "_id",
+                        "as": "login_method_docs"
                     }
-                }}
+                },
+                {
+                    "$lookup": {
+                        "from": "transfer_methods",
+                        "localField": "TransferMethod",
+                        "foreignField": "_id",
+                        "as": "transfer_method_docs"
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "users",
+                        "localField": "AccountOwner",
+                        "foreignField": "_id",
+                        "as": "owner_doc"
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "branches",
+                        "localField": "Branch",
+                        "foreignField": "_id",
+                        "as": "branch_doc"
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "roles",
+                        "localField": "Role",
+                        "foreignField": "_id",
+                        "as": "role_doc"
+                    }
+                },
+                
+                {
+                    "$project": {
+                        "_id": 1,
+                        "Username": 1,
+                        "Account_number": "$AccountNumber",
+                        "Balance": "$Balance",
+                        "Owner_ID": "$AccountOwner",
+                        "Owner_name": {
+                            "$ifNull": [{"$arrayElemAt": ["$owner_doc.Name", 0]}, None]
+                        },
+                        "Branch_ID": "$Branch",
+                        "Branch_name": {
+                            "$ifNull": [{"$arrayElemAt": ["$branch_doc.BranchName", 0]}, None]
+                        },
+                        "Role_name": {
+                            "$ifNull": [{"$arrayElemAt": ["$role_doc.RoleName", 0]}, None]
+                        },
+                        "lst_login_method": {
+                            "$ifNull": [{
+                                "$map": {
+                                    "input": "$login_method_docs",
+                                    "as": "method",
+                                    "in": "$$method.MethodName"
+                                }
+                            }, []]
+                        },
+                        "lst_transfer_method": {
+                            "$ifNull": [{
+                                "$map": {
+                                    "input": "$transfer_method_docs",
+                                    "as": "method",
+                                    "in": "$$method.MethodName"
+                                }
+                            }, []]
+                        }
+                    }
+                }
             ]            
             lst_results = [list(item.values()) for item in list(accounts.aggregate(pipeline))]
             return jsonify({'items': lst_results, 'total_pages': total_pages})
@@ -117,7 +132,7 @@ def admin_account(page_no):
 @login_required
 def view_account(id):
     account = get_account(id)
-    return render_template('admin/account/view_account.html', account = account, is_hidden=True)
+    return render_template('admin/account/view_account.html', account = account, is_hidden = True)
     
 @admin_account_blueprint.route('/admin/account/new', methods=['GET', 'POST'])
 @login_required
@@ -132,7 +147,8 @@ def add_account():
                                lst_login_method = lst_login_method,
                                lst_role = lst_role,
                                lst_branch = lst_branch,
-                               is_hidden=True)
+                               is_hidden = True)
+    
     try:
         log_in_id = session.get("account_id")
         card_info = issue_new_card()
@@ -166,49 +182,60 @@ def add_account():
             flash(error_message, 'error')
             return redirect("/admin/account/new")
         
-        new_card_id = get_max_id(database=db, collection_name=collection.CollectionType.CARDS.value)
-        new_card = model_card.Card(
-            id=new_card_id, 
-            cardNumber=card_info['cardNumber'], 
-            cvv=card_info['cvvNumber'], 
-            type=card_type.CardType.CREDITS.value,
+        new_card_id = get_max_id(database=db, collection_name=CollectionType.CARDS.value)
+        new_card = Card(
+            id = new_card_id, 
+            cardNumber = card_info['cardNumber'], 
+            cvv = card_info['cvvNumber'], 
+            type = CardType.CREDITS.value,
             createdBy = log_in_id
         )
 
-        new_user_id = get_max_id(database=db, collection_name=collection.CollectionType.USERS.value)
-        new_user = user.User(
-            id=new_user_id, 
-            name=name, 
-            sex=int(sex), 
-            address=address.strip(), 
-            phone=phone, 
-            email=email, 
-            card=[new_card_id,],
+        new_user_id = get_max_id(database=db, collection_name=CollectionType.USERS.value)
+        new_user = User(
+            id = new_user_id, 
+            name = name, 
+            sex = int(sex), 
+            address = address.strip(), 
+            phone = phone, 
+            email = email, 
+            card = [new_card_id,],
             createdBy = log_in_id
         )
 
         login_info = generate_login_info(email, phone)
-        new_account_id = get_max_id(database=db, collection_name=collection.CollectionType.ACCOUNTS.value)
-        new_account = account.Account(
-            id=new_account_id,
-            accountNumber=card_info['accountNumber'], 
-            branch=int(branch), 
-            user=new_user_id, 
-            username=login_info['Username'], 
-            password=login_info['Password'], 
-            role=int(role), 
-            transferMethod=transfer_method_ids, 
-            loginMethod=login_method_ids,
+        new_account_id = get_max_id(database=db, collection_name=CollectionType.ACCOUNTS.value)
+        new_account = Account(
+            id = new_account_id,
+            accountNumber = card_info['accountNumber'], 
+            branch = int(branch), 
+            user = new_user_id, 
+            username = login_info['Username'], 
+            password = login_info['Password'], 
+            role = int(role), 
+            transferMethod = transfer_method_ids, 
+            loginMethod = login_method_ids,
             createdBy = log_in_id
         )
         cards.insert_one(new_card.to_json())
         users.insert_one(new_user.to_json())
         accounts.insert_one(new_account.to_json())
 
-        html = render_template('email/send_login_info.html', username = login_info['Username'], password = login_info['Password'])
+        html = render_template(
+            'email/send_login_info.html', 
+            username = login_info['Username'], 
+            password = login_info['Password']
+        )
         attachments = [{'path': './static/img/bank.png', 'filename':'bank.png', 'mime_type': 'image/png'}]
         subject = "Send login information"
-        send_email(app=app, mail=mail, recipients=[email], subject=subject, html=html, attachments=attachments)
+        send_email(
+            app = app, 
+            mail = mail, 
+            recipients = [email], 
+            subject = subject, 
+            html = html, 
+            attachments = attachments
+        )
         flash(messages_success['register_success'].format(email), 'success')
     except Exception:
         flash(messages_failure['internal_error'], 'error')
@@ -221,9 +248,13 @@ def delete_account(id):
         account = accounts.find_one({"_id": id})
         current_page = request.form["current_page"]
         accounts.update_one(
-            {'_id': id},
-            {"$set": {"IsDeleted": deleted_type.DeletedType.DELETED.value}
-        })      
+            { '_id': id },
+            {
+                "$set": {
+                    "IsDeleted": DeletedType.DELETED.value
+                }
+            }
+        )      
         flash(messages_success['delete_success'].format(account["Username"]), 'success')  
     except Exception:
           flash(messages_failure['internal_error'], 'error')
@@ -245,7 +276,7 @@ def edit_account(id):
                                lst_login_method = lst_login_method,
                                lst_transfer_method = lst_transfer_method,
                                lst_role = lst_role,
-                               is_hidden=True)
+                               is_hidden = True)
     try:
         log_in_id = int(session.get("account_id"))
         new_role = int(request.form['role'])
@@ -255,15 +286,17 @@ def edit_account(id):
         new_status = int(request.form['status'])
 
         accounts.update_one(
-            {'_id': id},
-            {"$set": {
-                "Role": new_role,
-                "LoginMethod": lst_new_login_method,
-                "TransferMethod": lst_new_transfer_method,
-                "Branch": new_branch,
-                "IsDeleted": new_status,
-                "ModifiedBy": log_in_id
-            }}
+            { '_id': id },
+            {
+                "$set": {
+                    "Role": new_role,
+                    "LoginMethod": lst_new_login_method,
+                    "TransferMethod": lst_new_transfer_method,
+                    "Branch": new_branch,
+                    "IsDeleted": new_status,
+                    "ModifiedBy": log_in_id
+                }
+            }
         )
 
         flash(messages_success["update_success"].format("Account"), 'success')
@@ -278,9 +311,9 @@ def import_data():
     file = request.files['file']
     ext = get_file_extension(file.filename)
 
-    if ext == file_type.FileType.CSV.value:
+    if ext == FileType.CSV.value:
         df = pd.read_csv(BytesIO(file.read()))
-    elif ext == file_type.FileType.XLSX.value:
+    elif ext == FileType.XLSX.value:
         df = pd.read_excel(BytesIO(file.read()), engine='openpyxl')     
          
     data = df.to_dict(orient='records')
@@ -288,18 +321,10 @@ def import_data():
     res = create_accounts(data)
     return jsonify(res) 
 
-@admin_account_blueprint.route('/admin/export_data/<dataType>', methods=['POST'])
+@admin_account_blueprint.route('/admin/export_data/<data_type>', methods=['POST'])
 @login_required
-def export_data(dataType):
+def export_data(data_type):
     filters = request.json.get('filter')
     file_type = request.json.get('file_type')
-    data = generate_export_data(dataType=dataType, file_type=file_type, filters=filters)
+    data = generate_export_data(data_type=data_type, file_type=file_type, filters=filters)
     return send_file(data['output'], as_attachment=True, download_name="", mimetype=data['mime'])
-
-            
-    
-
-
-
-
-

@@ -3195,11 +3195,6 @@ select {
   background-color: rgb(130 113 193 / var(--tw-bg-opacity, 1));
 }
 
-.hover\:bg-light-green-200:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(197 225 165 / var(--tw-bg-opacity, 1));
-}
-
 .hover\:bg-popup-bg-hover:hover {
   background-color: rgba(204, 204, 204, 0.3);
 }
