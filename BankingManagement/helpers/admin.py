@@ -1,6 +1,8 @@
 from flask import session
 import io
 import pandas as pd
+from openpyxl.styles import Alignment, PatternFill
+from openpyxl import load_workbook
 
 from enums.card_type import CardType
 from enums.data_type import DataType
@@ -13,6 +15,7 @@ from models.card import Card
 from models.user import User
 from models.account import Account
 from helpers.helpers import issue_new_card, generate_login_info, getMIMETypeValue, get_max_id
+from filters import format_id
 
 db = Database().get_db()
 accounts = db[CollectionType.ACCOUNTS.value]
@@ -109,19 +112,8 @@ def create_accounts(data):
         response_data.update({"success_create": counter})
     return response_data
 
-def generate_export_data(data_type, file_type, filters):
-    if data_type == DataType.ACCOUNT.value:
-        collection = accounts
-    elif data_type == DataType.USER.value:
-        collection = users
-    elif data_type == DataType.BRANCH.value:
-        collection = branches
-    elif data_type == DataType.EMPLOYEE.value:
-        collection = employees
-    elif data_type == DataType.NEWS.value:
-        collection = news
-
-    items = list(collection.find(filters))
+def generate_export_account(file_type, criteria):
+    items = get_export_account(criteria)
     df = pd.json_normalize(items)
     output = io.BytesIO()
     mime = None
@@ -138,11 +130,163 @@ def generate_export_data(data_type, file_type, filters):
         output.seek(0)
         mime = getMIMETypeValue(MIMEType.JSON)
     elif file_type == MIMEType.EXCEL_XLSX.value:
-        df.to_excel(output, index=False, engine='openpyxl')
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False)
+        wb = load_workbook(output)
+        ws = wb.active
+
+        header_fill = PatternFill(start_color="4F81BD", end_color="4F81BD", fill_type="solid")
+        for cell in ws[1]:
+            cell.fill = header_fill
+            cell.alignment = Alignment(horizontal='center')
+
+        lst_id_column = ['ID', 'Branch ID', 'Account Owner']
+        for col_name in lst_id_column:
+            col_idx = df.columns.get_loc(col_name) + 1 
+            for row in ws.iter_rows(min_row=2, min_col=col_idx, max_col=col_idx):
+                for cell in row:
+                    cell.value = format_id(cell.value, 5)  
+                    cell.alignment = Alignment(horizontal='right')
+        
+        lst_type_name = ['Owner Name', 'Branch Name']
+        for col_name in lst_type_name:
+            col_idx = df.columns.get_loc(col_name) + 1 
+            for row in ws.iter_rows(min_row=2, min_col=col_idx, max_col=col_idx):
+                for cell in row:
+                    cell.alignment = Alignment(horizontal='center')
+
+        balance_col_idx = df.columns.get_loc('Balance') + 1
+        for row in ws.iter_rows(min_row=2, min_col=balance_col_idx, max_col=balance_col_idx):
+            for cell in row:
+                cell.alignment = Alignment(horizontal='right')
+
+        for col in ws.columns:
+            max_length = max(len(str(cell.value)) for cell in col) + 2  
+            ws.column_dimensions[col[0].column_letter].width = max_length
+
+        wb.save(output)
         output.seek(0)
         mime = getMIMETypeValue(MIMEType.EXCEL_XLSX)
 
     return {'mime': mime, 'output': output}
+
+def get_export_account(criteria):
+    pipeline = [
+        { "$match": criteria},
+        { 
+            "$lookup": {
+                "from": "login_methods",
+                "localField": "LoginMethod",
+                "foreignField": "_id",
+                "as": "login_method_docs"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "transfer_methods",
+                "localField": "TransferMethod",
+                "foreignField": "_id",
+                "as": "transfer_method_docs"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "users",
+                "localField": "AccountOwner",
+                "foreignField": "_id",
+                "as": "owner_doc"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "branches",
+                "localField": "Branch",
+                "foreignField": "_id",
+                "as": "branch_doc"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "roles",
+                "localField": "Role",
+                "foreignField": "_id",
+                "as": "role_doc"
+            }
+        },
+        
+        {
+            "$project": {
+                "_id": 0,
+                "ID": "$_id",
+                "Account Number": "$AccountNumber",
+                "Account Owner": "$AccountOwner",
+                "Owner Name": {
+                    "$ifNull": [{"$arrayElemAt": ["$owner_doc.Name", 0]}, None]
+                },
+                "Branch ID": "$Branch",
+                "Branch Name": {
+                    "$ifNull": [{"$arrayElemAt": ["$branch_doc.BranchName", 0]}, None]
+                },
+                "Balance": "$Balance",
+                "Currency": {
+                    "$cond": {
+                        "if": {"$eq": ["$Currency", 0]},
+                        "then": "VND",
+                        "else": {
+                            "$cond": {
+                                "if": {"$eq": ["$IsDeleted", 1]},
+                                "then": "USD",
+                                "else": "EUR"
+                            }
+                        }
+                    }
+                },
+                "Deleted Type": {
+                    "$cond": {
+                        "if": {"$eq": ["$IsDeleted", 0]},
+                        "then": "Available",
+                        "else": {
+                            "$cond": {
+                                "if": {"$eq": ["$IsDeleted", 9]},
+                                "then": "Deleted",
+                                "else": "Unknown"
+                            }
+                        }
+                    }
+                },
+                "Login Methods": {
+                    "$ifNull": [{
+                        "$map": {
+                            "input": "$login_method_docs",
+                            "as": "method",
+                            "in": "$$method.MethodName"
+                        }
+                    }, []]
+                },
+                "Role": {
+                    "$ifNull": [{"$arrayElemAt": ["$role_doc.RoleName", 0]}, None]
+                },  
+                "Transfer Methods": {
+                    "$ifNull": [{
+                        "$map": {
+                            "input": "$transfer_method_docs",
+                            "as": "method",
+                            "in": "$$method.MethodName"
+                        }
+                    }, []]
+                },
+                "Username": "$Username",
+            }
+        }
+    ]            
+
+    lst_account = lst_account = list(accounts.aggregate(pipeline))
+    for acc in lst_account:
+        acc['Login Methods'] = ', '.join(acc['Login Methods'])
+        acc['Transfer Methods'] = ', '.join(acc['Transfer Methods'])
+    
+    return lst_account
+
 
 def get_account(id):
     pipeline = [

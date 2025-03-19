@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, render_template, flash, redirect, url_for,
 from io import BytesIO
 
 from helpers.helpers import login_required, issue_new_card, get_max_id, generate_login_info, send_email, get_file_extension
-from helpers.admin import get_account, create_accounts, generate_export_data
+from helpers.admin import get_account, create_accounts, generate_export_account
 from models.database import Database
 from models.card import Card
 from models.user import User
@@ -321,10 +321,10 @@ def import_data():
     res = create_accounts(data)
     return jsonify(res) 
 
-@admin_account_blueprint.route('/admin/export_data/<data_type>', methods=['POST'])
+@admin_account_blueprint.route('/admin/account/export', methods=['POST'])
 @login_required
-def export_data(data_type):
-    filters = request.json.get('filter')
+def export_data():
+    criteria = request.json.get('filter')
     file_type = request.json.get('file_type')
-    data = generate_export_data(data_type=data_type, file_type=file_type, filters=filters)
+    data = generate_export_account(file_type=file_type, criteria=criteria)
     return send_file(data['output'], as_attachment=True, download_name="", mimetype=data['mime'])

@@ -28,12 +28,13 @@ const formatCurrency = (value) => {
 };
 
 window.export_data = () => {
+  document.getElementById('lazyLoading').classList.remove('hidden');
   const exportBtn = document.getElementById("export-btn");
   const data_type = document.getElementById("dataType").value;
   const file_type = exportBtn.value;
   const csrfToken = document.querySelector('input[name="csrf_token"]').value;
 
-  fetch(`/admin/export_data/${data_type}`, {
+  fetch(`/admin/${data_type}/export`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -92,6 +93,8 @@ window.export_data = () => {
       console.error("An error occurred:", error);
       alert(`Failed to download the file: ${error.message}`);
     });
+
+    document.getElementById('lazyLoading').classList.add('hidden');
 };
 
 const getFilterCondition = () => {
