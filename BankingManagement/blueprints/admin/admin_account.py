@@ -321,10 +321,13 @@ def import_data():
     res = create_accounts(data)
     return jsonify(res) 
 
-@admin_account_blueprint.route('/admin/account/export', methods=['POST'])
+@admin_account_blueprint.route('/admin/<string:data_type>/export', methods=['POST'])
 @login_required
-def export_data():
-    criteria = request.json.get('filter')
-    file_type = request.json.get('file_type')
-    data = generate_export_account(file_type=file_type, criteria=criteria)
+def export_data(data_type):
+    try:
+        criteria = request.json.get('filter')
+        file_type = request.json.get('file_type')
+        data = generate_export_account(file_type=file_type, criteria=criteria, data_type=data_type)
+    except Exception:
+        flash(messages_failure['internal_error'], 'error')
     return send_file(data['output'], as_attachment=True, download_name="", mimetype=data['mime'])

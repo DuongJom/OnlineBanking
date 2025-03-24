@@ -1,5 +1,6 @@
 from datetime import datetime as dt
 from enums.currency import CurrencyType
+import locale
 
 MAX_CARD_NUMBER_DIGITS = 14
 

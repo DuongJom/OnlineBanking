@@ -5,10 +5,10 @@ from openpyxl.styles import Alignment, PatternFill
 from openpyxl import load_workbook
 
 from enums.card_type import CardType
-from enums.data_type import DataType
 from enums.mime_type import MIMEType
 from enums.collection import CollectionType
 from enums.role_type import RoleType
+from enums.data_type import DataType
 from message import messages_success, messages_failure
 from models.database import Database
 from models.card import Card
@@ -24,6 +24,10 @@ cards = db[CollectionType.CARDS.value]
 branches = db[CollectionType.BRANCHES.value]
 employees = db[CollectionType.EMPLOYEES.value]
 news = db[CollectionType.NEWS.value]
+
+lst_formated_column = {
+    CollectionType.ACCOUNTS.value: ['ID', 'Account Owner', 'Branch ID','Balance']
+}
 
 def create_accounts(data):
     admin_id = session.get("account_id")
@@ -112,26 +116,32 @@ def create_accounts(data):
         response_data.update({"success_create": counter})
     return response_data
 
-def generate_export_account(file_type, criteria):
-    items = get_export_account(criteria)
+def generate_export_account(file_type, criteria, data_type):
+    if data_type == DataType.ACCOUNT.value:
+        collection_name = CollectionType.ACCOUNTS.value
+        items = get_export_account(criteria)
     df = pd.json_normalize(items)
     output = io.BytesIO()
     mime = None
     file_type = int(file_type)
-    
+
     if file_type == MIMEType.CSV.value:
         df.to_csv(output, index=False, encoding='utf-8')
         output.seek(0) 
         mime = getMIMETypeValue(MIMEType.CSV)
+
     elif file_type == MIMEType.JSON.value:
         df = df.applymap(lambda x: x if isinstance(x, str) else str(x))
         df = df.applymap(lambda x: x.encode('utf-8', errors='replace').decode('utf-8'))
         df.to_json(output, index=False, force_ascii=False, orient='records', lines=True)
         output.seek(0)
         mime = getMIMETypeValue(MIMEType.JSON)
+
     elif file_type == MIMEType.EXCEL_XLSX.value:
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
             df.to_excel(writer, index=False)
+        output.seek(0)  
+        temp_output = io.BytesIO()
         wb = load_workbook(output)
         ws = wb.active
 
@@ -140,33 +150,27 @@ def generate_export_account(file_type, criteria):
             cell.fill = header_fill
             cell.alignment = Alignment(horizontal='center')
 
-        lst_id_column = ['ID', 'Branch ID', 'Account Owner']
-        for col_name in lst_id_column:
-            col_idx = df.columns.get_loc(col_name) + 1 
-            for row in ws.iter_rows(min_row=2, min_col=col_idx, max_col=col_idx):
-                for cell in row:
-                    cell.value = format_id(cell.value, 5)  
-                    cell.alignment = Alignment(horizontal='right')
-        
-        lst_type_name = ['Owner Name', 'Branch Name']
-        for col_name in lst_type_name:
-            col_idx = df.columns.get_loc(col_name) + 1 
-            for row in ws.iter_rows(min_row=2, min_col=col_idx, max_col=col_idx):
-                for cell in row:
-                    cell.alignment = Alignment(horizontal='center')
-
-        balance_col_idx = df.columns.get_loc('Balance') + 1
-        for row in ws.iter_rows(min_row=2, min_col=balance_col_idx, max_col=balance_col_idx):
-            for cell in row:
-                cell.alignment = Alignment(horizontal='right')
-
         for col in ws.columns:
-            max_length = max(len(str(cell.value)) for cell in col) + 2  
+            col_name = col[0].value 
+            if col_name in lst_formated_column[collection_name]:
+                if pd.api.types.is_integer_dtype(df[col_name]): 
+                    for cell in col[1:]: 
+                        cell.value = format_id(cell.value, 5)
+                        cell.alignment = Alignment(horizontal='right')
+
+                if pd.api.types.is_float_dtype(df[col_name]): 
+                    for cell in col[1:]: 
+                        cell.number_format = '#,##0.00'
+                        cell.alignment = Alignment(horizontal='right')
+
+            max_length = max(len(str(cell.value)) for cell in col if cell.value) + 5
             ws.column_dimensions[col[0].column_letter].width = max_length
 
-        wb.save(output)
-        output.seek(0)
+        wb.save(temp_output)
+        temp_output.seek(0)
         mime = getMIMETypeValue(MIMEType.EXCEL_XLSX)
+
+        return {'mime': mime, 'output': temp_output}  
 
     return {'mime': mime, 'output': output}
 
