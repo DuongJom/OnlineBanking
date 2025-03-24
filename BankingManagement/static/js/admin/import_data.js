@@ -2,12 +2,13 @@ const dataType = document.getElementById("dataType").value;
 var excelFile = null;
 
 const getLogType = (logType, row_index, log) => {
-    let icon = 'check_circle.svg';
+    const icon = 'check_circle.svg';
+
     if(logType == "error") {
         icon = "error.svg";
     }
 
-    const LogPattern = `
+    const logPattern = `
     <div class="mx-5 mb-2 border-2 border-${logType}_border bg-${logType}_bg flex items-center text-${logType}_text p-1">
         <div class="flex items-center border-r-2 border-${logType}_border pr-1">
             <div>
@@ -26,7 +27,7 @@ const getLogType = (logType, row_index, log) => {
     </div>
     `;
 
-    return LogPattern;
+    return logPattern;
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -47,7 +48,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 const handleImportResponse = (logs, total, success) => {
-
     const result_panel = document.getElementById("import_result");
     const logs_panel = document.getElementById("response_logs");
     const result_text = document.getElementById("result_text");
@@ -56,9 +56,7 @@ const handleImportResponse = (logs, total, success) => {
     result_panel.classList.remove('hidden');
     
     logs_panel.innerHTML = '';
-    logs.forEach(log => {
-        logs_panel.innerHTML += getLogType(log.status, log.row_index, log.message);
-    })
+    logs.forEach(log => logs_panel.innerHTML += getLogType(log.status, log.row_index, log.message))
 
     result_text.innerHTML = `${success}/${total} tuple was created!`;
     importForm.classList.remove('flex');

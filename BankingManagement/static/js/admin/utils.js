@@ -44,55 +44,50 @@ window.export_data = () => {
       file_type: file_type,
     }),
   })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to fetch data: ${response.statusText}`);
-      }
-      return response.blob();
-    })
-    .then((blob) => {
-      if (blob.size === 0) {
-        throw new Error("The file is empty. No data to download.");
-      }
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+    return response.blob();
+  })
+  .then((blob) => {
+    if (blob.size === 0) {
+      throw new Error("The file is empty. No data to download.");
+    }
 
-      // Create the download URL for the blob
-      const downloadUrl = window.URL.createObjectURL(blob);
+    const downloadUrl = window.URL.createObjectURL(blob);
+    let ext = FileExtension.CSV;
 
-      // Determine file extension based on file type
-      let ext = FileExtension.CSV;
-      if (file_type == FileType.EXCEL) {
-        ext = FileExtension.EXCEL;
-      } else if (file_type == FileType.JSON) {
-        ext = FileExtension.JSON;
-      }
+    if (file_type == FileType.EXCEL) {
+      ext = FileExtension.EXCEL;
+    } 
+    else{
+      ext = FileExtension.JSON;
+    }
 
-      // Create the file name using the current timestamp
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      const seconds = String(date.getSeconds()).padStart(2, '0');
-      const fileName = `data_${data_type}_${year}${month}${day}_${hours}${minutes}${seconds}.${ext}`;
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    const fileName = `data_${data_type}_${year}${month}${day}_${hours}${minutes}${seconds}.${ext}`;
+    const a = document.createElement("a");
 
-      // Create a temporary <a> tag to trigger download
-      const a = document.createElement("a");
-      a.href = downloadUrl;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+    a.href = downloadUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 
-      // Cleanup the created Object URL
-      window.URL.revokeObjectURL(downloadUrl);
-    })
-    .catch((error) => {
-      // Display the error message if something goes wrong
-      console.error("An error occurred:", error);
-      alert(`Failed to download the file: ${error.message}`);
-    });
-    exportBtn.selectedIndex = 0;
+    window.URL.revokeObjectURL(downloadUrl);
+  })
+  .catch((error) => {
+    console.error("An error occurred:", error);
+    alert(`Failed to download the file: ${error.message}`);
+  });
+  exportBtn.selectedIndex = 0;
 };
 
 const getFilterCondition = () => {
@@ -102,9 +97,7 @@ const getFilterCondition = () => {
   let filterCondition = {};
 
   try {
-    const fixedCondition = [
-      ...document.getElementsByClassName("fixedCondition"),
-    ];
+    const fixedCondition = [...document.getElementsByClassName("fixedCondition"),];
 
     fixedCondition.map((con) => {
       if (con.value.toString().trim().length !== 0) {
@@ -129,6 +122,7 @@ const renderDeleteModal = (id, object_name, data_type) => {
   const deleteConfirmMessage = document.getElementById("deleteConfirmMessage");
   const deleteForm = document.getElementById("delete_form");
   const page_input = document.createElement("input");
+
   page_input.value = page;
   page_input.name = "current_page";
   page_input.classList.add("hidden");
@@ -136,19 +130,16 @@ const renderDeleteModal = (id, object_name, data_type) => {
   deleteConfirmMessage.innerHTML = `Are you sure you want to delete <b style="color:red">${object_name}</b>?`;
   delete_modal.classList.remove("hidden");
   delete_modal.classList.add("flex");
-
   deleteForm.action = `/admin/${data_type}/delete/${id}`;
   deleteForm.appendChild(page_input);
 };
 
 const generateActionButton = (row, _id, data_type, object_name) => {
-  // UI for action button
   const action_cell = document.createElement("td");
   const view_btn = document.createElement("a");
   const delete_btn = document.createElement("a");
   const edit_btn = document.createElement("a");
   const div = document.createElement("div");
-
   const btn_list = [view_btn, delete_btn, edit_btn];
   const icon_list = ["visibility", "delete", "edit"];
   let i = 0;
@@ -251,7 +242,6 @@ const generateTableBody = (table, data_type, lst_field, lst_item, is_right_table
       } 
       else if (lst_field[i]["isNumberFormat"]) {
         td.classList.add("text-right");
-        // Format balance value as currency using JavaScript
         td.innerHTML = formatCurrency(item[i]);
       } 
       else {
@@ -262,12 +252,7 @@ const generateTableBody = (table, data_type, lst_field, lst_item, is_right_table
       tr.appendChild(td);
     }
 
-    if (count % 2 !== 0) {
-      tr.classList.add("bg-green-200");
-    } 
-    else {
-      tr.classList.add("bg-white");
-    }
+    tr.classList.add("even:bg-gray-300", "bg-white", "hover:bg-green-300");
 
     if (is_right_table) {
       generateActionButton(tr, lst_item[count][ID_INDEX], data_type, lst_item[count][OBJECT_NAME_INDEX]);

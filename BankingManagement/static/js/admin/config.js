@@ -9,8 +9,8 @@ export const tableStructure = {
     { name: "Branch ID", isObject: false, isObjectId: true, isNumberFormat: false },
     { name: "Branch", isObject: true, isObjectId: false, isNumberFormat: false },
     { name: "Role", isObject: false, isObjectId: false, isNumberFormat: false },
+    { name: "Login Method", isObject: false, isObjectId: false, isNumberFormat: false },
     { name: "Transfer Method", isObject: false, isObjectId: false, isNumberFormat: false },
-    { name: "Login Method", isObject: false, isObjectId: false, isNumberFormat: false }
   ],
   user: [
     { key: "Name", name: "Name", isObject: false },
