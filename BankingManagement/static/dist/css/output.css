@@ -1175,8 +1175,6 @@ select {
   border-width: 2px;
   --tw-border-opacity: 1;
   border-color: rgb(56 142 60 / var(--tw-border-opacity, 1));
-  --tw-bg-opacity: 1;
-  background-color: rgb(165 214 167 / var(--tw-bg-opacity, 1));
 }
 
 @media (min-width: 540px) {
@@ -3091,16 +3089,6 @@ select {
   content: var(--tw-content);
 }
 
-.even\:bg-green-200:nth-child(even) {
-  --tw-bg-opacity: 1;
-  background-color: rgb(165 214 167 / var(--tw-bg-opacity, 1));
-}
-
-.even\:bg-gray-200:nth-child(even) {
-  --tw-bg-opacity: 1;
-  background-color: rgb(238 238 238 / var(--tw-bg-opacity, 1));
-}
-
 .even\:bg-gray-300:nth-child(even) {
   --tw-bg-opacity: 1;
   background-color: rgb(224 224 224 / var(--tw-bg-opacity, 1));
@@ -3180,11 +3168,6 @@ select {
   background-color: rgb(129 199 132 / var(--tw-bg-opacity, 1));
 }
 
-.hover\:bg-green-500:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(76 175 80 / var(--tw-bg-opacity, 1));
-}
-
 .hover\:bg-green-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(67 160 71 / var(--tw-bg-opacity, 1));
@@ -3232,11 +3215,6 @@ select {
 .hover\:bg-red-700:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(211 47 47 / var(--tw-bg-opacity, 1));
-}
-
-.hover\:bg-yellow-300:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 241 118 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:from-green-600:hover {

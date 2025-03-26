@@ -227,7 +227,7 @@ const generateTableBody = (table, data_type, lst_field, lst_item, is_right_table
     }
   }
 
-  actual_lst_item.forEach((item) => {
+  actual_lst_item.forEach((item, index) => {
     const tr = document.createElement("tr");
 
     for (let i = 0; i < lst_field.length; i++) {
@@ -252,7 +252,25 @@ const generateTableBody = (table, data_type, lst_field, lst_item, is_right_table
       tr.appendChild(td);
     }
 
-    tr.classList.add("even:bg-gray-300", "bg-white", "hover:bg-green-300");
+    tr.classList.add("even:bg-gray-300", "bg-white");
+
+    tr.addEventListener("mouseenter", () => {
+      const lst_left_row = document.querySelectorAll("#left_table tbody tr");
+      const lst_right_row = document.querySelectorAll("#right_table tbody tr");
+      lst_left_row[index].classList.remove("even:bg-gray-300", "bg-white");
+      lst_right_row[index].classList.remove("even:bg-gray-300", "bg-white");
+      lst_left_row[index].classList.add("bg-green-300");
+      lst_right_row[index].classList.add("bg-green-300");
+    });
+
+    tr.addEventListener("mouseleave", () => {
+      const lst_left_row = document.querySelectorAll("#left_table tbody tr");
+      const lst_right_row = document.querySelectorAll("#right_table tbody tr");
+      lst_left_row[index].classList.add("even:bg-gray-300", "bg-white");
+      lst_right_row[index].classList.add("even:bg-gray-300", "bg-white");
+      lst_left_row[index].classList.remove("bg-green-300");
+      lst_right_row[index].classList.remove("bg-green-300");
+    });
 
     if (is_right_table) {
       generateActionButton(tr, lst_item[count][ID_INDEX], data_type, lst_item[count][OBJECT_NAME_INDEX]);

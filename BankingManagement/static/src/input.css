@@ -94,7 +94,7 @@
     }
 
     .admin_left_table {
-        @apply border-2 border-green-700 border-collapse rounded-md sm:fixed z-10 whitespace-nowrap bg-green-200
+        @apply border-2 border-green-700 border-collapse rounded-md sm:fixed z-10 whitespace-nowrap
     }
 
     .admin_right_table {
