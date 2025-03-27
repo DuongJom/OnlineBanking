@@ -310,7 +310,8 @@ def edit_account(id):
 def import_data():
     file = request.files['file']
     ext = get_file_extension(file.filename)
-
+    df = pd.DataFrame()
+    
     if ext == FileType.CSV.value:
         df = pd.read_csv(BytesIO(file.read()))
     elif ext == FileType.XLSX.value:

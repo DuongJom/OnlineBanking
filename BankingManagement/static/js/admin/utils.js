@@ -56,12 +56,15 @@ window.export_data = () => {
     }
 
     const downloadUrl = window.URL.createObjectURL(blob);
-    let ext = FileExtension.CSV;
-
+    let ext = "";
+    
+    if (file_type == FileType.CSV){
+      ext = FileExtension.CSV;
+    }
     if (file_type == FileType.EXCEL) {
       ext = FileExtension.EXCEL;
     } 
-    else{
+    else if (file_type == FileType.JSON){
       ext = FileExtension.JSON;
     }
 
