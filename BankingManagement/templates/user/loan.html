@@ -4,7 +4,7 @@
 {% endblock%} 
 
 {% block user_content %}
-<section class="py-16">
+<section>
   <div class="container mx-auto">
     <div class="bg-white shadow-lg rounded-lg p-6">
       <h2 class="text-2xl font-semibold mb-4">Your Loans</h2>
@@ -20,7 +20,6 @@
               <th class="border-b-2 border-r-2 p-4">Term (Month)</th>
               <th class="border-b-2 border-r-2 p-4">Interest</th>
               <th class="border-b-2 border-r-2 p-4">Status</th>
-              <th class="border-b-2 border-r-2 p-4">Actions</th>
             </tr>
           </thead>
           <tbody class="max-h-430 overflow-y-auto block w-full">
@@ -31,19 +30,13 @@
                   <td class="border-gray-200 border-l-2 p-2 text-right font-semibold text-red-500">{{ loan.Amount|currency_format }}</td>
                   <td class="border-gray-200 border-l-2 p-2 text-right ">{{ loan.InterestRate }}%</td>
                   <td class="border-gray-200 border-l-2 p-2 text-center">{{ loan.DueDate|format_date('%d/%m/%Y') }}</td>
-                  <td class="border-x p-2 text-center">{{ loan.Term }}</td>
+                  <td class="border-x p-2 text-center">{{ loan.Term|format_id(2) }}</td>
                   <td class="border-x p-2 text-right font-semibold text-red-500">{{ (loan.Amount + loan.Amount * (loan.InterestRate/100) * (loan.Term/12))|currency_format }}</td>
                   {% if loan.Status == 0 %}
                   <td class="border-x p-2 flex justify-center"><span class="text-green-600">Active</span></td>
                   {% else %}
                   <td class="border-x p-2 flex justify-center"><span class="text-red-600">OverDue</span></td>
                   {% endif %}
-                  <td class="flex border-x p-2 justify-center items-center">
-                      <button id="{{loan._id}}"
-                      class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
-                      Pay Now
-                      </button>
-                  </td>
                 </tr>
               {% endfor %}
             {% endif %}

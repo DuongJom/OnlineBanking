@@ -616,11 +616,3 @@ def loan_management():
     account_id = int(session.get("account_id"))
     lst_loan = list(loans.find({"Owner": account_id}))
     return render_template("/user/loan.html", loans=lst_loan)
-
-@user_blueprint.route('/settings-security',methods=['GET', 'POST'])
-def settings_security():
-    pass
-
-@user_blueprint.route('/other-services',methods=['GET', 'POST'])
-def other_services():
-    pass
