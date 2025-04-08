@@ -10,6 +10,7 @@ from enums.role_type import RoleType
 from enums.card_type import CardType
 from enums.collection import CollectionType
 from app import app, mail
+from helpers.logger import log_request
 
 db = database.Database().get_db()
 accounts = db[CollectionType.ACCOUNTS.value]
@@ -23,6 +24,7 @@ loginMethods = db[CollectionType.LOGIN_METHODS.value]
 account_blueprint = Blueprint('account', __name__)
 
 @account_blueprint.route('/login', methods=['GET', 'POST'])
+@log_request()
 def login():
     if request.method == 'GET':
         return render_template('general/login.html')
@@ -57,6 +59,7 @@ def login():
     return redirect("/admin/account")
 
 @account_blueprint.route('/register', methods=['GET','POST'])
+@log_request()
 def register():
     card_info = issue_new_card()
     if request.method == 'GET':
@@ -148,6 +151,7 @@ def register():
     
 @account_blueprint.route('/view-profile',  methods=['GET', 'POST'])
 @login_required
+@log_request()
 def view_profile():
     if request.method == "GET":
         if session.get("account_id"):
@@ -220,11 +224,13 @@ def view_profile():
     return redirect("/view-profile")
 
 @account_blueprint.route("/logout")
+@log_request()
 def logout():
     session.clear()
     return redirect(url_for("account.login"))
 
 @account_blueprint.route('/confirm-email', methods=['GET', 'POST'])
+@log_request()
 def confirm_email():
     if request.method == 'GET':
         return render_template('email/confirm_email.html')
@@ -247,6 +253,7 @@ def confirm_email():
     return redirect(url_for('account.login'))
 
 @account_blueprint.route('/reset-password/<token>', methods=["GET", "POST"])
+@log_request()
 def reset_password(token):
     if request.method == 'GET':
         return render_template('general/reset_password.html', token=token)
@@ -276,6 +283,7 @@ def reset_password(token):
 
 @account_blueprint.route('/change-password', methods=["GET", "POST"])
 @login_required
+@log_request()
 def change_password():
     if request.method == "GET":
         return render_template("general/change_password.html")

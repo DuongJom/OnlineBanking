@@ -14,6 +14,7 @@ from enums.investment_status import InvestmentStatus
 from enums.collection import CollectionType
 from enums.deleted_type import DeletedType
 from app import app, mail
+from helpers.logger import log_request
 
 db = database.Database().get_db()
 accounts = db[CollectionType.ACCOUNTS.value]
@@ -28,6 +29,7 @@ user_blueprint = Blueprint('user', __name__)
 
 @user_blueprint.route("/", methods=["GET"])
 @login_required
+@log_request()
 def home():
     account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
@@ -61,6 +63,7 @@ def home():
     
 @user_blueprint.route("/money-transfer", methods=["GET", "POST"])
 @login_required
+@log_request()
 def transfer_money():
     account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
@@ -90,6 +93,7 @@ def transfer_money():
 
 @user_blueprint.route('/confirm-otp', methods=["GET", "POST"])
 @login_required
+@log_request()
 def confirm_otp():
     account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
@@ -185,6 +189,7 @@ def confirm_otp():
 
 @user_blueprint.route('/bill-payment',methods=['GET', 'POST'])
 @login_required
+@log_request()
 def bill_payment():
     if request.method == "GET":
         today = dt.today()
@@ -249,6 +254,7 @@ def bill_payment():
 
 @user_blueprint.route('/payment', methods=['POST'])
 @login_required
+@log_request()
 def payment():
     try:
         account_id = int(session.get("account_id"))
@@ -321,6 +327,7 @@ def payment():
 
 @user_blueprint.route('/investment-savings',methods=['GET'])
 @login_required
+@log_request()
 def investment_savings():
     if request.method == "GET":
         account_id = int(session.get("account_id"))
@@ -366,6 +373,7 @@ def investment_savings():
 
 @user_blueprint.route('/add-investment-savings',methods=['POST'])
 @login_required
+@log_request()
 def add_new_investment():
     try:
         account_id = int(session.get("account_id"))
@@ -456,6 +464,7 @@ def add_new_investment():
 
 @user_blueprint.route('/edit-investment', methods=['POST'])
 @login_required
+@log_request()
 def edit_investment():
     try:
         today = dt.today()
@@ -542,6 +551,7 @@ def edit_investment():
 
 @user_blueprint.route('/card-management', methods=['GET', 'POST'])
 @login_required
+@log_request()
 def card_management():
     account_id = int(session.get("account_id"))
     if request.method == "GET":
@@ -573,6 +583,7 @@ def card_management():
     
 @user_blueprint.route('/lock-card/<id>', methods=['GET'])
 @login_required
+@log_request()
 def lock_card(id):
     try:
         cards.update_one(
@@ -593,6 +604,7 @@ def lock_card(id):
     
 @user_blueprint.route('/unlock-card/<id>', methods=['GET'])
 @login_required
+@log_request()
 def unlock_card(id):
     try:
         cards.update_one(
@@ -612,6 +624,7 @@ def unlock_card(id):
         return redirect(url_for("user.card_management"))
 
 @user_blueprint.route('/loan-management',methods=['GET'])
+@log_request()
 def loan_management():
     account_id = int(session.get("account_id"))
     lst_loan = list(loans.find({"Owner": account_id}))

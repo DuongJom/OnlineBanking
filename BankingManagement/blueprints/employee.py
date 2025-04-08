@@ -6,6 +6,7 @@ from models import database
 
 from helpers.helpers import login_required, paginator
 from datetime import datetime, date
+from helpers.logger import log_request
 
 db = database.Database().get_db()
 employee = db['employees']
@@ -46,6 +47,7 @@ def convert_objectid(data):
         return data
 
 @employee_blueprint.route('/employee/home', methods = ['GET'])
+@log_request()
 def employee_home():
     if request.method == 'GET':
         # max_STT_doc = db.employee.find().sort('STT', -1).limit(1).next()
@@ -75,6 +77,7 @@ def employee_home():
         return render_template('employee/home.html', current_month = current_month, current_year = current_year, months=months, years=years, fake_data=data)
 
 @employee_blueprint.route('/get-data', methods=['POST'])
+@log_request()
 def get_data():
     # Check if the request contains JSON data
     if request.is_json:
@@ -117,17 +120,20 @@ def get_data():
 
 
 @employee_blueprint.route('/employee/working-time', methods = ['GET'])
+@log_request()
 def employee_working_time():
     if request.method == 'GET':
         return render_template('employee/working_time.html')
     
 @employee_blueprint.route('/employee/salary', methods = ['GET'])
+@log_request()
 def employee_salary():
     if request.method == 'GET':
         return  render_template('employee/salary.html') 
     
 @employee_blueprint.route('/employee', methods = ['GET'])
 @login_required
+@log_request()
 def employee():
     page = request.args.get('page', 1, int)
     dataType = request.args.get('dataType')
