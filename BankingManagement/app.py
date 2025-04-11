@@ -1,9 +1,11 @@
-from flask import Flask
+from flask import Flask, g
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from init_app import init
 from init_data import initialize_data
 from filters import currency_format, datetime_format, date_format, strip, format_date, format_card_number, format_id, currency_to_text
+import uuid
+from helpers.logger import logger
 
 app = Flask(__name__)
 app = init(app)
@@ -12,6 +14,12 @@ app = init(app)
 mail = Mail(app)
 # initialize csrf protect
 csrf = CSRFProtect(app)
+
+# Request ID middleware
+@app.before_request
+def before_request():
+    g.request_id = str(uuid.uuid4())
+    logger.info(f"New request started with ID: {g.request_id}")
 
 from blueprints import account, admin, employee, user
 

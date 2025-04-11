@@ -3,9 +3,11 @@ from bson import ObjectId
 from datetime import datetime, date
 
 from models import database
-from helpers.helpers import login_required, paginator
-from enums.month_type import MonthType
 
+from helpers.helpers import paginator
+from datetime import datetime, date
+from helpers.logger import log_request
+from decorators import login_required, role_required
 
 db = database.Database().get_db()
 accounts = db['accounts']
@@ -30,6 +32,7 @@ def convert_objectid(data):
         return data
 
 @employee_blueprint.route('/employee/home', methods = ['GET'])
+@log_request()
 def employee_home():
     if request.method == 'GET':
         today = date.today()
@@ -47,10 +50,9 @@ def employee_home():
         data = list(db['employee'].find(query))
         return render_template('employee/home.html', current_month = current_month, current_year = current_year, months=months, years=years, fake_data=data)
 
-
-#return home data
-@employee_blueprint.route('/get-home-data', methods=['POST'])
-def get_home_data():
+@employee_blueprint.route('/get-data', methods=['POST'])
+@log_request()
+def get_data():
     # Check if the request contains JSON data
     if request.is_json:
         try:
@@ -91,6 +93,7 @@ def get_home_data():
 
 
 @employee_blueprint.route('/employee/working-time', methods = ['GET'])
+@log_request()
 def employee_working_time():
     if request.method == 'GET':
         today = datetime.now()
@@ -141,12 +144,14 @@ def get_working_time_data():
         return jsonify({'error': 'Request does not contain JSON'}), 400
     
 @employee_blueprint.route('/employee/salary', methods = ['GET'])
+@log_request()
 def employee_salary():
     if request.method == 'GET':
         return  render_template('employee/salary.html') 
     
 @employee_blueprint.route('/employee', methods = ['GET'])
 @login_required
+@log_request()
 def employee():
     page = request.args.get('page', 1, int)
     dataType = request.args.get('dataType')

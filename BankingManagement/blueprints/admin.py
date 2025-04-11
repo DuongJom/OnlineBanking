@@ -3,7 +3,9 @@ from bson import ObjectId
 from datetime import datetime
 
 from models import database
-from helpers.helpers import login_required
+from helpers.logger import log_request
+from decorators import role_required, login_required
+from enums.role_type import RoleType
 
 admin_blueprint = Blueprint('admin', __name__)   
 
@@ -19,6 +21,8 @@ news = db['news']
 
 @admin_blueprint.route('/admin', methods=['GET'])
 @login_required
+@role_required(RoleType.ADMIN.value)
+@log_request()
 def admin():
     per_page = 10
     page = request.args.get('page', 1, int)
@@ -57,6 +61,8 @@ def admin():
 @admin_blueprint.route('/admin/account/<page>', defaults={'id': None}, methods=['GET'])
 @admin_blueprint.route('/admin/account/<page>/<id>', methods=['GET'])
 @login_required
+@role_required(RoleType.ADMIN.value)
+@log_request()
 def account(page, id):
     if request.method == 'GET':
         if page == "add":
@@ -77,6 +83,8 @@ def account(page, id):
 @admin_blueprint.route('/admin/user/<page>', defaults={'id': None}, methods=['GET'])
 @admin_blueprint.route('/admin/user/<page>/<id>', methods=['GET'])
 @login_required
+@role_required(RoleType.ADMIN.value)
+@log_request()
 def user(page, id):
     if request.method == 'GET':
         if page == "view" and id is not None:
@@ -101,6 +109,8 @@ def user(page, id):
 @admin_blueprint.route('/admin/employee/<page>', defaults={'id': None}, methods=['GET'])
 @admin_blueprint.route('/admin/employee/<page>/<id>', methods=['GET'])
 @login_required
+@role_required(RoleType.ADMIN.value)
+@log_request()
 def employee(page, id):
     if request.method == 'GET':
         if page == "add":
@@ -119,6 +129,8 @@ def employee(page, id):
 @admin_blueprint.route('/admin/branch/<page>', defaults={'id': None}, methods=['GET'])
 @admin_blueprint.route('/admin/branch/<page>/<id>', methods=['GET'])
 @login_required
+@role_required(RoleType.ADMIN.value)
+@log_request()
 def branch(page, id):
     if request.method == 'GET':
         if page == "add":
@@ -134,17 +146,20 @@ def branch(page, id):
         return render_template('admin/branch/branch.html')
     
 @admin_blueprint.route('/admin/chart', methods = ['GET'])
+@log_request()
 def chart():
     if request.method == 'GET':
         return render_template('admin/general/chart.html')
     
 @admin_blueprint.route('/admin/news', methods = ['GET'])
+@log_request()
 def admin_news():
     if request.method == 'GET':
         return render_template('admin/news/news.html')
     
         
 @admin_blueprint.route('/admin/import-data', methods = ['GET','POST'])
+@log_request()
 def import_data():
     if request.method == 'GET':
         return render_template('admin/general/import.html')

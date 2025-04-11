@@ -5,10 +5,12 @@ from itsdangerous import URLSafeTimedSerializer
 
 from models import account, user, card as model_card , database
 from message import messages_success, messages_failure
-from helpers.helpers import issue_new_card, get_token, send_email, login_required, get_max_id
+from helpers.helpers import issue_new_card, get_token, send_email, get_max_id
+from decorators import login_required, role_required, log_request
 from enums.role_type import RoleType
 from enums.card_type import CardType
 from enums.collection import CollectionType
+from enums.deleted_type import DeletedType
 from app import app, mail
 
 db = database.Database().get_db()
@@ -23,6 +25,7 @@ loginMethods = db[CollectionType.LOGIN_METHODS.value]
 account_blueprint = Blueprint('account', __name__)
 
 @account_blueprint.route('/login', methods=['GET', 'POST'])
+@log_request()
 def login():
     if request.method == 'GET':
         return render_template('general/login.html')
@@ -31,7 +34,7 @@ def login():
     username = request.form.get("username")
     password = request.form.get("password") 
     remember_me = request.form.get("remember_me")
-    acc = accounts.find_one({"Username": username}) 
+    acc = accounts.find_one({ "Username": username, "IsDeleted": DeletedType.AVAILABLE.value }) 
 
     if not acc or not check_password_hash(acc["Password"], password):
         flash(messages_failure["invalid_information"], 'error')
@@ -57,6 +60,7 @@ def login():
     return redirect("/admin/account")
 
 @account_blueprint.route('/register', methods=['GET','POST'])
+@log_request()
 def register():
     card_info = issue_new_card()
     if request.method == 'GET':
@@ -148,6 +152,8 @@ def register():
     
 @account_blueprint.route('/view-profile',  methods=['GET', 'POST'])
 @login_required
+@log_request()
+@role_required(RoleType.ADMIN.value, RoleType.EMPLOYEE.value, RoleType.USER.value)
 def view_profile():
     if request.method == "GET":
         if session.get("account_id"):
@@ -220,11 +226,14 @@ def view_profile():
     return redirect("/view-profile")
 
 @account_blueprint.route("/logout")
+@log_request()
+@role_required(RoleType.ADMIN.value, RoleType.EMPLOYEE.value, RoleType.USER.value)
 def logout():
     session.clear()
     return redirect(url_for("account.login"))
 
 @account_blueprint.route('/confirm-email', methods=['GET', 'POST'])
+@log_request()
 def confirm_email():
     if request.method == 'GET':
         return render_template('email/confirm_email.html')
@@ -247,6 +256,7 @@ def confirm_email():
     return redirect(url_for('account.login'))
 
 @account_blueprint.route('/reset-password/<token>', methods=["GET", "POST"])
+@log_request()
 def reset_password(token):
     if request.method == 'GET':
         return render_template('general/reset_password.html', token=token)
@@ -276,6 +286,8 @@ def reset_password(token):
 
 @account_blueprint.route('/change-password', methods=["GET", "POST"])
 @login_required
+@log_request()
+@role_required(RoleType.ADMIN.value, RoleType.EMPLOYEE.value, RoleType.USER.value)
 def change_password():
     if request.method == "GET":
         return render_template("general/change_password.html")
