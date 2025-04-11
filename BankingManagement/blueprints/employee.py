@@ -17,6 +17,7 @@ db = database.Database().get_db()
 accounts = db[CollectionType.ACCOUNTS.value]
 employees = db[CollectionType.EMPLOYEES.value]
 salaries = db[CollectionType.SALARIES.value]
+roles = db[CollectionType.ROLES.value]
 
 employee_blueprint = Blueprint('employee', __name__)
 
@@ -35,12 +36,78 @@ def convert_objectid(data):
     else:
         return data
 
+import random
+from datetime import timedelta
+def generate_fake_employees(count=100):
+    
+    # Sample data for random generation
+    positions = [
+        "CEO", "CTO", "CFO", "COO", "Manager", 
+        "Senior Developer", "Junior Developer", 
+        "Senior Designer", "Junior Designer",
+        "HR Manager", "HR Staff",
+        "Senior Accountant", "Junior Accountant",
+        "Sales Manager", "Sales Representative",
+        "Marketing Manager", "Marketing Specialist",
+        "Customer Service", "IT Support",
+        "Project Manager", "Business Analyst"
+    ]
+    
+    sexes = ["Male", "Female"]
+    working_statuses = ["Active", "On Leave", "WFH", "Remote"]
+    
+    # Generate current date for working days
+    current_date = datetime.now()
+    
+    # Clear existing data (optional)
+    employees.delete_many({})
+    
+    # Generate and insert fake employees
+    for i in range(count):
+        # Generate random working days (last 30 days)
+        working_days = []
+        day_offs = []
+        for day in range(30):
+            date = current_date - timedelta(days=day)
+            if random.random() < 0.8:  # 80% chance of working
+                working_days.append(date.strftime("%Y-%m-%d"))
+            else:
+                day_offs.append(date.strftime("%Y-%m-%d"))
+        
+        # Generate random check-in/out times
+        check_in_hour = random.randint(7, 9)
+        check_out_hour = random.randint(17, 19)
+        
+        employee = {
+            "_id": (i + 1),
+            "EmployeeName": f"Employee {i+1}",
+            "Position": random.choice(positions),
+            "Role": RoleType.EMPLOYEE.value,
+            "Sex": random.choice(sexes),
+            "Phone": f"0{random.randint(100000000, 999999999)}",
+            "Email": f"employee{i+1}@dhcbank.com",
+            "Address": f"Street {random.randint(1, 100)}, City {random.randint(1, 10)}",
+            "Check_in_time": f"{check_in_hour:02d}:00",
+            "Check_out_time": f"{check_out_hour:02d}:00",
+            "Working_status": random.choice(working_statuses),
+            "Working_days": working_days,
+            "DayOffs": day_offs,
+            "Salary": random.randint(5000000, 20000000),
+            "IsDeleted": DeletedType.AVAILABLE.value,
+            "created_at": datetime.now(),
+            "updated_at": datetime.now()
+        }
+        
+        # Insert into MongoDB
+        employees.insert_one(employee)
+
 @employee_blueprint.route('/employee/home', methods = ['GET'])
 @login_required
 @role_required(RoleType.EMPLOYEE.value)
 @log_request()
 def employee_home():
     if request.method == 'GET':
+        #generate_fake_employees(50)
         all_employees = list(employees.find({ "IsDeleted": DeletedType.AVAILABLE.value }))
         for employee in all_employees:
             employee['_id'] = int(employee['_id'])

@@ -7,16 +7,17 @@
 {% block employee_content %}
 <div class="flex-1 min-h-screen bg-transparent ml-48 mt-16">
     <!-- Main Content -->
-    <div class="p-6">
+    <div class="py-2 px-2">
         <!-- Search and Filter Section -->
-        <div class="bg-green-500 rounded-lg shadow-md p-4 mb-6">
+        <div class="bg-green-500 rounded-lg shadow-md p-2 mb-2">
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="flex-1">
                     <div class="relative w-3/4">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <span class="material-symbols-outlined text-gray-400">search</span>
                         </span>
-                        <input type="text" placeholder="Search employees..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <input type="text" placeholder="Search employees..." 
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                     </div>
                 </div>
                 <div class="flex gap-4">
@@ -37,12 +38,11 @@
             </div>
         </div>
 
-        <!-- Employee Table -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 max-h-96">
+        <div class="bg-white rounded-lg shadow-md mt-2">
+            <div class="overflow-x-auto overflow-y-auto max-h-510">
+                <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
-                        <tr class="bg-green-300 text-white">
+                        <tr class="bg-green-300 text-white text-sm">
                             <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">ID</th>
                             <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Full name</th>
                             <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Position</th>
@@ -55,30 +55,19 @@
                             <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Working status</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-transparent divide-y divide-gray-200">
                         {% for employee in employees %}
-                        <tr class="hover:bg-gray-50 even:bg-green-100 bg-transparent">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee._id|format_id(6) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                                            <span class="text-green-600 font-medium">{{ employee.EmployeeName[:2] }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">{{ employee.EmployeeName }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Position }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Sex }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Phone }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Email }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Address }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Check_in_time }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Check_out_time }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                        <tr class="hover:bg-green-300 even:bg-green-100 bg-transparent border border-gray-200">
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee._id|format_id(6) }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ employee.EmployeeName }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee.Position }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee.Sex }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee.Phone }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee.Email }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee.Address }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 text-center">{{ employee.Check_in_time }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 text-center">{{ employee.Check_out_time }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                     {% if employee.Working_status == 'Active' %}
                                         bg-green-100 text-green-800
@@ -96,43 +85,6 @@
                 </table>
             </div>
         </div>
-
-        {% if employees|length > 1 %}
-        <!-- Pagination -->
-        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-4 rounded-lg shadow-md">
-            <div class="flex-1 flex justify-between sm:hidden">
-                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                    Previous
-                </a>
-                <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                    Next
-                </a>
-            </div>
-            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                <div>
-                    <p class="text-sm text-gray-700">
-                        Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">{{ employees|length }}</span> results
-                    </p>
-                </div>
-                <div>
-                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                            <span class="material-symbols-outlined">chevron_left</span>
-                        </a>
-                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                            1
-                        </a>
-                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-green-50 text-sm font-medium text-green-600 hover:bg-green-100">
-                            2
-                        </a>
-                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                            <span class="material-symbols-outlined">chevron_right</span>
-                        </a>
-                    </nav>
-                </div>
-            </div>
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
