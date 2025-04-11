@@ -1,95 +1,138 @@
 {% extends "employee/layout.html" %}
 
-{% block title %}
-    Home
+{% block employee_title %}
+    Dashboard
 {% endblock %}
 
 {% block employee_content %}
-    <!-- Content -->
-    <div class="flex flex-col ml-44 p-5 overflow-x-auto w-full"> 
-        <!--Top div with buttons-->
-        <div class="flex mb-4 justify-between items-center">
-            <!-- Year, month Button with options -->
-            <div class="relative flex">
-                <label for="month" class="label_field mt-0 mr-0.5 content-center">Month: </label>
-                <select id="month" class="select_field h-[30px] w-auto leading-tight p-1 text-black shadow-sm border">
-                    <option selected value="{{current_month}}">{{current_month}}</option>
-                    {% for month in months %}
-                    <option value="{{month}}">{{month}}</option>
-                    {% endfor %}
-                </select>
-
-                <label for="year" class="mr-0.5 ml-4 label_field mt-0 content-center">Year: </label>
-                <select id="year" class="select_field h-[30px] w-auto leading-tight p-1 text-black shadow-sm border">
-                    <option selected value="{{current_year}}">{{current_year}}</option>
-                    {% for year in years %}
-                    <option value="{{year}}">{{year}}</option>
-                    {% endfor %}
-                </select>
-
-                <style>
-                    /* Custom CSS to hide the arrow inside select tag */
-                    select {
-                        -moz-appearance: none; /* Firefox */
-                        -webkit-appearance: none; /* Safari and Chrome */
-                        appearance: none; /* Standard */
-                        background-image: none; /* Remove default arrow */
-                    }
-                </style>
-            </div>
-
-            <!-- Buttons for Check-in, Check-out, WFH Check-in, WFH Check-out, Day-off -->
-            <div id="buttonContainer" class="flex">
-                <button id='check_in' class="btn w-auto text-xs font-light px-2 py-1.5 items-center mr-2 bg-blue-400">Check-in</button>
-                <button id='check_out' class="btn w-auto text-xs font-light px-2 py-1.5 items-center mr-2 bg-blue-400">Check-out</button>
-                <button id='wfh_check_in' class="btn w-auto text-xs font-light px-2 py-1.5 items-center mr-2 bg-orange-400">WFH Check-in</button>
-                <button id='wfh_check_out' class="btn w-auto text-xs font-light px-2 py-1.5 items-center mr-2 bg-orange-400">WFH Check-out</button>
-                <button id='day_off' class="btn w-auto text-xs font-light px-2 py-1.5 items-center mr-2 bg-red-400">Day-off</button>
+<div class="flex-1 min-h-screen bg-transparent ml-48 mt-16">
+    <!-- Main Content -->
+    <div class="p-6">
+        <!-- Search and Filter Section -->
+        <div class="bg-green-500 rounded-lg shadow-md p-4 mb-6">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <div class="relative w-3/4">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <span class="material-symbols-outlined text-gray-400">search</span>
+                        </span>
+                        <input type="text" placeholder="Search employees..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <select class="w-36 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-900 focus:border-transparent">
+                        <option value="">All Positions</option>
+                        <option value="CEO">CEO</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Developer">Developer</option>
+                        <option value="Designer">Designer</option>
+                    </select>
+                    <select class="w-36 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-900 focus:border-transparent">
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="On Leave">On Leave</option>
+                        <option value="WFH">Working From Home</option>
+                    </select>
+                </div>
             </div>
         </div>
 
-        <!-- Table -->
-        <div>
-            <table id="data_table" class="min-w-full table-auto divide-y divide-gray-300 rounded-lg">
-                <thead class="bg-green-300 text-sm">
-                    <tr>
-                        <th class="px-4 py-2 text-left">STT</th>
-                        <th class="px-4 py-2 text-left">ID</th>
-                        <th class="px-4 py-2 text-left">Name</th>
-                        <th class="px-4 py-2 text-left">Role</th>
-                        <th class="px-4 py-2 text-left">Gender</th>
-                        <th class="px-4 py-2 text-left">Position</th>
-                        <th class="px-4 py-2 text-left">Phone</th>
-                        <th class="px-4 py-2 text-left">Email</th>
-                        <th class="px-4 py-2 text-left">Address</th>
-                        <th class="hidden lg:table-cell px-4 py-2 text-left">Check-in time</th>
-                        <th class="hidden lg:table-cell px-4 py-2 text-left">Check-out time</th>
-                        <th class="hidden xl:table-cell px-4 py-2 text-left">Status</th>
-                    </tr>
-                </thead>
-                <tbody id="employee-table" class="bg-white divide-y divide-gray-200 text-sm">
-                    <!-- Create a hidden div to store the data as a JSON string -->
-                    <div id="flask-data" style="display:none;">{{ fake_data | tojson }}</div>
-                    {% for employee in fake_data %}
-                    <tr class="hover:bg-gray-100">
-                        <td class="px-4 py-2">{{ loop.index }}</td>
-                        <td class="px-4 py-2">{{ employee._id }}</td>
-                        <td class="px-4 py-2">{{ employee.EmployeeName }}</td>
-                        <td class="px-4 py-2">{{ employee.Role }}</td>
-                        <td class="px-4 py-2">{{ employee.Sex }}</td>
-                        <td class="px-4 py-2">{{ employee.Position }}</td>
-                        <td class="px-4 py-2">{{ employee.Phone }}</td>
-                        <td class="px-4 py-2">{{ employee.Email }}</td>
-                        <td class="px-4 py-2">{{ employee.Address }}</td>
-                        <td class="hidden lg:table-cell px-4 py-2">{{ employee.Check_in_time }}</td>
-                        <td class="hidden lg:table-cell px-4 py-2">{{ employee.Check_out_time }}</td>
-                        <td class="hidden xl:table-cell px-4 py-2">{{ employee.Working_status }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- Employee Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 max-h-96">
+                    <thead class="bg-gray-50">
+                        <tr class="bg-green-300 text-white">
+                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">ID</th>
+                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Full name</th>
+                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Position</th>
+                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Gender</th>
+                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Phone</th>
+                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Email</th>
+                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Address</th>
+                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Check-in</th>
+                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Check-out</th>
+                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Working status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for employee in employees %}
+                        <tr class="hover:bg-gray-50 even:bg-green-100 bg-transparent">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee._id|format_id(6) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                                            <span class="text-green-600 font-medium">{{ employee.EmployeeName[:2] }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">{{ employee.EmployeeName }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Position }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Sex }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Phone }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Address }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Check_in_time }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ employee.Check_out_time }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {% if employee.Working_status == 'Active' %}
+                                        bg-green-100 text-green-800
+                                    {% elif employee.Working_status == 'On Leave' %}
+                                        bg-red-100 text-red-800
+                                    {% else %}
+                                        bg-yellow-100 text-yellow-800
+                                    {% endif %}">
+                                    {{ employee.Working_status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
+
+        {% if employees|length > 1 %}
+        <!-- Pagination -->
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-4 rounded-lg shadow-md">
+            <div class="flex-1 flex justify-between sm:hidden">
+                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Previous
+                </a>
+                <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Next
+                </a>
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700">
+                        Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">{{ employees|length }}</span> results
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </a>
+                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            1
+                        </a>
+                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-green-50 text-sm font-medium text-green-600 hover:bg-green-100">
+                            2
+                        </a>
+                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
-
-    <script type="module" src="{{ url_for('static', filename='js/employee/home.js') }}"></script>
+</div>
 {% endblock %}

@@ -9,11 +9,14 @@ from datetime import datetime, date
 from helpers.logger import log_request
 from decorators import login_required, role_required
 from enums.month_type import MonthType
+from enums.role_type import RoleType
+from enums.collection import CollectionType
+from enums.deleted_type import DeletedType
 
 db = database.Database().get_db()
-accounts = db['accounts']
-employees = db['employees']
-salary = db['salary']
+accounts = db[CollectionType.ACCOUNTS.value]
+employees = db[CollectionType.EMPLOYEES.value]
+salaries = db[CollectionType.SALARIES.value]
 
 employee_blueprint = Blueprint('employee', __name__)
 
@@ -33,25 +36,20 @@ def convert_objectid(data):
         return data
 
 @employee_blueprint.route('/employee/home', methods = ['GET'])
+@login_required
+@role_required(RoleType.EMPLOYEE.value)
 @log_request()
 def employee_home():
     if request.method == 'GET':
-        today = date.today()
-        current_month = today.strftime("%B")
-        current_year = today.year
-
-        # Construct MongoDB query to filter documents based on month and year
-        start_date = datetime(today.year, today.month, 1)
-        end_date = datetime(today.year, today.month + 1, 1) if today.month < 12 else datetime(today.year + 1, 1, 1)
-
-        start_date_iso = start_date.isoformat()
-        end_date_iso = end_date.isoformat()
-
-        query = {'CreatedDate': {'$gte': start_date_iso, '$lte': end_date_iso}}
-        data = list(db['employee'].find(query))
-        return render_template('employee/home.html', current_month = current_month, current_year = current_year, months=months, years=years, fake_data=data)
+        all_employees = list(employees.find({ "IsDeleted": DeletedType.AVAILABLE.value }))
+        for employee in all_employees:
+            employee['_id'] = int(employee['_id'])
+            
+        return render_template('employee/home.html', employees=all_employees)
 
 @employee_blueprint.route('/get-data', methods=['POST'])
+@login_required
+@role_required(RoleType.EMPLOYEE.value)
 @log_request()
 def get_data():
     # Check if the request contains JSON data
@@ -75,14 +73,13 @@ def get_data():
             query = {'CreatedDate': {'$gte': start_date_iso, '$lt': end_date_iso}}
 
             # Execute the query and convert the cursor to a list
-            data_cursor = db.employee.find(query)
+            data_cursor = employees.find(query)
             data_list = list(data_cursor)  # Convert cursor to list
             if not data_list:
                 print("No documents found for the given query.")
             # Convert MongoDB ObjectId to string
             for doc in data_list:
                 doc['_id'] = str(doc['_id'])
-                doc['Sex'] = 'Male' #example, fix this later 
             
             return jsonify(data_list), 200
         except KeyError:
@@ -171,7 +168,7 @@ def employee():
         '$lt': datetime(year + 1, 1, 1).isoformat()
     }}
     if dataType == 'salary':
-        items = list(salary.find(query, {'_id': 0}))
+        items = list(salaries.find(query, {'_id': 0}))
             
     pagination = paginator(page, items)
     return jsonify({'items': pagination['render_items'], 'total_pages': pagination['total_pages']})

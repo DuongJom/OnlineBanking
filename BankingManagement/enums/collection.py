@@ -21,3 +21,4 @@ class CollectionType(Enum):
     USERS = 'users'
     WORKING_DAY_INFOS = 'working_day_infos'
     LOANS = 'loans'
+    SALARIES = 'salaries'

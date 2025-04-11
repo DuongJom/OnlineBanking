@@ -1,6 +1,7 @@
 {% extends "general/layout.html" %}
 
 {% block title %}
+{% block employee_title %}{% endblock %}
 {% endblock %}
 <style>
     /* Ensure the dropdown menu is hidden by default and shown on hover */
@@ -11,7 +12,7 @@
 </style>
 {% block content %}
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<div class="flex flex-row min-h-full relative top-16 min-w-full bg-white">
+<div class="flex flex-row min-h-full top-16 min-w-full bg-white">
     <!-- Sidebar -->
     <aside class="flex h-screen bg-green-500 text-gray-500 border rounded-md sm:w-48 sm:fixed sm:left-0">
         <div class="p-2 flex flex-col">
