@@ -3,23 +3,12 @@ import random
 import requests
 import pandas as pd
 import ast
-from flask import redirect, session
-from functools import wraps
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
 from dotenv import load_dotenv
 
 from enums.mime_type import MIMEType
-from enums.file_type import FileType
 load_dotenv()
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("account_id") is None:
-            return redirect("/login")
-        return f(*args, **kwargs)
-    return decorated_function
 
 def issue_new_card():
     cardNum = str(random.randint(10**13,(10**14)-1))

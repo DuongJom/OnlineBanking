@@ -12,7 +12,7 @@
       <div class="overflow-x-auto">
         <table class="w-full text-left">
           <thead class="bg-gray-100 sticky top-0">
-            <tr class="grid grid-cols-8 border-gray-200 text-center">
+            <tr class="grid grid-cols-7 border-gray-200 text-center">
               <th class="border-b-2 border-r-2 p-4">Loan ID</th>
               <th class="border-b-2 border-r-2 p-4">Amount</th>
               <th class="border-b-2 border-r-2 p-4">Interest Rate</th>
@@ -25,7 +25,7 @@
           <tbody class="max-h-430 overflow-y-auto block w-full">
             {% if loans|length != 0 %}
               {% for loan in loans %}
-                <tr id="{{loan._id}}" class="border-gray-200 border-b-2 grid grid-cols-8 hover:bg-green-100">
+                <tr id="{{loan._id}}" class="border-gray-200 border-b-2 grid grid-cols-7 hover:bg-green-100">
                   <td class="border-gray-200 border-l-2 p-2 text-center">{{ loan._id|format_id(6) }}</td>
                   <td class="border-gray-200 border-l-2 p-2 text-right font-semibold text-red-500">{{ loan.Amount|currency_format }}</td>
                   <td class="border-gray-200 border-l-2 p-2 text-right ">{{ loan.InterestRate }}%</td>
