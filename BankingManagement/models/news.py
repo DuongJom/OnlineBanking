@@ -5,6 +5,8 @@ from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.collection import CollectionType
+from enums.news_type import NewsType
+from enums.news_read_status import NewsReadStatusType
 
 db = Database().get_db()
 
@@ -20,6 +22,8 @@ class News(BaseModel):
         self.StartDate = kwargs["startDate"] if "startDate" in kwargs.keys() else date.today()
         self.EndDate = kwargs["endDate"] if "endDate" in kwargs.keys() else (date.today() + timedelta(days=7))
         self.PublishedBy = kwargs["publishedBy"] if "publishedBy" in kwargs.keys() else None
+        self.Type = int(kwargs["type"]) if "type" in kwargs.keys() else NewsType.NEW.value
+        self.ReadStatus = int(kwargs["read_status"]) if "read_status" in kwargs.keys() else NewsReadStatusType.UNREAD.value
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

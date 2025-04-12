@@ -1,26 +1,25 @@
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request
 from bson import ObjectId
-from datetime import datetime, date
+from datetime import date, datetime as dt, timedelta
+import random
 
 from models.database import Database
 from models.employee import Employee
-
-from helpers.helpers import paginator
-from datetime import datetime, date
-from helpers.logger import log_request
-from decorators import login_required, role_required
 from enums.month_type import MonthType
 from enums.role_type import RoleType
 from enums.collection import CollectionType
 from enums.deleted_type import DeletedType
 from enums.sex_type import SexType
 from enums.working_type import WorkingType
+from helpers.logger import log_request
+from decorators import login_required, role_required
 
 db = Database().get_db()
 accounts = db[CollectionType.ACCOUNTS.value]
 employees = db[CollectionType.EMPLOYEES.value]
 salaries = db[CollectionType.SALARIES.value]
 roles = db[CollectionType.ROLES.value]
+news = db[CollectionType.NEWS.value]
 
 employee_blueprint = Blueprint('employee', __name__)
 
@@ -39,78 +38,12 @@ def convert_objectid(data):
     else:
         return data
 
-import random
-from datetime import timedelta
-def generate_fake_employees(count=100):
-    
-    # Sample data for random generation
-    positions = [
-        "CEO", "CTO", "CFO", "COO", "Manager", 
-        "Senior Developer", "Junior Developer", 
-        "Senior Designer", "Junior Designer",
-        "HR Manager", "HR Staff",
-        "Senior Accountant", "Junior Accountant",
-        "Sales Manager", "Sales Representative",
-        "Marketing Manager", "Marketing Specialist",
-        "Customer Service", "IT Support",
-        "Project Manager", "Business Analyst"
-    ]
-    
-    sexes = ["Male", "Female"]
-    working_statuses = ["Active", "On Leave", "WFH", "Remote"]
-    
-    # Generate current date for working days
-    current_date = datetime.now()
-    
-    # Clear existing data (optional)
-    employees.delete_many({})
-    
-    # Generate and insert fake employees
-    for i in range(count):
-        # Generate random working days (last 30 days)
-        working_days = []
-        day_offs = []
-        for day in range(30):
-            date = current_date - timedelta(days=day)
-            if random.random() < 0.8:  # 80% chance of working
-                working_days.append(date.strftime("%Y-%m-%d"))
-            else:
-                day_offs.append(date.strftime("%Y-%m-%d"))
-        
-        # Generate random check-in/out times
-        check_in_hour = random.randint(7, 9)
-        check_out_hour = random.randint(17, 19)
-        
-        employee = {
-            "_id": (i + 1),
-            "EmployeeName": f"Employee {i+1}",
-            "Position": random.choice(positions),
-            "Role": RoleType.EMPLOYEE.value,
-            "Sex": random.choice(sexes),
-            "Phone": f"0{random.randint(100000000, 999999999)}",
-            "Email": f"employee{i+1}@dhcbank.com",
-            "Address": f"Street {random.randint(1, 100)}, City {random.randint(1, 10)}",
-            "Check_in_time": f"{check_in_hour:02d}:00",
-            "Check_out_time": f"{check_out_hour:02d}:00",
-            "Working_status": random.choice(working_statuses),
-            "Working_days": working_days,
-            "DayOffs": day_offs,
-            "Salary": random.randint(5000000, 20000000),
-            "IsDeleted": DeletedType.AVAILABLE.value,
-            "created_at": datetime.now(),
-            "updated_at": datetime.now()
-        }
-        
-        # Insert into MongoDB
-        employees.insert_one(employee)
-
 @employee_blueprint.route('/employee/home', methods = ['GET'])
 @login_required
 @role_required(RoleType.EMPLOYEE.value)
 @log_request()
-def employee_home():
+def home():
     if request.method == 'GET':
-        #generate_fake_employees(50)
         all_employees = list(employees.find({ "IsDeleted": DeletedType.AVAILABLE.value }))
         for employee in all_employees:
             employee['_id'] = int(employee['_id'])
@@ -135,6 +68,95 @@ def employee_home():
                                emp=logged_in_user,
                                work_time=8)
 
+def generate_fake_news(count=20):
+    """Generate fake news data and insert into MongoDB"""
+    
+    # Sample data for random generation
+    news_types = [
+        {"type": 0, "name": "New", "bg_color": "green"},
+        {"type": 1, "name": "Policy", "bg_color": "red"},
+        {"type": 2, "name": "Event", "bg_color": "blue"},
+        {"type": 3, "name": "Announcement", "bg_color": "orange"}
+    ]
+    
+    titles = [
+        "Company Policy Update",
+        "New Work From Home Guidelines",
+        "Annual Team Building Event",
+        "Holiday Schedule Announcement",
+        "New Employee Onboarding",
+        "System Maintenance Notice",
+        "Office Relocation Update",
+        "New Project Launch",
+        "Employee Benefits Update",
+        "Security Protocol Changes",
+        "Company Achievement Celebration",
+        "New Feature Release",
+        "Emergency Contact Update",
+        "Training Program Schedule",
+        "Performance Review Timeline",
+        "New Department Structure",
+        "Client Meeting Schedule",
+        "Equipment Maintenance Notice",
+        "New Software Implementation",
+        "Office Safety Guidelines"
+    ]
+    
+    contents = [
+        "Important updates regarding company policies and procedures. Please review the new guidelines carefully.",
+        "New work from home policy has been implemented. All employees are required to follow these guidelines.",
+        "Join us for our annual team building event. All employees are welcome to participate.",
+        "Updated holiday schedule for the upcoming months. Please check your calendar.",
+        "Welcome to our new employees! Please complete the onboarding process.",
+        "System maintenance scheduled for this weekend. Please save your work.",
+        "Office relocation details and timeline. Please prepare accordingly.",
+        "Exciting new project launch. Team members will be notified separately.",
+        "Updates to employee benefits package. Please review the changes.",
+        "New security protocols implemented. All employees must comply.",
+        "Celebrating our company's recent achievements. Join us for the celebration.",
+        "New features have been added to our system. Training will be provided.",
+        "Please update your emergency contact information in the system.",
+        "New training program schedule. All employees must complete the training.",
+        "Performance review timeline announced. Please prepare your reports.",
+        "New department structure implemented. Changes will take effect next month.",
+        "Important client meeting schedule. All team members must attend.",
+        "Equipment maintenance scheduled. Please backup your data.",
+        "New software implementation timeline. Training will be provided.",
+        "Updated office safety guidelines. All employees must follow these protocols."
+    ]
+    
+    # Clear existing data (optional)
+    news.delete_many({})
+    
+    # Generate current date for news dates
+    current_date = dt.now()
+    
+    # Generate and insert fake news
+    for i in range(count):
+        # Generate random date within last 30 days
+        days_ago = random.randint(0, 30)
+        news_date = current_date - timedelta(days=days_ago)
+        
+        # Select random news type
+        news_type = random.choice(news_types)
+        
+        # Create news document
+        news_obj = {
+            "_id": i+1,
+            "Title": titles[i],
+            "Content": contents[i],
+            "Type": news_type["type"],
+            "StartDate": news_date,
+            "Status": random.randint(0, 1),  # 0: Unread, 1: Read
+            "created_at": dt.now(),
+            "updated_at": dt.now()
+        }
+        
+        # Insert into MongoDB
+        news.insert_one(news_obj)
+
 @employee_blueprint.route('/employee/news', methods=['GET'])    
-def news():
-    return render_template('employee/news.html')
+def show_news():
+    generate_fake_news(20)
+    lst_news = list(news.find())
+    return render_template('employee/news.html', lnews=lst_news)

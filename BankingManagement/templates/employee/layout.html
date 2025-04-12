@@ -12,21 +12,20 @@
 </style>
 {% block content %}
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<div class="flex flex-row min-h-full top-16 min-w-full bg-white">
+<div class="flex flex-row min-h-full mt-16 min-w-full bg-white">
     <!-- Sidebar -->
     <aside class="flex h-screen bg-green-500 text-gray-500 border rounded-md sm:w-48 sm:fixed sm:left-0">
         <div class="p-2 flex flex-col">
-            <h1 class="text-xl font-bold text-white mb-4">Banking App</h1>
             <ul class="list-none">
                 <li class="relative mb-2 group w-full"></li>
-                    <a href="{{url_for('employee.employee_home')}}" class="block p-2 text-white hover:bg-green-300 rounded-lg">
+                    <a href="{{url_for('employee.home')}}" class="block p-2 text-white hover:bg-green-300 rounded-lg">
                         <i class="fa-solid fa-house"></i> Home
                     </a>
                 </li>
 
                 <!-- News Item with Notification Icon -->
                 <li class="relative mb-2 group">
-                    <a href="{{ url_for('employee.news') }}" class="flex p-2 text-white hover:bg-green-300 items-center rounded-lg">
+                    <a href="{{ url_for('employee.show_news') }}" class="flex p-2 text-white hover:bg-green-300 items-center rounded-lg">
                         <!-- Notification Icon Container -->
                         <div class="relative">
                             <!-- Notification Badge -->
