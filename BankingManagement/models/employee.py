@@ -28,7 +28,7 @@ class Employee(BaseModel):
         self.Working_days = kwargs["workingDays"] if "workingDays" in kwargs.keys() else []
         self.DayOffs = kwargs["dayOffs"] if "dayOffs" in kwargs.keys() else []
         self.Salary = kwargs["salary"] if "salary" in kwargs.keys() else None
-    
+        
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))
 

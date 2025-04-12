@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, request, jsonify, session
 from bson import ObjectId
 from datetime import datetime, date
 
-from models import database
+from models.database import Database
+from models.employee import Employee
 
 from helpers.helpers import paginator
 from datetime import datetime, date
@@ -12,8 +13,10 @@ from enums.month_type import MonthType
 from enums.role_type import RoleType
 from enums.collection import CollectionType
 from enums.deleted_type import DeletedType
+from enums.sex_type import SexType
+from enums.working_type import WorkingType
 
-db = database.Database().get_db()
+db = Database().get_db()
 accounts = db[CollectionType.ACCOUNTS.value]
 employees = db[CollectionType.EMPLOYEES.value]
 salaries = db[CollectionType.SALARIES.value]
@@ -111,8 +114,26 @@ def employee_home():
         all_employees = list(employees.find({ "IsDeleted": DeletedType.AVAILABLE.value }))
         for employee in all_employees:
             employee['_id'] = int(employee['_id'])
-            
-        return render_template('employee/home.html', employees=all_employees)
+
+        logged_in_user = Employee(
+            id = 1,
+            employeeName=f"Employee 1",
+            position = "Junior Developer",
+            role = RoleType.EMPLOYEE.value,
+            sex = SexType.MALE.value,
+            phone = f"0{random.randint(100000000, 999999999)}",
+            email = f"employee1@dhcbank.com",
+            address = f"Street {random.randint(1, 100)}, City {random.randint(1, 10)}",
+            checkIn = "08:00",
+            checkOut = "17:00",
+            workingStatus = WorkingType.WORK_IN_COMPANY.value
+        )
+        return render_template('employee/home.html', 
+                               employees=all_employees, 
+                               is_checked_in=True, 
+                               is_checked_out=True,
+                               emp=logged_in_user,
+                               work_time=8)
 
 @employee_blueprint.route('/get-data', methods=['POST'])
 @login_required

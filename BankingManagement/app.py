@@ -5,6 +5,7 @@ from init_app import init
 from init_data import initialize_data
 from filters import currency_format, datetime_format, date_format, strip, format_date, format_card_number, format_id, currency_to_text
 import uuid
+from datetime import datetime as dt
 from helpers.logger import logger
 
 app = Flask(__name__)
@@ -38,6 +39,7 @@ app.jinja_env.filters['format_date'] = format_date
 app.jinja_env.filters['format_card_number'] = format_card_number
 app.jinja_env.filters['format_id'] = format_id
 app.jinja_env.filters['currency_to_text'] = currency_to_text
+app.jinja_env.globals['now'] = dt.now
 
 if __name__ == '__main__':
     app.run(debug=True)

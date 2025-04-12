@@ -8,17 +8,60 @@
 <div class="flex-1 min-h-screen bg-transparent ml-48 mt-16">
     <!-- Main Content -->
     <div class="py-2 px-2">
-        <div class="flex rounded-lg shadow-md p-2 mb-2 justify-end border border-gray-200 space-x-2">
-            <div class="flex flex-row">
-                <button type="submit" class="border focus:border-orange-500 bg-orange-500 w-32 rounded-lg p-1 hover:bg-orange-300">Check-in</button>
-                <button type="submit" class="border focus:border-orange-500 bg-orange-500 w-32 rounded-lg p-1 hover:bg-orange-300">Check-out</button>
-            </div>
-            <div class="flex flex-row">
-                <button type="submit" class="border focus:border-blue-500 bg-blue-500 w-32 rounded-lg p-1 hover:bg-blue-300">WFH Check-in</button>
-                <button type="submit" class="border focus:border-blue-500 bg-blue-500 w-32 rounded-lg p-1 hover:bg-blue-300">WFH Check-out</button>
-            </div>
-            <div class="flex flex-row">
-                <button type="submit" class="border focus:border-red-500 bg-red-500 w-32 rounded-lg p-1 hover:bg-red-300">Day off</button>
+        <div class="flex rounded-lg shadow-md p-2 mb-2 justify-between border border-gray-200 space-x-2">
+            <div class="flex flex-row gap-2 w-full justify-center space-x-4 font-semibold">
+                <table class="min-w-full divide-gray-200 rounded-lg shadow-lg">
+                    <thead class="h-4 bg-green-300">
+                        <tr>
+                            <th scope="col" class="employee_dashboard_thead px-2 py-2">Date</th>
+                            <th scope="col" class="employee_dashboard_thead px-2 py-2">Check-in</th>
+                            <th scope="col" class="employee_dashboard_thead px-2 py-2">Check-out</th>
+                            <th scope="col" class="employee_dashboard_thead px-2 py-2">Work hours time</th>
+                            <th scope="col" class="employee_dashboard_thead px-2 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="h-4">
+                            <td class="employee_dashboard_trow border border-gray-200 text-center">{{ now().strftime('%Y-%m-%d') }}</td>
+                            <td class="employee_dashboard_trow border border-gray-200">
+                                {% if is_checked_in %}
+                                <p class="text-blue-700 text-center">{{ emp.Check_in_time }}</p>
+                                {% else %}
+                                <p class="text-red-700 text-center">--:--</p>
+                                {% endif %}
+                            </td>
+                            <td class="employee_dashboard_trow border border-gray-200">
+                                {% if is_checked_out %}
+                                <p class="text-blue-700 text-center">{{ emp.Check_out_time }}</p>
+                                {% else %}
+                                <p class="text-red-700 text-center">--:--</p>
+                                {% endif %}
+                            </td>
+                            <td class="employee_dashboard_trow border border-gray-200">
+                                {% if is_checked_out %}
+                                <p class="text-blue-700 text-center">{{ work_time }}</p>
+                                {% else %}
+                                <p class="text-red-700 text-center">--:--</p>
+                                {% endif %}
+                            </td>
+                            <td class="employee_dashboard_trow border border-gray-200">
+                                <div class="w-full flex flex-row space-x-2 justify-between">
+                                    <div class="flex flex-row">
+                                        <button type="submit" class="border focus:border-orange-500 bg-orange-500 w-32 rounded-lg p-1 hover:bg-orange-300">Check-in</button>
+                                        <button type="submit" class="border focus:border-orange-500 bg-orange-500 w-32 rounded-lg p-1 hover:bg-orange-300">Check-out</button>
+                                    </div>
+                                    <div class="flex flex-row">
+                                        <button type="submit" class="border focus:border-blue-500 bg-blue-500 w-32 rounded-lg p-1 hover:bg-blue-300">WFH Check-in</button>
+                                        <button type="submit" class="border focus:border-blue-500 bg-blue-500 w-32 rounded-lg p-1 hover:bg-blue-300">WFH Check-out</button>
+                                    </div>
+                                    <div class="flex flex-row">
+                                        <button type="submit" class="border focus:border-red-500 bg-red-500 w-32 rounded-lg p-1 hover:bg-red-300">Day off</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <!-- Search and Filter Section -->
@@ -52,8 +95,8 @@
         </div>
 
         <div class="bg-white rounded-lg shadow-md mt-2">
-            <div class="overflow-x-auto overflow-y-auto max-h-525">
-                <table class="min-w-full divide-y divide-gray-200">
+            <div class="overflow-x-auto overflow-y-auto max-h-490">
+                <table class="min-w-full divide-y divide-gray-200 rounded-lg shadow-lg">
                     <thead class="bg-gray-50">
                         <tr class="bg-green-300 text-white text-sm">
                             <th scope="col" class="employee_dashboard_thead">ID</th>

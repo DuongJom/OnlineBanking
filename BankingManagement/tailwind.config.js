@@ -45,7 +45,7 @@ module.exports = withMT({
       },
       maxHeight: {
         '430': '430px',
-        '525': '525px'
+        '490': '490px'
       }
     },
   },
