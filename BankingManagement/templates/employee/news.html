@@ -1,0 +1,187 @@
+{% extends "employee/layout.html" %}
+
+{% block employee_title %}News & Notifications{% endblock %}
+
+{% block employee_content %}
+<div class="ml-48 flex-1 p-4 mt-16">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="flex justify-between items-center mb-6 w-full">
+            <div class="w-1/4">
+                <h1 class="text-2xl font-bold text-gray-800">News & Notifications</h1>
+            </div>
+            <div class="flex flex-row w-1/2 space-x-2">
+                <div class="relative w-full">
+                    <input type="text" id="searchNews" placeholder="Search news..." 
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <div class="absolute left-3 top-2.5">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <select id="filterStatus" class="w-32 border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <option value="all">All Status</option>
+                    <option value="unread">Unread</option>
+                    <option value="read">Read</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- News List -->
+        <div class="space-y-4">
+            <!-- News Item -->
+            <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-150 ease-in-out news-item">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">New</span>
+                            <h3 class="text-lg font-semibold text-gray-800">Company Policy Update</h3>
+                        </div>
+                        <p class="mt-2 text-gray-600">Important updates regarding the new work-from-home policy and office hours.</p>
+                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>Posted 2 hours ago</span>
+                        </div>
+                    </div>
+                    <button class="text-gray-400 hover:text-gray-600" onclick="showNewsModal('1')">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- News Item -->
+            <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-150 ease-in-out news-item">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Event</span>
+                            <h3 class="text-lg font-semibold text-gray-800">Team Building Event</h3>
+                        </div>
+                        <p class="mt-2 text-gray-600">Join us for our annual team building event next weekend. All employees are welcome!</p>
+                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>Posted 1 day ago</span>
+                        </div>
+                    </div>
+                    <button class="text-gray-400 hover:text-gray-600" onclick="showNewsModal('2')">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- News Item -->
+            <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-150 ease-in-out news-item">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Announcement</span>
+                            <h3 class="text-lg font-semibold text-gray-800">Holiday Schedule</h3>
+                        </div>
+                        <p class="mt-2 text-gray-600">Updated holiday schedule for the upcoming month. Please check your calendar.</p>
+                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>Posted 2 days ago</span>
+                        </div>
+                    </div>
+                    <button class="text-gray-400 hover:text-gray-600" onclick="showNewsModal('3')">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-6 flex items-center justify-between">
+            <div class="text-sm text-gray-700">
+                Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">10</span> results
+            </div>
+            <div class="flex space-x-2">
+                <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    Previous
+                </button>
+                <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    Next
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- News Detail Modal -->
+<div id="newsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-medium text-gray-900">News Title</h3>
+            <button class="text-gray-400 hover:text-gray-500" onclick="closeNewsModal()">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div class="mt-2">
+            <p class="text-gray-600">Detailed news content goes here...</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Search functionality
+    document.getElementById('searchNews').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const newsItems = document.querySelectorAll('.news-item');
+        
+        newsItems.forEach(item => {
+            const title = item.querySelector('h3').textContent.toLowerCase();
+            const content = item.querySelector('p').textContent.toLowerCase();
+            
+            if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+
+    // Filter functionality
+    document.getElementById('filterStatus').addEventListener('change', function(e) {
+        const status = e.target.value;
+        const newsItems = document.querySelectorAll('.news-item');
+        
+        newsItems.forEach(item => {
+            const itemStatus = item.querySelector('span').textContent.toLowerCase();
+            if (status === 'all' || itemStatus === status) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+
+    // Modal functionality
+    function showNewsModal(newsId) {
+        const modal = document.getElementById('newsModal');
+        modal.classList.remove('hidden');
+        // Here you would typically fetch the news details using newsId
+    }
+
+    function closeNewsModal() {
+        const modal = document.getElementById('newsModal');
+        modal.classList.add('hidden');
+    }
+</script>
+{% endblock %} 

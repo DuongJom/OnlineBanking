@@ -26,7 +26,7 @@
 
                 <!-- News Item with Notification Icon -->
                 <li class="relative mb-2 group">
-                    <a href="#" class="flex p-2 text-white hover:bg-green-300 items-center rounded-lg">
+                    <a href="{{ url_for('employee.news') }}" class="flex p-2 text-white hover:bg-green-300 items-center rounded-lg">
                         <!-- Notification Icon Container -->
                         <div class="relative">
                             <!-- Notification Badge -->
@@ -42,13 +42,13 @@
                 </li>
                 
                 <li class="relative mb-2 group">
-                    <a href="{{url_for('employee.employee_working_time')}}" class="block p-2 text-white hover:bg-green-300 rounded-lg">
+                    <a href="#" class="block p-2 text-white hover:bg-green-300 rounded-lg">
                         <i class="fa-regular fa-calendar-check mr-2"></i> Working time
                     </a>
                 </li>
 
                 <li class="relative mb-2 group">
-                    <a href="{{url_for('employee.employee_salary')}}" class="block p-2 text-white hover:bg-green-300 rounded-lg">
+                    <a href="#" class="block p-2 text-white hover:bg-green-300 rounded-lg">
                         <i class="fa-solid fa-dollar-sign mr-2"></i> Salary
                     </a>
                 </li>
