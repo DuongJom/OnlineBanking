@@ -35,28 +35,6 @@
         @apply flex w-full justify-center bg-green-400 px-3 py-1.5 text-sm font-semibold leading-7 text-white
     }
 
-    .employee_th {
-        @apply border border-black px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider w-auto
-    }
-
-    .employee_tr {
-        @apply border border-black px-3 py-2 whitespace-nowrap
-    }
-    .employee_table {
-        @apply w-full border border-collapse border-gray-500 divide-y divide-gray-500
-    }
-
-    .employee_working_table {
-        @apply xl:min-w-full table-fixed border border-collapse border-gray-500 divide-y divide-gray-500
-    }
-
-    .employee_working_tr {
-        @apply border border-black text-center px-3 py-2 whitespace-nowrap
-    }
-    .employee_working_th {
-        @apply border border-black px-4 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider
-    }
-
     .admin_input {
         @apply w-full rounded-lg focus:outline-none focus:border-green-300 focus:ring-2 focus:ring-green-300
     }
@@ -142,5 +120,13 @@
 
     .option_icon {
         @apply h-4/5
+    }
+
+    .employee_dashboard_thead {
+        @apply border border-gray-200 px-6 py-3 text-center tracking-wider;
+    }
+
+    .employee_dashboard_trow {
+        @apply px-4 py-2 whitespace-nowrap text-sm text-gray-900;
     }
 }

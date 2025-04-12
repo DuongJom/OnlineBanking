@@ -8,6 +8,19 @@
 <div class="flex-1 min-h-screen bg-transparent ml-48 mt-16">
     <!-- Main Content -->
     <div class="py-2 px-2">
+        <div class="flex rounded-lg shadow-md p-2 mb-2 justify-end border border-gray-200 space-x-2">
+            <div class="flex flex-row">
+                <button type="submit" class="border focus:border-orange-500 bg-orange-500 w-32 rounded-lg p-1 hover:bg-orange-300">Check-in</button>
+                <button type="submit" class="border focus:border-orange-500 bg-orange-500 w-32 rounded-lg p-1 hover:bg-orange-300">Check-out</button>
+            </div>
+            <div class="flex flex-row">
+                <button type="submit" class="border focus:border-blue-500 bg-blue-500 w-32 rounded-lg p-1 hover:bg-blue-300">WFH Check-in</button>
+                <button type="submit" class="border focus:border-blue-500 bg-blue-500 w-32 rounded-lg p-1 hover:bg-blue-300">WFH Check-out</button>
+            </div>
+            <div class="flex flex-row">
+                <button type="submit" class="border focus:border-red-500 bg-red-500 w-32 rounded-lg p-1 hover:bg-red-300">Day off</button>
+            </div>
+        </div>
         <!-- Search and Filter Section -->
         <div class="bg-green-500 rounded-lg shadow-md p-2 mb-2">
             <div class="flex flex-col md:flex-row gap-4">
@@ -17,18 +30,18 @@
                             <span class="material-symbols-outlined text-gray-400">search</span>
                         </span>
                         <input type="text" placeholder="Search employees..." 
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            class="w-full pl-10 pr-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                     </div>
                 </div>
                 <div class="flex gap-4">
-                    <select class="w-36 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-900 focus:border-transparent">
+                    <select class="w-36 border border-gray-300 rounded-lg px-4 py-1 focus:outline-none focus:ring-2 focus:ring-green-900 focus:border-transparent">
                         <option value="">All Positions</option>
                         <option value="CEO">CEO</option>
                         <option value="Manager">Manager</option>
                         <option value="Developer">Developer</option>
                         <option value="Designer">Designer</option>
                     </select>
-                    <select class="w-36 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-900 focus:border-transparent">
+                    <select class="w-36 border border-gray-300 rounded-lg px-4 py-1 focus:outline-none focus:ring-2 focus:ring-green-900 focus:border-transparent">
                         <option value="">All Status</option>
                         <option value="Active">Active</option>
                         <option value="On Leave">On Leave</option>
@@ -39,35 +52,43 @@
         </div>
 
         <div class="bg-white rounded-lg shadow-md mt-2">
-            <div class="overflow-x-auto overflow-y-auto max-h-510">
+            <div class="overflow-x-auto overflow-y-auto max-h-525">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr class="bg-green-300 text-white text-sm">
-                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">ID</th>
-                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Full name</th>
-                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Position</th>
-                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Gender</th>
-                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Phone</th>
-                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Email</th>
-                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Address</th>
-                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Check-in</th>
-                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Check-out</th>
-                            <th scope="col" class="border border-gray-200 px-6 py-3 text-left tracking-wider">Working status</th>
+                            <th scope="col" class="employee_dashboard_thead">ID</th>
+                            <th scope="col" class="employee_dashboard_thead">Full name</th>
+                            <th scope="col" class="employee_dashboard_thead">Position</th>
+                            <th scope="col" class="employee_dashboard_thead">Gender</th>
+                            <th scope="col" class="employee_dashboard_thead">Phone</th>
+                            <th scope="col" class="employee_dashboard_thead">Email</th>
+                            <th scope="col" class="employee_dashboard_thead">Address</th>
+                            <th scope="col" class="employee_dashboard_thead">Check-in</th>
+                            <th scope="col" class="employee_dashboard_thead">Check-out</th>
+                            <th scope="col" class="employee_dashboard_thead">Working status</th>
                         </tr>
                     </thead>
                     <tbody class="bg-transparent divide-y divide-gray-200">
                         {% for employee in employees %}
                         <tr class="hover:bg-green-300 even:bg-green-100 bg-transparent border border-gray-200">
-                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee._id|format_id(6) }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap">{{ employee.EmployeeName }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee.Position }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee.Sex }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee.Phone }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee.Email }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{{ employee.Address }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 text-center">{{ employee.Check_in_time }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 text-center">{{ employee.Check_out_time }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap">
+                            <td class="employee_dashboard_trow">{{ employee._id|format_id(6) }}</td>
+                            <td class="employee_dashboard_trow">{{ employee.EmployeeName }}</td>
+                            <td class="employee_dashboard_trow">{{ employee.Position }}</td>
+                            <td class="employee_dashboard_trow">{{ employee.Sex }}</td>
+                            <td class="employee_dashboard_trow">{{ employee.Phone }}</td>
+                            <td class="employee_dashboard_trow">{{ employee.Email }}</td>
+                            <td class="employee_dashboard_trow">{{ employee.Address }}</td>
+                            {% if employee.Working_status != 'On Leave' %}
+                                <td class="employee_dashboard_trow text-center">{{ employee.Check_in_time }}</td>
+                            {% else %}
+                                <td class="text-red-500 font-semibold text-center">--:--</td>
+                            {% endif %}
+                            {% if employee.Working_status != 'On Leave' %}
+                                <td class="employee_dashboard_trow text-center">{{ employee.Check_out_time }}</td>
+                            {% else %}
+                                <td class="text-red-500 font-semibold text-center">--:--</td>
+                            {% endif %}
+                            <td class="flex px-4 py-2 whitespace-nowrap justify-center">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                     {% if employee.Working_status == 'Active' %}
                                         bg-green-100 text-green-800
