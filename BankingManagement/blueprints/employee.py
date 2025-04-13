@@ -302,6 +302,7 @@ def working_time():
     working_days_count = 0
     half_days_count = 0
     day_offs_count = 0
+    total_hours_in_month = 0
     
     # Get the number of days in the month
     _, days_in_month = calendar.monthrange(current_date.year, current_date.month)
@@ -317,11 +318,21 @@ def working_time():
         
         # Get working day record for this day
         working_day = working_days_dict.get(day)
-        
+
         # Determine working status
         working_status = WorkingType.OFF.value
+        check_in_time = None
+        check_out_time = None
+        total_hours = 0
+
         if working_day:
             working_status = working_day["WorkingStatus"]
+            if working_day["CheckIn"]:
+                check_in_time = dt.strptime(working_day["CheckIn"], '%Y-%m-%dT%H:%M:%S')
+            if working_day["CheckOut"]:
+                check_out_time = dt.strptime(working_day["CheckOut"], '%Y-%m-%dT%H:%M:%S')
+            if working_day["TotalHours"]:
+                total_hours = working_day["TotalHours"]
         
         # Update counts
         if not is_weekend:
@@ -334,12 +345,16 @@ def working_time():
             
             # Update status counts for chart
             status_counts[working_status] += 1
+            total_hours_in_month += total_hours
         
         calendar_days.append({
             'date': current_day.strftime('%d-%m-%Y'),
             'day_name': current_day.strftime('%A'),
             'working_status': working_status,
-            'is_weekend': is_weekend
+            'is_weekend': is_weekend,
+            'check_in': check_in_time,
+            'check_out': check_out_time,
+            'total_hours': total_hours
         })
     
     # Generate months for dropdown (last 12 months)
@@ -356,18 +371,13 @@ def working_time():
             'selected': is_selected
         })
     
-    # Prepare chart data
-    chart_data = {
-        'data': status_counts
-    }
-    
     return render_template('employee/working_time.html',
                           calendar_days=calendar_days,
                           working_days=working_days_count,
                           half_days=half_days_count,
                           day_offs=day_offs_count,
-                          months=months,
-                          chart_data=chart_data)
+                          total_hours_in_month=total_hours_in_month,
+                          months=months)
 
 @employee_blueprint.route('/employee/working-time/export', methods=['GET', 'POST'])
 @login_required
