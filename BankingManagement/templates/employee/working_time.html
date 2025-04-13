@@ -159,55 +159,6 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Month selector change event
-        document.getElementById('monthSelector').addEventListener('change', function() {
-            window.location.href = `/employee/working-time?month=${this.value}`;
-        });
-
-        // Export button click event
-        document.getElementById('exportBtn').addEventListener('click', function() {
-            const month = document.getElementById('monthSelector').value;
-            window.location.href = `/employee/working-time/export?month=${month}`;
-        });
-
-        // Confirm button click event
-        document.getElementById('confirmBtn').addEventListener('click', function() {
-            document.getElementById('confirmModal').classList.remove('hidden');
-        });
-
-        // Cancel confirm button click event
-        document.getElementById('cancelConfirmBtn').addEventListener('click', function() {
-            document.getElementById('confirmModal').classList.add('hidden');
-        });
-
-        // Confirm submit button click event
-        document.getElementById('confirmSubmitBtn').addEventListener('click', function() {
-            const month = document.getElementById('monthSelector').value;
-            fetch(`/employee/working-time/confirm?month=${month}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Working time confirmed successfully!');
-                    window.location.reload();
-                } else {
-                    alert('Failed to confirm working time: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while confirming working time.');
-            })
-            .finally(() => {
-                document.getElementById('confirmModal').classList.add('hidden');
-            });
-        });
-    });
-</script>
+<!-- Load JavaScript -->
+<script src="{{ url_for('static', filename='js/employee/utilities.js') }}"></script>
 {% endblock %}
