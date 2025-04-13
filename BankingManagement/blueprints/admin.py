@@ -3,8 +3,7 @@ from bson import ObjectId
 from datetime import datetime
 
 from models import database
-from helpers.logger import log_request
-from decorators import role_required, login_required
+from decorators import role_required, login_required, log_request
 from enums.role_type import RoleType
 
 admin_blueprint = Blueprint('admin', __name__)   

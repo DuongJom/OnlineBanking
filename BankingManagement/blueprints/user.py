@@ -15,8 +15,7 @@ from enums.collection import CollectionType
 from enums.deleted_type import DeletedType
 from enums.role_type import RoleType
 from app import app, mail
-from helpers.logger import log_request
-from decorators import login_required, role_required
+from decorators import login_required, role_required, log_request
 
 db = database.Database().get_db()
 accounts = db[CollectionType.ACCOUNTS.value]
