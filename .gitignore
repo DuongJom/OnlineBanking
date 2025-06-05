@@ -159,3 +159,4 @@ cython_debug/
 
 # configuration variables that contain sensitive information
 instance/
+node_modules/
