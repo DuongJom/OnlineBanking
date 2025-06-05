@@ -73,184 +73,11 @@ def home():
                                emp=logged_in_user,
                                work_time=8)
 
-def generate_fake_news(count=20):
-    """Generate fake news data and insert into MongoDB"""
-    
-    # Sample data for random generation
-    news_types = [
-        {"type": 0, "name": "New", "bg_color": "green"},
-        {"type": 1, "name": "Policy", "bg_color": "red"},
-        {"type": 2, "name": "Event", "bg_color": "blue"},
-        {"type": 3, "name": "Announcement", "bg_color": "orange"}
-    ]
-    
-    titles = [
-        "Company Policy Update",
-        "New Work From Home Guidelines",
-        "Annual Team Building Event",
-        "Holiday Schedule Announcement",
-        "New Employee Onboarding",
-        "System Maintenance Notice",
-        "Office Relocation Update",
-        "New Project Launch",
-        "Employee Benefits Update",
-        "Security Protocol Changes",
-        "Company Achievement Celebration",
-        "New Feature Release",
-        "Emergency Contact Update",
-        "Training Program Schedule",
-        "Performance Review Timeline",
-        "New Department Structure",
-        "Client Meeting Schedule",
-        "Equipment Maintenance Notice",
-        "New Software Implementation",
-        "Office Safety Guidelines"
-    ]
-    
-    contents = [
-        "Important updates regarding company policies and procedures. Please review the new guidelines carefully.",
-        "New work from home policy has been implemented. All employees are required to follow these guidelines.",
-        "Join us for our annual team building event. All employees are welcome to participate.",
-        "Updated holiday schedule for the upcoming months. Please check your calendar.",
-        "Welcome to our new employees! Please complete the onboarding process.",
-        "System maintenance scheduled for this weekend. Please save your work.",
-        "Office relocation details and timeline. Please prepare accordingly.",
-        "Exciting new project launch. Team members will be notified separately.",
-        "Updates to employee benefits package. Please review the changes.",
-        "New security protocols implemented. All employees must comply.",
-        "Celebrating our company's recent achievements. Join us for the celebration.",
-        "New features have been added to our system. Training will be provided.",
-        "Please update your emergency contact information in the system.",
-        "New training program schedule. All employees must complete the training.",
-        "Performance review timeline announced. Please prepare your reports.",
-        "New department structure implemented. Changes will take effect next month.",
-        "Important client meeting schedule. All team members must attend.",
-        "Equipment maintenance scheduled. Please backup your data.",
-        "New software implementation timeline. Training will be provided.",
-        "Updated office safety guidelines. All employees must follow these protocols."
-    ]
-    
-    # Clear existing data (optional)
-    news.delete_many({})
-    
-    # Generate current date for news dates
-    current_date = dt.now()
-    
-    # Generate and insert fake news
-    for i in range(count):
-        # Generate random date within last 30 days
-        days_ago = random.randint(0, 30)
-        news_date = current_date - timedelta(days=days_ago)
-        
-        # Select random news type
-        news_type = random.choice(news_types)
-        
-        # Create news document
-        news_obj = {
-            "_id": i+1,
-            "Title": titles[i],
-            "Content": contents[i],
-            "Type": news_type["type"],
-            "StartDate": news_date,
-            "Status": random.randint(0, 1),  # 0: Unread, 1: Read
-            "created_at": dt.now(),
-            "updated_at": dt.now()
-        }
-        
-        # Insert into MongoDB
-        news.insert_one(news_obj)
-
 @employee_blueprint.route('/employee/news', methods=['GET'])    
 def show_news():
-    generate_fake_news(20)
     lst_news = list(news.find())
     return render_template('employee/news.html', lnews=lst_news)
 
-def generate_fake_working_time():
-    """Generate fake working time data for testing the interface"""
-    
-    # Clear existing working day records
-    working_day_infos.delete_many({})
-    
-    # Get current date
-    current_date = dt.now()
-    
-    # Generate data for the last 3 months
-    for month_offset in range(3):
-        # Calculate the month and year
-        target_date = current_date - timedelta(days=30 * month_offset)
-        year = target_date.year
-        month = target_date.month
-        
-        # Get the number of days in the month
-        _, days_in_month = calendar.monthrange(year, month)
-        
-        # Generate working day records for each day
-        for day in range(1, days_in_month + 1):
-            # Skip weekends (Saturday and Sunday)
-            current_day = dt(year, month, day)
-            if current_day.weekday() >= 5:  # 5 is Saturday, 6 is Sunday
-                continue
-            
-            # Randomly determine working status
-            status_weights = [0.1, 0.2, 0.6, 0.1]  # Off, WFH, In Office, Other
-            working_status = random.choices(
-                [WorkingType.OFF.value, WorkingType.WFH.value, 
-                 WorkingType.WORK_IN_COMPANY.value, WorkingType.OTHER.value],
-                weights=status_weights
-            )[0]
-            
-            # Generate check-in and check-out times based on working status
-            check_in = None
-            check_out = None
-            total_hours = 0
-            
-            if working_status == WorkingType.WORK_IN_COMPANY.value:
-                # Generate check-in time between 7:30 AM and 9:30 AM
-                check_in_hour = random.randint(7, 9)
-                check_in_minute = random.randint(0, 59) if check_in_hour == 7 else random.randint(0, 30)
-                check_in = dt(year, month, day, check_in_hour, check_in_minute)
-                
-                # Generate check-out time between 5:00 PM and 7:00 PM
-                check_out_hour = random.randint(17, 18)
-                check_out_minute = random.randint(0, 59)
-                check_out = dt(year, month, day, check_out_hour, check_out_minute)
-                
-                # Calculate total hours
-                time_diff = check_out - check_in
-                total_hours = round(time_diff.total_seconds() / 3600, 2)
-                
-            elif working_status == WorkingType.WFH.value:
-                # Generate check-in time between 8:00 AM and 10:00 AM
-                check_in_hour = random.randint(8, 9)
-                check_in_minute = random.randint(0, 59)
-                check_in = dt(year, month, day, check_in_hour, check_in_minute)
-                
-                # Generate check-out time between 5:00 PM and 7:00 PM
-                check_out_hour = random.randint(17, 18)
-                check_out_minute = random.randint(0, 59)
-                check_out = dt(year, month, day, check_out_hour, check_out_minute)
-                
-                # Calculate total hours
-                time_diff = check_out - check_in
-                total_hours = round(time_diff.total_seconds() / 3600, 2)
-            
-            # Create working day record
-            new_id = get_max_id(database=db, collection_name=CollectionType.WORKING_DAY_INFOS.value)
-            working_day = WorkingDay(
-                id=new_id,
-                emp_id=1,
-                day=day,
-                month=month,
-                year=year,
-                workingStatus=working_status,
-                checkIn=check_in,
-                checkOut=check_out,
-                totalHours=total_hours
-            )
-            
-            # Save to database
-            working_day_infos.insert_one(working_day.to_json())
 
 @employee_blueprint.route('/employee/working-time', methods=['GET'])
 @login_required
@@ -263,9 +90,6 @@ def working_time():
     current_account = accounts.find_one({"_id": int(session.get("account_id"))})
     if not current_account:
         return None
-        
-    current_user = employees.find_one({"_id": int(current_account["AccountOwner"])})
-    #generate_fake_working_time()
 
     # Get month parameter from request, default to current month
     month_param = request.args.get('month', None)
@@ -280,12 +104,6 @@ def working_time():
             current_date = dt.now()
     else:
         current_date = dt.now()
-    
-    # Get the first day of the month
-    first_day = current_date.replace(day=1)
-    
-    # Get the last day of the month
-    last_day = (first_day + timedelta(days=32)).replace(day=1) - timedelta(days=1)
     
     # Get working day records for the current user in the selected month
     working_days = working_day_infos.find({
@@ -424,18 +242,6 @@ def export_working_time():
     # Create a dictionary of working days for easier access
     working_days_dict = {day.Day: day for day in working_days}
     
-    # Status mapping
-    status_mapping = {
-        WorkingType.OFF.value: 'Off',
-        WorkingType.HALF_DAY.value: 'Half Day',
-        WorkingType.VACATION.value: 'Vacation',
-        WorkingType.WEDDING.value: 'Wedding',
-        WorkingType.SICK.value: 'Sick',
-        WorkingType.WFH.value: 'WFH',
-        WorkingType.WORK_IN_COMPANY.value: 'Work In Company',
-        WorkingType.OTHER.value: 'Other'
-    }
-    
     for day in range(1, days_in_month + 1):
         current_day = current_date.replace(day=day)
         
@@ -444,14 +250,31 @@ def export_working_time():
         
         # Get working day record for this day
         working_day = working_days_dict.get(day)
-        
+        status_text = WorkingType.OFF.name.capitalize()  # Default status
+
         # Determine working status
         working_status = WorkingType.OFF.value
         if working_day:
             working_status = working_day.WorkingStatus
-        
-        # Get status text
-        status_text = status_mapping.get(working_status, 'Other')
+
+        match working_status:
+            case WorkingType.OFF.value:
+                status_text = WorkingType.OFF.name.capitalize()
+            case WorkingType.HALF_DAY.value:
+                status_text = WorkingType.HALF_DAY.name.capitalize()
+            case WorkingType.VACATION.value:
+                status_text = WorkingType.VACATION.name.capitalize()
+            case WorkingType.WEDDING.value:
+                status_text = WorkingType.WEDDING.name.capitalize()
+            case WorkingType.SICK.value:
+                status_text = WorkingType.SICK.name.capitalize()
+            case WorkingType.WFH.value:
+                status_text = WorkingType.WFH.name.capitalize()
+            case WorkingType.WORK_IN_COMPANY.value:
+                status_text = WorkingType.WORK_IN_COMPANY.name.capitalize()
+            case WorkingType.OTHER.value:
+                status_text = WorkingType.OTHER.name.capitalize()
+
         if is_weekend:
             status_text = 'Weekend'
         
