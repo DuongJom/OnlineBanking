@@ -302,8 +302,3 @@ def change_password():
     session.clear()
     flash(messages_success['update_success'].format('password'), 'success')
     return redirect("/login")
-
-def tst():
-    # This function is for testing purposes only
-    # It can be used to test the functionality of the account blueprint
-    pass
