@@ -1,0 +1,104 @@
+{% extends "employee/layout.html" %}
+
+{% block employee_title %}
+    News & Notifications
+{% endblock %}
+
+{% block employee_content %}
+<div class="ml-48 flex-1 p-4">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="flex justify-between items-center mb-6 w-full">
+            <div class="w-1/4">
+                <h1 class="text-2xl font-bold text-gray-800">News & Notifications</h1>
+            </div>
+            <div class="flex flex-row w-1/2 space-x-2">
+                <div class="relative w-full">
+                    <input type="text" id="searchNews" placeholder="Search news..."
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <div class="absolute left-3 top-2.5">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <select id="filterType" class="w-48 border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <option value="-1">All Types</option>
+                    <option value="0">New</option>
+                    <option value="1">Policy</option>
+                    <option value="2">Event</option>
+                    <option value="3">Announcement</option>
+                </select>
+                <select id="filterStatus" class="w-40 border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <option value="-1">All Status</option>
+                    <option value="0">Unread</option>
+                    <option value="1">Read</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- News List -->
+        <div class="space-y-4 overflow-auto max-h-490">
+            {% for new in lnews %}
+            <!-- News Item -->
+            <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-150 ease-in-out news-item" data-id="{{ new._id }}" data-type="{{ new.Type }}">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            {% if new.Type == 0 %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">New</span>
+                            {% elif new.Type == 1 %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Policy</span>
+                            {% elif new.Type == 2 %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Event</span>
+                            {% else %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">Announcement</span>
+                            {% endif %}
+                            <h3 class="text-lg font-semibold text-gray-800">{{ new.Title }}</h3>
+                        </div>
+                        <p class="mt-2 text-gray-600">{{ new.Content }}</p>
+                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                            <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>Posted at {{ new.StartDate.strftime('%Y-%m-%d %H:%m') }}</span>
+                        </div>
+                    </div>
+                    <button class="text-gray-400 hover:text-gray-600" onclick="showNewsModal('{{ new._id }}')">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- News Detail Modal -->
+<div id="newsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center space-x-2">
+                    <span id="modalNewsType" class="px-2 py-1 text-xs font-semibold rounded-full"></span>
+                    <h3 id="modalNewsTitle" class="text-lg font-medium text-gray-900"></h3>
+                </div>
+                <button class="text-gray-400 hover:text-gray-500" onclick="closeNewsModal()">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="mt-2">
+                <p id="modalNewsContent" class="text-gray-600"></p>
+                <div class="mt-4 text-sm text-gray-500">
+                    <span id="modalNewsDate"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="{{url_for('static', filename='js/employee/utilities.js') }}"></script>
+{% endblock %}

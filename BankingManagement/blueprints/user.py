@@ -5,7 +5,7 @@ from datetime import datetime as dt
 
 from models import database, transaction, investment as investmnt
 from message import messages_success, messages_failure
-from helpers.helpers import login_required, get_banks, generate_otp, send_email, get_max_id
+from helpers.helpers import get_banks, generate_otp, send_email, get_max_id
 from enums.transaction_type import TransactionType
 from enums.bill_status import BillStatusType
 from enums.investment import InvestmentType
@@ -15,6 +15,7 @@ from enums.collection import CollectionType
 from enums.deleted_type import DeletedType
 from enums.role_type import RoleType
 from app import app, mail
+from decorators import login_required, role_required, log_request
 
 db = database.Database().get_db()
 accounts = db[CollectionType.ACCOUNTS.value]
@@ -29,6 +30,8 @@ user_blueprint = Blueprint('user', __name__)
 
 @user_blueprint.route("/", methods=["GET"])
 @login_required
+@log_request()
+@role_required(RoleType.USER.value)
 def home():
     account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
@@ -66,6 +69,8 @@ def home():
     
 @user_blueprint.route("/money-transfer", methods=["GET", "POST"])
 @login_required
+@log_request()
+@role_required(RoleType.USER.value)
 def transfer_money():
     account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
@@ -95,6 +100,8 @@ def transfer_money():
 
 @user_blueprint.route('/confirm-otp', methods=["GET", "POST"])
 @login_required
+@log_request()
+@role_required(RoleType.USER.value)
 def confirm_otp():
     account_id = int(session.get("account_id"))
     account = accounts.find_one({"_id": account_id})
@@ -190,6 +197,8 @@ def confirm_otp():
 
 @user_blueprint.route('/bill-payment',methods=['GET', 'POST'])
 @login_required
+@log_request()
+@role_required(RoleType.USER.value)
 def bill_payment():
     if request.method == "GET":
         today = dt.today()
@@ -254,6 +263,8 @@ def bill_payment():
 
 @user_blueprint.route('/payment', methods=['POST'])
 @login_required
+@log_request()
+@role_required(RoleType.USER.value)
 def payment():
     try:
         account_id = int(session.get("account_id"))
@@ -326,6 +337,8 @@ def payment():
 
 @user_blueprint.route('/investment-savings',methods=['GET'])
 @login_required
+@log_request()
+@role_required(RoleType.USER.value)
 def investment_savings():
     if request.method == "GET":
         account_id = int(session.get("account_id"))
@@ -371,6 +384,8 @@ def investment_savings():
 
 @user_blueprint.route('/add-investment-savings',methods=['POST'])
 @login_required
+@log_request()
+@role_required(RoleType.USER.value)
 def add_new_investment():
     try:
         account_id = int(session.get("account_id"))
@@ -461,6 +476,8 @@ def add_new_investment():
 
 @user_blueprint.route('/edit-investment', methods=['POST'])
 @login_required
+@log_request()
+@role_required(RoleType.USER.value)
 def edit_investment():
     try:
         today = dt.today()
@@ -547,6 +564,8 @@ def edit_investment():
 
 @user_blueprint.route('/card-management', methods=['GET', 'POST'])
 @login_required
+@log_request()
+@role_required(RoleType.USER.value)
 def card_management():
     account_id = int(session.get("account_id"))
     if request.method == "GET":
@@ -578,6 +597,8 @@ def card_management():
     
 @user_blueprint.route('/lock-card/<id>', methods=['GET'])
 @login_required
+@log_request()
+@role_required(RoleType.USER.value)
 def lock_card(id):
     try:
         cards.update_one(
@@ -598,6 +619,8 @@ def lock_card(id):
     
 @user_blueprint.route('/unlock-card/<id>', methods=['GET'])
 @login_required
+@log_request()
+@role_required(RoleType.USER.value)
 def unlock_card(id):
     try:
         cards.update_one(
@@ -617,16 +640,9 @@ def unlock_card(id):
         return redirect(url_for("user.card_management"))
 
 @user_blueprint.route('/loan-management',methods=['GET'])
+@log_request()
+@role_required(RoleType.USER.value)
 def loan_management():
     account_id = int(session.get("account_id"))
-    account = accounts.find_one({"_id": account_id})
-    lst_loan = list(loans.find({"Owner": int(account["AccountOwner"])}))
+    lst_loan = list(loans.find({"Owner": account_id}))
     return render_template("/user/loan.html", loans=lst_loan)
-
-@user_blueprint.route('/settings-security',methods=['GET', 'POST'])
-def settings_security():
-    pass
-
-@user_blueprint.route('/other-services',methods=['GET', 'POST'])
-def other_services():
-    pass

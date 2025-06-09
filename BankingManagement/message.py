@@ -17,6 +17,7 @@ messages_failure = {
     'balance_not_enough': 'Balance is not enough to {0}!',
     'must_input_value': 'Please fill in all information!',
     'investment_not_exist': 'Investment does not exist!',
+    'unauthorized_access': 'You do not have access to this side!',
 }
 
 messages_success = {

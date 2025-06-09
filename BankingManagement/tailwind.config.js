@@ -54,7 +54,8 @@ module.exports = withMT({
         'shadowRight': '4px 0 6px rgba(0, 0, 0, 0.3)', 
       },
       maxHeight: {
-        '430': '430px'
+        '430': '430px',
+        '490': '490px'
       }
     },
   },

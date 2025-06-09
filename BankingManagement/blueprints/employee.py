@@ -1,39 +1,37 @@
 import random
-from flask import Blueprint, render_template, request, jsonify
+import calendar
+import pandas as pd
+import io
+from flask import Blueprint, render_template, send_file, request, session
 from bson import ObjectId
+from datetime import date, datetime as dt, timedelta
 
-from models import database
+from models.database import Database
+from models.employee import Employee
+from models.working_day_info import WorkingDay
+from enums.month_type import MonthType
+from enums.role_type import RoleType
+from enums.collection import CollectionType
+from enums.deleted_type import DeletedType
+from enums.sex_type import SexType
+from enums.working_type import WorkingType
+from decorators import login_required, role_required, log_request
+from helpers.helpers import get_max_id
 
-from helpers.helpers import login_required, paginator
-from datetime import datetime, date
-
-db = database.Database().get_db()
-employee = db['employees']
-salary = db['salary']
+db = Database().get_db()
+accounts = db[CollectionType.ACCOUNTS.value]
+employees = db[CollectionType.EMPLOYEES.value]
+salaries = db[CollectionType.SALARIES.value]
+roles = db[CollectionType.ROLES.value]
+news = db[CollectionType.NEWS.value]
+working_day_infos = db[CollectionType.WORKING_DAY_INFOS.value]
 
 employee_blueprint = Blueprint('employee', __name__)
 
-years = list(range(2000, 2101))
-months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-]
-
-# Mapping of month names to numbers
-month_map = {
-    'January': 1,
-    'February': 2,
-    'March': 3,
-    'April': 4,
-    'May': 5,
-    'June': 6,
-    'July': 7,
-    'August': 8,
-    'September': 9,
-    'October': 10,
-    'November': 11,
-    'December': 12
-}
+years = list( range(2000, date.today().year + 1) )
+months = []
+for month in MonthType:
+    months.append(month.name.capitalize())
 
 def convert_objectid(data):
     if isinstance(data, list):
@@ -46,109 +44,285 @@ def convert_objectid(data):
         return data
 
 @employee_blueprint.route('/employee/home', methods = ['GET'])
-def employee_home():
-    if request.method == 'GET':
-        # max_STT_doc = db.employee.find().sort('STT', -1).limit(1).next()
-        # max_STT = max_STT_doc["STT"]
-        # new_docs = []
-        # for doc in data:
-        #     new_doc = {k:v for k,v in doc.items() if k != '_id'} #remove the _id
-        #     max_STT += 1
-        #     new_doc['STT'] = max_STT
-        #     new_doc["CreatedDate"] = datetime(2024, 7, 1).isoformat()
-        #     new_docs.append(new_doc)
-
-        # db.employee.insert_many(new_docs)
-        today = date.today()
-        current_month = today.strftime("%B")
-        current_year = today.year
-
-         # Construct MongoDB query to filter documents based on month and year
-        start_date = datetime(today.year, today.month, 1)
-        end_date = datetime(today.year, today.month + 1, 1) if today.month < 12 else datetime(today.year + 1, 1, 1)
-        start_date_iso = start_date.isoformat()
-        end_date_iso = end_date.isoformat()
-
-        query = {'CreatedDate': {'$gte': start_date_iso, '$lt': end_date_iso}}
-        data = list(db.employee.find(query))
-        data = convert_objectid(data)
-        return render_template('employee/home.html', current_month = current_month, current_year = current_year, months=months, years=years, fake_data=data)
-
-@employee_blueprint.route('/get-data', methods=['POST'])
-def get_data():
-    # Check if the request contains JSON data
-    if request.is_json:
-        try:
-            # get json from body of the request
-            data = request.get_json()
-            month_str = data['month']
-            year = int(data['year'])
-            
-            if month_str not in month_map.keys():
-                return jsonify({'error': 'Invalid month name'}), 400
-
-            month = month_map[month_str]
-            # Construct MongoDB query to filter documents based on month and year
-            start_date = datetime(year, month, 1)
-            end_date = datetime(year, month + 1, 1) if month < 12 else datetime(year + 1, 1, 1)
-            start_date_iso = start_date.isoformat()
-            end_date_iso = end_date.isoformat()
-
-            query = {'CreatedDate': {'$gte': start_date_iso, '$lt': end_date_iso}}
-
-            # Execute the query and convert the cursor to a list
-            data_cursor = db.employee.find(query)
-            data_list = list(data_cursor)  # Convert cursor to list
-            
-            if not data_list:
-                print("No documents found for the given query.")
-            # Convert MongoDB ObjectId to string
-            for doc in data_list:
-                doc['_id'] = str(doc['_id'])
-                doc['Sex'] = 'Male' #example, fix this later 
-            
-            return jsonify(data_list), 200
-        except KeyError:
-            return jsonify({'error': 'Invalid input data. "month" and "year" are required.'}), 400
-        except Exception as e:
-            return jsonify({'error': str(e)}), 400
-    else:
-        return jsonify({'error': 'Request does not contain JSON'}), 400
-
-
-@employee_blueprint.route('/employee/working-time', methods = ['GET'])
-def employee_working_time():
-    if request.method == 'GET':
-        return render_template('employee/working_time.html')
-    
-@employee_blueprint.route('/employee/salary', methods = ['GET'])
-def employee_salary():
-    if request.method == 'GET':
-        return  render_template('employee/salary.html') 
-    
-@employee_blueprint.route('/employee', methods = ['GET'])
 @login_required
-def employee():
-    page = request.args.get('page', 1, int)
-    dataType = request.args.get('dataType')
-    year = request.args.get('year')
-    if year is not None:
-        try:
-            year = int(year)
-        except ValueError:
-            # Handle the error if the conversion fails, e.g., log the error or set a default value
-            year = datetime.now().year  #  default current year
-    else:
-        year = datetime.now().year  #  default current year
+@log_request()
+@role_required(RoleType.ADMIN.value, RoleType.EMPLOYEE.value)
+def home():
+    if request.method == 'GET':
+        all_employees = list(employees.find({ "IsDeleted": DeletedType.AVAILABLE.value }))
+        for employee in all_employees:
+            employee['_id'] = int(employee['_id'])
 
-    query = {'CreatedDate': {
-        '$gte': datetime(year, 1, 1).isoformat(),
-        '$lt': datetime(year + 1, 1, 1).isoformat()
-    }}
-    if dataType == 'salary':
-        items = list(salary.find(query, {'_id': 0}))
-            
-    pagination = paginator(page, items)
-    return jsonify({'items': pagination['render_items'], 'total_pages': pagination['total_pages']})
+        logged_in_user = Employee(
+            id = 1,
+            employeeName=f"Employee 1",
+            position = "Junior Developer",
+            role = RoleType.EMPLOYEE.value,
+            sex = SexType.MALE.value,
+            phone = f"0{random.randint(100000000, 999999999)}",
+            email = f"employee1@dhcbank.com",
+            address = f"Street {random.randint(1, 100)}, City {random.randint(1, 10)}",
+            checkIn = "08:00",
+            checkOut = "17:00",
+            workingStatus = WorkingType.WORK_IN_COMPANY.value
+        )
+        return render_template('employee/home.html', 
+                               employees=all_employees, 
+                               is_checked_in=True, 
+                               is_checked_out=True,
+                               emp=logged_in_user,
+                               work_time=8)
+
+@employee_blueprint.route('/employee/news', methods=['GET'])    
+def show_news():
+    lst_news = list(news.find())
+    return render_template('employee/news.html', lnews=lst_news)
+
+
+@employee_blueprint.route('/employee/working-time', methods=['GET'])
+@login_required
+@log_request()
+@role_required(RoleType.ADMIN.value, RoleType.EMPLOYEE.value)
+def working_time():
+    if not session.get("account_id"):
+        return None
+        
+    current_account = accounts.find_one({"_id": int(session.get("account_id"))})
+    if not current_account:
+        return None
+
+    # Get month parameter from request, default to current month
+    month_param = request.args.get('month', None)
     
+    if month_param:
+        try:
+            # Parse the month parameter (format: YYYY-MM)
+            year, month = map(int, month_param.split('-'))
+            current_date = dt(year, month, 1)
+        except ValueError:
+            # If invalid format, use current month
+            current_date = dt.now()
+    else:
+        current_date = dt.now()
+    
+    # Get working day records for the current user in the selected month
+    working_days = working_day_infos.find({
+        'EmployeeId': 1,
+        'Month': current_date.month,
+        'Year': current_date.year
+    })
+    
+    # Convert to dictionary for easier access
+    working_days_dict = {day["Day"]: day for day in working_days}
+    
+    # Generate calendar days
+    calendar_days = []
+    working_days_count = 0
+    half_days_count = 0
+    day_offs_count = 0
+    total_hours_in_month = 0
+    
+    # Get the number of days in the month
+    _, days_in_month = calendar.monthrange(current_date.year, current_date.month)
+    
+    # Status counts for chart
+    status_counts = [0] * 8  # 8 possible statuses (0-7)
+    
+    for day in range(1, days_in_month + 1):
+        current_day = current_date.replace(day=day)
+        
+        # Check if it's a weekend
+        is_weekend = current_day.weekday() >= 5
+        
+        # Get working day record for this day
+        working_day = working_days_dict.get(day)
 
+        # Determine working status
+        working_status = WorkingType.OFF.value
+        check_in_time = None
+        check_out_time = None
+        total_hours = 0
+
+        if working_day:
+            working_status = working_day["WorkingStatus"]
+            if working_day["CheckIn"]:
+                check_in_time = dt.strptime(working_day["CheckIn"], '%Y-%m-%dT%H:%M:%S')
+            if working_day["CheckOut"]:
+                check_out_time = dt.strptime(working_day["CheckOut"], '%Y-%m-%dT%H:%M:%S')
+            if working_day["TotalHours"]:
+                total_hours = working_day["TotalHours"]
+        
+        # Update counts
+        if not is_weekend:
+            if working_status == WorkingType.WORK_IN_COMPANY.value:
+                working_days_count += 1
+            elif working_status == WorkingType.HALF_DAY.value:
+                half_days_count += 1
+            elif working_status == WorkingType.OFF.value:
+                day_offs_count += 1
+            
+            # Update status counts for chart
+            status_counts[working_status] += 1
+            total_hours_in_month += total_hours
+        
+        calendar_days.append({
+            'date': current_day.strftime('%d-%m-%Y'),
+            'day_name': current_day.strftime('%A'),
+            'working_status': working_status,
+            'is_weekend': is_weekend,
+            'check_in': check_in_time,
+            'check_out': check_out_time,
+            'total_hours': total_hours
+        })
+    
+    # Generate months for dropdown (last 12 months)
+    months = []
+    for i in range(12):
+        date = dt.now() - timedelta(days=30*i)
+        month_value = date.strftime('%Y-%m')
+        month_label = date.strftime('%B %Y')
+        is_selected = date.year == current_date.year and date.month == current_date.month
+        
+        months.append({
+            'value': month_value,
+            'label': month_label,
+            'selected': is_selected
+        })
+    
+    return render_template('employee/working_time.html',
+                          calendar_days=calendar_days,
+                          working_days=working_days_count,
+                          half_days=half_days_count,
+                          day_offs=day_offs_count,
+                          total_hours_in_month=total_hours_in_month,
+                          months=months)
+
+@employee_blueprint.route('/employee/working-time/export', methods=['GET', 'POST'])
+@login_required
+@log_request()
+@role_required(RoleType.ADMIN.value, RoleType.EMPLOYEE.value)
+def export_working_time():
+    if not session.get("account_id"):
+        return None
+        
+    current_account = accounts.find_one({"_id": int(session.get("account_id"))})
+    if not current_account:
+        return None
+    
+    # Get current user
+    current_user = employees.find_one({"_id": int(current_account["AccountOwner"])})
+    
+    # Get month parameter from request, default to current month
+    month_param = request.args.get('month', None)
+    
+    if month_param:
+        try:
+            # Parse the month parameter (format: YYYY-MM)
+            year, month = map(int, month_param.split('-'))
+            current_date = dt(year, month, 1)
+        except ValueError:
+            # If invalid format, use current month
+            current_date = dt.now()
+    else:
+        current_date = dt.now()
+    
+    # Get working day records for the current user in the selected month
+    working_days = working_day_infos.find({
+        'EmployeeId': current_user['_id'],
+        'Month': current_date.month,
+        'Year': current_date.year
+    })
+    
+    # Convert to list of dictionaries for DataFrame
+    records_data = []
+    
+    # Get the number of days in the month
+    _, days_in_month = calendar.monthrange(current_date.year, current_date.month)
+    
+    # Create a dictionary of working days for easier access
+    working_days_dict = {day.Day: day for day in working_days}
+    
+    for day in range(1, days_in_month + 1):
+        current_day = current_date.replace(day=day)
+        
+        # Check if it's a weekend
+        is_weekend = current_day.weekday() >= 5
+        
+        # Get working day record for this day
+        working_day = working_days_dict.get(day)
+        status_text = WorkingType.OFF.name.capitalize()  # Default status
+
+        # Determine working status
+        working_status = WorkingType.OFF.value
+        if working_day:
+            working_status = working_day.WorkingStatus
+
+        match working_status:
+            case WorkingType.OFF.value:
+                status_text = WorkingType.OFF.name.capitalize()
+            case WorkingType.HALF_DAY.value:
+                status_text = WorkingType.HALF_DAY.name.capitalize()
+            case WorkingType.VACATION.value:
+                status_text = WorkingType.VACATION.name.capitalize()
+            case WorkingType.WEDDING.value:
+                status_text = WorkingType.WEDDING.name.capitalize()
+            case WorkingType.SICK.value:
+                status_text = WorkingType.SICK.name.capitalize()
+            case WorkingType.WFH.value:
+                status_text = WorkingType.WFH.name.capitalize()
+            case WorkingType.WORK_IN_COMPANY.value:
+                status_text = WorkingType.WORK_IN_COMPANY.name.capitalize()
+            case WorkingType.OTHER.value:
+                status_text = WorkingType.OTHER.name.capitalize()
+
+        if is_weekend:
+            status_text = 'Weekend'
+        
+        records_data.append({
+            'Date': current_day.strftime('%d-%m-%Y'),
+            'Day': current_day.strftime('%A'),
+            'Status': status_text
+        })
+    
+    # Create DataFrame
+    df = pd.DataFrame(records_data)
+    
+    # Create Excel file in memory
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, sheet_name='Working Time', index=False)
+        
+        # Get workbook and worksheet objects
+        workbook = writer.book
+        worksheet = writer.sheets['Working Time']
+        
+        # Add formats
+        header_format = workbook.add_format({
+            'bold': True,
+            'text_wrap': True,
+            'valign': 'top',
+            'fg_color': '#D7E4BC',
+            'border': 1
+        })
+        
+        # Write the column headers with the header format
+        for col_num, value in enumerate(df.columns.values):
+            worksheet.write(0, col_num, value, header_format)
+        
+        # Set column widths
+        worksheet.set_column('A:A', 12)  # Date
+        worksheet.set_column('B:B', 10)  # Day
+        worksheet.set_column('C:C', 15)  # Status
+    
+    # Seek to the beginning of the BytesIO object
+    output.seek(0)
+    
+    # Generate filename
+    filename = f"working_time_{current_date.strftime('%Y_%m')}.xlsx"
+    
+    return send_file(
+        output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        as_attachment=True,
+        download_name=filename
+    ) 

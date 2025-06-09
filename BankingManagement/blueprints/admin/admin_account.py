@@ -3,8 +3,9 @@ import pandas as pd
 from flask import Blueprint, jsonify, render_template, flash, redirect, url_for, send_file, request, session
 from io import BytesIO
 
-from helpers.helpers import login_required, issue_new_card, get_max_id, generate_login_info, send_email, get_file_extension
+from helpers.helpers import issue_new_card, get_max_id, generate_login_info, send_email, get_file_extension
 from helpers.admin import get_account, create_accounts, generate_export_account
+from decorators import login_required
 from models.database import Database
 from models.card import Card
 from models.user import User

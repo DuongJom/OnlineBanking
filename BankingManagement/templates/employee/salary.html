@@ -1,3 +1,13 @@
+<!-- 
+Trang salary, button hiển thị hết text bên trong. Bao gồm cái column sau: month cho hiển thị like Sep, Salary file: cột này hiển thị tên <a>file</a>, khi click vô thì sẽ download, cột thứ 3 là Action: view,
+download. (phải tìm hiểu API xem có API nào hỗ trợ view hay không, download thì sử lý bên backend)
+Nếu trong file có nhiều subfile thì tạo folder giống bên admin
+Trong file app.py và file init_data.py thì là quan trọng. cần hỏi trước khi thêm
+-->
+
+
+
+
 {% extends "employee/layout.html" %}
 {% block employee_content %}
 <input class="hidden" id="dataType" value="salary" type="text">
@@ -16,22 +26,25 @@
         </select>
     </div>
 
-    <div id='table_wrapper'></div>
-      <!-- pagination -->
-      <div class="w-full flex flex-1 justify-end mr-28 items-center absolute bottom-2">         
-        <button 
-            class="bg-side_bar_bg hover:bg-hover_side_bar h-7 w-12 rounded-xl 
-            text-white flex items-center justify-center mr-4"
-            id="previous-btn">
-            <span class="material-symbols-outlined">arrow_left_alt</span>
-        </button>
-        <p id="location"></p>
-        <button 
-            class="bg-side_bar_bg hover:bg-hover_side_bar h-7 w-12 rounded-xl 
-            text-white flex items-center justify-center ml-4"
-            id="next-btn">
-            <span class="material-symbols-outlined">arrow_right_alt</span>
-        </button>
+    <div id='table_wrapper'>
+        <table>
+            <thead>
+                <th> Month </th>
+                <th> Salary </th>
+                <th> Action </th>
+            </thead>
+            <tbody>
+                <!-- For loop logic of jinja template -->
+                {%for item in salary%} 
+                <!-- table rows -->
+                <tr> 
+                    <td>{{item.month}}</td> 
+                    <td><a href="#">Salary for {{item.month}}</a></td> 
+                    <td>View, Download</td> 
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
     </div>
 </div>
 <script type="module" src="{{url_for('static',filename='js/employee/salary.js')}}"></script>

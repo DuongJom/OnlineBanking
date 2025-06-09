@@ -1,470 +1,674 @@
 {% extends 'general/layout.html' %}
-{% block title %} Register {% endblock %} 
-{% block content %}
-   <div class="fixed inset-0 flex items-center justify-center bg-popup-bg">
-        <div class="lg:w-2/3 w-11/12 bg-white rounded-xl h-4/5 p-3 flex">
-            <div class="hidden md:block flex-1 rounded-xl bg-[url('/static/img/green-background.png')] 
-                bg-cover bg-center pt-8 pl-8 space-y-10">
-                 <div class="flex cursor-none">
-                    <div class="process_bar bg-green-200" id="process_bar_step1">
-                        <p>1</p>
-                    </div>
-
-                    <div>
-                        <p class="text-sm text-gray-500">STEP 1</p>
-                        <div class="text-gray-200">LOGIN INFO</div>
-                    </div>
-                 </div>
-
-                <div class="flex cursor-none">
-                    <div class="process_bar" id="process_bar_step2">
-                        <p>2</p>
-                    </div>
-
-                    <div>
-                        <p class="text-sm text-gray-500">STEP 2</p>
-                        <div class="text-gray-200">PERSONAL INFO</div>
-                    </div>
-                 </div>
-
-                 <div class="flex cursor-none">
-                    <div class="process_bar" id="process_bar_step3">
-                        <p>3</p>
-                    </div>
-
-                    <div>
-                        <p class="text-sm text-gray-500">STEP 3</p>
-                        <div class="text-gray-200">ADDRESS</div>
-                    </div>
-                 </div>
-
-                 <div class="flex cursor-none" >
-                    <div class="process_bar" id="process_bar_step4">
-                        <p>4</p>
-                    </div>
-
-                    <div>
-                        <p class="text-sm text-gray-500">STEP 4</p>
-                        <div class="text-gray-200">ACCOUNT INFO</div>
-                    </div>
-                 </div>
-
-                 <div class="flex cursor-none">
-                    <div class="process_bar" id="process_bar_step5">
-                        <p>5</p>
-                    </div>
-
-                    <div>
-                        <p class="text-sm text-gray-500">STEP 5</p>
-                        <div class="text-gray-200">SUMMARY</div>
-                    </div>
-                 </div>
-            </div>
-            <form class="flex-2 rounded-r-xl relative" action="{{ url_for('account.register') }}" method="post">
-                <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />
-                <!-- Login info -->
-                <div class="h-full w-full flex flex-col relative
-                        transition-all duration-300 scale-100 opacity-100" id="form-step1">
-                    <!-- Step title -->
-                    <div class="w-full md:pl-6 md:pt-6">
-                        <h1 class="font-bold text-5xl">
-                            Login Info
-                        </h1>
-                        <h3 class="text-gray-500">
-                            Please provide your username and password
-                        </h3>
-                    </div>
-
-                    <!-- Input field -->
-                     <div class="w-full space-y-4 md:p-6">
-                        <div class="flex flex-col">
-                            <label class="font-semibold" for="username">Username</label>
-                            <input class="register_input step-1" 
-                                    placeholder="e.g.Thomas123" 
-                                    type="text" 
-                                    id="username" 
-                                    name="username" 
-                                    required/>
-                            <span class="text-red-500 text-sm" id="usernameError"></span>
-                        </div>
-        
-                        <div class="flex flex-col">
-                            <label class="font-semibold" for="password">Password</label>
-                            <input class="register_input step-1" 
-                                    placeholder="********" 
-                                    id="password" 
-                                    name="password" 
-                                    type="password" 
-                                    required/>
-                            <span class="text-red-500 text-sm" id="passwordError"></span>
-                        </div>
-        
-                        <div class="flex flex-col">
-                            <label class="font-semibold" for="confirmPassword">Password again</label>
-                            <input class="register_input step-1" 
-                                    placeholder="********" 
-                                    id="confirmPassword" 
-                                    name="confirmPassword" 
-                                    type="password" 
-                                    required/>
-                            <span class="text-red-500 text-sm" id="confirmPasswordError"></span>
-                        </div>
-                     </div>
-                    <!-- submit button -->
-                     <div class="w-full md:pb-6 md:pr-6 pt-4 justify-between absolute bottom-0">
-                        <div class="rounded-xl md:ml-6 float-start cursor-pointer">
-                            <a class="text-blue-600 underline hover:text-blue-800"
-                                href="/login">
-                                Already have an account
-                            </a>
-                        </div>
-                        <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 float-end" 
-                                onclick="goNextStep()" 
-                                type="button">
-                            Next Step
-                        </button>
-                     </div>
-                </div>
-
-                <!-- Personal info --> 
-                <div class="hidden h-full w-full flex-col relative
-                            transform scale-90 opacity-0 transition-all duration-300" 
-                            id="form-step2">
-                    <!-- Step title -->
-                    <div class="w-full md:pl-6 md:pt-6">
-                        <h1 class="font-bold text-5xl">
-                            Personal Info
-                        </h1>
-                        <h3 class="text-gray-500">
-                            Please provide your detail info
-                        </h3>
-                    </div>
-
-                    <!-- Input field -->
-                     <div class="w-full space-y-4 md:p-6">
-                        <div class="flex flex-col">
-                            <label class="font-semibold" for="fullname">Full name</label>
-                            <input class="register_input step-2" 
-                                placeholder="e.g.Thomas Edison" 
-                                id="fullname" 
-                                name="fullname" 
-                                type="text" 
-                                required/>
-                            <span class="text-red-500 text-sm" id="fullnameError"></span>
-                        </div>
-        
-                        <div class="flex flex-col">
-                            <label class="font-semibold" for="phone">Phone number</label>
-                            <input class="register_input step-2" 
-                                placeholder="e.g.0768552941" 
-                                id="phone" 
-                                name="phone" 
-                                type="text" 
-                                required/>
-                            <span class="text-red-500 text-sm" id="phoneError"></span>
-                        </div>
-        
-                        <div class="flex flex-col">
-                            <label class="font-semibold" for="email">Email</label>
-                            <input class="register_input step-2" 
-                                placeholder="e.g.thomas123@gmail.com" 
-                                id="email" 
-                                name="email" 
-                                type="email" 
-                                required>
-                            <span class="text-red-500 text-sm" id="emailError"></span>
-                        </div>
-
-                        <div class="flex flex-col">
-                            <label class="font-semibold">Gender</label>
-                            <div class="space-x-10">
-                                <label>
-                                    <input type="radio" name="gender" value="0" class="radio_input"/>
-                                    <span>Male</span>
-                                </label>
-                                <label>
-                                    <input type="radio" name="gender" value="1" class="radio_input"/>
-                                    <span>Female</span>
-                                </label>
-                                <label>
-                                    <input type="radio" name="gender" value="2" class="radio_input"/>
-                                    <span>Other</span>
-                                </label>
-                            </div>
-                            <span class="text-red-500 text-sm" id="genderError"></span>
-                        </div>
-                     </div>
-
-                    <!-- submit button -->
-                     <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
-                        <button class="font-bold text-gray-600 hover:text-black" 
-                                onclick="goPreviousStep()" 
-                                type="button">
-                                Go Back
-                        </button>
-                        <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
-                                onclick="goNextStep()" 
-                                type="button">
-                            Next Step
-                        </button>
-                     </div>
-                </div>
-
-                <!-- Address -->
-                <div class="h-full w-full hidden flex-col relative 
-                            transform scale-90 opacity-0 transition-all duration-300" 
-                            id="form-step3">
-                    <!-- Step title -->
-                    <div class="w-full md:pl-6 md:pt-6">
-                        <h1 class="font-bold text-5xl">
-                            Address
-                        </h1>
-                        <h3 class="text-gray-500">
-                            Please provide your address
-                        </h3>
-                    </div>
-
-                    <!-- Input field -->
-                     <div class="w-full space-y-4 md:p-6">
-                        <div class="flex flex-col">
-                            <label class="font-semibold" for="country">Country</label>
-                            <input class="register_input step-3" 
-                                    placeholder="e.g.Viet Nam" 
-                                    id="country" 
-                                    name="country" 
-                                    type="text" 
-                                    required/>
-                            <span class="text-red-500 text-sm" id="countryError"></span>
-                        </div>
-        
-                        <div class="flex flex-col">
-                            <label class="font-semibold" for="district">City</label>
-                            <input class="register_input step-3" 
-                                    placeholder="e.g.Ho Chi Minh" 
-                                    id="city" 
-                                    name="city" type="text" 
-                                    required/>
-                            <span class="text-red-500 text-sm" id="cityError"></span>
-                        </div>
-        
-                        <div class="flex flex-col">
-                            <label class="font-semibold" for="district">District</label>
-                            <input class="register_input step-3" 
-                                    placeholder="e.g.Thu Duc" 
-                                    id="district" 
-                                    name="district" 
-                                    type="text" 
-                                    required/>
-                            <span class="text-red-500 text-sm" id="districtError"></span>
-                        </div>
-
-                        <div class="flex justify-between">
-                            <div class="flex flex-col">
-                                <label class="font-semibold" for="ward">Ward</label>
-                                <input class="register_input step-3" 
-                                    placeholder="e.g.Hiep Phu" 
-                                    id="ward" 
-                                    name="ward" 
-                                    type="text" 
-                                    required/>
-                                    <span class="text-red-500 text-sm" id="wardError"></span>
-                            </div>
-    
-                            <div class="flex flex-col">
-                                <label class="font-semibold" for="street">Street</label>
-                                <input class="register_input step-3" 
-                                    placeholder="Man Thien" 
-                                    id="street" 
-                                    name="street" 
-                                    type="text" 
-                                    required/>
-                                <span class="text-red-500 text-sm" id="streetError"></span>
-                            </div>
-                        </div>
-                     </div>
-
-                    <!-- submit button -->
-                     <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
-                        <button class="font-bold text-gray-600 hover:text-black" 
-                            onclick="goPreviousStep()" 
-                            type="button">
-                            Go Back
-                        </button>
-                        <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
-                                onclick="goNextStep()"
-                                type="button">
-                            Next Step
-                        </button>
-                     </div>
-                </div>
-
-                <!-- Account info -->
-                <div class="h-full w-full hidden flex-col relative 
-                            transform scale-90 opacity-0 transition-all duration-300" 
-                            id="form-step4">
-                    <!-- Step title -->
-                    <div class="w-full md:pl-6 md:pt-6">
-                        <h1 class="font-bold text-5xl">
-                            Account info
-                        </h1>
-                        <h3 class="text-gray-500">
-                            Please choose your basic account setup
-                        </h3>
-                    </div>
-
-                    <!-- Input field -->
-                     <div class="w-full space-y-4 md:p-6">
-                        <div class="flex flex-col">
-                            <label class="font-semibold">
-                                Login Methods
-                                <span class="text-red-500" id="loginMethodError"></span>
-                            </label>
-                            <div class="w-full flex justify-start space-x-4 md:space-x-10">
-                                <label>
-                                    <input type="checkbox" class="hidden peer" name="loginMethod" value="1"/>
-                                    <div class="register_checkbox">
-                                        <img src="../../static/img/password.svg" class="option_icon"/>
-                                        <p>Username Password</p>    
-                                    </div>
-                                </label>
-
-                                <label>
-                                    <input type="checkbox" class="hidden peer" name="loginMethod" value="2"/>
-                                    <div class="register_checkbox">
-                                        <img src="../../static/img/face-id.svg" class="option_icon"/>
-                                        <p>Face ID</p>
-                                    </div>
-                                </label>
-                                
-                                <label>
-                                    <input type="checkbox" class="hidden peer" name="loginMethod" value="3"/>
-                                    <div class="register_checkbox">
-                                        <img src="../../static/img/finger-print.svg" class="option_icon"/>
-                                        <p>Finger Print</p>
-                                    </div>
-                                </label>
-                            </div>          
-                        </div>
-
-                        <div class="flex flex-col">
-                            <label class="font-semibold">
-                                Transfer Methods 
-                                <span class="text-red-500" id="transferMethodError"></span>
-                            </label>
-                            <div class="w-full flex justify-start space-x-4 md:space-x-10">
-                                <label>
-                                    <input type="checkbox" class="hidden peer" name="transferMethod" value="1"/>
-                                    <div class="register_checkbox" name="transferMethod">
-                                        <img src="../../static/img/sms.svg" class="option_icon"/>
-                                        <p>SMS</p>
-                                    </div>
-                                </label>
-
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="hidden peer" name="transferMethod" value="2"/>
-                                    <div class="register_checkbox">
-                                        <img src="../../static/img/face-id.svg" class="option_icon"/>
-                                        <p>Face ID</p>
-                                    </div>
-                                </label>
- 
-                                <label>
-                                    <input type="checkbox" class="hidden peer" name="transferMethod" value="3"/>
-                                    <div class="register_checkbox">
-                                        <img src="../../static/img/password.svg" class="option_icon"/>
-                                        <p>Pin Code</p>
-                                    </div>
-                                </label>
-                            </div>         
-                        </div>
-
-                        <div class="flex flex-col">
-                            <label class="font-semibold" for="branch">Branch</label>
-                            <select id="branch" name="branch" class="register_input" required>
-                                <option selected value="-1">Choose a branch</option>
-                                {% for branch in branch_list %}
-                                <option value="{{branch._id}}">{{branch.BranchName}} - {{branch.Address}}</option>
-                                {% endfor %}
-                            </select>
-                            <span class="text-red-500 text-sm" id="branchError"></span>
-                        </div>
-                     </div>
-
-                    <!-- submit button -->
-                     <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
-                        <button class="font-bold text-gray-600 hover:text-black" 
-                                onclick="goPreviousStep()" 
-                                type="button">
-                                Go Back
-                        </button>
-                        <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
-                                onclick="goNextStep()"
-                                type="button">
-                            Next Step
-                        </button>
-                     </div>
-                </div>
-
-                <!-- Summary -->
-                <div class="h-full w-full hidden flex-col relative 
-                            transform scale-90 opacity-0 transition-all duration-300" 
-                            id="form-step5">
-                    <!-- Step title -->
-                    <div class="w-full md:pl-6 md:pt-6">
-                        <h1 class="font-bold text-5xl">
-                            Finish Up
-                        </h1>
-                        <h3 class="text-gray-500">
-                            Double-check everything looks OK before signing up
-                        </h3>
-                    </div>
-
-                    <!-- Input field -->
-                    <div class="w-full space-y-4 md:p-6">
-                        <div class="w-full bg-green-200 rounded-md p-6 md:space-y-4 space-y-2">
-                            <div class="flex flex-col">
-                                <label class="font-semibold">Username</label>
-                                <p id="reUsername"></p>
-                            </div>
-
-                            <div class="flex flex-col">
-                                <label class="font-semibold">Email</label>
-                                <p id="reEmail"></p>
-                            </div>
-
-                            <div class="flex flex-col">
-                                <label class="font-semibold">Phone</label>
-                                <p id="rePhone"></p>
-                            </div>
-
-                            <div class="flex flex-col">
-                                <label class="font-semibold">Branch</label>
-                                <p id="reBranch"></p>
-                            </div>
-
-                            <div class="flex flex-col">
-                                <label class="font-semibold">Card Number</label>
-                                <p id="cardNumber">{{card_info.cardNumber}}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- submit button -->
-                    <div class="w-full md:pb-6 md:pr-6 md:pl-6 flex justify-between absolute bottom-0">
-                        <button class="font-bold text-gray-600 hover:text-black" 
-                            onclick="goPreviousStep()" 
-                            type="button">
-                            Go Back
-                        </button>
-                        <button class="font-bold bg-green-500 rounded-xl p-2 text-gray-200 hover:bg-green-300" 
-                                type="submit">
-                            Sign up
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-   </div>
-   <script src="{{ url_for('static', filename='js/register.js') }}"></script>
+{% block title %} 
+    Register 
 {% endblock %}
 
+{% block content %}
+<style>
+  /* Root font and colors */
+  body, html {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1f2937, #4ade80);
+    min-height: 100vh;
+  }
+  .bg-popup-bg {
+    background: transparent !important;
+  }
+
+  /* Container */
+  .container {
+    max-width: 1400px;
+    margin: auto;
+  }
+
+  /* Card wrapper */
+  .card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    overflow: hidden;
+    flex-direction: row;
+    height: 90vh;
+    max-height: 700px;
+    width: 100%;
+    min-width: 0;
+    max-width: 1100px; /* thêm dòng này để card rộng hơn */
+    margin: auto;
+  }
+
+  /* Left panel - steps */
+  .steps-panel {
+    background: linear-gradient(135deg, #15803d, #22c55e);
+    width: 280px;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #d1fae5;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    cursor: default;
+    user-select: none;
+  }
+  .step:last-child {
+    margin-bottom: 0;
+  }
+  .step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #a7f3d0;
+    color: #166534;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 6px rgba(255 255 255 / 0.6);
+    flex-shrink: 0;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  .step.active .step-circle {
+    background: #22c55e;
+    color: white;
+    box-shadow: 0 0 10px #22c55e;
+  }
+  .step-text {
+    margin-left: 1rem;
+  }
+  .step-text p {
+    margin: 0;
+    font-weight: 600;
+  }
+  .step-label {
+    font-size: 0.75rem;
+    color: #a7f3d0a8;
+    margin-bottom: 0.25rem;
+  }
+  .step-title {
+    font-size: 0.95rem;
+    color: #def7ec;
+  }
+
+  /* Form area */
+  form {
+    flex: 1;
+    padding: 2.5rem 3rem;
+    position: relative;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background: #f9fafb;
+  }
+  form::-webkit-scrollbar {
+    width: 7px;
+  }
+  form::-webkit-scrollbar-thumb {
+    background-color: #22c55e;
+    border-radius: 4px;
+  }
+
+  /* Titles */
+  h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.25rem;
+  }
+  h3 {
+    font-size: 1.1rem;
+    color: #6b7280;
+    margin-bottom: 2rem;
+  }
+
+  /* Input fields */
+  .form-group {
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: #374151;
+  }
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="tel"],
+  select {
+    padding: 0.75rem 1.2rem;
+    border-radius: 0.75rem;
+    border: 1.8px solid #9ca3af;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+    color: #111827;
+  }
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus,
+  select:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 8px #22c55eaa;
+  }
+
+  /* Error message */
+  .error-text {
+    color: #dc2626;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    min-height: 1.25rem;
+  }
+
+  /* Custom checkbox & radio */
+  .checkbox-group,
+  .radio-group {
+    display: flex;
+    flex-direction: row;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .checkbox-label,
+  .radio-label {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    background: #e6f4ea;
+    color: #166534;
+    border: 2px solid transparent;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  input[type="checkbox"],
+  input[type="radio"] {
+    display: none;
+    border: 2px solid #16a34a;
+    background-color: #15803d;
+    border-radius: 50%;
+    width: 20px;
+  }
+  input[type="checkbox"]:checked + .checkbox-label,
+  input[type="radio"]:checked + .radio-label {
+    background: #22c55e;
+    color: white;
+    box-shadow: 0 0 8px #22c55eaa;
+    border-color: #16a34a;
+  }
+
+  .checkbox-label img,
+  .radio-label img {
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.1));
+  }
+
+  /* Buttons */
+  .btn-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    padding: 1.2rem 0;
+    border-top: 1.5px solid #d1d5db;
+  }
+  button {
+    padding: 0.7rem 2rem;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  button.next-btn {
+    background: #22c55e;
+    color: white;
+    box-shadow: 0 5px 15px rgba(34,197,94,0.5);
+  }
+  button.next-btn:hover {
+    background: #15803d;
+    box-shadow: 0 5px 20px rgba(21,128,61,0.7);
+  }
+  button.back-btn {
+    background: transparent;
+    color: #6b7280;
+  }
+  button.back-btn:hover {
+    color: #15803d;
+    text-decoration: underline;
+  }
+  button.submit-btn {
+    background: #15803d;
+    color: white;
+    box-shadow: 0 5px 15px rgba(21,128,61,0.75);
+  }
+  button.submit-btn:hover {
+    background: #166534;
+    box-shadow: 0 8px 22px rgba(22,101,52,0.9);
+  }
+
+  /* Summary box */
+  .summary-box {
+    background: #d9f5d1;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: inset 0 0 14px #a0db7a;
+    font-weight: 600;
+    color: #14532d;
+  }
+  .summary-item {
+    margin-bottom: 1.2rem;
+  }
+  .summary-item p {
+    margin-top: 0.25rem;
+    font-weight: 400;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .card {
+      flex-direction: column;
+      height: auto;
+      max-height: none;
+      border-radius: 1rem;
+    }
+    .steps-panel {
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-around;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 1rem 1rem 0 0;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      background: linear-gradient(90deg, #15803d, #22c55e);
+    }
+    .step {
+      margin: 0;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      font-size: 1rem;
+      box-shadow: none !important;
+    }
+    .step-text {
+      margin-left: 0;
+      margin-top: 0.35rem;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+    form {
+      padding: 2rem 1.2rem;
+      height: auto;
+    }
+  }
+</style>
+
+<div class="container min-h-screen flex items-center justify-center w-3/4">
+  <div class="card" role="form" aria-labelledby="register-title">
+    <!-- Steps panel -->
+    <aside class="steps-panel" aria-label="Registration steps">
+      <div class="step active" id="step_bar1">
+        <div class="step-circle" aria-current="step">1</div>
+        <div class="step-text">
+          <p class="step-label">STEP 1</p>
+          <p class="step-title">LOGIN INFO</p>
+        </div>
+      </div>
+      <div class="step" id="step_bar2">
+        <div class="step-circle">2</div>
+        <div class="step-text">
+          <p class="step-label">STEP 2</p>
+          <p class="step-title">PERSONAL INFO</p>
+        </div>
+      </div>
+      <div class="step" id="step_bar3">
+        <div class="step-circle">3</div>
+        <div class="step-text">
+          <p class="step-label">STEP 3</p>
+          <p class="step-title">ADDRESS</p>
+        </div>
+      </div>
+      <div class="step" id="step_bar4">
+        <div class="step-circle">4</div>
+        <div class="step-text">
+          <p class="step-label">STEP 4</p>
+          <p class="step-title">ACCOUNT INFO</p>
+        </div>
+      </div>
+      <div class="step" id="step_bar5">
+        <div class="step-circle">5</div>
+        <div class="step-text">
+          <p class="step-label">STEP 5</p>
+          <p class="step-title">SUMMARY</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- The form -->
+    <form action="{{ url_for('account.register') }}" method="post" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+      <!-- Step 1: Login Info -->
+      <section id="form-step1" class="form-step" aria-labelledby="login-info-title">
+        <h1 id="login-info-title">Login Info</h1>
+        <h3>Please provide your username and password</h3>
+
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text" id="username" name="username" placeholder="e.g.Thomas123"
+            autocomplete="username" required />
+          <span id="usernameError" class="error-text" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password" id="password" name="password" placeholder="********"
+            autocomplete="new-password" required />
+          <span id="passwordError" class="error-text" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Password again</label>
+          <input
+            type="password" id="confirmPassword" name="confirmPassword" placeholder="********"
+            autocomplete="new-password" required />
+          <span id="confirmPasswordError" class="error-text" aria-live="polite"></span>
+        </div>
+
+        <div class="btn-group">
+          <div></div>
+          <button type="button" class="next-btn" onclick="goNextStep()">Next Step</button>
+        </div>
+      </section>
+
+      <!-- Step 2: Personal Info -->
+      <section id="form-step2" class="form-step" hidden aria-labelledby="personal-info-title">
+        <h1 id="personal-info-title">Personal Info</h1>
+        <h3>Please provide your detail info</h3>
+
+        <div class="form-group">
+          <label for="fullname">Full name</label>
+          <input
+            type="text" id="fullname" name="fullname"
+            placeholder="e.g.Thomas Edison" autocomplete="name" required />
+          <span id="fullnameError" class="error-text" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone number</label>
+          <input
+            type="tel" id="phone" name="phone"
+            placeholder="e.g.0768552941" autocomplete="tel" required />
+          <span id="phoneError" class="error-text" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email" id="email" name="email"
+            placeholder="e.g.thomas123@gmail.com" autocomplete="email" required />
+          <span id="emailError" class="error-text" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label>Gender</label>
+          <div class="radio-group" role="radiogroup" aria-labelledby="genderLabel">
+            <input type="radio" id="gender-male" name="gender" value="0" />
+            <label class="radio-label" for="gender-male">Male</label>
+
+            <input type="radio" id="gender-female" name="gender" value="1" />
+            <label class="radio-label" for="gender-female">Female</label>
+
+            <input type="radio" id="gender-other" name="gender" value="2" />
+            <label class="radio-label" for="gender-other">Other</label>
+          </div>
+          <span id="genderError" class="error-text" aria-live="polite"></span>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="back-btn" onclick="goPreviousStep()">Go Back</button>
+          <button type="button" class="next-btn" onclick="goNextStep()">Next Step</button>
+        </div>
+      </section>
+
+      <!-- Step 3: Address -->
+      <section id="form-step3" class="form-step" hidden aria-labelledby="address-title">
+  <h1 id="address-title">Address</h1>
+  <h3>Please provide your address</h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <label for="country" class="font-semibold text-gray-700 mb-1 block">Country</label>
+      <input type="text" id="country" name="country" placeholder="e.g.Viet Nam" required
+        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition" />
+      <span id="countryError" class="error-text" aria-live="polite"></span>
+    </div>
+    <div>
+      <label for="city" class="font-semibold text-gray-700 mb-1 block">City</label>
+      <input type="text" id="city" name="city" placeholder="e.g.Ho Chi Minh" required
+        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition" />
+      <span id="cityError" class="error-text" aria-live="polite"></span>
+    </div>
+    <div>
+      <label for="district" class="font-semibold text-gray-700 mb-1 block">District</label>
+      <input type="text" id="district" name="district" placeholder="e.g.Thu Duc" required
+        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition" />
+      <span id="districtError" class="error-text" aria-live="polite"></span>
+    </div>
+    <div>
+      <label for="ward" class="font-semibold text-gray-700 mb-1 block">Ward</label>
+      <input type="text" id="ward" name="ward" placeholder="e.g.Hiep Phu" required
+        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition" />
+      <span id="wardError" class="error-text" aria-live="polite"></span>
+    </div>
+    <div class="md:col-span-2">
+      <label for="street" class="font-semibold text-gray-700 mb-1 block">Street</label>
+      <input type="text" id="street" name="street" placeholder="Man Thien" required
+        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition" />
+      <span id="streetError" class="error-text" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button type="button" class="back-btn" onclick="goPreviousStep()">Go Back</button>
+    <button type="button" class="next-btn" onclick="goNextStep()">Next Step</button>
+  </div>
+</section>
+
+      <!-- Step 4: Account Info -->
+      <section id="form-step4" class="form-step" hidden aria-labelledby="account-info-title">
+        <h1 id="account-info-title">Account Info</h1>
+        <h3>Please choose your basic account setup</h3>
+
+        <div class="form-group">
+          <label>Login Methods <span id="loginMethodError" class="error-text" aria-live="polite"></span></label>
+          <div class="checkbox-group" role="group" aria-label="Login Methods">
+            <input type="checkbox" id="login1" name="loginMethod" value="1" />
+            <label class="checkbox-label" for="login1">
+              <img src="../../static/img/password.svg" alt="Password Icon" /> Username Password
+            </label>
+
+            <input type="checkbox" id="login2" name="loginMethod" value="2" />
+            <label class="checkbox-label" for="login2">
+              <img src="../../static/img/face-id.svg" alt="Face ID Icon" /> Face ID
+            </label>
+
+            <input type="checkbox" id="login3" name="loginMethod" value="3" />
+            <label class="checkbox-label" for="login3">
+              <img src="../../static/img/finger-print.svg" alt="Finger Print Icon" /> Finger Print
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Transfer Methods <span id="transferMethodError" class="error-text" aria-live="polite"></span></label>
+          <div class="checkbox-group" role="group" aria-label="Transfer Methods">
+            <input type="checkbox" id="transfer1" name="transferMethod" value="1" />
+            <label class="checkbox-label" for="transfer1">
+              <img src="../../static/img/sms.svg" alt="SMS Icon" /> SMS
+            </label>
+
+            <input type="checkbox" id="transfer2" name="transferMethod" value="2" />
+            <label class="checkbox-label" for="transfer2">
+              <img src="../../static/img/face-id.svg" alt="Face ID Icon" /> Face ID
+            </label>
+
+            <input type="checkbox" id="transfer3" name="transferMethod" value="3" />
+            <label class="checkbox-label" for="transfer3">
+              <img src="../../static/img/password.svg" alt="Pin Code Icon" /> Pin Code
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="branch">Branch</label>
+          <select id="branch" name="branch" required>
+            <option selected value="-1">Choose a branch</option>
+            {% for branch in branch_list %}
+            <option value="{{branch._id}}">{{branch.BranchName}} - {{branch.Address}}</option>
+            {% endfor %}
+          </select>
+          <span id="branchError" class="error-text" aria-live="polite"></span>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="back-btn" onclick="goPreviousStep()">Go Back</button>
+          <button type="button" class="next-btn" onclick="goNextStep()">Next Step</button>
+        </div>
+      </section>
+
+      <!-- Step 5: Summary -->
+      <section id="form-step5" class="form-step" hidden aria-labelledby="summary-title">
+        <h1 id="summary-title">Finish Up</h1>
+        <h3>Double-check everything looks OK before signing up</h3>
+
+        <div class="summary-box" aria-live="polite" aria-atomic="true">
+          <div class="summary-item">
+            <label>Username</label>
+            <p id="reUsername"></p>
+          </div>
+          <div class="summary-item">
+            <label>Email</label>
+            <p id="reEmail"></p>
+          </div>
+          <div class="summary-item">
+            <label>Phone</label>
+            <p id="rePhone"></p>
+          </div>
+          <div class="summary-item">
+            <label>Branch</label>
+            <p id="reBranch"></p>
+          </div>
+          <div class="summary-item">
+            <label>Card Number</label>
+            <p id="cardNumber">{{card_info.cardNumber}}</p>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="back-btn" onclick="goPreviousStep()">Go Back</button>
+          <button type="submit" class="submit-btn">Sign up</button>
+        </div>
+      </section>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Modern step navigation script with animation and accessibility
+  const steps = Array.from(document.querySelectorAll('.form-step'));
+  const stepBars = Array.from(document.querySelectorAll('.step'));
+  let currentStep = 0;
+
+  function updateStepVisibility() {
+    steps.forEach((step, i) => {
+      if (i === currentStep) {
+        step.hidden = false;
+        stepBars[i].classList.add('active');
+        step.setAttribute('aria-hidden', 'false');
+        step.querySelector('input, select, textarea, button')?.focus();
+      } else {
+        step.hidden = true;
+        stepBars[i].classList.remove('active');
+        step.setAttribute('aria-hidden', 'true');
+      }
+    });
+  }
+
+  function validateStep(stepIndex) {
+    // Basic validation for required inputs in current step
+    const step = steps[stepIndex];
+    let valid = true;
+    const inputs = step.querySelectorAll('input[required], select[required]');
+    inputs.forEach(input => {
+      const errorSpan = document.getElementById(input.id + 'Error');
+      if (!input.value || (input.type === 'checkbox' && !input.checked) || (input.type === 'radio' && !step.querySelector('input[name="' + input.name + '"]:checked'))) {
+        errorSpan.textContent = 'This field is required';
+        valid = false;
+      } else {
+        errorSpan.textContent = '';
+      }
+    });
+
+    // Additional password confirmation check for step 1
+    if (stepIndex === 0) {
+      const pwd = document.getElementById('password');
+      const confirmPwd = document.getElementById('confirmPassword');
+      const confirmError = document.getElementById('confirmPasswordError');
+      if (pwd.value !== confirmPwd.value) {
+        confirmError.textContent = 'Passwords do not match';
+        valid = false;
+      }
+    }
+
+    return valid;
+  }
+
+  window.goNextStep = function() {
+    if (validateStep(currentStep)) {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        fillSummary();
+        updateStepVisibility();
+      }
+    }
+  };
+
+  window.goPreviousStep = function() {
+    if (currentStep > 0) {
+      currentStep--;
+      updateStepVisibility();
+    }
+  };
+
+  function fillSummary() {
+    if (currentStep === steps.length - 1) {
+      document.getElementById('reUsername').textContent = document.getElementById('username').value;
+      document.getElementById('reEmail').textContent = document.getElementById('email').value;
+      document.getElementById('rePhone').textContent = document.getElementById('phone').value;
+      const branchSelect = document.getElementById('branch');
+      const branchText = branchSelect.options[branchSelect.selectedIndex]?.text || '';
+      document.getElementById('reBranch').textContent = branchText;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateStepVisibility();
+  });
+</script>
+{% endblock %}
