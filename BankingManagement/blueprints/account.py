@@ -34,7 +34,7 @@ def login():
     username = request.form.get("username")
     password = request.form.get("password") 
     remember_me = request.form.get("remember_me")
-    acc = accounts.find_one({ "Username": username, "IsDeleted": DeletedType.AVAILABLE.value }) 
+    acc = accounts.find_one({ "Username": username, "IsDeleted": DeletedType.AVAILABLE.value })
 
     if not acc or not check_password_hash(acc["Password"], password):
         flash(messages_failure["invalid_information"], 'error')
@@ -53,11 +53,13 @@ def login():
         
     flash(messages_success['login_success'],'success')
 
-    if acc["Role"] == RoleType.USER.value:
-        return redirect("/")
-    if acc["Role"] == RoleType.EMPLOYEE.value:
-        return redirect("/employee/home")
-    return redirect("/admin/account")
+    match acc["Role"]:
+        case RoleType.ADMIN.value:
+            return redirect("/admin/home")
+        case RoleType.EMPLOYEE.value:
+            return redirect("/employee/home")
+        case RoleType.USER.value:
+            return redirect("/")
 
 @account_blueprint.route('/register', methods=['GET','POST'])
 @log_request()
@@ -264,7 +266,7 @@ def reset_password(token):
     try:
         ts = URLSafeTimedSerializer(app.secret_key)
         user_email = ts.loads(token, salt=app.salt, max_age=86400)
-        new_password = generate_password_hash(request.form.get('password'))
+        new_password = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256', salt_length=16)
         user = users.find_one({'Email': user_email},{'_id':1})
 
         update_account_result = accounts.update_one(
@@ -293,25 +295,27 @@ def change_password():
         return render_template("general/change_password.html")
         
     current_password = request.form.get("current_password")
-    new_password = generate_password_hash(request.form.get("new_password"))
+    new_password_raw = request.form.get("new_password")
     confirm_password = request.form.get("confirmPassword")
+
+    if new_password_raw != confirm_password:
+        flash(messages_failure["password_not_matched"], "error")
+        return redirect("/change-password")
+
     current_user = accounts.find_one({"_id": int(session.get("account_id"))})
 
     if not check_password_hash(current_user["Password"], current_password):
         flash(messages_failure["invalid_password"], "error")
         return redirect("/change-password")
-        
-    if not check_password_hash(new_password, confirm_password):
-        flash(messages_failure["password_not_matched"], "error")
-        return redirect("/change-password")
-        
+
+    # Mã hóa mật khẩu sau khi đã xác nhận đúng
+    hashed_new_password = generate_password_hash(new_password_raw, method='pbkdf2:sha256', salt_length=16)
+
     accounts.update_one(
         {'_id': int(session.get("account_id"))},
-        {"$set": {"Password": new_password}
-    })
+        {"$set": {"Password": hashed_new_password}}
+    )
 
     session.clear()
     flash(messages_success['update_success'].format('password'), 'success')
     return redirect("/login")
-
-
