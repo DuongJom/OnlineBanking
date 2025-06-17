@@ -23,12 +23,12 @@
         <!-- avatar -->
         <div
           class="w-full h-1/2 flex justify-center border-b border-gray-300 p-4">
-          {% if owner.Sex == 1 %}
+          {% if owner.Sex == '1' %}
           <img
             src="../static/img/avt_man.png"
             alt="avt_man"
             class="h-full w-auto" />
-          {% elif owner.Sex == 2 %}
+          {% elif owner.Sex == '2' %}
           <img
             src="../static/img/avt_woman.png"
             alt="avt_woman"
@@ -43,9 +43,9 @@
               <p>{{ owner.Name }}</p>
             </div>
             <div class="h-4 w-4">
-              {% if owner.Sex == 1 %}
+              {% if owner.Sex == '1' %}
               <img src="../static/img/male.png" alt="male_sign" />
-              {% elif owner.Sex == 2 %}
+              {% elif owner.Sex == '2' %}
               <img src="../static/img/female.png" alt="female_sign" />
               {% endif %}
             </div>
