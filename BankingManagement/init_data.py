@@ -34,17 +34,17 @@ def initialize_data(app):
 def init_accounts(app):
     if CollectionType.ACCOUNTS.value not in lst_collections:
         lst_accounts = [
-            a.Account(id=1, username=app.username_usr01, password=app.password_usr01, role=RoleType.USER.value),
-            a.Account(id=2, username=app.username_emp01, password=app.password_emp01, role=RoleType.EMPLOYEE.value),
-            a.Account(id=3, username=app.username_adm01, password=app.password_adm01, role=RoleType.ADMIN.value)
+            a.Account(id=1, username=app.username_usr01, password=app.password_usr01, role=RoleType.USER.value, user=1),
+            a.Account(id=2, username=app.username_emp01, password=app.password_emp01, role=RoleType.EMPLOYEE.value, user=1),
+            a.Account(id=3, username=app.username_adm01, password=app.password_adm01, role=RoleType.ADMIN.value, user=1)
         ]
 
         for account in lst_accounts:
             accounts.insert_one(account.to_json())
 
 def init_branches():
-    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
-    admin_id = int(admin["_id"])
+    admin = accounts.find_one({'role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"]) if admin else None
 
     if CollectionType.BRANCHES.value not in lst_collections:
         lst_branches = [
@@ -55,8 +55,8 @@ def init_branches():
             branches.insert_one(branch.to_json())
 
 def init_roles():
-    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
-    admin_id = int(admin["_id"])
+    admin = accounts.find_one({'role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"]) if admin else None
 
     if CollectionType.ROLES.value not in lst_collections:
         lst_roles = [
@@ -69,8 +69,8 @@ def init_roles():
             roles.insert_one(role.to_json())
 
 def init_login_methods():
-    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
-    admin_id = int(admin["_id"])
+    admin = accounts.find_one({'role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"]) if admin else None
 
     if CollectionType.LOGIN_METHODS.value not in lst_collections:
         lst_methods = [
@@ -83,8 +83,8 @@ def init_login_methods():
             login_methods.insert_one(method.to_json())
 
 def init_transfer_methods():
-    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
-    admin_id = int(admin["_id"])
+    admin = accounts.find_one({'role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"]) if admin else None
 
     if CollectionType.TRANSFER_METHODS.value not in lst_collections:
         lst_methods = [
@@ -97,8 +97,8 @@ def init_transfer_methods():
             transfer_methods.insert_one(method.to_json())
 
 def init_card_types():
-    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
-    admin_id = int(admin["_id"])
+    admin = accounts.find_one({'role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"]) if admin else None
 
     if CollectionType.CARD_TYPES.value not in lst_collections:
         lst_card_types = [
@@ -110,8 +110,8 @@ def init_card_types():
             card_types.insert_one(card_type.to_json())
 
 def init_loans():
-    admin = accounts.find_one({'Role': RoleType.ADMIN.value})
-    admin_id = int(admin["_id"])
+    admin = accounts.find_one({'role': RoleType.ADMIN.value})
+    admin_id = int(admin["_id"]) if admin else None
 
     if CollectionType.LOANS.value not in lst_collections:
         lst_loans = [

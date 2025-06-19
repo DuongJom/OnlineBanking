@@ -62,6 +62,10 @@ def login():
     if session.permanent:
         current_app.config['PERMANENT_SESSION_LIFETIME'] = int(os.getenv('SESSION_LIFETIME'))
 
+    if not acc['account_owner']:
+        flash(messages_failure["account_owner_not_found"], 'error')
+        return redirect(url_for("account.login"))
+
     logging_user = users.find_one(
         {"_id": int(acc['account_owner'])},
         {"sex": 1}

@@ -33,7 +33,7 @@ app.register_blueprint(account.account_blueprint)
 app.register_blueprint(user.user_blueprint)
 app.register_blueprint(employee.employee_blueprint)
 app.register_blueprint(admin.admin_blueprint)
-#initialize_data(app)
+initialize_data(app)
 
 # Register the template filters
 app.jinja_env.filters['currency_format'] = currency_format
@@ -47,5 +47,4 @@ app.jinja_env.filters['currency_to_text'] = currency_to_text
 app.jinja_env.globals['now'] = dt.now
 
 if __name__ == '__main__':
-    initialize_data(app)
     app.run(debug=True)
