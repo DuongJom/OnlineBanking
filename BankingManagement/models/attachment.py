@@ -10,14 +10,14 @@ db = Database().get_db()
 
 class Attachment(BaseModel):
     def __init__(self, **kwargs):
-        created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
-        modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        id = kwargs["id"] if "id" in kwargs.keys() else None
-        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.ATTACHMENTS.value)
+        created_by = kwargs["created_by"] if "created_by" in kwargs.keys() else None
+        modified_by = kwargs["modified_by"] if "modified_by" in kwargs.keys() else None
+        model_id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=model_id, created_by=created_by, modified_by=modified_by, database=db, collection=CollectionType.ATTACHMENTS.value)
         
-        self.FileName = str(kwargs['fileName']).strip() if 'fileName' in kwargs.keys() else None
-        self.Extension = self.FileName.split('.')[-1] if (not self.FileName and self.FileName.contains('.')) else None
-        self.MIMEType = kwargs['mimeType'] if 'mimeType' in kwargs.keys() else MIMEType.TEXT.value
+        self.file_name = str(kwargs['file_name']).strip() if 'file_name' in kwargs.keys() else None
+        self.file_extension = self.file_name.split('.')[-1] if (self.file_name and '.' in self.file_name) else None
+        self.mime_type = kwargs['mime_type'] if 'mime_type' in kwargs.keys() else MIMEType.TEXT.value
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

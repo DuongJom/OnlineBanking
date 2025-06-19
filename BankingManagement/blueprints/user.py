@@ -191,71 +191,105 @@ def confirm_otp():
         flash(messages_failure['OTP_invalid'], 'error')
         return redirect(request.path)
 
-@user_blueprint.route('/bill-payment',methods=['GET', 'POST'])
+
+@user_blueprint.route('/bill-payment', methods=['GET', 'POST'])
 @login_required
 @log_request()
 @role_required(RoleType.USER.value)
 def bill_payment():
-    if request.method == "GET":
-        today = dt.today()
-        start_date = dt(today.year, today.month, 1)
-        query = {
-            "$and": [
-                { "Status": BillStatusType.UNPAID.value},
-                { "InvoiceDate": { "$gte": start_date}},
-                { "InvoiceDate": { "$lte": today}}
-            ]
-        }
+    today = dt.today()
+    default_start_date = dt(today.year, today.month, 1)
+    default_end_date = today
 
-        lst_bills = list(bills.find(query))
-        return render_template(
-            "/user/bill_payment.html",
-            bills=lst_bills,
-            start_date=start_date.date(),
-            end_date=today.date())
-    
-    start_date = request.form['start_date']
-    end_date = request.form['end_date']
+    # Biến mặc định
+    start_date = default_start_date
+    end_date = default_end_date
+    status_filter = '0'  # Mặc định lọc Unpaid
 
-    if start_date:
-        start_date = dt.strptime(start_date, "%Y-%m-%d")
-        start_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
+    query = []
 
-    if end_date:
-        end_date = dt.strptime(end_date, "%Y-%m-%d")
-        # Set the time to 23:59:59 to include the full end date
-        end_date = end_date.replace(hour=23, minute=59, second=59, microsecond=999999)
+    if request.method == "POST":
+        start_date_raw = request.form.get('start_date', '')
+        end_date_raw = request.form.get('end_date', '')
+        status_filter = request.form.get('status_filter', 'all')
 
-    query = {"Status": BillStatusType.UNPAID.value}
-    if start_date and end_date:
-        query = {
-            "$and": [
-                { "Status": BillStatusType.UNPAID.value},
-                { "InvoiceDate": { "$gte": start_date}},
-                { "InvoiceDate": { "$lte": end_date}}
-            ]
-        }
-    elif start_date and not end_date:
-        query = {
-            "$and": [
-                { "Status": BillStatusType.UNPAID.value},
-                { "InvoiceDate": { "$gte": start_date}}
-            ]
-        }
-    elif not start_date and end_date:
-        query = {
-            "$and": [
-                { "Status": BillStatusType.UNPAID.value},
-                { "InvoiceDate": { "$lte": end_date}}
-            ]
-        }
+        # Xử lý ngày bắt đầu
+        if start_date_raw:
+            start_date = dt.strptime(start_date_raw, "%Y-%m-%d")
+            start_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        # Ngược lại giữ mặc định
 
-    lst_bills = list(bills.find(query))
+        # Xử lý ngày kết thúc
+        if end_date_raw:
+            end_date = dt.strptime(end_date_raw, "%Y-%m-%d")
+            end_date = end_date.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+        # Tạo query filter
+        query.append({"account_id": int(session["account_id"])})
+        query.append({"invoice_date": {"$gte": start_date}})
+        query.append({"invoice_date": {"$lte": end_date}})
+
+        if status_filter in ["0", "1"]:
+            query.append({"status": int(status_filter)})
+
+    else:
+        # GET mặc định lọc UNPAID trong tháng hiện tại
+        query = [
+            {"invoice_date": {"$gte": default_start_date}},
+            {"invoice_date": {"$lte": default_end_date}},
+            {"status": BillStatusType.UNPAID.value}
+        ]
+
+    # Truy vấn từ Mongo
+    final_query = {"$and": query} if query else {}
+    print(final_query)
+    lst_bills = list(bills.find(final_query).sort("invoice_date", -1))
+
+    # Đếm Paid / Unpaid
+    paid_count = bills.count_documents({"status": BillStatusType.PAID.value})
+    unpaid_count = bills.count_documents({"status": BillStatusType.UNPAID.value})
+
     return render_template(
-            "/user/bill_payment.html",
-            bills=lst_bills,
-            start_date=start_date.date(),
-            end_date=end_date.date())
+        "user/bill_payment.html",
+        bills=lst_bills,
+        start_date=start_date.strftime("%Y-%m-%d"),
+        end_date=end_date.strftime("%Y-%m-%d"),
+        status_filter=status_filter,
+        paid_count=paid_count,
+        unpaid_count=unpaid_count
+    )
+
+def insert_sample_bills():
+    sample_bills = [
+        {
+            "account_id": 1,
+            "type": "Electricity",
+            "amount": 75000,
+            "status": 0,  # UNPAID
+            "invoice_date": dt(2024, 12, 1),
+            "payment_date": None,
+            "payment_method": None,
+            "createdAt": dt.utcnow(),
+            "createdBy": 3,
+            "modifiedAt": dt.utcnow(),
+            "modifiedBy": 3
+        },
+        {
+            "account_id": 1,
+            "type": "Water",
+            "amount": 90000,
+            "status": 1,  # PAID
+            "invoice_date": dt(2024, 11, 28),
+            "payment_date": dt(2024, 12, 1, 14, 30),
+            "payment_method": "Visa",
+            "createdAt": dt.utcnow(),
+            "createdBy": 3,
+            "modifiedAt": dt.utcnow(),
+            "modifiedBy": 3
+        }
+    ]
+
+    result = bills.insert_many(sample_bills)
 
 @user_blueprint.route('/payment', methods=['POST'])
 @login_required

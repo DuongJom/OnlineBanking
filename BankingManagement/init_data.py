@@ -33,13 +33,13 @@ def initialize_data(app):
 
 def init_accounts(app):
     if CollectionType.ACCOUNTS.value not in lst_collections:
-        lstAccounts = [
+        lst_accounts = [
             a.Account(id=1, username=app.username_usr01, password=app.password_usr01, role=RoleType.USER.value),
             a.Account(id=2, username=app.username_emp01, password=app.password_emp01, role=RoleType.EMPLOYEE.value),
             a.Account(id=3, username=app.username_adm01, password=app.password_adm01, role=RoleType.ADMIN.value)
         ]
 
-        for account in lstAccounts:
+        for account in lst_accounts:
             accounts.insert_one(account.to_json())
 
 def init_branches():
@@ -48,8 +48,8 @@ def init_branches():
 
     if CollectionType.BRANCHES.value not in lst_collections:
         lst_branches = [
-            Branch(id=1, branchName="Branch 1", address="So 01, duong Vo Van Ngan, phuong Linh Chieu, TP.Thu Duc, TP.HCM", createdBy=admin_id, modifiedBy=admin_id),
-            Branch(id=2, branchName="Transaction Office 1", address="So 137, duong Pham Van Dong, phuong Linh Trung, TP.Thu Duc, TP.HCM", createdBy=admin_id, modifiedBy=admin_id)
+            Branch(id=1, branch_name="Branch 1", address="So 01, duong Vo Van Ngan, phuong Linh Chieu, TP.Thu Duc, TP.HCM", created_by=admin_id, modified_by=admin_id),
+            Branch(id=2, branch_name="Transaction Office 1", address="So 137, duong Pham Van Dong, phuong Linh Trung, TP.Thu Duc, TP.HCM", created_by=admin_id, modified_by=admin_id)
         ]
         for branch in lst_branches:
             branches.insert_one(branch.to_json())
@@ -59,13 +59,13 @@ def init_roles():
     admin_id = int(admin["_id"])
 
     if CollectionType.ROLES.value not in lst_collections:
-        lstRoles = [
-            r.Role(id=1, roleName='User', value=RoleType.USER.value, createdBy=admin_id, modifiedBy=admin_id),
-            r.Role(id=2, roleName='Employee', value=RoleType.EMPLOYEE.value, createdBy=admin_id, modifiedBy=admin_id),
-            r.Role(id=3, roleName='Administrator', value=RoleType.ADMIN.value, createdBy=admin_id, modifiedBy=admin_id)
+        lst_roles = [
+            r.Role(id=1, role_name='User', value=RoleType.USER.value, created_by=admin_id, modified_by=admin_id),
+            r.Role(id=2, role_name='Employee', value=RoleType.EMPLOYEE.value, created_by=admin_id, modified_by=admin_id),
+            r.Role(id=3, role_name='Administrator', value=RoleType.ADMIN.value, created_by=admin_id, modified_by=admin_id)
         ]
 
-        for role in lstRoles:
+        for role in lst_roles:
             roles.insert_one(role.to_json())
 
 def init_login_methods():
@@ -73,13 +73,13 @@ def init_login_methods():
     admin_id = int(admin["_id"])
 
     if CollectionType.LOGIN_METHODS.value not in lst_collections:
-        lstMethods = [
-            lm.LoginMethod(id=1, methodName="By Username with password", value=LoginType.NORMAL.value, createdBy=admin_id, modifiedBy=admin_id),
-            lm.LoginMethod(id=2, methodName="By face identifier", value=LoginType.FACE_ID.value, createdBy=admin_id, modifiedBy=admin_id),
-            lm.LoginMethod(id=3, methodName="By finger print", value=LoginType.FINGER_PRINT.value, createdBy=admin_id, modifiedBy=admin_id)
+        lst_methods = [
+            lm.LoginMethod(id=1, method_name="By Username with password", value=LoginType.NORMAL.value, created_by=admin_id, modified_by=admin_id),
+            lm.LoginMethod(id=2, method_name="By face identifier", value=LoginType.FACE_ID.value, created_by=admin_id, modified_by=admin_id),
+            lm.LoginMethod(id=3, method_name="By finger print", value=LoginType.FINGER_PRINT.value, created_by=admin_id, modified_by=admin_id)
         ]
 
-        for method in lstMethods:
+        for method in lst_methods:
             login_methods.insert_one(method.to_json())
 
 def init_transfer_methods():
@@ -87,13 +87,13 @@ def init_transfer_methods():
     admin_id = int(admin["_id"])
 
     if CollectionType.TRANSFER_METHODS.value not in lst_collections:
-        lstMethods = [
-            tm.TransferMethod(id=1, methodName="SMS", value=TransferType.SMS.value, createdBy=admin_id, modifiedBy=admin_id),
-            tm.TransferMethod(id=2, methodName="Face Identification", value=TransferType.FACE_ID.value, createdBy=admin_id, modifiedBy=admin_id),
-            tm.TransferMethod(id=3, methodName="Pin code", value=TransferType.PIN_CODE.value, createdBy=admin_id, modifiedBy=admin_id)
+        lst_methods = [
+            tm.TransferMethod(id=1, method_name="SMS", value=TransferType.SMS.value, created_by=admin_id, modified_by=admin_id),
+            tm.TransferMethod(id=2, method_name="Face Identification", value=TransferType.FACE_ID.value, created_by=admin_id, modified_by=admin_id),
+            tm.TransferMethod(id=3, method_name="Pin code", value=TransferType.PIN_CODE.value, created_by=admin_id, modified_by=admin_id)
         ]
 
-        for method in lstMethods:
+        for method in lst_methods:
             transfer_methods.insert_one(method.to_json())
 
 def init_card_types():
@@ -101,23 +101,23 @@ def init_card_types():
     admin_id = int(admin["_id"])
 
     if CollectionType.CARD_TYPES.value not in lst_collections:
-        lstTypes = [
-            t.CardType(id=1, typeName="Credit Card", typeValue=CardType.CREDITS.value, createdBy=admin_id, modifiedBy=admin_id),
-            t.CardType(id=2, typeName="Debit Card", typeValue=CardType.DEBITS.value, createdBy=admin_id, modifiedBy=admin_id),
+        lst_card_types = [
+            t.CardType(id=1, type_name="Credit Card", type_value=CardType.CREDITS.value, created_by=admin_id, modified_by=admin_id),
+            t.CardType(id=2, type_name="Debit Card", type_value=CardType.DEBITS.value, created_by=admin_id, modified_by=admin_id),
         ]
 
-        for type in lstTypes:
-            card_types.insert_one(type.to_json())
+        for card_type in lst_card_types:
+            card_types.insert_one(card_type.to_json())
 
 def init_loans():
     admin = accounts.find_one({'Role': RoleType.ADMIN.value})
     admin_id = int(admin["_id"])
 
     if CollectionType.LOANS.value not in lst_collections:
-        lstLoans = [
-            Loan(id=1, owner=4, term=6, amount=1000000, interest_rate=5, due_date=dt.now() + relativedelta(months=6), createdBy=admin_id, modifiedBy=admin_id),
-            Loan(id=2, owner=4, term=12, amount=500000, interest_rate=8, due_date=dt.now() + relativedelta(months=12), createdBy=admin_id, modifiedBy=admin_id),
+        lst_loans = [
+            Loan(id=1, owner=4, term=6, amount=1000000, interest_rate=5, due_date=dt.now() + relativedelta(months=6), created_by=admin_id, modified_by=admin_id),
+            Loan(id=2, owner=4, term=12, amount=500000, interest_rate=8, due_date=dt.now() + relativedelta(months=12), created_by=admin_id, modified_by=admin_id),
         ]
 
-        for loan in lstLoans:
+        for loan in lst_loans:
             loans.insert_one(loan.to_json())

@@ -9,13 +9,14 @@ db = Database().get_db()
 
 class CardType(BaseModel):
     def __init__(self, **kwargs):
-        created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
-        modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        id = kwargs["id"] if "id" in kwargs.keys() else None
-        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.CARD_TYPES.value)
+        created_by = kwargs["created_by"] if "created_by" in kwargs.keys() else None
+        modified_by = kwargs["modified_by"] if "modified_by" in kwargs.keys() else None
+        model_id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=model_id, created_by=created_by, modified_by=modified_by, database=db,
+                         collection=CollectionType.CARD_TYPES.value)
         
-        self.TypeName = kwargs["typeName"] if "typeName" in kwargs.keys() else None
-        self.TypeValue = kwargs["typeValue"] if "typeValue" in kwargs.keys() else None
+        self.type_name = kwargs["type_name"] if "type_name" in kwargs.keys() else None
+        self.type_value = kwargs["type_value"] if "type_value" in kwargs.keys() else None
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

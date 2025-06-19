@@ -14,7 +14,7 @@
  
     <title>{% block title %}{% endblock %} - DHC Banking System</title>
   </head>
-  <body class="h-screen overflow-y-auto">
+  <body class="min-h-screen overflow-y-auto">
     {% if session["account_id"] %}
       <nav class="bg-green-100 shadow-md fixed w-full z-30 top-0 left-0">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -126,7 +126,7 @@
 
       {% block content %}{% endblock %}
       {% include 'general/footer.html' %}
-    <script type="text/javascript" src="{{url_for('static',filename='js/utilityFunctions.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static',filename='js/utility_functions.js')}}"></script>
     <script type="text/javascript">
       setTimeout(function(){
         $('#alert').css('display','none');

@@ -11,13 +11,13 @@ from enums.mime_type import MIMEType
 load_dotenv()
 
 def issue_new_card():
-    cardNum = str(random.randint(10**13,(10**14)-1))
-    accountNum = str(random.randint(10**13,(10**14)-1))
-    cvvNum = str(random.randint(100,999))
+    card_number = str(random.randint(10**13,(10**14)-1))
+    account_number = str(random.randint(10**13,(10**14)-1))
+    cvv_number = str(random.randint(100,999))
     return {
-        'cardNumber':cardNum, 
-        'cvvNumber': cvvNum,
-        'accountNumber': accountNum
+        'card_number':card_number,
+        'cvv_number': cvv_number,
+        'account_number': account_number
     }
 
 def get_token(app, user_email, salt):
@@ -32,7 +32,7 @@ def send_email(app, mail, recipients, subject, html, cc=None, bcc=None, attachme
     msg.subject = subject
     msg.html = html
 
-    # check if we need to sen to multiple recipients
+    # check if we need to send to multiple recipients
     if type(recipients) is list and len(recipients) > 0:
         msg.recipients = recipients
     else:
@@ -53,7 +53,7 @@ def send_email(app, mail, recipients, subject, html, cc=None, bcc=None, attachme
 
     mail.send(msg)
 
-def getMIMETypeValue(mime_type: MIMEType):
+def get_mime_type_value(mime_type: MIMEType):
     prefix = 'application/'
 
     if mime_type == MIMEType.HTML:
@@ -127,8 +127,8 @@ def get_banks():
         # Giả sử dữ liệu trả về có dạng {'banks': [list of banks]}
         banks = banks_data.get('data', [])
         return banks
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
 # Function to generate a random OTP
 def generate_otp():

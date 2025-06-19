@@ -32,7 +32,7 @@ def role_required(*roles):
                 session.clear()
                 return redirect("/login")
                 
-            if current_account["Role"] not in roles:
+            if current_account["role"] not in roles:
                 flash(messages_failure["unauthorized_access"], "error")
                 return redirect("/")
                 

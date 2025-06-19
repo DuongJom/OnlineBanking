@@ -11,16 +11,17 @@ db = Database().get_db()
 
 class Card(BaseModel):
     def __init__(self, **kwargs):
-        created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
-        modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        id = kwargs["id"] if "id" in kwargs.keys() else None
-        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.CARDS.value)
+        created_by = kwargs["created_by"] if "created_by" in kwargs.keys() else None
+        modified_by = kwargs["modified_by"] if "modified_by" in kwargs.keys() else None
+        model_id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=model_id, created_by=created_by, modified_by=modified_by, database=db,
+                         collection=CollectionType.CARDS.value)
         
-        self.CardNumber = kwargs["cardNumber"] if "cardNumber" in kwargs.keys() else None
-        self.CVV = kwargs["cvv"] if "cvv" in kwargs.keys() else None
-        self.ExpiredDate = kwargs["expiredDate"] if "expiredDate" in kwargs.keys() else (dt.today() + timedelta(days=365*3))
-        self.IssuanceDate = kwargs["issuanceDate"] if "issuanceDate" in kwargs.keys() else dt.today()
-        self.Type = kwargs["type"] if "type" in kwargs.keys() else CardType.CREDITS.value
+        self.card_number = kwargs["card_number"] if "card_number" in kwargs.keys() else None
+        self.cvv_number = kwargs["cvv_number"] if "cvv_number" in kwargs.keys() else None
+        self.expired_date = kwargs["expired_date"] if "expired_date" in kwargs.keys() else (dt.today() + timedelta(days=365*3))
+        self.issuance_date = kwargs["issuance_date"] if "issuance_date" in kwargs.keys() else dt.today()
+        self.type = kwargs["type"] if "type" in kwargs.keys() else CardType.CREDITS.value
     
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

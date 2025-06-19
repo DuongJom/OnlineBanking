@@ -9,13 +9,14 @@ db = Database().get_db()
 
 class Role(BaseModel):
     def __init__(self, **kwargs):
-        created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
-        modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        id = kwargs["id"] if "id" in kwargs.keys() else None
-        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.ROLES.value)
+        created_by = kwargs["created_by"] if "created_by" in kwargs.keys() else None
+        modified_by = kwargs["modified_by"] if "modified_by" in kwargs.keys() else None
+        model_id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=model_id, created_by=created_by, modified_by=modified_by, database=db,
+                         collection=CollectionType.ROLES.value)
 
-        self.Value = kwargs["value"] if "value" in kwargs.keys() else None
-        self.RoleName = str(kwargs["roleName"]).strip()
+        self.value = kwargs["value"] if "value" in kwargs.keys() else None
+        self.role_name = str(kwargs["role_name"]).strip()
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

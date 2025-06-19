@@ -11,35 +11,36 @@ db = Database().get_db()
 
 class WorkingDay(BaseModel):
     def __init__(self, **kwargs):
-        created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
-        modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        id = kwargs["id"] if "id" in kwargs.keys() else None
-        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.WORKING_DAY_INFOS.value)
+        created_by = kwargs["created_by"] if "created_by" in kwargs.keys() else None
+        modified_by = kwargs["modified_by"] if "modified_by" in kwargs.keys() else None
+        model_id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=model_id, created_by=created_by, modified_by=modified_by, database=db,
+                         collection=CollectionType.WORKING_DAY_INFOS.value)
         
-        self.EmployeeId = int(kwargs['emp_id']) if 'emp_id' in kwargs.keys() else None
-        self.Day = kwargs['day'] if 'day' in kwargs.keys() else datetime.today().day
-        self.Month = kwargs['month'] if 'month' in kwargs.keys() else datetime.today().month
-        self.Year = kwargs['year'] if 'year' in kwargs.keys() else datetime.today().year
-        self.WorkingStatus = kwargs['workingStatus'] if 'workingStatus' in kwargs.keys() else WorkingType.OFF.value
-        self.CheckIn = kwargs['checkIn'] if 'checkIn' in kwargs.keys() else None
-        self.CheckOut = kwargs['checkOut'] if 'checkOut' in kwargs.keys() else None
-        self.TotalHours = kwargs['totalHours'] if 'totalHours' in kwargs.keys() else 0
+        self.employee_id = int(kwargs['employee_id']) if 'employee_id' in kwargs.keys() else None
+        self.day = kwargs['day'] if 'day' in kwargs.keys() else datetime.today().day
+        self.month = kwargs['month'] if 'month' in kwargs.keys() else datetime.today().month
+        self.year = kwargs['year'] if 'year' in kwargs.keys() else datetime.today().year
+        self.working_status = kwargs['working_status'] if 'working_status' in kwargs.keys() else WorkingType.OFF.value
+        self.check_in_time = kwargs['check_in_time'] if 'check_in_time' in kwargs.keys() else None
+        self.check_out_time = kwargs['check_out_time'] if 'check_out_time' in kwargs.keys() else None
     
     def calculate_total_hours(self):
         """Calculate total hours worked based on check-in and check-out times"""
-        if self.CheckIn and self.CheckOut:
-            if isinstance(self.CheckIn, str):
-                self.CheckIn = datetime.strptime(self.CheckIn, '%H:%M')
-            if isinstance(self.CheckOut, str):
-                self.CheckOut = datetime.strptime(self.CheckOut, '%H:%M')
+        time_diff = 0
+
+        if self.check_in_time and self.check_out_time:
+            if isinstance(self.check_in_time, str):
+                self.check_in_time = datetime.strptime(self.check_in_time, '%H:%M')
+            if isinstance(self.check_out_time, str):
+                self.check_out_time = datetime.strptime(self.check_out_time, '%H:%M')
             
             # Handle cases where check-out is on the next day
-            if self.CheckOut < self.CheckIn:
-                self.CheckOut += timedelta(days=1)
+            if self.check_out_time < self.check_in_time:
+                self.check_out_time += timedelta(days=1)
             
-            time_diff = self.CheckOut - self.CheckIn
-            self.TotalHours = round(time_diff.total_seconds() / 3600, 2)
-        return self.TotalHours
+            time_diff = self.check_out_time - self.check_in_time
+        return round(time_diff.total_seconds() / 3600, 2)
     
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

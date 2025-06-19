@@ -10,13 +10,14 @@ db = Database().get_db()
 
 class TransferMethod(BaseModel):
     def __init__(self, **kwargs):
-        created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
-        modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        id = kwargs["id"] if "id" in kwargs.keys() else None
-        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.TRANSFER_METHODS.value)
+        created_by = kwargs["created_by"] if "created_by" in kwargs.keys() else None
+        modified_by = kwargs["modified_by"] if "modified_by" in kwargs.keys() else None
+        model_id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=model_id, created_by=created_by, modified_by=modified_by, database=db,
+                         collection=CollectionType.TRANSFER_METHODS.value)
         
-        self.MethodName = kwargs["methodName"] if "methodName" in kwargs.keys() else None
-        self.Value = int(kwargs["value"]) if "value" in kwargs.keys() else TransferType.SMS.value
+        self.method_name = kwargs["method_name"] if "method_name" in kwargs.keys() else None
+        self.value = int(kwargs["value"]) if "value" in kwargs.keys() else TransferType.SMS.value
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

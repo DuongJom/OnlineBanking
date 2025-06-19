@@ -9,14 +9,14 @@ from helpers.helpers import get_max_id
 
 class BaseModel:
     def __init__(self, **kwargs):
-        self.CreatedDate = datetime.now()
-        self.CreatedBy = kwargs['createdBy'] if 'createdBy' in kwargs.keys() else None
-        self.ModifiedDate = datetime.now()
-        self.ModifiedBy = kwargs['modifiedBy'] if 'modifiedBy' in kwargs.keys() else None
-        self.IsDeleted = DeletedType.AVAILABLE.value
-        self.Database = kwargs['database'] if 'database' in kwargs.keys() else Database().get_db()
-        self.CollectionName = str(kwargs['collection'])
-        self._id = int(kwargs['id']) if 'id' in kwargs.keys() else get_max_id(self.Database, self.CollectionName)
+        self.created_date = datetime.now()
+        self.created_by = kwargs['created_by'] if 'created_by' in kwargs.keys() else None
+        self.modified_date = datetime.now()
+        self.modified_by = kwargs['modified_by'] if 'modified_by' in kwargs.keys() else None
+        self.is_deleted = DeletedType.AVAILABLE.value
+        self.database = kwargs['database'] if 'database' in kwargs.keys() else Database().get_db()
+        self.collection_name = str(kwargs['collection'])
+        self._id = int(kwargs['id']) if 'id' in kwargs.keys() else get_max_id(self.database, self.collection_name)
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

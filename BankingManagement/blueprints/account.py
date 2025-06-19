@@ -15,6 +15,14 @@ from enums.card_type import CardType
 from enums.collection import CollectionType
 from enums.deleted_type import DeletedType
 from app import app, mail
+from flask_caching import Cache
+
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
+cache.init_app(app)
+
+HASH_PASSWORD_METHOD = 'pbkdf2:sha256'
+SALT_LENGTH = 16
+MAX_AGE_TIME_SERIALIZER = 86400
 
 # MongoDB Collections
 db = database.Database().get_db()
@@ -28,7 +36,6 @@ login_methods = db[CollectionType.LOGIN_METHODS.value]
 
 account_blueprint = Blueprint('account', __name__)
 
-
 @account_blueprint.route('/login', methods=['GET', 'POST'])
 @log_request()
 def login():
@@ -36,24 +43,32 @@ def login():
         return render_template('general/login.html')
 
     session.clear()
-    username = request.form.get("username")
-    password = request.form.get("password")
-    remember_me = request.form.get("remember_me")
-    acc = accounts.find_one({"Username": username, "IsDeleted": DeletedType.AVAILABLE.value})
+    form_data = request.form
+    username = form_data.get("username")
+    password = form_data.get("password")
+    remember_me = form_data.get("remember_me")
 
-    if not acc or not check_password_hash(acc["Password"], password):
-        flash(messages_failure["invalid_information"], 'error')
-        return render_template('general/login.html')
+    acc = accounts.find_one(
+        {"username": username, "is_deleted": DeletedType.AVAILABLE.value},
+        {"_id": 1, "password": 1, "role": 1, "account_owner": 1}
+    )
+
+    if not acc or not check_password_hash(acc["password"], password):
+        flash(messages_failure["invalid_information"], "error")
+        return render_template("general/login.html")
 
     session.permanent = bool(remember_me)
 
     if session.permanent:
         current_app.config['PERMANENT_SESSION_LIFETIME'] = int(os.getenv('SESSION_LIFETIME'))
 
-    loggin_user = users.find_one({"_id": int(acc['AccountOwner'])})
+    logging_user = users.find_one(
+        {"_id": int(acc['account_owner'])},
+        {"sex": 1}
+    )
 
-    if loggin_user:
-        session["sex"] = str(loggin_user['Sex'])
+    if logging_user:
+        session["sex"] = str(logging_user['sex'])
 
     session["account_id"] = str(acc["_id"])
     flash(messages_success['login_success'], 'success')
@@ -62,8 +77,7 @@ def login():
         RoleType.ADMIN.value: "/admin/home",
         RoleType.EMPLOYEE.value: "/employee/home",
         RoleType.USER.value: "/"
-    }.get(acc["Role"], "/"))
-
+    }.get(acc["role"], "/"))
 
 @account_blueprint.route('/register', methods=['GET', 'POST'])
 @log_request()
@@ -71,49 +85,72 @@ def register():
     card_info = issue_new_card()
 
     if request.method == 'GET':
-        branch_list = branches.find()
-        return render_template('general/register.html', branch_list=branch_list, card_info=card_info)
+        branch_list = cache.get("branch_list")
+        if branch_list is None:
+            branch_list = list(branches.find({}, {"_id": 1, "name": 1}))
+            cache.set("branch_list", branch_list, timeout=300)
+        return render_template("general/register.html", branch_list=branch_list, card_info=card_info)
 
-    form = request.form
-    username = form['username']
-    full_name = form['fullname']
-    branch_id = form['branch']
-    password = form['password']
-    confirm_password = form['confirmPassword']
-    address = f"{form['street']}, {form['ward']}, {form['district']}, {form['city']}, {form['country']}"
-    transfer_method_ids = [int(i) for i in form.getlist('transferMethod') if i.isdigit()]
-    login_method_ids = [int(i) for i in form.getlist('loginMethod') if i.isdigit()]
-    phone = form['phone']
-    email = form['email']
-    sex = form['gender']
+    form_data = request.form
+    username = form_data['username']
+    full_name = form_data['fullname']
+    branch_id = form_data['branch']
+    password = form_data['password']
+    confirm_password = form_data['confirm_password']
+    address = ", ".join([form_data.get(k, '').strip() for k in ['street', 'ward', 'district', 'city', 'country']])
+    transfer_method_ids = [int(transfer_method_id) for transfer_method_id in form_data.getlist('transfer_method') if transfer_method_id.isdigit()]
+    login_method_ids = [int(login_method_id) for login_method_id in form_data.getlist('login_method') if login_method_id.isdigit()]
+    phone = form_data['phone']
+    email = form_data['email']
+    sex = form_data['gender']
 
     if password != confirm_password:
         flash(messages_failure['password_not_matched'], 'error')
         return redirect(url_for("account.register"))
 
-    if accounts.find_one({"Username": username}):
+    if accounts.find_one({"username": username}):
         flash(messages_failure['username_existed'].format(username), 'error')
         return redirect(url_for("account.register"))
 
-    if users.find_one({"Email": email}):
+    if users.find_one({"email": email}):
         flash(messages_failure['email_existed'].format(email), 'error')
         return redirect(url_for("account.register"))
 
-    if users.find_one({"Phone": phone}):
+    if users.find_one({"phone": phone}):
         flash(messages_failure['phone_existed'].format(phone), 'error')
         return redirect(url_for("account.register"))
 
     new_card_id = get_max_id(db, CollectionType.CARDS.value)
-    new_card = model_card.Card(id=new_card_id, cardNumber=card_info['cardNumber'], cvv=card_info['cvvNumber'], type=CardType.CREDITS.value)
-    cards.insert_one(new_card.to_json())
+    cards.insert_one(model_card.Card(
+        id=new_card_id,
+        card_number=card_info['card_number'],
+        cvv_number=card_info['cvv_number'],
+        type=CardType.CREDITS.value
+    ).to_json())
 
     new_user_id = get_max_id(db, CollectionType.USERS.value)
-    new_user = user.User(id=new_user_id, name=full_name, sex=int(sex), address=address.strip(), phone=phone, email=email, card=[new_card_id])
-    users.insert_one(new_user.to_json())
+    users.insert_one(user.User(
+        id=new_user_id,
+        name=full_name,
+        sex=int(sex),
+        address=address.strip(),
+        phone=phone,
+        email=email,
+        card=[new_card_id]
+    ).to_json())
 
     new_account_id = get_max_id(db, CollectionType.ACCOUNTS.value)
-    new_account = account.Account(id=new_account_id, accountNumber=card_info['accountNumber'], branch=int(branch_id), user=new_user_id, username=username, password=password, role=RoleType.USER.value, transferMethod=transfer_method_ids, loginMethod=login_method_ids)
-    accounts.insert_one(new_account.to_json())
+    accounts.insert_one(account.Account(
+        id=new_account_id,
+        account_number=card_info['account_number'],
+        branch_id=int(branch_id),
+        user=new_user_id,
+        username=username,
+        password=password,
+        role=RoleType.USER.value,
+        transfer_method=transfer_method_ids,
+        login_method=login_method_ids
+    ).to_json())
 
     flash(messages_success['register_success'], 'success')
     return redirect(url_for("account.login"))
@@ -124,44 +161,64 @@ def register():
 @log_request()
 @role_required(RoleType.ADMIN.value, RoleType.EMPLOYEE.value, RoleType.USER.value)
 def view_profile():
-    if request.method == "GET":
-        account_id = int(session.get("account_id"))
-        acc = accounts.find_one({"_id": account_id})
-        branch = branches.find_one({"_id": int(acc["Branch"])}) if acc else None
-        owner = users.find_one({"_id": int(acc["AccountOwner"])}) if acc else None
+    account_id = int(session.get("account_id"))
+    account_doc = accounts.find_one({"_id": account_id})
 
+    if request.method == "GET":
+        branch = branches.find_one({"_id": account_doc["branch_id"]}) if account_doc else None
+        owner = users.find_one({"_id": account_doc["account_owner"]}) if account_doc else None
         lst_cards = []
 
         if owner:
-            for card_id in owner.get('Card', []):
-                card = cards.find_one({"_id": int(card_id)})
+            card_ids = [int(cid) for cid in owner.get('card', [])]
 
-                if card:
-                    card_type = CardType(card['Type']).name.capitalize()
-                    lst_cards.append({'card_info': card, 'card_type': card_type})
+            for card in cards.find({"_id": {"$in": card_ids}}):
+                card_type = CardType(card['type']).name.capitalize()
+                lst_cards.append({'card_info': card, 'card_type': card_type})
 
-        return render_template("general/view_profile.html", account=acc, cards=lst_cards, owner=owner, branch=branch)
+        return render_template(
+            "general/view_profile.html",
+            account=account_doc,
+            cards=lst_cards,
+            owner=owner,
+            branch=branch
+        )
 
-    form = request.form
-    account_id = int(session.get("account_id"))
-    acc = accounts.find_one({"_id": account_id})
-    usr = users.find_one({"_id": acc["AccountOwner"]})
+    form_data = request.form
+    user_doc = users.find_one({"_id": account_doc["account_owner"]})
 
-    if not check_password_hash(acc["Password"], form.get("password")):
+    if not check_password_hash(account_doc["password"], form_data.get("password")):
         flash(messages_failure["password_not_matched"], "error")
         return redirect("/view-profile")
 
     for field, msg, col, key in [
-        ("email", 'email_existed', users, 'Email'),
-        ("phone", 'phone_existed', users, 'Phone'),
-        ("username", 'username_existed', accounts, 'Username')
+        ("email", 'email_existed', users, 'email'),
+        ("phone", 'phone_existed', users, 'phone'),
+        ("username", 'username_existed', accounts, 'username')
     ]:
-        if form.get(field) != form.get(f"current_{field}") and col.find_one({key: form.get(field)}):
-            flash(messages_failure[msg].format(form.get(field)), "error")
+        if form_data.get(field) != form_data.get(f"current_{field}") and col.find_one({key: form_data.get(field)}):
+            flash(messages_failure[msg].format(form_data.get(field)), "error")
             return redirect("/view-profile")
 
-    users.update_one({"_id": usr["_id"]}, {"$set": {"Email": form.get("email"), "Phone": form.get("phone"), "Address": form.get("address")}})
-    accounts.update_one({"_id": acc["_id"]}, {"$set": {"Username": form.get("username")}})
+    users.update_one(
+        {"_id": user_doc["_id"]},
+        {
+            "$set": {
+                "email": form_data.get("email"),
+                "phone": form_data.get("phone"),
+                "address": form_data.get("address")
+            }
+        }
+    )
+
+    accounts.update_one(
+        {"_id": account_doc["_id"]},
+        {
+            "$set": {
+                "username": form_data.get("username")
+            }
+        }
+    )
 
     flash(messages_success["update_success"].format("information"), "success")
     return redirect("/view-profile")
@@ -173,7 +230,6 @@ def logout():
     session.clear()
     return redirect(url_for("account.login"))
 
-
 @account_blueprint.route('/confirm-email', methods=['GET', 'POST'])
 @log_request()
 def confirm_email():
@@ -181,13 +237,20 @@ def confirm_email():
         return render_template('email/confirm_email.html')
 
     email = request.form.get('email')
-    usr = users.find_one({'Email': email})
-    if not usr:
+    user_doc = users.find_one(
+        {'email': email},
+        {'_id': 1}
+    )
+
+    if not user_doc:
         flash(messages_failure['invalid_email'].format(email), 'error')
         return render_template('email/confirm_email.html')
 
     token = get_token(app=app, user_email=email, salt=app.salt)
-    html = render_template('email/activate.html', recover_url=url_for('account.reset_password', token=token, _external=True))
+    html = render_template(
+        template_name_or_list='email/activate.html',
+        recover_url=url_for(endpoint='account.reset_password', token=token, _external=True)
+    )
     attachments = [{'path': './static/img/bank.png', 'filename': 'bank.png', 'mime_type': 'image/png'}]
     send_email(app=app, mail=mail, recipients=[email], subject="Reset Password", html=html, attachments=attachments)
 
@@ -202,12 +265,28 @@ def reset_password(token):
         return render_template('general/reset_password.html', token=token)
 
     try:
-        ts = URLSafeTimedSerializer(app.secret_key)
-        email = ts.loads(token, salt=app.salt, max_age=86400)
-        hashed_pw = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256', salt_length=16)
-        usr = users.find_one({'Email': email}, {'_id': 1})
+        time_serializer = URLSafeTimedSerializer(app.secret_key)
+        email = time_serializer.loads(token, salt=app.salt, max_age=MAX_AGE_TIME_SERIALIZER)
+        hashed_password = generate_password_hash(
+            password=request.form.get('password'),
+            method=HASH_PASSWORD_METHOD,
+            salt_length=SALT_LENGTH
+        )
 
-        update_result = accounts.update_one({'AccountOwner': usr["_id"]}, {"$set": {"Password": hashed_pw}})
+        user_doc = users.find_one(
+            {'email': email},
+            {'_id': 1}
+        )
+
+        update_result = accounts.update_one(
+            {"account_owner": user_doc["_id"]},
+            {
+                "$set": {
+                    "password": hashed_password
+                }
+            }
+        )
+
         if update_result.modified_count:
             flash(messages_success['update_success'].format('password'), 'success')
             return redirect(url_for('account.login'))
@@ -219,7 +298,6 @@ def reset_password(token):
 
     return redirect(url_for('account.reset_password', token=token))
 
-
 @account_blueprint.route('/change-password', methods=["GET", "POST"])
 @login_required
 @log_request()
@@ -229,21 +307,34 @@ def change_password():
         return render_template("general/change_password.html")
 
     form = request.form
-    current_pw = form.get("current_password")
-    new_pw = form.get("new_password")
-    confirm_pw = form.get("confirmPassword")
+    current_password = form.get("current_password")
+    new_password = form.get("new_password")
+    confirm_password = form.get("confirm_password")
 
-    if new_pw != confirm_pw:
+    if new_password != confirm_password:
         flash(messages_failure["password_not_matched"], "error")
         return redirect("/change-password")
 
-    acc = accounts.find_one({"_id": int(session.get("account_id"))})
-    if not check_password_hash(acc["Password"], current_pw):
+    account_doc = accounts.find_one({"_id": int(session.get("account_id"))})
+
+    if not check_password_hash(account_doc["password"], current_password):
         flash(messages_failure["invalid_password"], "error")
         return redirect("/change-password")
 
-    hashed_pw = generate_password_hash(new_pw, method='pbkdf2:sha256', salt_length=16)
-    accounts.update_one({'_id': acc["_id"]}, {"$set": {"Password": hashed_pw}})
+    hashed_password = generate_password_hash(
+        password=new_password,
+        method=HASH_PASSWORD_METHOD,
+        salt_length=SALT_LENGTH
+    )
+
+    accounts.update_one(
+        {'_id': account_doc["_id"]},
+        {
+            "$set": {
+                "password": hashed_password
+            }
+        }
+    )
 
     session.clear()
     flash(messages_success['update_success'].format('password'), 'success')
