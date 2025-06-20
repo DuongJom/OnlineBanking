@@ -358,7 +358,7 @@
     </aside>
 
     <!-- The form -->
-    <form action="{{ url_for('account.register') }}" method="post" novalidate>
+    <form action="{{ url_for('account.register') }}" method="post" novalidate onsubmit="return false">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
       <!-- Step 1: Login Info -->
@@ -540,7 +540,7 @@
           <select id="branch" name="branch" required>
             <option selected value="-1">Choose a branch</option>
             {% for branch in branch_list %}
-            <option value="{{branch._id}}">{{branch.BranchName}} - {{branch.Address}}</option>
+            <option value="{{branch._id}}">{{branch.branch_name}} - {{branch.address}}</option>
             {% endfor %}
           </select>
           <span id="branchError" class="error-text" aria-live="polite"></span>
@@ -576,13 +576,13 @@
           </div>
           <div class="summary-item">
             <label>Card Number</label>
-            <p id="cardNumber">{{card_info.cardNumber}}</p>
+            <p id="cardNumber">{{card_info.card_number}}</p>
           </div>
         </div>
 
         <div class="btn-group">
           <button type="button" class="back-btn" onclick="goPreviousStep()">Go Back</button>
-          <button type="submit" class="submit-btn">Sign up</button>
+          <button type="submit" class="submit-btn" onclick="submitIfValid()">Sign up</button>
         </div>
       </section>
     </form>
@@ -595,7 +595,7 @@
   const stepBars = Array.from(document.querySelectorAll('.step'));
   let currentStep = 0;
 
-  function updateStepVisibility() {
+  const updateStepVisibility = () => {
     steps.forEach((step, i) => {
       if (i === currentStep) {
         step.hidden = false;
@@ -610,7 +610,7 @@
     });
   }
 
-  function validateStep(stepIndex) {
+  const validateStep = (stepIndex) => {
     // Basic validation for required inputs in current step
     const step = steps[stepIndex];
     let valid = true;
@@ -638,6 +638,12 @@
 
     return valid;
   }
+
+  const submitIfValid = () => {
+    if (validateStep(currentStep) && currentStep === steps.length - 1) {
+      document.querySelector('form').submit();
+    }
+  };
 
   window.goNextStep = function() {
     if (validateStep(currentStep)) {
@@ -669,6 +675,17 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     updateStepVisibility();
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      const target = event.target;
+      const formStep = target.closest('.form-step');
+      if (formStep && !formStep.hidden) {
+        event.preventDefault(); // Ngăn submit mặc định
+        goNextStep();
+      }
+    }
   });
 </script>
 {% endblock %}

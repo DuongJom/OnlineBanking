@@ -16,13 +16,13 @@
         <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
             <div class="flex justify-between mb-2 text-sm">
                 <span class="font-semibold text-gray-700">Source Account:</span>
-                <span class="bg-green-200 px-3 py-1 rounded text-gray-800">{{ account.AccountNumber }}</span>
+                <span class="bg-green-200 px-3 py-1 rounded text-gray-800">{{ account.account_number }}</span>
             </div>
             <div class="flex justify-between text-sm">
                 <span class="font-semibold text-gray-700">Balance:</span>
                 <span class="text-red-600 font-bold">
-                    {{ account.Balance | currency_format }}
-                    <sup>{{ account.Currency | currency_to_text }}</sup>
+                    {{ account.balance | currency_format }}
+                    <sup>{{ account.currency | currency_to_text }}</sup>
                 </span>
             </div>
         </div>
@@ -71,12 +71,6 @@
                     <input type="number" id="amount" name="amount"
                         class="w-full border border-gray-300 rounded-l-md h-10 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
                         placeholder="Enter amount">
-                    <select id="currency" name="currency"
-                        class="border border-gray-300 rounded-r-md h-10 text-sm focus:outline-none">
-                        <option value="0">VND</option>
-                        <option value="1">USD</option>
-                        <option value="2">EUR</option>
-                    </select>
                 </div>
             </div>
 
@@ -84,7 +78,7 @@
             <div>
                 <label for="message" class="block text-sm font-medium mb-1 text-gray-600">Message</label>
                 <input type="text" id="message" name="message"
-                    value="{{ owner.Name }} transfer money"
+                    value="{{ owner.name }} transfer money"
                     class="w-full border border-gray-300 rounded-md h-10 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400">
             </div>
         </div>

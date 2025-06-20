@@ -84,7 +84,7 @@ def register():
     if request.method == 'GET':
         branch_list = cache.get("branch_list")
         if branch_list is None:
-            branch_list = list(branches.find({}, {"_id": 1, "name": 1}))
+            branch_list = list(branches.find({}, {"_id": 1, "branch_name": 1, "address": 1}))
             cache.set("branch_list", branch_list, timeout=300)
         return render_template("general/register.html", branch_list=branch_list, card_info=card_info)
 
@@ -151,7 +151,6 @@ def register():
 
     flash(messages_success['register_success'], 'success')
     return redirect(url_for("account.login"))
-
 
 @account_blueprint.route('/view-profile', methods=['GET', 'POST'])
 @login_required

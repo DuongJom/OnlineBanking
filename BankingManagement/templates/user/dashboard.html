@@ -8,21 +8,21 @@
 <div class="container mx-auto px-4 mt-10 max-w-7xl">
     <!-- Welcome + Account Info -->
     <div class="bg-white shadow-xl rounded-2xl p-8 mb-8">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Welcome, {{ owner.Name }}</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Welcome, {{ owner.name }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Balance -->
             <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition">
                 <h3 class="text-lg font-semibold text-gray-600 mb-2">Account Balance</h3>
                 <p class="text-3xl font-bold text-green-600 flex items-center space-x-2">
-                    <span>{{ account.Balance|currency_format }}</span>
-                    <span>{{ account.Currency|currency_to_text }}</span>
+                    <span>{{ account.balance|currency_format }}</span>
+                    <span>{{ account.currency|currency_to_text }}</span>
                 </p>
             </div>
 
             <!-- Account Number -->
             <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition">
                 <h3 class="text-lg font-semibold text-gray-600 mb-2">Account Number</h3>
-                <p class="text-xl font-medium text-gray-800">{{ account.AccountNumber }}</p>
+                <p class="text-xl font-medium text-gray-800">{{ account.account_number }}</p>
             </div>
         </div>
     </div>
@@ -50,25 +50,25 @@
                             {{ transaction.date|datetime_format }}
                         </td>
                         <td class="px-6 py-4 text-center text-gray-700 border border-gray-200">
-                            {{ transaction.info.SenderId }}
+                            {{ transaction.info.sender_id }}
                         </td>
                         <td class="px-6 py-4 text-center text-gray-700 border border-gray-200">
-                            {{ transaction.info.ReceiverId }}
+                            {{ transaction.info.receiver_id }}
                         </td>
                         <td class="px-6 py-4 text-center text-gray-700 border border-gray-200">
                             {{ transaction.description }}
                         </td>
                         <td class="px-6 py-4 text-center font-semibold border border-gray-200
-                            {% if transaction.info.ReceiverId != account.AccountNumber %}text-red-600{% else %}text-green-600{% endif %}">
-                            {% if transaction.info.ReceiverId != account.AccountNumber %}
+                            {% if transaction.info.receiver_id != account.account_number %}text-red-600{% else %}text-green-600{% endif %}">
+                            {% if transaction.info.receiver_id != account.account_number %}
                                 -{{ transaction.amount|currency_format }}
                             {% else %}
                                 +{{ transaction.amount|currency_format }}
                             {% endif %}
-                            <span class="ml-1">{{ account.Currency|currency_to_text }}</span>
+                            <span class="ml-1">{{ account.currency|currency_to_text }}</span>
                         </td>
                         <td class="px-6 py-4 text-center text-gray-800 font-medium border border-gray-200">
-                            {{ transaction.balance|currency_format }} {{ account.Currency|currency_to_text }}
+                            {{ transaction.balance|currency_format }} {{ account.currency|currency_to_text }}
                         </td>
                     </tr>
                     {% endfor %}

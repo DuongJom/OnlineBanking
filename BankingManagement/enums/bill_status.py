@@ -1,5 +1,6 @@
 from enum import Enum
 
 class BillStatusType(Enum):
-    UNPAID = 0
-    PAID = 1
+    ALL = 0
+    UNPAID = 1
+    PAID = 2

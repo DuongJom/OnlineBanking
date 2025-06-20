@@ -15,9 +15,9 @@
                 <input type="date" name="end_date" value="{{ end_date }}" class="border rounded px-2 h-9">
 
                 <select name="status_filter" class="flex border rounded px-2 py-1 h-9 w-24 items-center">
-                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All</option>
-                    <option value="0" {% if status_filter == '0' %}selected{% endif %}>Unpaid</option>
-                    <option value="1" {% if status_filter == '1' %}selected{% endif %}>Paid</option>
+                    <option value="0" {% if status_filter == 0 %}selected{% endif %}>All</option>
+                    <option value="1" {% if status_filter == 1 %}selected{% endif %}>Unpaid</option>
+                    <option value="2" {% if status_filter == 2 %}selected{% endif %}>Paid</option>
                 </select>
 
                 <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Filter</button>
@@ -31,7 +31,7 @@
                     {% for bill in bills %}
                     <li class="flex justify-between items-center p-4 mb-4 bg-white rounded-lg shadow">
                         <div>
-                            <p class="text-gray-700 font-semibold">{{ bill.type }}</p>
+                            <p class="text-gray-700 font-semibold">{{ bill.bill_type }}</p>
                             <p class="text-sm text-gray-500">{{ bill.invoice_date|datetime_format('%Y-%m-%d') }}</p>
                         </div>
                         <div class="text-right">
@@ -61,7 +61,7 @@
                             <option value="-1" disabled selected>Choose a bill</option>
                             {% for bill in bills %}
                             {% if bill.status == 0 %}
-                                <option value="{{ bill._id }}" data-amount="{{ bill.amount }}">{{ bill.type }}</option>
+                                <option value="{{ bill._id }}" data-amount="{{ bill.amount }}">{{ bill.bill_type }}</option>
                             {% endif %}
                             {% endfor %}
                         </select>
