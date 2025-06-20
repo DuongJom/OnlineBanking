@@ -673,5 +673,5 @@ def unlock_card(card_id):
 @role_required(RoleType.USER.value)
 def loan_management():
     account_id = int(session.get("account_id"))
-    lst_loan = list(loans.find({"Owner": account_id}))
+    lst_loan = list(loans.find({"owner": account_id}))
     return render_template("user/loan.html", loans=lst_loan)
