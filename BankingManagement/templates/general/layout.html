@@ -25,14 +25,20 @@
                       type="button"
                       class="flex items-center gap-2 bg-indigo-300 hover:bg-indigo-500 px-3 py-2 rounded-full transition"
                       onclick="navBarToggle()">
-                {% if session["sex"] == '0' %}
-                  <img src="{{ url_for('static', filename='img/avt_man.png') }}"
-                      class="h-8 w-8 rounded-full border-2 border-white"
-                      alt="Male Avatar">
+                {% if session["avatar"] %}
+                  <img src="{{ url_for('static', filename='uploads/' + session['avatar']) }}"
+                     class="h-8 w-8 rounded-full border-2 border-white"
+                     alt="User Avatar">
                 {% else %}
-                  <img src="{{ url_for('static', filename='img/avt_woman.png') }}"
-                      class="h-8 w-8 rounded-full border-2 border-white"
-                      alt="Female Avatar">
+                  {% if session["sex"] == '0' %}
+                    <img src="{{ url_for('static', filename='img/avt_man.png') }}"
+                        class="h-8 w-8 rounded-full border-2 border-white"
+                        alt="Male Avatar">
+                  {% else %}
+                    <img src="{{ url_for('static', filename='img/avt_woman.png') }}"
+                        class="h-8 w-8 rounded-full border-2 border-white"
+                        alt="Female Avatar">
+                  {% endif %}
                 {% endif %}
                 <img src="{{ url_for('static', filename='img/down-arrow.png') }}"
                     id="navbar_down_arrow"

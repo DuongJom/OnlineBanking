@@ -4,6 +4,7 @@ from flask import (
     request, session, current_app
 )
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 from itsdangerous import URLSafeTimedSerializer
 
 from models import account, user, card as model_card
@@ -61,13 +62,14 @@ def login():
 
     logging_user = users.find_one(
         {"_id": int(acc['account_owner'])},
-        {"sex": 1}
+        {"sex": 1, "avatar": 1}
     )
 
     if logging_user:
         session["sex"] = str(logging_user['sex'])
 
     session["account_id"] = str(acc["_id"])
+    session["avatar"] = logging_user["avatar"]
     flash(messages_success['login_success'], 'success')
 
     return redirect({
@@ -89,6 +91,7 @@ def register():
         return render_template("general/register.html", branch_list=branch_list, card_info=card_info)
 
     form_data = request.form
+    avatar_file = request.files.get("avatar")
     username = form_data['username']
     full_name = form_data['fullname']
     branch_id = form_data['branch']
@@ -117,6 +120,15 @@ def register():
         flash(messages_failure['phone_existed'].format(phone), 'error')
         return redirect(url_for("account.register"))
 
+        # Process avatar
+    avatar_filename = None
+    if avatar_file and avatar_file.filename:
+        filename = secure_filename(avatar_file.filename)
+        upload_path = os.path.join(current_app.root_path, 'static', 'uploads', filename)
+        os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+        avatar_file.save(upload_path)
+        avatar_filename = filename
+
     new_card_id = get_max_id(db, CollectionType.CARDS.value)
     cards.insert_one(model_card.Card(
         id=new_card_id,
@@ -133,6 +145,7 @@ def register():
         address=address.strip(),
         phone=phone,
         email=email,
+        avatar=avatar_filename,
         card=[new_card_id]
     ).to_json())
 

@@ -19,6 +19,7 @@ class User(BaseModel):
         self.address = kwargs["address"] if "address" in kwargs.keys() else None
         self.phone = str(kwargs["phone"]).strip() if "phone" in kwargs.keys() else None
         self.email = str(kwargs["email"]).strip() if "email" in kwargs.keys() else None
+        self.avatar = str(kwargs["avatar"]).strip() if "avatar" in kwargs.keys() else None
         self.cards = kwargs["cards"] if "cards" in kwargs.keys() else []
     
     def to_json(self):

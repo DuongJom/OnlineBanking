@@ -358,7 +358,7 @@
     </aside>
 
     <!-- The form -->
-    <form action="{{ url_for('account.register') }}" method="post" novalidate onsubmit="return false">
+    <form action="{{ url_for('account.register') }}" method="post" novalidate onsubmit="return false" enctype="multipart/form-data">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
       <!-- Step 1: Login Info -->
@@ -423,6 +423,12 @@
             type="email" id="email" name="email"
             placeholder="e.g.thomas123@gmail.com" autocomplete="email" required />
           <span id="emailError" class="error-text" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="avatar">Upload Avatar</label>
+          <input type="file" name="avatar" id="avatar" accept="image/*" />
+          <span id="avatarError" class="error-text" aria-live="polite"></span>
         </div>
 
         <div class="form-group">
