@@ -1,13 +1,11 @@
 import json
 from datetime import datetime, timedelta
 
-from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.working_type import WorkingType
 from enums.collection import CollectionType
-
-db = Database().get_db()
+from init_database import db
 
 class WorkingDay(BaseModel):
     def __init__(self, **kwargs):

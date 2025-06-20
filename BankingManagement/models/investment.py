@@ -2,12 +2,10 @@ import json
 from datetime import datetime as dt
 
 from models.base import BaseModel
-from models.database import Database
 from models.datetime_encoder import DateTimeEncoder
 from enums.investment_status import InvestmentStatus
 from enums.collection import CollectionType
-
-db = Database().get_db()
+from init_database import db
 
 class Investment(BaseModel):
     def __init__(self, **kwargs):

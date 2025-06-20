@@ -1,14 +1,12 @@
 import json
 from datetime import date, timedelta
 
-from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.collection import CollectionType
 from enums.news_type import NewsType
 from enums.news_read_status import NewsReadStatusType
-
-db = Database().get_db()
+from init_database import db
 
 class News(BaseModel):
     def __init__(self, **kwargs):

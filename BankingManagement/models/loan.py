@@ -2,13 +2,11 @@ import json
 from datetime import datetime as dt
 
 from models.base import BaseModel
-from models.database import Database
 from models.datetime_encoder import DateTimeEncoder
 from enums.collection import CollectionType
 from enums.loan_status import LoanStatusType
 from enums.expired_time_loan import ExpiredTimeLoan
-
-db = Database().get_db()
+from init_database import db
 
 class Loan(BaseModel):
     def __init__(self, **kwargs):

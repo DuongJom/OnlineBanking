@@ -1,13 +1,11 @@
 import json
 from datetime import datetime as dt, timedelta
 
-from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.collection import CollectionType
 from enums.card_type import CardType
-
-db = Database().get_db()
+from init_database import db
 
 class Card(BaseModel):
     def __init__(self, **kwargs):

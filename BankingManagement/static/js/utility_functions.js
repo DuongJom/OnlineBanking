@@ -1,19 +1,18 @@
-function onClose(){
+const onClose = () => {
     document.getElementById("alert").style.display = "none";
 }
 
-function goBack() {
+const goBack = () => {
   window.history.back();
 }
 
-function toggle() {
+const toggle = () => {
     const toggledElement = document.getElementById('toggled_element');
-
     toggledElement.classList.toggle('flex');
     toggledElement.classList.toggle('hidden');
 }
 
-function navBarToggle() {
+const navBarToggle = () => {
     const mainDropdown = document.getElementById("mainDropdown");
     const right = document.getElementById("navbar_right_arrow");
     const down = document.getElementById("navbar_down_arrow");

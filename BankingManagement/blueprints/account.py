@@ -6,7 +6,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from itsdangerous import URLSafeTimedSerializer
 
-from models import account, user, card as model_card, database
+from models import account, user, card as model_card
 from message import messages_success, messages_failure
 from helpers.helpers import issue_new_card, get_token, send_email, get_max_id
 from decorators import login_required, role_required, log_request
@@ -16,6 +16,9 @@ from enums.collection import CollectionType
 from enums.deleted_type import DeletedType
 from app import app, mail
 from flask_caching import Cache
+from init_database import (
+    db, accounts, users, branches, cards
+)
 
 cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 cache.init_app(app)
@@ -24,23 +27,13 @@ HASH_PASSWORD_METHOD = 'pbkdf2:sha256'
 SALT_LENGTH = 16
 MAX_AGE_TIME_SERIALIZER = 86400
 
-# MongoDB Collections
-db = database.Database().get_db()
-accounts = db[CollectionType.ACCOUNTS.value]
-users = db[CollectionType.USERS.value]
-branches = db[CollectionType.BRANCHES.value]
-cards = db[CollectionType.CARDS.value]
-card_types = db[CollectionType.CARD_TYPES.value]
-transfer_methods = db[CollectionType.TRANSFER_METHODS.value]
-login_methods = db[CollectionType.LOGIN_METHODS.value]
-
 account_blueprint = Blueprint('account', __name__)
 
 @account_blueprint.route('/login', methods=['GET', 'POST'])
 @log_request()
 def login():
     if request.method == 'GET':
-        return render_template('general/login.html')
+        return render_template("general/login.html")
 
     session.clear()
     form_data = request.form

@@ -1,12 +1,10 @@
 import json
 
-from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.transfer_type import TransferType
 from enums.collection import CollectionType
-
-db = Database().get_db()
+from init_database import db
 
 class TransferMethod(BaseModel):
     def __init__(self, **kwargs):

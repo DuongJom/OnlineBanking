@@ -1,16 +1,13 @@
 import json
 from datetime import datetime as dt
 
-from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
-
 from enums.currency import CurrencyType
 from enums.transaction_type import TransactionType
 from enums.transaction_status import TransactionStatus
 from enums.collection import CollectionType
-
-db = Database().get_db()
+from init_database import db
 
 class Transaction(BaseModel):
     def __init__(self, **kwargs):

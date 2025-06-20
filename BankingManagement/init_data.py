@@ -1,7 +1,7 @@
 from datetime import datetime as dt
 from dateutil.relativedelta import relativedelta
 
-from models import database, account as a, role as r, login_method as lm
+from models import account as a, role as r, login_method as lm
 from models import transfer_method as tm, card_type as t
 from models.branch import Branch
 from models.loan import Loan
@@ -10,15 +10,9 @@ from enums.login_type import LoginType
 from enums.transfer_type import TransferType
 from enums.card_type import CardType
 from enums.collection import CollectionType
-
-db = database.Database().get_db()
-accounts = db[CollectionType.ACCOUNTS.value]
-roles = db[CollectionType.ROLES.value]
-login_methods = db[CollectionType.LOGIN_METHODS.value]
-transfer_methods = db[CollectionType.TRANSFER_METHODS.value]
-card_types = db[CollectionType.CARD_TYPES.value]
-branches = db[CollectionType.BRANCHES.value]
-loans = db[CollectionType.LOANS.value]
+from init_database import (
+    db, accounts, roles, login_methods, transfer_methods, card_types, branches, loans
+)
 
 lst_collections = db.list_collection_names()
 

@@ -1,14 +1,12 @@
 import json
 
 from  werkzeug.security import generate_password_hash
-from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.role_type import RoleType
 from enums.currency import CurrencyType
 from enums.collection import CollectionType
-
-db = Database().get_db()
+from init_database import db
 
 class Account(BaseModel):
     def __init__(self, **kwargs):
