@@ -17,6 +17,7 @@ messages_failure = {
     'must_input_value': 'Please fill in all information!',
     'investment_not_exist': 'Investment does not exist!',
     'unauthorized_access': 'You do not have access to this side!',
+    'account_owner_not_found': 'Account does not have owner!'
 }
 
 messages_success = {

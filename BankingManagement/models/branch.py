@@ -1,21 +1,20 @@
 import json
 
-from models.database import Database
 from models.base import BaseModel
 from models.datetime_encoder import DateTimeEncoder
 from enums.collection import CollectionType
-
-db = Database().get_db()
+from init_database import db
 
 class Branch(BaseModel):
     def __init__(self, **kwargs):
-        created_by = kwargs["createdBy"] if "createdBy" in kwargs.keys() else None
-        modified_by = kwargs["modifiedBy"] if "modifiedBy" in kwargs.keys() else None
-        id = kwargs["id"] if "id" in kwargs.keys() else None
-        super().__init__(id=id, createdBy=created_by, modifiedBy=modified_by, database=db, collection=CollectionType.BRANCHES.value)
+        created_by = kwargs["created_by"] if "created_by" in kwargs.keys() else None
+        modified_by = kwargs["modified_by"] if "modified_by" in kwargs.keys() else None
+        model_id = kwargs["id"] if "id" in kwargs.keys() else None
+        super().__init__(id=model_id, created_by=created_by, modified_by=modified_by, database=db,
+                         collection=CollectionType.BRANCHES.value)
         
-        self.BranchName = str(kwargs["branchName"]).strip() if "branchName" in kwargs.keys() else None
-        self.Address = str(kwargs["address"]).strip() if "address" in kwargs.keys() else None
+        self.branch_name = str(kwargs["branch_name"]).strip() if "branch_name" in kwargs.keys() else None
+        self.address_id = str(kwargs["address_id"]).strip() if "address_id" in kwargs.keys() else None
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

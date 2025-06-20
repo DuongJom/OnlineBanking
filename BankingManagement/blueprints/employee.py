@@ -6,25 +6,17 @@ from flask import Blueprint, render_template, send_file, request, session
 from bson import ObjectId
 from datetime import date, datetime as dt, timedelta
 
-from models.database import Database
 from models.employee import Employee
-from models.working_day_info import WorkingDay
 from enums.month_type import MonthType
 from enums.role_type import RoleType
-from enums.collection import CollectionType
 from enums.deleted_type import DeletedType
 from enums.sex_type import SexType
 from enums.working_type import WorkingType
 from decorators import login_required, role_required, log_request
 from helpers.helpers import get_max_id
-
-db = Database().get_db()
-accounts = db[CollectionType.ACCOUNTS.value]
-employees = db[CollectionType.EMPLOYEES.value]
-salaries = db[CollectionType.SALARIES.value]
-roles = db[CollectionType.ROLES.value]
-news = db[CollectionType.NEWS.value]
-working_day_infos = db[CollectionType.WORKING_DAY_INFOS.value]
+from init_database import (
+    db, accounts, employees, salaries, roles, news, working_day_infos
+)
 
 employee_blueprint = Blueprint('employee', __name__)
 
@@ -48,32 +40,32 @@ def convert_objectid(data):
 @log_request()
 @role_required(RoleType.ADMIN.value, RoleType.EMPLOYEE.value)
 def home():
-    if request.method == 'GET':
-        all_employees = list(employees.find({ "IsDeleted": DeletedType.AVAILABLE.value }))
-        for employee in all_employees:
-            employee['_id'] = int(employee['_id'])
+    all_employees = list(employees.find({"IsDeleted": DeletedType.AVAILABLE.value}))
+    for employee in all_employees:
+        employee['_id'] = int(employee['_id'])
 
-        logged_in_user = Employee(
-            id = 1,
-            employeeName=f"Employee 1",
-            position = "Junior Developer",
-            role = RoleType.EMPLOYEE.value,
-            sex = SexType.MALE.value,
-            phone = f"0{random.randint(100000000, 999999999)}",
-            email = f"employee1@dhcbank.com",
-            address = f"Street {random.randint(1, 100)}, City {random.randint(1, 10)}",
-            checkIn = "08:00",
-            checkOut = "17:00",
-            workingStatus = WorkingType.WORK_IN_COMPANY.value
-        )
-        return render_template('employee/home.html', 
-                               employees=all_employees, 
-                               is_checked_in=True, 
-                               is_checked_out=True,
-                               emp=logged_in_user,
-                               work_time=8)
+    logged_in_user = Employee(
+        id=1,
+        employeeName=f"Employee 1",
+        position="Junior Developer",
+        role=RoleType.EMPLOYEE.value,
+        sex=SexType.MALE.value,
+        phone=f"0{random.randint(100000000, 999999999)}",
+        email=f"employee1@dhcbank.com",
+        address=f"Street {random.randint(1, 100)}, City {random.randint(1, 10)}",
+        checkIn="08:00",
+        checkOut="17:00",
+        workingStatus=WorkingType.WORK_IN_COMPANY.value
+    )
+    return render_template('employee/home.html',
+                           employees=all_employees,
+                           is_checked_in=True,
+                           is_checked_out=True,
+                           emp=logged_in_user,
+                           work_time=8)
 
-@employee_blueprint.route('/employee/news', methods=['GET'])    
+
+@employee_blueprint.route('/employee/news', methods=['GET'])
 def show_news():
     lst_news = list(news.find())
     return render_template('employee/news.html', lnews=lst_news)

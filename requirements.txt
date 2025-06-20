@@ -1,5 +1,6 @@
 Flask==2.0.1
 Flask-PyMongo==2.3.0
+flask_caching
 pymongo==3.12.0
 python-dotenv==0.19.0
 Werkzeug==2.0.1

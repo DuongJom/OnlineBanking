@@ -14,84 +14,56 @@
  
     <title>{% block title %}{% endblock %} - DHC Banking System</title>
   </head>
-  <body class="h-screen overflow-y-hidden">
+  <body class="min-h-screen overflow-y-auto">
     {% if session["account_id"] %}
-      <nav class="bg-gray-500 fixed w-full z-10 top-0 right-0 start-0">
-        <div class="mx-auto max-w-7xl flex h-16 px-4 sm:px-6 lg:px-8 justify-between">
-          <div class="flex items-center">
-            <div class="w-12 h-12 p-1 
-              focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
-              focus:ring-offset-gray-800">
-              <img src="../static/img/bank.png" 
-                class="rounded-full bg-white w-full h-full object-contain"/>   
-            </div>
-          </div>
-
-          <div class="hidden md:block">
-            <div class="flex items-center mt-4 mr-20 absolute top-0 right-0">
-              <button
-                id="toggleButton"
-                type="button"
-                class="flex items-center rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white 
-                      focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 
-                      focus:ring-offset-gray-800"
-                onclick="navBarToggle()">
-                  {% if session["sex"] == '0' %}
-                    <img width="30px" height="30px" src="../static/img/avt_man.png" alt="user avatar"/>
-                  {% else %}
-                    <img width="30px" height="30px" src="../static/img/avt_woman.png" alt="user avatar"/>
-                  {% endif %}
-
-                  <div class="h-4 w-4 ml-2" id="navAvatar">
-                    <img
-                    src="../static/img/right-arrow.png"
-                    id="navbar_right_arrow"
-                    />
-                  <img
-                    src="../static/img/down-arrow.png"
-                    id="navbar_down_arrow" 
-                    class="hidden" />
-                  </div>
+      <nav class="bg-green-100 shadow-md fixed w-full z-30 top-0 left-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16 items-center text-white">
+            <!-- User Info + Dropdown -->
+            <div class="absolute flex items-center space-x-3 right-5">
+              <button id="toggleButton"
+                      type="button"
+                      class="flex items-center gap-2 bg-indigo-300 hover:bg-indigo-500 px-3 py-2 rounded-full transition"
+                      onclick="navBarToggle()">
+                {% if session["sex"] == '0' %}
+                  <img src="{{ url_for('static', filename='img/avt_man.png') }}"
+                      class="h-8 w-8 rounded-full border-2 border-white"
+                      alt="Male Avatar">
+                {% else %}
+                  <img src="{{ url_for('static', filename='img/avt_woman.png') }}"
+                      class="h-8 w-8 rounded-full border-2 border-white"
+                      alt="Female Avatar">
+                {% endif %}
+                <img src="{{ url_for('static', filename='img/down-arrow.png') }}"
+                    id="navbar_down_arrow"
+                    class="h-4 w-4">
               </button>
 
-              <div class="absolute top-14 right-0 bg-white w-48 hidden rounded-2xl border-2 border-purple-300" id="mainDropdown">
-                <ul class="h-full w-full flex flex-col justify-center items-center cursor-pointer">
-                  <li class="w-full h-10 border-b border-black flex justify-start items-center
-                      rounded-tl-2xl rounded-tr-2xl hover:bg-gray-200 px-2">
-                    <a href="/view-profile" class="flex flex-row">
-                      <div class="material-symbols-outlined">
-                        person
-                      </div>
-                      <div class="px-2">Profile</div>
+              <!-- Dropdown -->
+              <div class="absolute top-16 right-0 bg-white text-gray-700 shadow-lg rounded-xl w-48 hidden z-50 transition-all duration-300" id="mainDropdown">
+                <ul class="text-sm font-normal">
+                  <li>
+                    <a href="/view-profile" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-400 hover:text-white">
+                      <span class="material-symbols-outlined">person</span> Profile
                     </a>
                   </li>
-                  <li class="w-full h-10 border-b border-black flex items-center justify-start hover:bg-gray-200 px-2">
-                    <a href="/change-password" class="flex flex-row">
-                      <div class="material-symbols-outlined">
-                        password
-                      </div>
-                      <div class="px-2">Change Password</div>
+                  <li>
+                    <a href="/change-password" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-400 hover:text-white">
+                      <span class="material-symbols-outlined">password</span> Change Password
                     </a>
                   </li>
-                  <li class="w-full h-10 border-b border-black flex items-center justify-start hover:bg-gray-200 px-2">
-                    <a href="#" class="flex flex-row">
-                      <div class="material-symbols-outlined">
-                        settings
-                      </div>
-                      <div class="px-2">Setting</div>
+                  <li>
+                    <a href="#" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-400 hover:text-white">
+                      <span class="material-symbols-outlined">settings</span> Setting
                     </a>
                   </li>
-                  <li class="w-full h-10 flex items-center justify-start rounded-bl-2xl rounded-br-2xl hover:bg-gray-200 px-2">
-                    <a href="/logout" class="flex flex-row">
-                      <div class="material-symbols-outlined">
-                        logout
-                      </div>
-                      <div class="px-2">Logout</div>
+                  <li>
+                    <a href="/logout" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-400 hover:text-white text-red-600">
+                      <span class="material-symbols-outlined">logout</span> Logout
                     </a>
                   </li>
                 </ul>
               </div>
-              
             </div>
           </div>
         </div>
@@ -153,7 +125,8 @@
       {% endwith %}
 
       {% block content %}{% endblock %}
-    <script type="text/javascript" src="{{url_for('static',filename='js/utilityFunctions.js')}}"></script>
+      {% include 'general/footer.html' %}
+    <script type="text/javascript" src="{{url_for('static',filename='js/utility_functions.js')}}"></script>
     <script type="text/javascript">
       setTimeout(function(){
         $('#alert').css('display','none');

@@ -1,33 +1,49 @@
-
-<footer class="min-w-full flex justify-center bg-gray-900 text-gray-300 fixed bottom-0">
-    <div class="container py-2 px-4">
-        <div class="flex flex-wrap -mx-4">
-            <div class="w-full md:w-1/3 px-4 mb-8 md:mb-0">
-                <h4 class="text-lg font-semibold mb-2">About Us</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            </div>
-            <div class="w-full md:w-1/3 px-4 mb-8 md:mb-0">
-                <h4 class="text-lg font-semibold mb-2">Contact Us</h4>
-                <ul class="list-unstyled">
-                    <li>Address: 123 Banking Street, Cityville</li>
-                    <li>Phone: +123 456 7890</li>
-                    <li>Email: dhcbanking@gmail.com</li>
-                </ul>
-            </div>
-            <div class="w-full md:w-1/3 px-4 mb-8 md:mb-0">
-                <h4 class="text-lg font-semibold mb-2">Follow Us</h4>
-                <ul class="list-inline">
-                    <li><a href="#" class="text-gray-300 hover:text-gray-400"><i class="fab fa-facebook"></i></a></li>
-                    <li><a href="#" class="text-gray-300 hover:text-gray-400"><i class="fab fa-twitter"></i></a></li>
-                    <li><a href="#" class="text-gray-300 hover:text-gray-400"><i class="fab fa-instagram"></i></a></li>
-                </ul>
-            </div>    
+<footer class="w-full bg-green-900 text-gray-300">
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- About Us -->
+    <div>
+      <h4 class="text-xl font-bold mb-3">About Us</h4>
+      <p class="text-sm leading-relaxed">
+        DHC Banking System is a modern digital banking platform, offering secure and user-friendly solutions 
+        for your financial needs. We are committed to innovation, transparency, and customer satisfaction.
+      </p>
     </div>
 
-    <div class="bg-gray-800 py-1">
-        <div class="container mx-auto text-center">
-            <p class="text-sm text-gray-400">&copy; 2024 Banking Website. All Rights Reserved.</p>
-        </div>
-
+    <!-- Contact Us -->
+    <div>
+      <h4 class="text-xl font-bold mb-3">Contact Us</h4>
+      <ul class="space-y-2 text-sm">
+        <li><span class="font-medium">Address:</span> 123 Banking Street, District 1, Ho Chi Minh City, Vietnam</li>
+        <li><span class="font-medium">Phone:</span> (+84) 28 1234 5678</li>
+        <li><span class="font-medium">Email:</span> support@dhcbanking.com</li>
+      </ul>
     </div>
+
+    <!-- Follow Us -->
+    <div>
+      <h4 class="text-xl font-bold mb-3">Follow Us</h4>
+      <div class="flex space-x-4 text-lg">
+        <a href="https://facebook.com/dhcbank" class="hover:text-white" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/dhcbank" class="hover:text-white" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://instagram.com/dhcbank" class="hover:text-white" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://linkedin.com/company/dhcbank" class="hover:text-white" target="_blank" aria-label="LinkedIn">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="bg-gray-800 py-3">
+    <div class="text-center text-sm text-gray-400">
+      &copy; {{ now().year }} DHC Banking System — Empowering Digital Finance. All rights reserved.
+    </div>
+  </div>
 </footer>

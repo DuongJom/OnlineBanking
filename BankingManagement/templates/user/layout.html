@@ -3,7 +3,7 @@
 {% block content %}
 <!-- User side bar -->
 <div class="flex-col justify-between">
-    <div class="flex h-screen">
+    <div class="flex min-h-screen">
         <ul class="p-2 w-52 h-screen hidden sm:block bg-white text-sm border-r-2 border-gray-200">
             <li class="mt-20 user_bar_item
                 {% if request.path == '/' %} hightlight {% endif %}" onclick="window.location.href='/'">

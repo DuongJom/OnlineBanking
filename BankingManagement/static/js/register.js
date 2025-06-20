@@ -6,181 +6,127 @@ const RegisterSteps = Object.freeze({
 });
 
 let current_step = RegisterSteps.LOGIN_INFO;
-let hightlight_color = 'bg-green-200';
+const high_light_color = 'bg-green-200';
+const form_lst = Array.from(
+    { length: 5 },
+    (_, i) => document.getElementById(`form-step${i + 1}`)
+);
+const process_bar_lst = Array.from(
+    { length: 5 },
+    (_, i) => document.getElementById(`process_bar_step${i + 1}`)
+);
+const isValidEmail = (email) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+const isValidInternationalPhone = (phone) => /^\+?[0-9]{7,15}$/.test(phone);
+const isRadioSelected = (name) => !!document.querySelector(`input[name="${name}"]:checked`);
 
-const form_step1 = document.getElementById("form-step1");
-const form_step2 = document.getElementById("form-step2");
-const form_step3 = document.getElementById("form-step3");
-const form_step4 = document.getElementById("form-step4");
-const form_step5 = document.getElementById("form-step5");
-const form_lst = [form_step1, form_step2, form_step3, form_step4, form_step5];
-
-const process_bar_step1 = document.getElementById("process_bar_step1");
-const process_bar_step2 = document.getElementById("process_bar_step2");
-const process_bar_step3 = document.getElementById("process_bar_step3");
-const process_bar_step4 = document.getElementById("process_bar_step4");
-const process_bar_step5 = document.getElementById("process_bar_step5");
-const process_bar_lst = [process_bar_step1, process_bar_step2, process_bar_step3, process_bar_step4, process_bar_step5];
-
-function isValidEmail(email) {
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return regex.test(email);
-}
-
-function isValidInternationalPhone(phone) {
-    const regex = /^\+?[0-9]{7,15}$/;
-    return regex.test(phone);
-}
-
-function isRadioSelected(name) {
-    return !!document.querySelector(`input[name="${name}"]:checked`);
-}
-
-function checkRequiredField(step) {
+const checkRequiredField = (step) => {
     let isValid = true;
-    const inputFields = document.querySelectorAll(`.step-${step}`);
-    inputFields.forEach(inputField => {
-        const errorAlert = document.getElementById(`${inputField.name}Error`);
-        if(inputField.value.trim() === "") {
-            errorAlert.textContent = `Please provide your ${inputField.name}`;
+    const fields = document.querySelectorAll(`.step-${step}`);
+
+    fields.forEach(field => {
+        const errorEl = document.getElementById(`${field.name}Error`);
+        if (!field.value.trim()) {
+            errorEl.textContent = `Please provide your ${field.name}`;
             isValid = false;
-        }else {
-            errorAlert.textContent = "";
+        } else {
+            errorEl.textContent = "";
         }
     });
 
-    if(step === RegisterSteps.PERSONAL_INFO) {
-        const genderError = document.getElementById('genderError');
-        genderError.textContent = "";
-        if(!isRadioSelected('gender')) {
-            isValid = false;
-            genderError.textContent = "Please select your gender.";
-        }
-    }
+    switch (step){
+        case RegisterSteps.PERSONAL_INFO:
+            const genderError = document.getElementById('genderError');
+            genderError.textContent = isRadioSelected('gender') ? "" : "Please select your gender.";
+            if (!isRadioSelected('gender')) isValid = false;
+            break;
+        case RegisterSteps.ACCOUNT_INFO:
+            const loginSelected = document.querySelectorAll('input[name="loginMethod"]:checked').length > 0;
+            const transferSelected = document.querySelectorAll('input[name="transferMethod"]:checked').length > 0;
+            const branchValid = document.getElementById('branch').value !== "-1";
 
-    if(step === RegisterSteps.ACCOUNT_INFO) {
-        const loginMethodError = document.getElementById('loginMethodError');
-        const transferMethodError = document.getElementById('transferMethodError');
-        const branchError = document.getElementById('branchError');
+            document.getElementById('loginMethodError').textContent = loginSelected ? "" : "*";
+            document.getElementById('transferMethodError').textContent = transferSelected ? "" : "*";
+            document.getElementById('branchError').textContent = branchValid ? "" : "Please select your account branch";
 
-        loginMethodError.textContent = "";
-        transferMethodError.textContent = "";
-        branchError.textContent = "";
-
-        if(document.querySelectorAll('input[name="loginMethod"]:checked').length == 0) {
-            isValid = false;
-            loginMethodError.textContent = "*";
-        }
-
-        if(document.querySelectorAll('input[name="transferMethod"]:checked').length == 0) {
-            isValid = false;
-            transferMethodError.textContent = "*";
-        }
-
-        if(document.getElementById('branch').value == -1) {
-            isValid = false;
-            branchError.textContent = "Please select your account branch";
-        }
+            if (!loginSelected || !transferSelected || !branchValid) isValid = false;
+            break;
     }
 
     return isValid;
-}
+};
 
-function validateStep(step) {
+// ===== Step Validation =====
+const validateStep = (step) => {
     let isValid = true;
-    if(checkRequiredField(step)) {
-        if(step === RegisterSteps.LOGIN_INFO) {     
-            const confirmPasswordError = document.getElementById('confirmPasswordError'); 
-            confirmPasswordError.textContent = "";
-            if (document.getElementById('password').value != document.getElementById('confirmPassword').value) {
-                isValid = false;
-                confirmPasswordError.textContent = "Those passwords didn't match. Try again.";
-            }
-        }
 
-        if(step === RegisterSteps.PERSONAL_INFO) {
+    if (!checkRequiredField(step)) return false;
+
+    switch (step){
+        case RegisterSteps.LOGIN_INFO:
+            const pw = document.getElementById('password').value;
+            const cpw = document.getElementById('confirmPassword').value;
+            const errorEl = document.getElementById('confirmPasswordError');
+            errorEl.textContent = (pw === cpw) ? "" : "Those passwords didn't match. Try again.";
+            if (pw !== cpw) isValid = false;
+            break;
+        case RegisterSteps.PERSONAL_INFO:
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+
             const emailError = document.getElementById('emailError');
             const phoneError = document.getElementById('phoneError');
-            emailError.textContent = "";
-            phoneError.textContent = "";
-            if(!isValidEmail(document.getElementById('email').value)) {
-                isValid = false;
-                emailError.textContent = "Your email is invalid. Try again.";
-            }
 
-            if(!isValidInternationalPhone(document.getElementById('phone').value)) {
-                isValid = false;
-                phoneError.textContent = "Your phone is invalid. Try again.";
-            }
-        }
-    }else {
-        isValid = false
+            emailError.textContent = isValidEmail(email) ? "" : "Your email is invalid. Try again.";
+            phoneError.textContent = isValidInternationalPhone(phone) ? "" : "Your phone is invalid. Try again.";
+
+            if (!isValidEmail(email) || !isValidInternationalPhone(phone)) isValid = false;
+            break;
     }
 
     return isValid;
-}
+};
 
-function fillStepFiveContent () {
+const fillStepFiveContent = () => {
     const username = document.getElementById('username').value;
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phone').value;
-    const branchSelect = document.getElementById('branch');
-    const branchName = branchSelect.options[branchSelect.selectedIndex].innerHTML;
+    const branchName = document.getElementById('branch').selectedOptions[0].innerHTML;
 
-    const reUsername = document.getElementById('reUsername');
-    const reEmail = document.getElementById('reEmail');
-    const rePhone = document.getElementById('rePhone');
-    const reBranchName = document.getElementById('reBranch');
+    document.getElementById('reUsername').innerHTML = username;
+    document.getElementById('reEmail').innerHTML = email;
+    document.getElementById('rePhone').innerHTML = phone;
+    document.getElementById('reBranch').innerHTML = branchName;
+};
 
-    reUsername.innerHTML = username;
-    reEmail.innerHTML = email;
-    rePhone.innerHTML = phone;
-    reBranchName.innerHTML = branchName;
-}
+const goNextStep = () => {
+    if (!validateStep(current_step)) return;
 
-function goNextStep() {
-    if(validateStep(current_step)) {
-        if(current_step === RegisterSteps.ACCOUNT_INFO) {
-            fillStepFiveContent();
-        }
-        const current_form = form_lst[current_step-1]
-        const next_form = form_lst[current_step]
-    
-        const current_process_bar = process_bar_lst[current_step-1]
-        const next_process_bar = process_bar_lst[current_step]
-    
-        next_form.classList.remove("hidden");
-    
-        setTimeout(() => {
-            next_form.classList.remove("opacity-0", "scale-90");
-            next_form.classList.add("opacity-100", "scale-100", "flex");
-        }, 10);
-    
-        current_form.classList.add("opacity-0", "scale-90", "hidden");
-        current_form.classList.remove('flex');
-        next_process_bar.classList.add(hightlight_color);
-        current_process_bar.classList.remove(hightlight_color);
-        current_step++;
-    }
-}
+    if (current_step === RegisterSteps.ACCOUNT_INFO) fillStepFiveContent();
 
-function goPreviousStep() {
-    const current_form = form_lst[current_step-1]
-    const prev_form = form_lst[current_step-2]
+    toggleStep(current_step, current_step + 1);
+    current_step++;
+};
 
-    const current_process_bar = process_bar_lst[current_step-1]
-    const prev_process_bar = process_bar_lst[current_step-2]
+const goPreviousStep = () => {
+    toggleStep(current_step, current_step - 1);
+    current_step--;
+};
 
-    current_form.classList.remove("opacity-100", "scale-100", "flex");
-    current_form.classList.add("opacity-0", "scale-90");
+const toggleStep = (fromStep, toStep) => {
+    const fromForm = form_lst[fromStep - 1];
+    const toForm = form_lst[toStep - 1];
+    const fromBar = process_bar_lst[fromStep - 1];
+    const toBar = process_bar_lst[toStep - 1];
+
+    fromForm.classList.remove("opacity-100", "scale-100", "flex");
+    fromForm.classList.add("opacity-0", "scale-90");
 
     setTimeout(() => {
-        current_form.classList.add("hidden");
-        prev_form.classList.remove("opacity-0", "scale-90", "hidden");
-        prev_form.classList.add("flex");
+        fromForm.classList.add("hidden");
+        toForm.classList.remove("opacity-0", "scale-90", "hidden");
+        toForm.classList.add("flex");
     }, 300);
 
-    current_process_bar.classList.remove(hightlight_color);
-    prev_process_bar.classList.add(hightlight_color);
-    current_step--;
-}
+    fromBar.classList.remove(high_light_color);
+    toBar.classList.add(high_light_color);
+};

@@ -3,7 +3,12 @@ from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from init_app import init
 from init_data import initialize_data
-from filters import currency_format, datetime_format, date_format, strip, format_date, format_card_number, format_id, currency_to_text
+from filters import (
+    currency_format, datetime_format, 
+    date_format, strip, format_date, 
+    format_card_number, format_id, 
+    currency_to_text
+)
 import uuid
 from datetime import datetime as dt
 from helpers.logger import logger
