@@ -147,7 +147,7 @@ def register():
         phone=phone,
         email=email,
         avatar=avatar_filename,
-        card=[new_card_id]
+        cards=[new_card_id]
     ).to_json())
 
     new_account_id = get_max_id(db, CollectionType.ACCOUNTS.value)
@@ -180,7 +180,7 @@ def view_profile():
         lst_cards = []
 
         if owner:
-            card_ids = [int(cid) for cid in owner.get('card', [])]
+            card_ids = [int(cid) for cid in owner.get('cards', [])]
 
             for card in cards.find({"_id": {"$in": card_ids}}):
                 card_type = CardType(card['type']).name.capitalize()
