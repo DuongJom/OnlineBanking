@@ -83,7 +83,7 @@
         @apply bg-blue-gray-300 text-center
     }
 
-    .hightlight {
+    .highlight {
         @apply bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg rounded-md
     }
 

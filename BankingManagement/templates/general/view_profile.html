@@ -9,22 +9,34 @@
     
     <!-- CSRF + Hidden Fields -->
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <input type="hidden" name="current_email" value="{{owner.Email}}" />
-    <input type="hidden" name="current_phone" value="{{owner.Phone}}" />
-    <input type="hidden" name="current_username" value="{{account.Username}}" />
+    <input type="hidden" name="current_email" value="{{owner.email}}" />
+    <input type="hidden" name="current_phone" value="{{owner.phone}}" />
+    <input type="hidden" name="current_username" value="{{account.username}}" />
 
     <!-- Profile Info -->
     <div class="flex-1 flex flex-col gap-6">
       <!-- Avatar -->
       <div class="w-full flex justify-center">
-        <img src="{% if owner.Sex == '1' %}../static/img/avt_man.png{% else %}../static/img/avt_woman.png{% endif %}"
-             alt="avatar"
-             class="h-40 w-40 rounded-full border-4 border-purple-400 shadow-md object-cover" />
+        {% if session["avatar"] %}
+          <img src="{{ url_for('static', filename='uploads/' + session['avatar']) }}"
+             class="h-40 w-40 rounded-full border-2 border-white"
+             alt="User Avatar">
+        {% else %}
+          {% if session["sex"] == '0' %}
+            <img src="{{ url_for('static', filename='img/avt_man.png') }}"
+                 class="h-40 w-40 rounded-full border-2 border-white"
+                 alt="Male Avatar">
+          {% else %}
+            <img src="{{ url_for('static', filename='img/avt_woman.png') }}"
+                 class="h-40 w-40 rounded-full border-2 border-white"
+                 alt="Female Avatar">
+          {% endif %}
+        {% endif %}
       </div>
 
       <!-- Name + Gender -->
       <div class="text-center text-xl font-semibold flex justify-center items-center gap-2">
-        <span>{{ owner.Name }}</span>
+        <span>{{ owner.name }}</span>
         <img src="{% if owner.Sex == '1' %}../static/img/male.png{% else %}../static/img/female.png{% endif %}"
              alt="gender" class="h-5 w-5" />
       </div>
@@ -32,7 +44,7 @@
       <!-- Email -->
       <div>
         <label for="Email" class="text-sm font-medium text-gray-700">Email</label>
-        <input id="Email" name="email" value="{{ owner.Email }}"
+        <input id="Email" name="email" value="{{ owner.email }}"
                class="w-full border-b-2 border-purple-300 focus:outline-none focus:border-purple-600 bg-transparent"
                required />
       </div>
@@ -40,7 +52,7 @@
       <!-- Phone -->
       <div>
         <label for="Phone" class="text-sm font-medium text-gray-700">Phone</label>
-        <input id="Phone" name="phone" value="{{ owner.Phone }}"
+        <input id="Phone" name="phone" value="{{ owner.phone }}"
                class="w-full border-b-2 border-purple-300 focus:outline-none focus:border-purple-600 bg-transparent"
                required />
       </div>
@@ -50,7 +62,7 @@
         <label for="Address" class="text-sm font-medium text-gray-700">Address</label>
         <textarea id="Address" name="address" rows="2"
                   class="w-full border-b-2 border-purple-300 focus:outline-none focus:border-purple-600 bg-transparent resize-none"
-                  required>{{ owner.Address | strip }}</textarea>
+                  required>{{ owner.address | strip }}</textarea>
       </div>
     </div>
 
@@ -59,7 +71,7 @@
       <!-- Username -->
       <div>
         <label for="Username" class="text-sm font-medium text-gray-700">Username</label>
-        <input id="Username" name="username" value="{{ account.Username }}"
+        <input id="Username" name="username" value="{{ account.username }}"
                class="w-full border-b-2 border-purple-300 focus:outline-none focus:border-purple-600 bg-transparent"
                required />
       </div>
@@ -70,13 +82,13 @@
         <div>
           <label class="text-sm font-medium text-gray-700">Card Number</label>
           <div class="flex justify-between items-center border-b border-gray-300 py-2 cursor-pointer" onclick="toggleCardInfo()">
-            <p>{{ data.card_info.CardNumber }}</p>
+            <p>{{ data.card_info.card_number }}</p>
             <img src="../static/img/right-arrow.png" id="card_right_arrow" class="h-4 w-4" />
             <img src="../static/img/down-arrow.png" id="card_down_arrow" class="h-4 w-4 hidden" />
           </div>
           <div id="cardInfo" class="hidden text-sm text-gray-600 mt-1 pl-2 space-y-1">
-            <p><strong>Expired Date:</strong> {{ data.card_info.ExpiredDate | date_format }}</p>
-            <p><strong>CVV:</strong> {{ data.card_info.CVV }}</p>
+            <p><strong>Expired Date:</strong> {{ data.card_info.expired_date | date_format }}</p>
+            <p><strong>CVV:</strong> {{ data.card_info.cvv_number }}</p>
             <p><strong>Card Type:</strong> {{ data.card_type }}</p>
           </div>
         </div>
@@ -88,7 +100,7 @@
       <!-- Account Number -->
       <div>
         <label class="text-sm font-medium text-gray-700">Account Number</label>
-        <p class="pl-2">{{ account.AccountNumber }}</p>
+        <p class="pl-2">{{ account.account_number }}</p>
       </div>
 
       <!-- Branch Info -->
@@ -96,8 +108,8 @@
       <div>
         <label class="text-sm font-medium text-gray-700">Branch</label>
         <div class="pl-2 space-y-1 text-sm text-gray-600">
-          <p><strong>Name:</strong> {{ branch.BranchName }}</p>
-          <p><strong>Address:</strong> {{ branch.Address }}</p>
+          <p><strong>Name:</strong> {{ branch.branch_name }}</p>
+          <p><strong>Address:</strong> {{ branch.address }}</p>
         </div>
       </div>
       {% endif %}

@@ -14,7 +14,7 @@ class Branch(BaseModel):
                          collection=CollectionType.BRANCHES.value)
         
         self.branch_name = str(kwargs["branch_name"]).strip() if "branch_name" in kwargs.keys() else None
-        self.address_id = str(kwargs["address_id"]).strip() if "address_id" in kwargs.keys() else None
+        self.address = str(kwargs["address"]).strip() if "address" in kwargs.keys() else None
 
     def to_json(self):
         return json.loads(json.dumps(self.__dict__, cls=DateTimeEncoder))

@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(event) {
       const targetElement = event.target;
   
-      if (!dropdownList.contains(targetElement) && !toggleButton.contains(targetElement)) {
+      if (dropdownList && !dropdownList.contains(targetElement) && !toggleButton.contains(targetElement)) {
         dropdownList.classList.add('hidden');
       }
     });

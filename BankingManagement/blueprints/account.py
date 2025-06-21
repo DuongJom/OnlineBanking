@@ -4,6 +4,7 @@ from flask import (
     request, session, current_app
 )
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 from itsdangerous import URLSafeTimedSerializer
 
 from models import account, user, card as model_card
@@ -43,7 +44,7 @@ def login():
 
     acc = accounts.find_one(
         {"username": username, "is_deleted": DeletedType.AVAILABLE.value},
-        {"_id": 1, "password": 1, "role": 1, "account_owner": 1}
+        {"_id": 1, "username": 1, "password": 1, "role": 1, "account_owner": 1}
     )
 
     if not acc or not check_password_hash(acc["password"], password):
@@ -61,13 +62,15 @@ def login():
 
     logging_user = users.find_one(
         {"_id": int(acc['account_owner'])},
-        {"sex": 1}
+        {"name": 1, "sex": 1, "avatar": 1}
     )
 
     if logging_user:
         session["sex"] = str(logging_user['sex'])
 
     session["account_id"] = str(acc["_id"])
+    session["avatar"] = logging_user["avatar"]
+    session["fullname"] = logging_user["name"] if logging_user["name"] != "" else acc["username"]
     flash(messages_success['login_success'], 'success')
 
     return redirect({
@@ -84,11 +87,12 @@ def register():
     if request.method == 'GET':
         branch_list = cache.get("branch_list")
         if branch_list is None:
-            branch_list = list(branches.find({}, {"_id": 1, "name": 1}))
+            branch_list = list(branches.find({}, {"_id": 1, "branch_name": 1, "address": 1}))
             cache.set("branch_list", branch_list, timeout=300)
         return render_template("general/register.html", branch_list=branch_list, card_info=card_info)
 
     form_data = request.form
+    avatar_file = request.files.get("avatar")
     username = form_data['username']
     full_name = form_data['fullname']
     branch_id = form_data['branch']
@@ -117,6 +121,15 @@ def register():
         flash(messages_failure['phone_existed'].format(phone), 'error')
         return redirect(url_for("account.register"))
 
+        # Process avatar
+    avatar_filename = None
+    if avatar_file and avatar_file.filename:
+        filename = secure_filename(avatar_file.filename)
+        upload_path = os.path.join(current_app.root_path, 'static', 'uploads', filename)
+        os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+        avatar_file.save(upload_path)
+        avatar_filename = filename
+
     new_card_id = get_max_id(db, CollectionType.CARDS.value)
     cards.insert_one(model_card.Card(
         id=new_card_id,
@@ -133,6 +146,7 @@ def register():
         address=address.strip(),
         phone=phone,
         email=email,
+        avatar=avatar_filename,
         card=[new_card_id]
     ).to_json())
 
@@ -151,7 +165,6 @@ def register():
 
     flash(messages_success['register_success'], 'success')
     return redirect(url_for("account.login"))
-
 
 @account_blueprint.route('/view-profile', methods=['GET', 'POST'])
 @login_required

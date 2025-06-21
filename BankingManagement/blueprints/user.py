@@ -209,7 +209,7 @@ def bill_payment():
     if request.method == "POST":
         start_date_raw = request.form.get('start_date', '')
         end_date_raw = request.form.get('end_date', '')
-        status_filter = request.form.get('status_filter', 'all')
+        status_filter = request.form.get('status_filter', BillStatusType.ALL.value)
 
         if start_date_raw:
             start_date = dt.strptime(start_date_raw, "%Y-%m-%d")

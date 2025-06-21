@@ -1,135 +1,118 @@
 <!DOCTYPE html>
-<html class="h-full bg-white">
+<html lang="en" class="h-full w-full bg-white box-border scroll-smooth">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}" type="text/css" />
-    <link rel="icon" href="{{ url_for('static', filename='img/system-icon.ico') }}" type="image/x-icon">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" 
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" 
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/output.css') }}" type="text/css" />
+    <link rel="icon" href="{{ url_for('static', filename='img/system-icon.ico') }}" type="image/x-icon" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
     <script src="https://kit.fontawesome.com/a16fe50658.js" crossorigin="anonymous"></script>
- 
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      @keyframes fade-in {
+        0% { opacity: 0; transform: translateY(-10px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      .animate-fade-in {
+        animation: fade-in 0.3s ease-out forwards;
+      }
+    </style>
+
     <title>{% block title %}{% endblock %} - DHC Banking System</title>
   </head>
-  <body class="min-h-screen overflow-y-auto">
-    {% if session["account_id"] %}
-      <nav class="bg-green-100 shadow-md fixed w-full z-30 top-0 left-0">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between h-16 items-center text-white">
-            <!-- User Info + Dropdown -->
-            <div class="absolute flex items-center space-x-3 right-5">
-              <button id="toggleButton"
-                      type="button"
-                      class="flex items-center gap-2 bg-indigo-300 hover:bg-indigo-500 px-3 py-2 rounded-full transition"
-                      onclick="navBarToggle()">
-                {% if session["sex"] == '0' %}
-                  <img src="{{ url_for('static', filename='img/avt_man.png') }}"
-                      class="h-8 w-8 rounded-full border-2 border-white"
-                      alt="Male Avatar">
-                {% else %}
-                  <img src="{{ url_for('static', filename='img/avt_woman.png') }}"
-                      class="h-8 w-8 rounded-full border-2 border-white"
-                      alt="Female Avatar">
-                {% endif %}
-                <img src="{{ url_for('static', filename='img/down-arrow.png') }}"
-                    id="navbar_down_arrow"
-                    class="h-4 w-4">
-              </button>
+  <body class="min-h-screen w-full font-sans bg-gray-50 text-base antialiased relative">
 
-              <!-- Dropdown -->
-              <div class="absolute top-16 right-0 bg-white text-gray-700 shadow-lg rounded-xl w-48 hidden z-50 transition-all duration-300" id="mainDropdown">
-                <ul class="text-sm font-normal">
-                  <li>
-                    <a href="/view-profile" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-400 hover:text-white">
-                      <span class="material-symbols-outlined">person</span> Profile
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/change-password" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-400 hover:text-white">
-                      <span class="material-symbols-outlined">password</span> Change Password
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-400 hover:text-white">
-                      <span class="material-symbols-outlined">settings</span> Setting
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/logout" class="flex items-center gap-2 px-4 py-2 hover:bg-indigo-400 hover:text-white text-red-600">
-                      <span class="material-symbols-outlined">logout</span> Logout
-                    </a>
-                  </li>
-                </ul>
-              </div>
+    {% if session["account_id"] %}
+    <!-- NAVBAR -->
+    <nav class="bg-gradient-to-r from-emerald-500 to-green-400 fixed w-full z-30 shadow-lg top-0 left-0">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-end items-center h-16 text-white relative">
+          <!-- RIGHT: User info -->
+          <div class="flex items-center gap-3 absolute right-4 top-1/2 transform -translate-y-1/2">
+            <p class="text-green-500 font-semibold hidden sm:block">Welcome, {{ session['fullname'] }}</p>
+
+            <!-- Avatar button -->
+            <button id="toggleButton" onclick="navBarToggle()"
+              class="relative flex items-center gap-2 bg-white text-gray-800 px-3 py-1.5 rounded-full hover:shadow-lg transition">
+              <img
+                src="{{ url_for('static', filename='uploads/' + session['avatar']) if session['avatar'] else (url_for('static', filename='img/avt_man.png') if session['sex']=='0' else url_for('static', filename='img/avt_woman.png')) }}"
+                class="h-8 w-8 rounded-full border-2 border-emerald-500 object-cover" alt="User Avatar" />
+              <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            <!-- Dropdown menu -->
+            <div id="mainDropdown"
+              class="hidden absolute top-12 right-0 w-56 bg-white text-gray-700 rounded-lg shadow-lg animate-fade-in z-50">
+              <ul class="text-sm font-medium divide-y">
+                <li><a href="/view-profile"
+                    class="flex items-center gap-2 px-4 py-3 text-blue-600 hover:bg-blue-100"><span
+                      class="material-symbols-outlined">person</span>Profile</a></li>
+                <li><a href="/change-password"
+                    class="flex items-center gap-2 px-4 py-3 text-blue-600 hover:bg-blue-100"><span
+                      class="material-symbols-outlined">password</span>Change Password</a></li>
+                <li><a href="#" class="flex items-center gap-2 px-4 py-3 text-blue-600 hover:bg-blue-100"><span
+                      class="material-symbols-outlined">settings</span>Setting</a></li>
+                <li><a href="/logout"
+                    class="flex items-center gap-2 px-4 py-3 text-red-600 hover:bg-red-100"><span
+                      class="material-symbols-outlined">logout</span>Logout</a></li>
+              </ul>
             </div>
           </div>
         </div>
-      </nav>
+      </div>
+    </nav>
     {% endif %}
 
+    <!-- FLASH MESSAGES -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for category, message in messages %}
-            {% if category == 'error' %}
-              <div id="alert" 
-                  class="flex absolute top-0 right-0 items-center p-4 text-red-800 border-t-4 rounded-lg
-                      border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800 z-10" role="alert">
-                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
-                    fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                </svg>
-                <div class="ms-3 text-sm font-medium">
-                  <p>{{ message }}</p>
-                </div>
-                <button type="button" onclick="onClose()" 
-                      class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2
-                         focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8
-                         dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"  
-                         data-dismiss-target="#alert-border-2" aria-label="Close">
-                  <span class="sr-only">Dismiss</span>
-                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                  </svg>
-                </button>
-              </div>
-            {% else %}
-              <div id="alert" 
-                  class="flex absolute top-0 right-0 items-center p-4 text-green-800 border-t-4 rounded-md
-                   border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800 z-10" role="alert">
-                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
-                    fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                </svg>
-                <div class="ms-3 text-sm font-medium">
-                  <p>{{ message }}</p>
-                </div>
-                <button type="button" onclick="onClose()"
-                        class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 
-                          focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 
-                          dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"  
-                          data-dismiss-target="#alert-border-3" aria-label="Close">
-                  <span class="sr-only">Dismiss</span>
-                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                  </svg>
-                </button>
-            </div>
-            {% endif %}
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
+      {% if messages %}
+        {% for category, message in messages %}
+          {% set alert_type = 'green' if category == 'success' else 'red' %}
+          <div id="alert"
+            class="flex items-center p-4 rounded-md border-l-4 shadow-md fixed top-5 right-5 z-50 animate-fade-in
+            bg-{{ alert_type }}-50 text-{{ alert_type }}-800 {% if alert_type == 'green' %} border-green-400 {% else %} border-red-400 {% endif %}" role="alert">
+            <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9 4a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm2 10H9v-4h1v-2H9a1 1 0 1 1 0-2h2a1 1 0 0 1 1 1v5h1a1 1 0 1 1 0 2Z" />
+            </svg>
+            <div class="text-sm font-medium">{{ message }}</div>
+            <button type="button" onclick="onClose()"
+              class="ml-auto text-{{ alert_type }}-600 hover:text-{{ alert_type }}-800 transition">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 14 14" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6" />
+              </svg>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-      {% block content %}{% endblock %}
-      {% include 'general/footer.html' %}
-    <script type="text/javascript" src="{{url_for('static',filename='js/utility_functions.js')}}"></script>
-    <script type="text/javascript">
-      setTimeout(function(){
-        $('#alert').css('display','none');
+    {% block content %}{% endblock %}
+    {% include 'general/footer.html' %}
+
+    <!-- SCRIPTS -->
+    <script src="{{ url_for('static', filename='js/utility_functions.js') }}"></script>
+    <script>
+      setTimeout(function () {
+        const alert = document.getElementById('alert');
+        if (alert) {
+          alert.style.opacity = '0';
+          setTimeout(function () {
+            alert.style.display = 'none';
+          }, 500); // chờ hiệu ứng mờ biến mất
+        }
       }, 3000);
     </script>
   </body>
