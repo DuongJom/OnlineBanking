@@ -44,7 +44,7 @@ def login():
 
     acc = accounts.find_one(
         {"username": username, "is_deleted": DeletedType.AVAILABLE.value},
-        {"_id": 1, "password": 1, "role": 1, "account_owner": 1}
+        {"_id": 1, "username": 1, "password": 1, "role": 1, "account_owner": 1}
     )
 
     if not acc or not check_password_hash(acc["password"], password):
@@ -62,7 +62,7 @@ def login():
 
     logging_user = users.find_one(
         {"_id": int(acc['account_owner'])},
-        {"sex": 1, "avatar": 1}
+        {"name": 1, "sex": 1, "avatar": 1}
     )
 
     if logging_user:
@@ -70,6 +70,7 @@ def login():
 
     session["account_id"] = str(acc["_id"])
     session["avatar"] = logging_user["avatar"]
+    session["fullname"] = logging_user["name"] if logging_user["name"] != "" else acc["username"]
     flash(messages_success['login_success'], 'success')
 
     return redirect({

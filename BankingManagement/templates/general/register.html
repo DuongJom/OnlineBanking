@@ -425,10 +425,29 @@
           <span id="emailError" class="error-text" aria-live="polite"></span>
         </div>
 
-        <div class="form-group">
-          <label for="avatar">Upload Avatar</label>
-          <input type="file" name="avatar" id="avatar" accept="image/*" />
-          <span id="avatarError" class="error-text" aria-live="polite"></span>
+        <div class="form-group mb-4">
+          <label for="avatar" class="block text-gray-700 font-semibold mb-2">Upload Avatar</label>
+
+          <input
+            type="file"
+            name="avatar"
+            id="avatar"
+            accept="image/*"
+            onchange="previewAvatar()"
+            class="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+          />
+
+          <!-- Ảnh preview -->
+          <div class="mt-3">
+            <img
+              id="avatar-preview"
+              src="#"
+              alt="Avatar Preview"
+              class="hidden w-32 h-32 object-cover rounded-full border border-green-400 shadow"
+            />
+          </div>
+
+          <span id="avatarError" class="text-sm text-red-500 mt-1 block" aria-live="polite"></span>
         </div>
 
         <div class="form-group">
@@ -643,6 +662,25 @@
     }
 
     return valid;
+  }
+
+  const previewAvatar = () => {
+    const input = document.getElementById('avatar');
+    const preview = document.getElementById('avatar-preview');
+
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        preview.src = e.target.result;
+        preview.classList.remove('hidden');
+      }
+
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      preview.src = '#';
+      preview.classList.add('hidden');
+    }
   }
 
   const submitIfValid = () => {
