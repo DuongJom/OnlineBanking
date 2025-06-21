@@ -2,11 +2,10 @@
 {% block title %} View Profile {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-cover bg-center flex flex-col items-center pt-24 px-4 md:px-8"
-     style="background-image: url('../static/img/viewProfile.jpg');">
+<div class="min-h-screen bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-200 bg-cover bg-center flex flex-col items-center pt-24 px-4 md:px-8">
   <form method="post" action="/view-profile"
-        class="w-full max-w-6xl bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-xl p-6 md:p-10 flex flex-col md:flex-row gap-8">
-    
+        class="w-full max-w-6xl bg-white bg-opacity-80 backdrop-blur-md rounded-3xl shadow-2xl p-6 md:p-10 flex flex-col md:flex-row gap-8">
+
     <!-- CSRF + Hidden Fields -->
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <input type="hidden" name="current_email" value="{{owner.email}}" />
@@ -19,49 +18,49 @@
       <div class="w-full flex justify-center">
         {% if session["avatar"] %}
           <img src="{{ url_for('static', filename='uploads/' + session['avatar']) }}"
-             class="h-40 w-40 rounded-full border-2 border-white"
-             alt="User Avatar">
+               class="h-40 w-40 rounded-full border-4 border-white shadow-lg object-cover"
+               alt="User Avatar">
         {% else %}
           {% if session["sex"] == '0' %}
             <img src="{{ url_for('static', filename='img/avt_man.png') }}"
-                 class="h-40 w-40 rounded-full border-2 border-white"
+                 class="h-40 w-40 rounded-full border-4 border-white shadow-lg object-cover"
                  alt="Male Avatar">
           {% else %}
             <img src="{{ url_for('static', filename='img/avt_woman.png') }}"
-                 class="h-40 w-40 rounded-full border-2 border-white"
+                 class="h-40 w-40 rounded-full border-4 border-white shadow-lg object-cover"
                  alt="Female Avatar">
           {% endif %}
         {% endif %}
       </div>
 
       <!-- Name + Gender -->
-      <div class="text-center text-xl font-semibold flex justify-center items-center gap-2">
+      <div class="text-center text-2xl font-bold text-gray-800 flex justify-center items-center gap-2">
         <span>{{ owner.name }}</span>
-        <img src="{% if owner.Sex == '1' %}../static/img/male.png{% else %}../static/img/female.png{% endif %}"
-             alt="gender" class="h-5 w-5" />
+        <img src="{% if owner.sex == 0 %}../static/img/male.png{% elif owner.sex == 1 %}../static/img/female.png{% endif %}"
+             alt="gender" class="h-6 w-6" />
       </div>
 
       <!-- Email -->
       <div>
-        <label for="Email" class="text-sm font-medium text-gray-700">Email</label>
+        <label for="Email" class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
         <input id="Email" name="email" value="{{ owner.email }}"
-               class="w-full border-b-2 border-purple-300 focus:outline-none focus:border-purple-600 bg-transparent"
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
                required />
       </div>
 
       <!-- Phone -->
       <div>
-        <label for="Phone" class="text-sm font-medium text-gray-700">Phone</label>
+        <label for="Phone" class="block text-sm font-semibold text-gray-700 mb-1">Phone</label>
         <input id="Phone" name="phone" value="{{ owner.phone }}"
-               class="w-full border-b-2 border-purple-300 focus:outline-none focus:border-purple-600 bg-transparent"
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
                required />
       </div>
 
       <!-- Address -->
       <div>
-        <label for="Address" class="text-sm font-medium text-gray-700">Address</label>
+        <label for="Address" class="block text-sm font-semibold text-gray-700 mb-1">Address</label>
         <textarea id="Address" name="address" rows="2"
-                  class="w-full border-b-2 border-purple-300 focus:outline-none focus:border-purple-600 bg-transparent resize-none"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white resize-none"
                   required>{{ owner.address | strip }}</textarea>
       </div>
     </div>
@@ -70,23 +69,25 @@
     <div class="flex-1 flex flex-col gap-6">
       <!-- Username -->
       <div>
-        <label for="Username" class="text-sm font-medium text-gray-700">Username</label>
+        <label for="Username" class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
         <input id="Username" name="username" value="{{ account.username }}"
-               class="w-full border-b-2 border-purple-300 focus:outline-none focus:border-purple-600 bg-transparent"
-               required />
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+               readonly/>
       </div>
 
       <!-- Cards -->
       {% if cards|length != 0 %}
         {% for data in cards %}
         <div>
-          <label class="text-sm font-medium text-gray-700">Card Number</label>
-          <div class="flex justify-between items-center border-b border-gray-300 py-2 cursor-pointer" onclick="toggleCardInfo()">
-            <p>{{ data.card_info.card_number }}</p>
-            <img src="../static/img/right-arrow.png" id="card_right_arrow" class="h-4 w-4" />
-            <img src="../static/img/down-arrow.png" id="card_down_arrow" class="h-4 w-4 hidden" />
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Card Number</label>
+          <div class="flex justify-between items-center border-b border-gray-300 py-2 cursor-pointer hover:bg-gray-50 transition rounded-lg px-2" onclick="toggleCardInfo()">
+            <p class="font-mono text-sm">{{ data.card_info.card_number }}</p>
+            <div class="flex gap-2">
+              <img src="../static/img/right-arrow.png" id="card_right_arrow" class="h-4 w-4" />
+              <img src="../static/img/down-arrow.png" id="card_down_arrow" class="h-4 w-4 hidden" />
+            </div>
           </div>
-          <div id="cardInfo" class="hidden text-sm text-gray-600 mt-1 pl-2 space-y-1">
+          <div id="cardInfo" class="hidden text-sm text-gray-600 mt-1 pl-2 space-y-1 bg-gray-50 p-2 rounded-lg">
             <p><strong>Expired Date:</strong> {{ data.card_info.expired_date | date_format }}</p>
             <p><strong>CVV:</strong> {{ data.card_info.cvv_number }}</p>
             <p><strong>Card Type:</strong> {{ data.card_type }}</p>
@@ -99,14 +100,14 @@
 
       <!-- Account Number -->
       <div>
-        <label class="text-sm font-medium text-gray-700">Account Number</label>
-        <p class="pl-2">{{ account.account_number }}</p>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Account Number</label>
+        <p class="pl-2 font-mono">{{ account.account_number }}</p>
       </div>
 
       <!-- Branch Info -->
       {% if branch %}
       <div>
-        <label class="text-sm font-medium text-gray-700">Branch</label>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Branch</label>
         <div class="pl-2 space-y-1 text-sm text-gray-600">
           <p><strong>Name:</strong> {{ branch.branch_name }}</p>
           <p><strong>Address:</strong> {{ branch.address }}</p>
@@ -117,7 +118,7 @@
       <!-- Save Button -->
       <div class="pt-4">
         <button type="button"
-                class="w-full md:w-40 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-full transition"
+                class="w-full md:w-40 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-full transition duration-200"
                 onclick="openPopup()">
           Save changes
         </button>
@@ -127,15 +128,15 @@
     <!-- Popup -->
     <div id="popup"
          class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden">
-      <div class="bg-white rounded-xl shadow-xl p-6 w-11/12 md:w-96 relative">
-        <button class="absolute top-2 right-2 text-gray-400 hover:text-black"
+      <div class="bg-white rounded-xl shadow-xl p-6 w-11/12 md:w-96 relative animate-fade-in">
+        <button class="absolute top-2 right-2 text-gray-400 hover:text-black text-xl"
                 onclick="closePopup()">&times;</button>
         <h2 class="text-xl font-bold mb-4 border-b pb-2">Authentication</h2>
         <p class="mb-2 text-sm text-gray-700">Please re-enter your password to continue.</p>
         <input type="password" name="password"
                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
         <button type="submit"
-                class="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-full transition">
+                class="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-full transition duration-200">
           Confirm
         </button>
       </div>

@@ -12,9 +12,14 @@ from filters import (
 import uuid
 from datetime import datetime as dt
 from helpers.logger import logger
+from helpers.helpers import get_banks
+from flask_caching import Cache
 
 app = Flask(__name__)
 app = init(app)
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
+cache.init_app(app)
+cache.set('banks', get_banks())
 
 # initialize mail instance
 mail = Mail(app)

@@ -15,14 +15,10 @@ from enums.role_type import RoleType
 from enums.card_type import CardType
 from enums.collection import CollectionType
 from enums.deleted_type import DeletedType
-from app import app, mail
-from flask_caching import Cache
+from app import app, mail, cache
 from init_database import (
     db, accounts, users, branches, cards
 )
-
-cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
-cache.init_app(app)
 
 HASH_PASSWORD_METHOD = 'pbkdf2:sha256'
 SALT_LENGTH = 16
@@ -147,7 +143,7 @@ def register():
         phone=phone,
         email=email,
         avatar=avatar_filename,
-        card=[new_card_id]
+        cards=[new_card_id]
     ).to_json())
 
     new_account_id = get_max_id(db, CollectionType.ACCOUNTS.value)
@@ -180,7 +176,7 @@ def view_profile():
         lst_cards = []
 
         if owner:
-            card_ids = [int(cid) for cid in owner.get('card', [])]
+            card_ids = [int(cid) for cid in owner.get('cards', [])]
 
             for card in cards.find({"_id": {"$in": card_ids}}):
                 card_type = CardType(card['type']).name.capitalize()

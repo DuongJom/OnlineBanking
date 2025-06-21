@@ -5,7 +5,7 @@ from datetime import datetime as dt
 
 from models import transaction, investment as investment_model
 from message import messages_success, messages_failure
-from helpers.helpers import get_banks, generate_otp, send_email, get_max_id
+from helpers.helpers import generate_otp, send_email, get_max_id
 from enums.transaction_type import TransactionType
 from enums.bill_status import BillStatusType
 from enums.investment import InvestmentType
@@ -14,7 +14,7 @@ from enums.investment_status import InvestmentStatus
 from enums.collection import CollectionType
 from enums.deleted_type import DeletedType
 from enums.role_type import RoleType
-from app import app, mail
+from app import app, mail, cache
 from decorators import login_required, role_required, log_request
 from init_database import (
     db, accounts, users, transactions, bills, investments, loans, cards
@@ -68,20 +68,23 @@ def home():
 @role_required(RoleType.USER.value)
 def transfer_money():
     account_id = int(session.get("account_id"))
-    account = accounts.find_one({"_id": account_id})
-    banks = get_banks()
-    owner = None
-
-    if account["account_owner"]:
-        owner = users.find_one({"_id": int(account["account_owner"])})
+    account_doc = accounts.find_one({"_id": account_id})
+    banks = cache.get('banks')
+    owner = users.find_one({"_id": int(account_doc["account_owner"])}) if account_doc.get("account_owner") else None
 
     if request.method == "POST":
         receiver_account = request.form['receiver_account']
         receiver_bank = request.form['receiver_bank']
-        amount = request.form['amount']
-        currency_value = request.form['currency']
+        amount = float(request.form['amount'])  # convert to float for comparison
+        currency_value = account_doc['currency']
         message = request.form['message']
 
+        # 👉 Kiểm tra số dư trước
+        if account_doc['balance'] < amount:
+            flash(messages_failure['balance_not_enough'].format('transfer'), 'error')
+            return render_template("user/transfer.html", account=account_doc, banks=banks, owner=owner)
+
+        # Lưu dữ liệu vào session nếu đủ tiền
         session['transfer_data'] = {
             'receiver_account': receiver_account,
             'receiver_bank': receiver_bank,
@@ -90,9 +93,10 @@ def transfer_money():
             'message': message
         }
 
-        return redirect("/confirm-otp")
+        # Chuyển hướng sang xác nhận OTP
+        return redirect('/confirm-otp')
 
-    return render_template("user/transfer.html", account=account, banks=banks, owner=owner)
+    return render_template("user/transfer.html", account=account_doc, banks=banks, owner=owner)
 
 @user_blueprint.route('/confirm-otp', methods=["GET", "POST"])
 @login_required
@@ -100,33 +104,33 @@ def transfer_money():
 @role_required(RoleType.USER.value)
 def confirm_otp():
     account_id = int(session.get("account_id"))
-    account = accounts.find_one({"_id": account_id})
+    account_doc = accounts.find_one({"_id": account_id})
 
     if request.method == 'GET':
         try:
-            if account:
+            if account_doc:
                 otp = generate_otp()
                 session['otp'] = otp
                 session['otp_expiration'] = time.time() + 60
                 owner = None
 
-                if account["account_owner"]:
-                    owner = users.find_one({"_id": int(account["account_owner"])})
-                    
+                if account_doc["account_owner"]:
+                    owner = users.find_one({"_id": int(account_doc["account_owner"])})
+
                 html = render_template(
                     'email/verify_otp.html',
                     otp_code=otp,
                     otp_expiration_time=60,
-                    customer_name=owner['Name']
+                    customer_name=owner['name']
                 )
                 send_email(
                     app=app,
                     mail=mail,
-                    recipients=owner['Email'],
+                    recipients=owner['email'],
                     subject="OTP For Money Transfer",
                     html=html
                 )
-                flash(messages_success['send_otp_success'].format(owner['Email']), 'success')
+                flash(messages_success['send_otp_success'].format(owner['email']), 'success')
                 return render_template("user/otp_confirmation.html")
         
         except Exception as e:
@@ -150,11 +154,11 @@ def confirm_otp():
         message = transfer_data.get('message')
 
         accounts.update_one(
-            {"account_number": account["account_number"]},
+            {"account_number": account_doc["account_number"]},
             {
                 "$set": {
-                    "balance": account['balance'] - float(amount),
-                    "modified_by": int(account['account_owner']),
+                    "balance": account_doc['balance'] - float(amount),
+                    "modified_by": int(account_doc['account_owner']),
                     "modified_date": dt.today()
                 }
             }
@@ -167,7 +171,7 @@ def confirm_otp():
                 {
                     "$set": {
                         "balance": receiver_account['balance'] + float(amount),
-                        "modified_by": int(account['account_owner']),
+                        "modified_by": int(account_doc['account_owner']),
                         "modified_date": dt.today()
                     }
                 }
@@ -175,15 +179,15 @@ def confirm_otp():
         transaction_id = get_max_id(database=db, collection_name=CollectionType.TRANSACTIONS.value)
         trans = transaction.Transaction(
             id=transaction_id,
-            sender = account['account_number'],
+            sender = account_doc['account_number'],
             receiver = receiver_account_number,
             amount = float(amount),
             currency = currency_value,
             message = message,
             transaction_type = TransactionType.TRANSFER.value,
-            balance = account['balance'] - float(amount),
-            createdBy = int(account['account_owner']),
-            modified_by = int(account['account_owner'])
+            balance = account_doc['balance'] - float(amount),
+            createdBy = int(account_doc['account_owner']),
+            modified_by = int(account_doc['account_owner'])
         )
         transactions.insert_one(trans.to_json())
         flash(messages_success['transfer_money_success'], 'success')
