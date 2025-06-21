@@ -15,14 +15,10 @@ from enums.role_type import RoleType
 from enums.card_type import CardType
 from enums.collection import CollectionType
 from enums.deleted_type import DeletedType
-from app import app, mail
-from flask_caching import Cache
+from app import app, mail, cache
 from init_database import (
     db, accounts, users, branches, cards
 )
-
-cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
-cache.init_app(app)
 
 HASH_PASSWORD_METHOD = 'pbkdf2:sha256'
 SALT_LENGTH = 16
